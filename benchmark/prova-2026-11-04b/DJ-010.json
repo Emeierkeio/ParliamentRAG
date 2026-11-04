@@ -1,46 +1,39 @@
 {
- "id": "DJ-010",
- "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
- "categoria": "governo",
- "tipo_risposta": "conteggio",
- "ramo": "entrambi",
- "difficolta": "media",
- "garanzie": [],
- "note_domanda": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
- "trappola": true,
- "endpoint": "agente",
- "inizio": 1793784710.930748,
- "endpoint_usato": "/api/agente",
- "strumenti": [
-  "conta_votazioni",
-  "conta_votazioni",
-  "elenco_votazioni",
-  "elenco_votazioni",
-  "elenco_votazioni",
-  "elenco_votazioni",
-  "elenco_votazioni",
-  "elenco_votazioni",
-  "elenco_votazioni"
- ],
- "tempo_s": 25.1,
- "risposta_sistema": "Il Governo Meloni ha posto la questione di fiducia **128 volte** finora: **70 alla Camera** e **58 al Senato**.\n\nIl dato conta le questioni poste per **atto e data**, non le singole votazioni elettroniche: alla Camera risultano infatti 71 votazioni di fiducia, perché sulla riforma elettorale (A.C. 2822-B) la fiducia è stata votata su più articoli il 6 e il 7 ottobre 2026 ([6 ottobre](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_1&tipo=dettaglio), [7 ottobre](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=722_34&tipo=dettaglio)). I dati arrivano fino al **3 novembre 2026**.",
- "errori": [],
- "riferimento": {
-  "risposta": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
-  "stato": "note_della_domanda",
-  "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
- },
- "punteggi": {
-  "correttezza": 1,
-  "fonti": 1,
-  "trappola": "caduta",
-  "tempo_s": 25.1
- },
- "giro1": {
-  "correttezza": 0,
-  "fonti": 0,
-  "trappola": "caduta"
- },
- "causa_probabile": "ragionamento_o_prompt",
- "note": "Le 4 mozioni di sfiducia non contano più (Camera 71 votazioni), ma conta 70 questioni «per atto e data» unendo le due fiducie del 6/10 sulla C. 2822-B, che ne ha avute tre. Include le fiducie d'insediamento (mozione 1_00002 del 25/10/2022 e Senato 26/10/2022) e somma i rami in 128. Sale da 0 a 1."
+  "id": "DJ-010",
+  "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
+  "categoria": "governo",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+  "trappola": true,
+  "endpoint": "agente",
+  "inizio": 1793790494.070831,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_votazioni",
+    "conta_votazioni"
+  ],
+  "tempo_s": 10.3,
+  "risposta_sistema": "Il Governo Meloni ha posto **70 questioni di fiducia alla Camera** e **57 al Senato**, fino al 4 novembre 2026 (dati disponibili fino alla seduta del 3 novembre).\n\nIl conteggio considera le votazioni elettroniche con fiducia posta dal Governo ed **esclude la fiducia iniziale al Governo dell’ottobre 2022**. Alla Camera una stessa legge può comportare più fiducie, perché possono essere poste su articoli diversi.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Questioni di fiducia poste dal Governo Meloni: 70 alla Camera e 57 al Senato, rami separati, esclusa la fiducia iniziale al Governo (ottobre 2022). Alla Camera la C. 2822-B ha avuto tre questioni di fiducia (articoli 1 e 2 il 6/10/2026, articolo 3 il 7/10). Nel DB: 71 votazioni di fiducia alla Camera e 58 al Senato comprese le fiducie d'insediamento.",
+    "stato": "note_della_domanda",
+    "limiti": "Nessun file di riferimento: note della domanda in selezione.json e conteggio dato per il giro 4 (70 Camera, 57 Senato)."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": "superata",
+    "tempo_s": 10.3
+  },
+  "giri_precedenti": {
+    "giro1": 0,
+    "giro2": 1,
+    "giro3": 1
+  },
+  "causa_probabile": null,
+  "note": "Corretta: 70 questioni di fiducia alla Camera e 57 al Senato, rami separati senza totale, fiducia iniziale dell'ottobre 2022 esclusa e nota che una legge può avere più fiducie su articoli diversi. Nessun link."
 }

@@ -1,0 +1,137 @@
+{
+ "id": "APP-032",
+ "domanda": "ho letto che la Camera ha già approvato il fine vita, è vero?",
+ "categoria": "iter",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Notizia falsa: nel v3 il S. 1408 sulla morte medicalmente assistita è in esame in commissione al Senato. Dirlo con la fonte.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793787893.203389,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "fine vita",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:1886\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1886\", \"kind\": \"bill\", \"title\": \"S. 737. - Senatori PIROVANO ed altri: \\\"Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti\\\" <em>(approvata dalla 1ª Commissione permanente del Senato) </em> (1886)\", \"date\": \"2024-05-20\", \"status\": \"In corso di esame in Commissione\", \"law_number\": \"175\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1886\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "fine vita",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:737\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"737\", \"kind\": \"bill\", \"title\": \"Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti\", \"date\": \"2023-05-29\", \"status\": \"approvato\", \"law_number\": \"175\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52749.htm\", \"initiative\": \"Sen. Pirovano Daisy ed altri\"}]}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "disposizioni sul fine vita consenso informato suicidio medicalmente assistito approvazione Camera",
+    "fonti": [
+     "atti"
+    ],
+    "ramo": "camera",
+    "da": "2022-10-13",
+    "a": "2026-11-04",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"disposizioni sul fine vita consenso informato suicidio medicalmente assistito approvazione Camera\", \"fonti\": [\"atti\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:1659\", \"atto\": \"it:camera:19:ac:1659\", \"titolo\": \"ZANELLA ed altri: \\\"Disciplina delle procedure e dei tempi per l’assistenza sanitaria al suicidio medicalmente assistito\\\" (1659)\", \"testo\": \"ZANELLA ed altri: \\\"Disciplina delle procedure e dei tempi per l’assistenza sanitaria al suicidio medicalmente assistito\\\" (1659)\", \"ramo\": \"camera\", \"data\": \"2024-01-19\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1659\", \"similarita\": 0.841}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:313\", \"atto\": \"it:camera:19:ac:313\", \"titolo\": \"SPORTIELLO ed altri: \\\"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\\\" (313)\", \"testo\": \"SPORTIELLO ed altri: \\\"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\\\" (313)\", \"ramo\": \"camera\", \"data\": \"2022-10-13\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313\", \"similarita\": 0.841}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:1559\", \"atto\": \"it:camera:19:ac:1559\", \"titolo\": \"SERRACCHIANI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (1559)\", \"testo\": \"SERRACCHIANI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (1559)\", \"ramo\": \"camera\", \"data\": \"2023-11-20\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559\", \"similarita\": 0.836}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:949\", \"atto\": \"it:camera:19:ac:949\", \"titolo\": \"ZANELLA ed altri: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (949)\", \"testo\": \"ZANELLA ed altri: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (949)\", \"ramo\": \"camera\", \"data\": \"2023-03-03\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;949\", \"similarita\": 0.83}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:4-07520\", \"atto\": \"it:camera:19:aic:4-07520\", \"titolo\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/07520 presentata da BENZONI FABRIZIO (AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE) in data 08/04/2026\", \"testo\": \"Atto Camera Interrogazione a risposta scritta 4-07520 presentato da BENZONI Fabrizio testo di Mercoledì 8 aprile 2026, seduta n. 640 BENZONI . — Al Ministro della giustizia, al Ministro della salute . — Per sapere – premesso che: il dibattito pubblico continua a segnalare con forza l'assenza di una disciplina legislativa organica sul fine vita, nonostante l'evoluzione giurisprudenziale e il moltiplicarsi di casi che coinvolgono pazienti, famiglie, medici e strutture sanitarie; attualmente, il quadro normat"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:1659"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:1659\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1659\", \"kind\": \"bill\", \"title\": \"ZANELLA ed altri: \\\"Disciplina delle procedure e dei tempi per l’assistenza sanitaria al suicidio medicalmente assistito\\\" (1659)\", \"date\": \"2024-01-19\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1659\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2024-05-07\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_1659\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:300469\", \"name\": \"Luana Zanella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300469&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:302080\", \"name\": \"Angelo Bonelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302080&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307634\", \"name\": \"Devis Dori\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307634&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308816\", \"name\": \"Elisabetta Piccolotti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308816&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:306521\", \"name\": \"Filiberto Zaratti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306521&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308861\", \"name\": \"Francesca Ghirra\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308861&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308857\", \"name\": \"Francesco Emilio Borrelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:313"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:313\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"313\", \"kind\": \"bill\", \"title\": \"SPORTIELLO ed altri: \\\"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\\\" (313)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2022-11-23\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_313\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307202\", \"name\": \"Gilda Sportiello\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307202&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308896\", \"name\": \"Andrea Quartini\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308896&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307210\", \"name\": \"Carmela Di Lauro\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307210&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307926\", \"name\": \"Giuseppe Conte\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307926&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"first\": false}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2022-10-13\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2022-11-23\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.313.19PDL0005770\", \"title\": \"Disegno di Legge presentato il 13 ottobre 2022\", \"date\": \"2022-10-13\", \"articles\": 9, \"length\": 27671}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:1559"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:1559\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1559\", \"kind\": \"bill\", \"title\": \"SERRACCHIANI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (1559)\", \"date\": \"2023-11-20\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2024-02-07\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_1559\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307374\", \"name\": \"Debora Serracchiani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307374&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:305974\", \"name\": \"Roberto Speranza\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305974&legislatura=19\"}, \"first\": false}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2023-11-20\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2024-02-07\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.1559.19PDL0063040\", \"title\": \"Disegno di Legge presentato il 20 novembre 2023\", \"date\": \"2023-11-20\", \"articles\": 11, \"length\": 46779}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:949"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:949\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"949\", \"kind\": \"bill\", \"title\": \"ZANELLA ed altri: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (949)\", \"date\": \"2023-03-03\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;949\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2023-05-08\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_949\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:300469\", \"name\": \"Luana Zanella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300469&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:302080\", \"name\": \"Angelo Bonelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302080&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307634\", \"name\": \"Devis Dori\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307634&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308893\", \"name\": \"Eleonora Evi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308893&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308816\", \"name\": \"Elisabetta Piccolotti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308816&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:306521\", \"name\": \"Filiberto Zaratti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306521&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308861\", \"name\": \"Francesca Ghirra\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308861&legislatur"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:87"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:87\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"87\", \"kind\": \"bill\", \"title\": \"ENRICO COSTA: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (87)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;87\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2022-11-18\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_87\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:301541\", \"name\": \"Enrico Costa\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301541&legislatura=19\"}, \"first\": true}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2022-10-13\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2022-11-18\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.87.19PDL0005990\", \"title\": \"Disegno di Legge presentato il 13 ottobre 2022\", \"date\": \"2022-10-13\", \"articles\": 11, \"length\": 25932}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:251"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:251\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"251\", \"kind\": \"bill\", \"title\": \"MAGI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (251)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;251\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2022-12-22\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_251\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307436\", \"name\": \"Riccardo Magi\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307436&legislatura=19\"}, \"first\": true}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2022-10-13\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2022-12-22\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.251.19PDL0010280\", \"title\": \"Disegno di Legge presentato il 13 ottobre 2022\", \"date\": \"2022-10-13\", \"articles\": 10, \"length\": 18402}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "morte volontaria medicalmente assistita",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 4, \"items\": [{\"uri\": \"it:camera:19:ac:1559\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1559\", \"kind\": \"bill\", \"title\": \"SERRACCHIANI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (1559)\", \"date\": \"2023-11-20\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:949\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"949\", \"kind\": \"bill\", \"title\": \"ZANELLA ed altri: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (949)\", \"date\": \"2023-03-03\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;949\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:251\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"251\", \"kind\": \"bill\", \"title\": \"MAGI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (251)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;251\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:87\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"87\", \"kind\": \"bill\", \"title\": \"ENRICO COSTA: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (87)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;87\", \"initiative\": \"Parlamentare\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_per_significato",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "cerca_atti"
+ ],
+ "tempo_s": 39.8,
+ "risposta_sistema": "No. Nei dati aggiornati al **3 novembre 2026** non risulta che la Camera abbia approvato una legge sul fine vita o sulla morte volontaria medicalmente assistita.\n\nLe principali proposte alla Camera risultano ancora semplicemente **assegnate**, senza votazioni né emendamenti registrati: per esempio la pdl [C. 1559, Serracchiani](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559), la [C. 949, Zanella e altri](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;949), la [C. 313, Sportiello e altri](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313) e la [C. 1659, Zanella e altri, sulle procedure per l’assistenza al suicidio medicalmente assistito](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1659).\n\nProbabilmente la notizia riguarda invece l’approvazione, il 24 settembre 2025, di una risoluzione della Commissione Affari sociali sull’attuazione delle **cure palliative**: è un atto di indirizzo, non una legge sul fine vita né sul suicidio medicalmente assistito. [Risoluzione 8-00083](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=8/00083).",
+ "eventi": {
+  "status": 1,
+  "tool": 20,
+  "dati": 10,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

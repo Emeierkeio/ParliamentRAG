@@ -1,0 +1,45 @@
+{
+  "id": "AULA-034",
+  "domanda": "Ricostruisci la navetta della legge elettorale: C. 2822, S. 1971, C. 2822-B, con la data di ogni passaggio e l'esito di ogni lettura.",
+  "categoria": "iter",
+  "tipo_risposta": "linea_del_tempo",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "Alla Camera la terza lettura ha un uri a parte (it:camera:19:ac:2822-B). Trasmissioni: 17/7/2026 al Senato, 15/9/2026 alla Camera.",
+  "trappola": false,
+  "endpoint": "agente",
+  "inizio": 1793788222.583733,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "cerca_atti",
+    "cerca_atti",
+    "atto",
+    "atto",
+    "atto",
+    "elenco_votazioni",
+    "elenco_votazioni",
+    "elenco_votazioni"
+  ],
+  "tempo_s": 20.1,
+  "risposta_sistema": "La navetta si è conclusa in **tre letture**: Camera → Senato → Camera. Il testo è diventato la **legge n. 180 del 9 ottobre 2026**.\n\n- **26 febbraio 2026 — Camera, C. 2822:** presentazione della proposta di legge Bignami e altri. [Scheda Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822)\n\n- **16 luglio 2026 — prima lettura alla Camera, C. 2822:** la Camera approva il testo e lo trasmette al Senato. La votazione finale è approvata con **217 favorevoli, 152 contrari e 2 astenuti**; scrutinio segreto. [Votazione finale](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=691_1&tipo=dettaglio) · [Iter del C. 2822](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822)\n\n- **17 luglio 2026 — Senato, S. 1971:** il testo approvato dalla Camera è assegnato al Senato con la nuova numerazione S. 1971. [Scheda Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55214.htm)\n\n- **15 settembre 2026 — seconda lettura al Senato, S. 1971:** il Senato approva **con modificazioni**, quindi il testo torna alla Camera. La votazione finale registra **113 favorevoli, 71 contrari e 2 astenuti**; scrutinio palese. [Scheda e iter del S. 1971](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55214.htm)\n\n- **15 settembre 2026 — ritorno alla Camera, C. 2822-B:** il testo modificato dal Senato viene trasmesso alla Camera e assume il numero C. 2822-B. [Scheda Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B)\n\n- **8 ottobre 2026 — terza lettura alla Camera, C. 2822-B:** la Camera approva definitivamente il testo senatore senza ulteriori modifiche, chiudendo la navetta. La votazione finale è approvata con **227 favorevoli, 164 contrari e nessun astenuto**; scrutinio segreto. [Votazione finale](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio) · [Iter del C. 2822-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B)\n\n- **9 ottobre 2026 — legge n. 180:** promulgazione e pubblicazione in Gazzetta Ufficiale n. 235 dello stesso giorno. [Scheda del testo definitivamente approvato](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B)",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Prima lettura Camera (C. 2822, Bignami e altri): presentata il 26/2/2026, assegnata il 3/3, in commissione dal 31/3, in Aula dal 26/6; approvata il 16/7/2026 con voto finale segreto (presenti 371, votanti 369, 217 sì, 152 no, 2 astenuti). Trasmessa al Senato il 17/7/2026 (S. 1971). Senato: approvata con modificazioni il 15/9/2026 (113 sì, 71 no, 2 astenuti) e trasmessa alla Camera lo stesso giorno (C. 2822-B). Terza lettura Camera: assegnata il 16/9, esame in commissione concluso il 30/9; il 1/10 respinte le pregiudiziali (151 sì, 229 no); il 6 e 7/10 fiducia sugli articoli 1, 2 e 3 (226-147, 227-149, 228-144); l'8/10/2026 approvata definitivamente con voto finale segreto (presenti e votanti 391, 227 sì, 164 no). Legge n. 180 del 9/10/2026.",
+    "stato": "calcolata",
+    "limiti": "Il voto finale della prima lettura (it:camera:19:sed0691:v001, 16/7/2026) non è legato all'atto e ha titolo vuoto: è stato attribuito alla C. 2822 perché l'unico argomento con votazioni di quella seduta è il seguito della discussione della C. 2822-A ed è l'unica votazione finale della seduta. Il voto finale del Senato (15/9/2026) invece oggi è legato a S. 1971 in vote_act."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 20.1
+  },
+  "giri_precedenti": {
+    "giro1": 2,
+    "giro2": 1
+  },
+  "causa_probabile": null,
+  "note": "Torna 2: con i voti della Camera collegati agli atti ritrova il voto finale della prima lettura del 16/7/2026 (217-152-2, link alla votazione 691_1). Senato 113-71-2, 8/10 227-164 e legge 180 del 9/10 giusti; non cita pregiudiziali e fiducie della terza lettura."
+}

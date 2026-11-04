@@ -1,0 +1,47 @@
+{
+  "id": "COM-038",
+  "domanda": "Progetti di atti dell'Unione europea esaminati dalla XIV Commissione nel 2026.",
+  "categoria": "commissioni",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": null,
+  "trappola": false,
+  "endpoint": "agente",
+  "inizio": 1793788265.88324,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute"
+  ],
+  "tempo_s": 32.3,
+  "risposta_sistema": "La XIV Commissione della Camera (Politiche dell’Unione europea) ha esaminato nel 2026 **42 progetti di atti dell’UE distinti**. Nei bollettini risultano **85 voci d’ordine del giorno**: il numero è maggiore perché diversi progetti hanno avuto esame iniziale, seguito e conclusione in sedute differenti. Dati disponibili fino al **28 ottobre 2026**.\n\n**Gennaio**\n- Riserva stabilizzatrice del mercato per edilizia, trasporto stradale e altri settori.\n- Proroga del regolamento (UE) 2021/1232.\n- Omnibus digitale sull’intelligenza artificiale.\n- Obblighi per operatori e commercianti nel regolamento (UE) 2023/1115.\n- Accesso di EPPO e OLAF alle informazioni IVA.\n\n**Febbraio-marzo**\n- Norme su produzione, etichettatura, certificazione e scambi dei prodotti biologici.\n- Mobilità militare: trasporto di materiali, merci e personale.\n- Crediti di emissione dei veicoli pesanti, per il 2025-2029.\n- Carattere definitivo del regolamento e contratti di garanzia finanziaria.\n- Modifica del regolamento (UE) 2024/1252.\n- Monitoraggio e controllo dei precursori di droghe.\n- Informativa sulla sostenibilità dei servizi finanziari e prodotti d’investimento al dettaglio.\n- Prodotto pensionistico individuale paneuropeo (PEPP).\n- Semplificazione delle prescrizioni tecniche e delle prove per veicoli a motore.\n- Semplificazione degli oneri amministrativi nei regolamenti (UE) 2023/1542 e 2024/1244.\n- Estensione del meccanismo di adeguamento del carbonio alle frontiere (CBAM) alle merci a valle e misure antielusione.\n- Orientamenti per le infrastrutture energetiche transeuropee.\n- Proroga di periodi di protezione dei dati nel regolamento sui biocidi.\n- Microrganismi geneticamente modificati e trattamento di organi.\n\n**Aprile-maggio**\n- Cibersicurezza: ENISA, certificazione europea e catene di approvvigionamento TIC.\n- Dispositivi medici e medico-diagnostici in vitro.\n- Lotta contro il traffico di armi da fuoco.\n- Sicurezza degli alimenti e dei mangimi.\n- Reti digitali.\n- Accelerazione della capacità industriale e decarbonizzazione nei settori strategici.\n- Quadro di diritto societario del ventottesimo regime, “EU INC.”.\n- Biotecnologie e biofabbricazione, in particolare in ambito sanitario.\n- Accordo di associazione UE-Andorra e UE-San Marino.\n\n**Giugno-settembre**\n- Prenotazione multimodale.\n- Protezione dei dati personali da parte di istituzioni e organismi UE.\n- Regolamento sui semiconduttori “chip 2.0”.\n- Autorizzazione per servizi mobili via satellite nella banda armonizzata a 2 GHz.\n- Ordine europeo di indagine penale e ordine europeo di partecipazione a distanza.\n- Etichettatura energetica e degli pneumatici: semplificazione e opzioni digitali.\n- Semplificazione del quadro UE dell’imposizione diretta.\n\n**Ottobre**\n- Bollette dell’energia elettrica: riduzione dei costi di sistema, elettrificazione e digitalizzazione.\n- Cloud e IA: rafforzamento dell’ecosistema europeo.\n- Agenzia dell’UE per la cooperazione giudiziaria penale (Eurojust).\n- Competitività e decarbonizzazione efficace sotto il profilo dei costi, con modifiche alla direttiva ETS.\n- Idrogeno come carburante di riferimento nelle prove dei motori.\n- EU KIDS ACT sugli spazi digitali per minori.\n- Atto legislativo europeo a favore dell’innovazione.\n- Alloggi a prezzi accessibili.\n- Digitalizzazione del coordinamento della sicurezza sociale e tessera europea ESSPASS.\n\nTra gli esiti registrati figurano soprattutto **valutazioni di conformità**; per alcuni progetti la Commissione ha adottato anche un **parere motivato**, fra cui gli alloggi a prezzi accessibili, l’energia elettrica, la mobilità via satellite, alcuni dossier su energia, trasporti e semplificazione normativa.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Nel 2026 (al 2/11) la XIV Commissione (Politiche dell'Unione europea) ha esaminato 48 atti dell'Unione europea: 38 proposte di regolamento, 5 proposte di direttiva, 2 proposte di decisione, il Programma di lavoro della Commissione per il 2026, una comunicazione, la Relazione 2024 su sussidiarietà e proporzionalità e la decisione (UE, Euratom) 2026/1296 sull'elezione del Parlamento europeo. 45 sono stati conclusi (per lo più con valutazione di conformità; pareri motivati, fra gli altri, su servizi mobili via satellite, bollette elettriche e ETS); 3 sono ancora in esame: la comunicazione esaminata il 17/6, la proposta sull'idrogeno nei motori (dal 21/10) e l'EU Kids Act (dal 27/10). L'elenco completo è in «risultato».",
+    "stato": "parziale",
+    "limiti": "Atti UE ricavati dai titoli degli argomenti del Bollettino nelle sedute della XIV (body o19_3514) in sede «Atti dell'Unione europea» o «Esame di decisioni del Consiglio», dal 1/1 al 2/11/2026; un atto per titolo. Gli atti UE non sono in act e i titoli non riportano il codice COM, quindi non si possono unire con certezza: due righe della stessa proposta (regolamenti 2023/1542 e 2024/1244) differiscono per un refuso e sono contate una volta. Negli esami congiunti compare un solo titolo per argomento, quindi l'atto abbinato può mancare. Escluse le sedute delle commissioni riunite."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 32.3
+  },
+  "giri_precedenti": {
+    "giro1": 1,
+    "giro2": 1
+  },
+  "causa_probabile": null,
+  "note": "Con argomenti_sedute per sede trova 42 atti UE distinti (44 voci elencate) contro i 48 del riferimento; i mancanti sono soprattutto atti non legislativi (programma di lavoro, relazione sussidiarietà) e la sede «decisioni del Consiglio». Sale da 1 a 2; nessun link."
+}

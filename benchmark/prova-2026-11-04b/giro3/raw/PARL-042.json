@@ -1,0 +1,104 @@
+{
+ "id": "PARL-042",
+ "domanda": "A quale componente del Misto appartiene oggi Bruno Tabacci, e come ha votato da quando ha lasciato il PD?",
+ "categoria": "gruppi",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793788412.767225,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Bruno Tabacci",
+    "chamber": null,
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:34580\", \"name\": \"Bruno Tabacci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=34580&legislatura=19\"}]}"
+  },
+  {
+   "name": "cambi_gruppo",
+   "args": {
+    "chamber": null,
+    "start": null,
+    "end": null,
+    "person": null,
+    "group": "PD",
+    "components": true,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Passaggi di gruppo, Camera e Senato, tutta la XIX legislatura; filtri: gruppo PD. Conta anche l'ingresso o l'uscita da una componente del Misto. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio prima della costituzione dei gruppi). La nascita di un gruppo nuovo (es. IV-CR alla Camera) conta come cambio; un ritorno al gruppo di prima conta come un nuovo cambio. Data = inizio dell'appartenenza nuova. Fonte: appartenenze ai gruppi dell'anagrafica dei due rami.\", \"by_chamber\": {\"senato\": {\"persons\": 3, \"changes\": 3}, \"camera\": {\"persons\": 3, \"changes\": 3}}, \"rows_total\": 6, \"offset\": 0, \"rows\": [{\"persona\": \"Andrea Crisanti\", \"ramo\": \"senato\", \"date\": \"2026-10-23\", \"from\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"to\": \"Misto - Partito della Rifondazione Comunista - Sinistra Europea - Open Sinistra (PRC-SE-OS)\", \"persona_uri\": \"it:person:senato:36387\", \"gruppo_oggi\": \"PRC-SE-OS\"}, {\"persona\": \"Bruno Tabacci\", \"ramo\": \"camera\", \"date\": \"2026-07-09\", \"from\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"to\": \"Misto (MISTO)\", \"persona_uri\": \"it:person:camera:34580\", \"gruppo_oggi\": \"MISTO\"}, {\"persona\": \"Maria Anna Madia\", \"ramo\": \"camera\", \"date\": \"2026-05-06\", \"from\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"to\": \"Italia Viva - Casa Riformista (IV-CR)\", \"persona_uri\": \"it:person:camera:302789\", \"gruppo_oggi\": \"IV-CR\"}, {\"persona\": \"Annamaria Furlan\", \"ramo\": \"senato\", \"date\": \"2025-03-07\", \"from\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"to\": \"Italia Viva - Casa Riformista (IV-CR)\", \"persona_uri\": \"it:person:senato:31725\", \"gruppo_oggi\": \"IV-CR\"}, {\"persona\": \"Eleonora Evi\", \"ramo\": \"camera\", \"date\": \"2024-04-23\", \"from\": \"Alleanza Verdi e Sinistra (AVS)\", \"to\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"persona_uri\": \"it:person:camera:308893\", \"gruppo_oggi\": \"PD-IDP\"}, {\"persona\": \"Enrico Borghi\", \"ramo\": \"senato\", \"date\": \"2023-04-26\", \"from\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"to\": \"Italia Viva - Casa Riformista (IV-CR)\", \"persona_uri\": \"it:person:senato:29293\", \"gruppo_oggi\": \"IV-CR\"}]}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:34580"
+   },
+   "result": "{\"uri\": \"it:person:camera:34580\", \"name\": \"Bruno Tabacci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=34580&legislatura=19\", \"given_name\": \"Bruno\", \"family_name\": \"Tabacci\", \"gender\": \"M\", \"birth_date\": \"1946-08-27\", \"birth_place\": \"Quistello\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p34580\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-03\", \"constituency\": \"LOMBARDIA 1 - P01\", \"college\": \"LOMBARDIA 1 - U07\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-07-09\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-07-09\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3517\", \"target_name\": \"Comitato per la Legislazione\", \"title\": \"member\", \"start_date\": \"2022-11-10\"}, {\"target\": \"it:camera:19:body:o19_3506\", \"target_name\": \"VI Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_3721\", \"target_name\": \"Conferenza dei Presidenti delle Commissioni Permanenti\", \"title\": \"member\", \"start_date\": \"2023-09-10\", \"end_date\": \"2024-07-08\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3517\", \"target_name\": \"Comitato per la Legislazione\", \"title\": \"chair\", \"start_date\": \"2023-09-10\", \"end_date\": \"2024-07-08\"}, {\"target\": \"it:camera:19:body:o19_3517\", \"target_name\": \"Comitato per la Legislazione\", \"title\": \"vice_chair\", \"start_date\": \"2022-11-10\", \"end_date\": \"2023-09-09\"}], \"counts\": {\"speeches\": 334, \"ballots\": 20257, \"ballots_cast\": 16409, \"ballots_mission\": 506, \"bills_first_signer\": 0, \"amendments_signed\": 608}}"
+  },
+  {
+   "name": "presenze",
+   "args": {
+    "chamber": "camera",
+    "persons": [
+     "it:person:camera:34580"
+    ],
+    "group": null,
+    "government": false,
+    "kind": null,
+    "final": null,
+    "start": "2026-07-09",
+    "end": "2026-11-03",
+    "order_by": "voted",
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Schede di voto, Camera, dal 09/07/2026 al 03/11/2026: 1435 votazioni dal 14/07/2026 al 28/10/2026; persone: le persone indicate. voted = favorevoli + contrari + astenuti + voti segreti dati; mission = in missione (per incarico, non è assenza); absent = assente; chair = presiede. Le votazioni contate sono quelle dell'insieme, anche fuori dal periodo di un incarico; chi ha avuto il mandato per parte del periodo ha meno schede (ballots).\", \"votes_in_set\": 1435, \"persons_total\": 1, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"persona\": \"Bruno Tabacci\", \"ballots\": 1435, \"favor\": 1014, \"against\": 104, \"abstain\": 111, \"secret_voted\": 39, \"absent\": 167, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1268, \"persona_uri\": \"it:person:camera:34580\", \"gruppo_oggi\": \"MISTO\"}]}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2026-07-09",
+    "end": "2026-11-03",
+    "chamber": "camera",
+    "groups": null,
+    "person": "it:person:camera:34580",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 09/07/2026 al 03/11/2026; filtri: segrete no: 1394 votazioni dal 14/07/2026 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 1394, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 1394, \"cohesion\": 0.999, \"unanimous_share\": 0.963, \"positions\": {\"favor\": 239, \"against\": 1155, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Movimento 5 Stelle (M5S)\", \"votes_with_voters\": 1393, \"cohesion\": 0.998, \"unanimous_share\": 0.959, \"positions\": {\"favor\": 1136, \"against\": 164, \"abstain\": 93, \"tie\": 0}}, {\"group\": \"Misto - Sud Chiama Nord (MISTO-SCN)\", \"votes_with_voters\": 526, \"cohesion\": 0.998, \"unanimous_share\": 0.997, \"positions\": {\"favor\": 66, \"against\": 459, \"abstain\": 0, \"tie\": 1}}, {\"group\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"votes_with_voters\": 1393, \"cohesion\": 0.997, \"unanimous_share\": 0.938, \"positions\": {\"favor\": 1121, \"against\": 142, \"abstain\": 130, \"tie\": 0}}, {\"group\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes_with_voters\": 1366, \"cohesion\": 0.996, \"unanimous_share\": 0.993, \"positions\": {\"favor\": 233, \"against\": 1130, \"abstain\": 0, \"tie\": 3}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 1394, \"cohesion\": 0.996, \"unanimous_share\": 0.929, \"positions\": {\"favor\": 239, \"against\": 1155, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Alleanza Verdi e Sinistra (AVS)\", \"votes_with_voters\": 1393, \"cohesion\": 0.995, \"unanimous_share\": 0.983, \"positions\": {\"favor\": 1126, \"against\": 167, \"abstain\": 100, \"tie\": 0}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"votes_with_voters\": 1394, \"cohesion\": 0.994, \"unanimous_share\": 0.912, \"positions\": {\"favor\": 239, \"against\": 1155, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes_with_voters\": 1336, \"cohesion\": 0.993, \"unanimous_share\": 0.976, \"positions\": {\"favor\": 219, \"against\": 1110, \"abstain\": 7, \"tie\": 0}}, {\"group\": \"Italia Viva - Casa Riformista (IV-CR)\", \"votes_with_voters\": 1394, \"cohesion\": 0.982, \"unanimous_share\": 0.95, \"positions\": {\"favor\": 979, \"against\": 167, \"abstain\": 245, \"tie\": 3}}, {\"group\": \"Azione - Popolari Euro"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cambi_gruppo",
+  "scheda_persona",
+  "presenze",
+  "voto_gruppi"
+ ],
+ "tempo_s": 28.7,
+ "risposta_sistema": "Bruno Tabacci è nel **Gruppo Misto senza una componente autonoma**: nelle schede di voto risulta come **“Misto (MISTO)”**. Ha lasciato il PD-IDP il **9 luglio 2026**. [Scheda ufficiale della Camera](http://dati.camera.it/ocd/persona.rdf/p34580)\n\nDal 9 luglio al 3 novembre 2026, alla Camera (le votazioni disponibili nel periodo arrivano al 28 ottobre), ha partecipato a **1.268 votazioni su 1.435**:  \n- **1.014 favorevoli**  \n- **104 contrari**  \n- **111 astensioni**  \n- **39 voti segreti espressi**  \n- **167 assenze**; nessuna missione.\n\nNei **1.228 voti palesi** confrontabili con le posizioni dei gruppi, ha votato come il **PD-IDP nel 99,0%** dei casi (1.216); come AVS nel 94,6% e come M5S nel 93,2%. L’allineamento con FdI, Lega e FI-PPE è stato del 9,3%. Quindi, dopo l’uscita formale dal PD, il suo voto è rimasto quasi sempre coincidente con quello del PD-IDP. [Scheda ufficiale della Camera](http://dati.camera.it/ocd/persona.rdf/p34580)",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

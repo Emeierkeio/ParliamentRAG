@@ -1,0 +1,52 @@
+{
+ "id": "COM-038",
+ "domanda": "Progetti di atti dell'Unione europea esaminati dalla XIV Commissione nel 2026.",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784561.7544792,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "organo",
+  "elenco_sedute",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 53.2,
+ "risposta_sistema": "Ho trovato questi progetti/atti UE trattati dalla **XIV Commissione (Politiche dell’Unione europea) della Camera** nel 2026, nei resoconti disponibili fino al 3 novembre.\n\n- **29 gennaio** — Proposta di decisione che modifica la decisione (UE) 2015/1814 sulla riserva stabilizzatrice del mercato per edilizia, trasporto stradale e altri settori. L’esame risulta concluso con valutazione di conformità.\n- **11 marzo** — una proposta europea in materia di mercati dei capitali, richiamata successivamente come esaminata dalla XIV e conclusa con valutazione di conformità. Il titolo completo non è presente nei dati letti.\n- **25 marzo** — proposta relativa agli organi destinati al trapianto, richiamata come conclusa con valutazione di conformità. Il titolo completo non è presente nei dati letti.\n- **22 aprile** — proposta relativa ai dispositivi medici e medico-diagnostici in vitro, richiamata come conclusa con valutazione di conformità. Il titolo completo non è presente nei dati letti.\n- **6 maggio** — due proposte legislative UE richiamate nei resoconti successivi, concluse con valutazione di conformità; nei dati consultati non compare il titolo completo.\n- **20 maggio–17 giugno** — proposta di regolamento sul quadro per rafforzare i settori delle **biotecnologie e della biofabbricazione** dell’Unione, inclusa la modifica di vari regolamenti UE. Il 17 giugno l’esame è stato concluso con valutazione di conformità. [Resoconto della seduta del 17 giugno 2026]\n- **17 giugno** — Comunicazione della Commissione: **“Un corpus di norme UE più semplice, più chiaro e di applicazione più efficace”**. L’esame è iniziato ed è stato rinviato. [Resoconto della seduta del 17 giugno 2026]\n- **4 giugno** — proposta di regolamento sulla procedura di autorizzazione dei sistemi che forniscono servizi mobili via satellite nella banda armonizzata 2 GHz, con abrogazione della decisione n. 626/2008/CE. Il resoconto del 22 luglio ricorda che l’esame si è concluso con valutazione di conformità.\n- **23 settembre–14 ottobre** — proposta di direttiva del Consiglio per la semplificazione del quadro UE dell’imposizione diretta e il sostegno a crescita e competitività. Il 14 ottobre l’esame congiunto risulta concluso con valutazione di conformità. [Resoconto della seduta del 14 ottobre 2026]\n- **14 ottobre** — proposta di regolamento sull’**Atto legislativo europeo a favore dell’innovazione**, per rafforzare l’ecosistema dell’innovazione dell’Unione. L’esame è iniziato ed è stato rinviato. [Resoconto della seduta del 14 ottobre 2026]\n- **14 ottobre** — proposta di regolamento sulla digitalizzazione del coordinamento dei sistemi di sicurezza sociale e sulla tessera europea di sicurezza sociale (**ESSPASS**). L’esame è iniziato ed è stato rinviato. [Resoconto della seduta del 14 ottobre 2026]\n- **Ottobre** — proposta di regolamento **EU KIDS ACT**, per spazi digitali responsabili e affidabili per i minori. Risulta oggetto di audizioni e di attività istruttoria; nei dati letti non emerge una conclusione dell’esame.\n- **Ottobre** — proposta di regolamento su misure nazionali per salvaguardare la disponibilità di alloggi. Risulta programmata per un’audizione il 22 ottobre, ma quel punto non è stato trattato.\n- **Ottobre** — proposte di regolamento **COM(2026) 570 final** e **COM(2026) 580 final**, menzionate nell’ordine dei lavori del 28 ottobre in relazione a un esame congiunto e a un’audizione di Europol. I titoli completi non sono presenti nei dati letti.\n\nRestano da identificare con precisione alcuni atti: in particolare le proposte esaminate a marzo, aprile e maggio e il terzo atto discusso insieme alle due proposte sui veicoli nel febbraio 2026. Per l’elenco completo e i testi, occorre verificare i resoconti sommari e i fascicoli **“Atti dell’Unione europea”** della XIV Commissione sul sito ufficiale della Camera, nelle sedute indicate.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nel 2026 (al 2/11) la XIV Commissione (Politiche dell'Unione europea) ha esaminato 48 atti dell'Unione europea: 38 proposte di regolamento, 5 proposte di direttiva, 2 proposte di decisione, il Programma di lavoro della Commissione per il 2026, una comunicazione, la Relazione 2024 su sussidiarietà e proporzionalità e la decisione (UE, Euratom) 2026/1296 sull'elezione del Parlamento europeo. 45 sono stati conclusi (per lo più con valutazione di conformità; pareri motivati, fra gli altri, su servizi mobili via satellite, bollette elettriche e ETS); 3 sono ancora in esame: la comunicazione esaminata il 17/6, la proposta sull'idrogeno nei motori (dal 21/10) e l'EU Kids Act (dal 27/10). L'elenco completo è in «risultato».",
+  "stato": "parziale",
+  "limiti": "Atti UE ricavati dai titoli degli argomenti del Bollettino nelle sedute della XIV (body o19_3514) in sede «Atti dell'Unione europea» o «Esame di decisioni del Consiglio», dal 1/1 al 2/11/2026; un atto per titolo. Gli atti UE non sono in act e i titoli non riportano il codice COM, quindi non si possono unire con certezza: due righe della stessa proposta (regolamenti 2023/1542 e 2024/1244) differiscono per un refuso e sono contate una volta. Negli esami congiunti compare un solo titolo per argomento, quindi l'atto abbinato può mancare. Escluse le sedute delle commissioni riunite."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 53.2
+ },
+ "giro1": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null
+ },
+ "causa_probabile": "strumento_mancante",
+ "note": "Elenca circa 13 atti UE (gennaio-ottobre: riserva stabilizzatrice, biotecnologie, servizi satellitari 2 GHz, imposizione diretta, EU Kids Act...) contro i 48 del riferimento, e per diversi dice che il titolo manca. Più ampio del primo giro (4 atti) ma ancora parziale; i «Resoconto della seduta» non hanno URL."
+}

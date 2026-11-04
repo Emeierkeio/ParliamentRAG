@@ -1,0 +1,109 @@
+{
+ "id": "PARL-034",
+ "domanda": "Su quali temi ha presentato più atti l'on. Eleonora Evi? Classifica per argomento.",
+ "categoria": "temi",
+ "tipo_risposta": "classifica",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Evi è passata da AVS al PD il 23/4/2024: se si chiede «per il suo gruppo», usare il gruppo alla data.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788186.3694751,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Eleonora Evi",
+    "chamber": "camera",
+    "group": null,
+    "in_office": false,
+    "limit": 20
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:308893\", \"name\": \"Eleonora Evi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308893&legislatura=19\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "camera",
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": "it:person:camera:308893",
+    "first_signer": true,
+    "group": null,
+    "addressee": null,
+    "became_law": null,
+    "start": null,
+    "end": null,
+    "laws": false,
+    "group_by": [
+     "tema"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera, presentati tutta la XIX legislatura; filtri: firmatario it:person:camera:308893. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 1292, \"rows_total\": 545, \"offset\": 0, \"rows\": [{\"tema\": \"protezione dell'ambiente\", \"atti\": 36, \"dal\": \"2022-11-10\", \"al\": \"2026-05-20\"}, {\"tema\": \"benessere degli animali\", \"atti\": 35, \"dal\": \"2023-01-04\", \"al\": \"2026-09-09\"}, {\"tema\": \"protezione degli animali\", \"atti\": 31, \"dal\": \"2023-01-04\", \"al\": \"2026-09-09\"}, {\"tema\": \"allevamento\", \"atti\": 27, \"dal\": \"2023-01-04\", \"al\": \"2026-09-09\"}, {\"tema\": \"protezione del consumatore\", \"atti\": 18, \"dal\": \"2022-12-28\", \"al\": \"2026-09-24\"}, {\"tema\": \"protezione della fauna\", \"atti\": 17, \"dal\": \"2023-01-04\", \"al\": \"2026-04-22\"}, {\"tema\": \"fauna\", \"atti\": 16, \"dal\": \"2023-03-01\", \"al\": \"2026-10-14\"}, {\"tema\": \"impatto ambientale\", \"atti\": 15, \"dal\": \"2022-12-05\", \"al\": \"2026-07-29\"}, {\"tema\": \"sanità pubblica\", \"atti\": 15, \"dal\": \"2022-12-05\", \"al\": \"2026-04-22\"}, {\"tema\": \"diritto dell'UE\", \"atti\": 12, \"dal\": \"2023-01-04\", \"al\": \"2026-08-06\"}, {\"tema\": \"studio d'impatto\", \"atti\": 11, \"dal\": \"2023-01-19\", \"al\": \"2026-08-06\"}, {\"tema\": \"energia rinnovabile\", \"atti\": 10, \"dal\": \"2022-11-10\", \"al\": \"2026-06-03\"}, {\"tema\": \"malattia\", \"atti\": 10, \"dal\": \"2023-09-27\", \"al\": \"2026-01-26\"}, {\"tema\": \"suino\", \"atti\": 10, \"dal\": \"2023-06-12\", \"al\": \"2026-07-29\"}, {\"tema\": \"allevamento intensivo\", \"atti\": 9, \"dal\": \"2023-06-12\", \"al\": \"2026-05-13\"}, {\"tema\": \"caccia\", \"atti\": 8, \"dal\": \"2025-02-05\", \"al\": \"2026-10-14\"}, {\"tema\": \"cambiamento climatico\", \"atti\": 8, \"dal\": \"2024-07-29\", \"al\": \"2026-07-29\"}, {\"tema\": \"diritto alla salute\", \"atti\": 8, \"dal\": \"2023-09-27\", \"al\": \"2026-04-16\"}, {\"tema\": \"energia dolce\", \"atti\": 8, \"dal\": \"2023-04-28\", \"al\": \"2026-06-03\"}, {\"tema\": \"ispezione veterinaria\", \"atti\": 8, \"dal\": \"2023-01-04\", \"al\": \"2026-07-29\"}, {\"tema\": \"mammifero selvatico\", \"atti\": 8, \"dal\": \"2023-03-01\", \"al\": \"2026-04-22\"}, {\"tema\": \"produzione d'energia\", \"atti\": 8, \"dal\": \"2022-11-10\", \"al\": \"2026-06-03\"}, {\"tema\": \"regolamentazione della caccia\", \"atti\": 8, \"dal\": \"2025-02-05\", \"al\": \"2026-09-18\"}, {\"tema\": \"zona protetta\", \"atti\": 8, \"dal\": \"2023-03-01\", \"al\": \"2026-09-28\"}, {\"tema\": \"animale domestico\", \"atti\": 7, \"dal\": \"2023-09-27\", \"al\": \"2026-04-22\"}, {\"tema\": \"applicazione del diritto dell'UE\", \"atti\": 7, \"dal\": \"2023-01-04\", \"al\": \"2026-10-01\"}, {\"tema\": \"denominazione di origine\", \"atti\": 7, \"dal\": \"2023-01-04\", \"al\": \"2026-07-29\"}, {\"tema\": \"inquinamento stratosferico\", \"atti\": 7, \"dal\": \"2022-12-05\", \"al\": \"2025-07-10\"}, {\"tema\": \"legisla"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308893"
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "camera",
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": "it:person:camera:308893",
+    "first_signer": true,
+    "group": null,
+    "addressee": null,
+    "became_law": null,
+    "start": null,
+    "end": null,
+    "laws": false,
+    "group_by": [
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera, presentati tutta la XIX legislatura; filtri: firmatario it:person:camera:308893. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 206, \"rows_total\": 8, \"offset\": 0, \"rows\": [{\"tipo\": \"agenda_order\", \"atti\": 76, \"dal\": \"2022-11-10\", \"al\": \"2026-10-01\"}, {\"tipo\": \"written_question\", \"atti\": 62, \"dal\": \"2022-12-05\", \"al\": \"2026-10-14\"}, {\"tipo\": \"committee_question\", \"atti\": 30, \"dal\": \"2023-01-11\", \"al\": \"2026-09-24\"}, {\"tipo\": \"oral_question\", \"atti\": 20, \"dal\": \"2022-12-09\", \"al\": \"2026-05-26\"}, {\"tipo\": \"bill\", \"atti\": 10, \"dal\": \"2022-12-27\", \"al\": \"2026-08-03\"}, {\"tipo\": \"interpellation\", \"atti\": 6, \"dal\": \"2023-04-11\", \"al\": \"2024-01-09\"}, {\"tipo\": \"committee_resolution\", \"atti\": 1, \"dal\": \"2023-03-22\", \"al\": \"2023-03-22\"}, {\"tipo\": \"motion\", \"atti\": 1, \"dal\": \"2023-04-28\", \"al\": \"2023-04-28\"}]}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308893"
+   },
+   "result": "{\"uri\": \"it:person:camera:308893\", \"name\": \"Eleonora Evi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308893&legislatura=19\", \"given_name\": \"Eleonora\", \"family_name\": \"Evi\", \"gender\": \"F\", \"birth_date\": \"1983-11-20\", \"birth_place\": \"Milano\", \"profession\": \"Parlamentare\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308893\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-10\", \"constituency\": \"LOMBARDIA 1 - P01\", \"list\": \"ALLEANZA VERDI E SINISTRA\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2022-10-27\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4138\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"MISTO-AVS\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2022-10-19\", \"end_date\": \"2022-10-27\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-27\", \"end_date\": \"2024-04-23\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2024-04-23\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_4321\", \"target_name\": \"Commissione Parlamentare di Inchiesta sul Rischio Idrogeologico e Sismico del Territorio Italiano, sull'Attuazione delle Norme di Prevenzione e Sicurezza e Sugli Interventi di Emergenza e di Ricostruzione a Seguito degli Eventi Calamitosi Verificatisi dall'Anno 2019\", \"title\": \"member\", \"start_date\": \"2025-03-05\"}, {\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2024-06-26\"}, {\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"member\", \"start_date\": \"2024-04-11\", \"end_date\": \"2024-06-26\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-04-11\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"group_whip\", \"start_date\": \"2024-04-11\", \"end_date\": \"2024-04-23\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"secretary\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-04-11\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-04-11\"}], \"counts\": {\"speeches\": 282, \"ballots\": 20257, \"ballots_cast\": 14907, \"ballots_mission\": 2051, \"bills_first_signer\": 11, \"amendments_signed\": 6"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "conta_atti",
+  "scheda_persona",
+  "conta_atti",
+  "scheda_persona"
+ ],
+ "tempo_s": 33.1,
+ "risposta_sistema": "L’on. Eleonora Evi ha presentato soprattutto atti sui temi ambientali e della tutela degli animali. Considerando gli atti della XIX legislatura alla Camera in cui risulta prima firmataria, i descrittori tematici più frequenti sono:\n\n1. **Protezione dell’ambiente** — 36 atti  \n2. **Benessere degli animali** — 35  \n3. **Protezione degli animali** — 31  \n4. **Allevamento** — 27  \n5. **Protezione del consumatore** — 18  \n6. **Protezione della fauna** — 17  \n7. **Fauna** — 16  \n8. **Impatto ambientale** — 15  \n9. **Sanità pubblica** — 15  \n10. **Diritto dell’Unione europea** — 12  \n11. **Studio d’impatto** — 11  \n12. **Energia rinnovabile** — 10  \n13. **Malattia** — 10  \n14. **Suino** — 10  \n15. **Allevamento intensivo** — 9  \n\nSeguono, con 8 atti ciascuno: caccia, cambiamento climatico, diritto alla salute, energia dolce, ispezione veterinaria, mammifero selvatico, produzione d’energia, regolamentazione della caccia e zona protetta.\n\nLa classifica usa i **descrittori tematici associati agli atti**, che non sono mutuamente esclusivi: uno stesso atto può essere classificato sotto più argomenti, quindi i numeri non si sommano al totale degli atti. Nel complesso, il conteggio considera **206 atti** presentati da Evi alla Camera nella XIX legislatura (76 ordini del giorno, 62 interrogazioni a risposta scritta, 30 interrogazioni in commissione, 20 orali, 10 progetti di legge e altri atti). La sua [scheda ufficiale della Camera](http://dati.camera.it/ocd/persona.rdf/p308893) riporta 11 progetti di legge come prima firmataria.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

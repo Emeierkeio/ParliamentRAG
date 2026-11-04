@@ -1,0 +1,41 @@
+{
+ "id": "APP-011",
+ "domanda": "mi trovi il video di Conte che parla della legge elettorale?",
+ "categoria": "video",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note_domanda": "Giuseppe Conte (M5S). Link al secondo esatto dell'intervento quando c'è il video_segment; se manca, il link al resoconto.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784411.234038,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "cerca_interventi",
+  "seduta"
+ ],
+ "tempo_s": 13.5,
+ "risposta_sistema": "Ho trovato l’intervento di **Giuseppe Conte (M5S)** nella seduta della Camera dell’**8 ottobre 2026**, durante le dichiarazioni di voto finale sulla riforma della legge elettorale (A.C. 2822-B). La seduta era in ripresa televisiva diretta.\n\nNei dati disponibili non è presente l’URL del filmato né un video ritagliato del solo intervento. Il riferimento da cercare sul portale WebTV della Camera è: **Camera, seduta n. 723, 8 ottobre 2026**, punto all’ordine del giorno “Disposizioni in materia di elezioni della Camera dei deputati e del Senato”. L’intervento di Conte è nel resoconto come `int00200` e prosegue con `int00220`.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Gli interventi di Giuseppe Conte in Aula sulla legge elettorale (proposta Bignami ed altri, A.C. 2822-A) con video sono due: 16/7/2026, https://webtv.camera.it/evento/31988 dal secondo 5710 al 6327 (intervento it:camera:19:sed0691:tit00030.sub00010.int00210); 8/10/2026, https://webtv.camera.it/evento/32457 dal secondo 5794 al 6422 (it:camera:19:sed0723:tit00040.sub00010.int00200, che prosegue in int00220 senza tratto video proprio). Ne parla anche il 14/10/2026 nelle comunicazioni del Presidente del Consiglio (https://webtv.camera.it/evento/32546, secondi 19138-19760) e il 14/7/2026 sull'ordine dei lavori (senza video legato: resta il resoconto, sed. 689).",
+  "stato": "calcolata",
+  "limiti": "Si cercano gli interventi di Conte nel resoconto della Camera con «legge elettorale» nel testo o nell'argomento sulla riforma elettorale. Il secondo d'inizio viene da video_segment.start_s; il formato del link WebTV al secondo esatto non è nel database, quindi si danno l'evento e i secondi. Le citazioni del 25/10/2022 e del 12/3/2025 sono menzioni di passaggio, non interventi sulla legge."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 13.5
+ },
+ "giro1": {
+  "correttezza": 1,
+  "fonti": 0
+ },
+ "causa_probabile": "strumento_mancante",
+ "note": "Come al primo giro: trova l'intervento dell'8/10/2026 (sed. 723, int00200) ma dice che il video non c'è, mentre è WebTV evento 32457, secondi 5794-6422; manca l'intervento del 16/7/2026. Nessun link."
+}

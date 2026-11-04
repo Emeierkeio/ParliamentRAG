@@ -1,0 +1,193 @@
+{
+ "id": "AULA-015",
+ "domanda": "Chi è intervenuto a fine seduta il 28 ottobre 2026 alla Camera e su quali argomenti?",
+ "categoria": "interventi",
+ "tipo_risposta": "sintesi_con_citazioni",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Seduta it:camera:19:sed0735, argomento «Interventi di fine seduta.» (fra gli altri Maria Stefania Marino). Il PRESIDENTE non è un intervento di fine seduta.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788111.995884,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": "fine seduta",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00160\", \"title\": \"Interventi di fine seduta.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0735\", \"date\": \"2026-10-28\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 735, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:308901\", \"name\": \"Maria Stefania Marino\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:camera:308803\", \"name\": \"Rachele Scarpa\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:camera:307302\", \"name\": \"Stefania Ascari\", \"group\": \"M5S\"}, {\"uri\": \"it:person:camera:307829\", \"name\": \"Arnaldo Lomuti\", \"group\": \"M5S\"}], \"speakers_total\": 4}], \"more\": false}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0735",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 99, come risulta dall'elenco consultabile presso la Presidenza e che sarà pubblicato nell'allegato A al resoconto stenografico della seduta in corso .\", \"reactions\": [{\"kind\": \"procedure\", \"raw\": \"Ulteriori comunicazioni all'Assemblea saranno pubblicate nell'allegato A al resoconto della seduta odierna\", \"offset_char\": 296}]}]}, {\"uri\": \"it:camera:19:sed0735:tit00020\", \"order\": 2, \"title\": \"Preavviso di votazioni elettroniche (ore 9,38). (ore 9,38) (ore 9,38)\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Poiché nel corso della seduta potranno aver luogo votazioni mediante procedimento elettronico, decorrono da questo momento i termini di preavviso di 5 e 10 minuti previsti dall'articolo 49, comma 5, del Regolamento.\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0735:tit00030\", \"order\": 3, \"title\": \"Sull'ordine dei lavori.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00030.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Ha chiesto di parlare, sull'ordine dei lavori, l'onorevole Federico Cafiero De Raho. Ne ha facoltà.\", \"reactions\": []}, {\"uri\": \"it:camera:19:sed0735:tit00030.int00020\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:308933\", \"name\": \"Federico Cafiero De Raho\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stel"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Marino",
+    "chamber": "camera",
+    "person": "it:person:camera:308901",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Scarpa",
+    "chamber": "camera",
+    "person": "it:person:camera:308803",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Ascari",
+    "chamber": "camera",
+    "person": "it:person:camera:307302",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Lomuti",
+    "chamber": "camera",
+    "person": "it:person:camera:307829",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0735",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 99, c…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0735:tit00020\", \"order\": 2, \"title\": \"Preavviso di votazioni elettroniche (ore 9,38). (ore 9,38) (ore 9,38)\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Poiché nel corso della seduta potranno aver luogo votazioni mediante procedimento elettronico, decorrono da questo momento i termini di preavviso di 5…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0735:tit00030\", \"order\": 3, \"title\": \"Sull'ordine dei lavori.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00030.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Ha chiesto di parlare, sull'ordine dei lavori, l'onorevole Federico Cafiero De Raho. Ne ha facoltà.\", \"reactions\": []}, {\"uri\": \"it:camera:19:sed0735:tit00030.int00020\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:308933\", \"name\": \"Federico Cafiero De Raho\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308933&legislatura=19\"}, \"speaker_label\": \"FEDERICO CAFIERO DE RAHO\", \"as_group\": \"M5S\", \"text\": \"Grazie, Presidente. Questo intervento mira a chiedere che il Ministro dell'Interno ci porga un'informativa in relazione alle… naturalmente, c'è semp"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Presidente",
+    "chamber": "camera",
+    "person": "it:person:camera:308901",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00160.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Interventi di fine seduta.\", \"person\": {\"uri\": \"it:person:camera:308901\", \"name\": \"Maria Stefania Marino\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308901&legislatura=19\"}, \"speaker_label\": \"MARIA STEFANIA MARINO\", \"snippet\": \"Grazie, signora [[Presidente]]. Intervengo per esprimere la mia solidarietà e il mio sostegno alla richiesta degli agricoltori e degli autotrasportatori che stanno denunciando difficoltà ormai insostenibili. Ieri, e da diversi giorni a Roma e in tutta Italia, un intero settore ... più insufficienti mettono a rischio la sopravvivenza di moltissime imprese. Gli agricoltori chiedono da tempo un incontro con la [[Presidente]] Meloni e il Ministro Lollobrigida: escano dal palazzo, anziché farsi video. Ovviamente, vuole fare la caccia alle streghe, sul fatto\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00020\", \"video\": \"https://webtv.camera.it/evento/32715\", \"video_start_s\": 36243}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Presidente",
+    "chamber": "camera",
+    "person": "it:person:camera:308803",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00160.int00060\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Interventi di fine seduta.\", \"person\": {\"uri\": \"it:person:camera:308803\", \"name\": \"Rachele Scarpa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308803&legislatura=19\"}, \"speaker_label\": \"RACHELE SCARPA\", \"snippet\": \"Grazie, [[Presidente]]. Oggi è accaduta una cosa molto grave. Oggi il nostro Paese si è astenuto, nell'ambito dell'Assemblea generale delle Nazioni Unite, in una votazione in cui si chiedeva la fine dell'embargo su Cuba, segnando un precedente\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00060\", \"video\": \"https://webtv.camera.it/evento/32715\", \"video_start_s\": 36373}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Presidente",
+    "chamber": "camera",
+    "person": "it:person:camera:307302",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00160.int00120\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Interventi di fine seduta.\", \"person\": {\"uri\": \"it:person:camera:307302\", \"name\": \"Stefania Ascari\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307302&legislatura=19\"}, \"speaker_label\": \"STEFANIA ASCARI\", \"snippet\": \"Grazie, [[Presidente]]. Una sola parola: vergogna. Vergogna nei confronti del Governo italiano che ancora una volta ha dimostrato di essere servo degli Stati Uniti, servo del padrone Trump. Astenersi oggi alle Nazioni Unite su el bloqueo che Cuba subisce significa\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00120\", \"video\": \"https://webtv.camera.it/evento/32715\", \"video_start_s\": 36534}, {\"uri\": \"it:camera:19:stc:26:audiz2:audizione:20261028:0165:tit00020:int00080\", \"sitting\": {\"uri\": \"it:camera:19:stc:26:audiz2:audizione:20261028:0165\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3941\", \"body_name\": \"Commissione parlamentare di inchiesta sul femminicidio, nonché su ogni forma di violenza di genere\", \"number\": 165, \"date\": \"2026-10-28\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Audizione, in videoconferenza, di Francesca Merzagora, presidente della Fondazione Onda, nell'ambito del filone di inchiesta sul rapporto tra violenza di genere e salute.\", \"person\": {\"uri\": \"it:person:camera:307302\", \"name\": \"Stefania Ascari\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307302&legislatura=19\"}, \"speaker_label\": \"STEFANIA ASCARI\", \"kind\": \"verbatim\", \"snippet\": \"Buongiorno, grazie, [[presidente]]. La ringrazio, dottoressa, per il contributo molto importante. Lei parlava di momenti di formazione, di prevenzione, in cui si spiega la violenza e i suoi effetti. Lei ha notato dei cambiamenti? Qual è la tipologia di vittime\"}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Presidente",
+    "chamber": "camera",
+    "person": "it:person:camera:307829",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00040.sub00010.int00180\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie (A.C. 2700-A) (ore 10,23). (ore 10,23) (ore 10,23)\", \"person\": {\"uri\": \"it:person:camera:307829\", \"name\": \"Arnaldo Lomuti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307829&legislatura=19\"}, \"speaker_label\": \"ARNALDO LOMUTI\", \"snippet\": \"grazie, [[Presidente]]. Io ricordo che questo disegno di legge delega trova le sue motivazioni in un'indagine svolta nella Commissione Affari sociali, qui alla Camera: un lavoro importante nel quale sono stati auditi tutti i protagonisti, tutte le figure professionali ... quale c'è stata l'unanimità di quella Commissione. Allora, se questo disegno di legge nasce da quel lavoro, [[Presidente]], non si spiega perché questo testo vada totalmente in senso opposto a quel documento.\\n\\nTra l'altro, parliamo\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00040.sub00010.int00180\", \"video\": \"https://webtv.camera.it/evento/32715\", \"video_start_s\": 7389}, {\"uri\": \"it:camera:19:sed0735:tit00160.int00140\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Interventi di fine seduta.\", \"person\": {\"uri\": \"it:person:camera:307829\", \"name\": \"Arnaldo Lomuti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307829&legislatura=19\"}, \"speaker_label\": \"ARNALDO LOMUTI\", \"snippet\": \"Grazie, [[Presidente]]. Intervengo per portare la voce dei cittadini del Vulture-Melfese, in Basilicata, in particolare i cittadini di Venosa e di Lavello, che stanno vivendo un periodo di angoscia e di paura dovuto all'escalation di rapine e furti ... sulla sicurezza avete strafallito. Nel Vulture-Melfese serve personale, personale in base ai reati e agli interventi.\\n\\nConcludo [[Presidente]], con un paradosso: in quella zona, in quel territorio insiste il CPR, un canile disumano per umani, una vergogna a cielo\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00140\", \"video\": \"https://webtv.camera.it/evento/32715\", \"video_start_s\": 36618}]}"
+  }
+ ],
+ "strumenti": [
+  "argomenti_sedute",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 21.0,
+ "risposta_sistema": "Alla Camera, negli **interventi di fine seduta del 28 ottobre 2026**, sono intervenuti quattro deputati:\n\n- **Maria Stefania Marino (PD-IDP)**: difficoltà denunciate da agricoltori e autotrasportatori, con riferimento ai costi e alla tenuta delle imprese del settore. [Resoconto](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00020) · [Video Camera, da 10:04:03](https://webtv.camera.it/evento/32715)\n- **Rachele Scarpa (PD-IDP)**: astensione dell’Italia all’Assemblea generale ONU sulla risoluzione che chiedeva la fine dell’embargo su Cuba. [Resoconto](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00060) · [Video Camera, da 10:06:13](https://webtv.camera.it/evento/32715)\n- **Stefania Ascari (M5S)**: la stessa votazione ONU e l’astensione italiana sull’embargo a Cuba. [Resoconto](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00120) · [Video Camera, da 10:08:54](https://webtv.camera.it/evento/32715)\n- **Arnaldo Lomuti (M5S)**: rapine e furti nel Vulture-Melfese, in Basilicata — in particolare nelle aree di Venosa e Lavello — e richiesta di maggiore presenza di personale per la sicurezza. [Resoconto](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00140) · [Video Camera, da 10:10:18](https://webtv.camera.it/evento/32715)",
+ "eventi": {
+  "status": 1,
+  "tool": 22,
+  "dati": 11,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

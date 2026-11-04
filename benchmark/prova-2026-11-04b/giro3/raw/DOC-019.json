@@ -1,0 +1,105 @@
+{
+ "id": "DOC-019",
+ "domanda": "i lavori dell'Aula di questa settimana da proiettare il lunedì",
+ "categoria": "calendario",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Settimana del 2/11/2026: Camera dal v3 (sedute planned), Senato mancante.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788005.607845,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "start": "2026-11-02",
+    "end": "2026-11-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:sed0738\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 738, \"date\": \"2026-11-04\", \"kind\": \"assembly_agenda\", \"status\": \"planned\"}, {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}]}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "start": "2026-11-02",
+    "end": "2026-11-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": null,
+    "start": "2026-11-02",
+    "end": "2026-11-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 26, \"items\": [{\"uri\": \"it:camera:19:sed0738:odg01\", \"title\": \"Seguito della discussione del disegno di legge\", \"stage\": null, \"sitting\": \"it:camera:19:sed0738\", \"date\": \"2026-11-04\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 738, \"acts\": [{\"ref\": \"ac:3148\", \"uri\": \"it:camera:19:ac:3148\", \"title\": \"S. 2029. - \\\"Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche\\\" <i>(approvato dal Senato)</i> (3148)\", \"status\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"law\": null}], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0738:odg02\", \"title\": \"Seguito della discussione del disegno di legge\", \"stage\": null, \"sitting\": \"it:camera:19:sed0738\", \"date\": \"2026-11-04\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 738, \"acts\": [{\"ref\": \"ac:3106-A\", \"uri\": \"it:camera:19:ac:3106\", \"title\": \"\\\"Conversione in legge del decreto-legge 17 settembre 2026, n. 162, recante disposizioni urgenti per il sostegno economico e il contenimento degli effetti derivanti dal perdurante aumento del costo dei carburanti, nonché in materia fiscale\\\" (3106)\", \"status\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"law\": null}], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0738:odg03\", \"title\": \"Seguito della discussione della proposta di legge\", \"stage\": null, \"sitting\": \"it:camera:19:sed0738\", \"date\": \"2026-11-04\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 738, \"acts\": [{\"ref\": \"ac:2376\", \"uri\": \"it:camera:19:ac:2376\", \"title\": \"MALAGUTI ed altri: \\\"Definizione della nozione di “antisemitismo” e disposizioni per il contrasto degli atti di antisemitismo\\\" (2376)\", \"status\": \"In discussione\", \"law\": null}, {\"ref\": \"ac:2383\", \"uri\": \"it:camera:19:ac:2383\", \"title\": \"MOLINARI ed altri: \\\"Definizione della nozione di “antisemitismo” e disposizioni per il contrasto degli atti di antisemitismo\\\" (2383)\", \"status\": \"In discussione\", \"law\": null}, {\"ref\": \"ac:2830\", \"uri\": \"it:camera:19:ac:2830\", \"title\": \"S. 1004. - Senatori ROMEO ed altri: \\\"Disposizioni per il contrasto all’antisemitismo e per l’adozione della definizione operativa di antisemitismo\\\" <em>(approvata dal Senato) </em>(2830)\", \"status\": \"In discussione\", \"law\": null}], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0738:odg04\", \"title\": \"Seguito della discussione delle mozioni Richetti ed altri n. 1-00582, Della Vedova ed altri n. 1-00585 e De Luca, Scerra, Grimaldi ed altri n. 1-00602 in materia di superamento del diritto di veto nelle decisioni delle istituzioni dell'Unione europea (vedi allegato).\", \"stage\": null, \"sitting\": \"it:camera:19:sed0738\", \"date\": \"2026-11-04\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 738, "
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": null,
+    "start": "2026-11-02",
+    "end": "2026-11-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0738",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0738\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 738, \"date\": \"2026-11-04\", \"kind\": \"assembly_agenda\", \"status\": \"planned\", \"start_time\": \"10:00\", \"items\": [{\"uri\": \"it:camera:19:sed0738:odg01\", \"order\": 1, \"title\": \"Seguito della discussione del disegno di legge\", \"acts\": [{\"ref\": \"ac:3148\", \"uri\": \"it:camera:19:ac:3148\", \"title\": \"S. 2029. - \\\"Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche\\\" <i>(approvato dal Senato)</i> (3148)\"}], \"speeches\": []}, {\"uri\": \"it:camera:19:sed0738:odg02\", \"order\": 2, \"title\": \"Seguito della discussione del disegno di legge\", \"acts\": [{\"ref\": \"ac:3106-A\", \"uri\": \"it:camera:19:ac:3106\", \"title\": \"\\\"Conversione in legge del decreto-legge 17 settembre 2026, n. 162, recante disposizioni urgenti per il sostegno economico e il contenimento degli effetti derivanti dal perdurante aumento del costo dei carburanti, nonché in materia fiscale\\\" (3106)\"}], \"speeches\": []}, {\"uri\": \"it:camera:19:sed0738:odg03\", \"order\": 3, \"title\": \"Seguito della discussione della proposta di legge\", \"acts\": [{\"ref\": \"ac:2376\", \"uri\": \"it:camera:19:ac:2376\", \"title\": \"MALAGUTI ed altri: \\\"Definizione della nozione di “antisemitismo” e disposizioni per il contrasto degli atti di antisemitismo\\\" (2376)\"}, {\"ref\": \"ac:2383\", \"uri\": \"it:camera:19:ac:2383\", \"title\": \"MOLINARI ed altri: \\\"Definizione della nozione di “antisemitismo” e disposizioni per il contrasto degli atti di antisemitismo\\\" (2383)\"}, {\"ref\": \"ac:2830\", \"uri\": \"it:camera:19:ac:2830\", \"title\": \"S. 1004. - Senatori ROMEO ed altri: \\\"Disposizioni per il contrasto all’antisemitismo e per l’adozione della definizione operativa di antisemitismo\\\" <em>(approvata dal Senato) </em>(2830)\"}], \"speeches\": []}, {\"uri\": \"it:camera:19:sed0738:odg04\", \"order\": 4, \"title\": \"Seguito della discussione delle mozioni Richetti ed altri n. 1-00582, Della Vedova ed altri n. 1-00585 e De Luca, Scerra, Grimaldi ed altri n. 1-00602 in materia di superamento del diritto di veto nelle decisioni delle istituzioni dell'Unione europea (vedi allegato).\", \"acts\": [{\"ref\": \"aic:1-00582\", \"uri\": \"it:camera:19:aic:1-00582\", \"title\": \"MOZIONE 1/00582 presentata da RICHETTI MATTEO (AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE) in data 10/06/2026\"}, {\"ref\": \"aic:1-00585\", \"uri\": \"it:camera:19:aic:1-00585\", \"title\": \"MOZIONE 1/00585 presentata da DELLA VEDOVA BENEDETTO (MISTO-+EUROPA) in data 16/06/2026\"}, {\"ref\": \"aic:1-00602\", \"uri\": \"it:camera:19:aic:1-00602\", \"title\": \"MOZIONE 1/00602 presentata da DE LUCA PIERO (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 15/09/2026\"}], \"speeches\": []}, {\"uri\": \"it:camera:19:sed0738:odg05\", \"order\": 5, \"title\": \"Seguito della discussione delle mozioni Boldrini, Della Vedova, Zanella, Francesco S"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0737",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:camera:19:sed0737:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0737:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 96, c…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0737:tit00020\", \"order\": 2, \"title\": \"Annunzio di petizioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0737:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che sono pervenute alla Presidenza petizioni, il sunto e l'assegnazione delle quali, ai sensi della deliberazione della Giunta per il Regolam…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0737:tit00030\", \"order\": 3, \"title\": \"Annuncio della nomina di giudice della Corte costituzionale.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0737:tit00030.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico altresì che, in data 26 ottobre 2026, il Primo Presidente della Corte suprema di cassazione ha inviato al Presidente della Camera la seguente…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0737:tit00040\", \"order\": 4, \"title\": \"Svolgimento di una interrogazione.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0737:tit00040.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/d"
+  }
+ ],
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "seduta",
+  "seduta"
+ ],
+ "tempo_s": 14.5,
+ "risposta_sistema": "Per la settimana **2–8 novembre 2026**, nei dati disponibili fino al **3 novembre** risulta programmata una sola seduta d’Aula: **Camera, mercoledì 4 novembre alle 10.00**. Non risultano sedute dell’Aula del Senato né altre sedute della Camera fra il 2 e l’8 novembre.\n\nAlla **Camera** è previsto il seguito dell’esame di:\n- il decreto-legge su prezzi petroliferi, infrastrutture e attività energetiche strategiche, già approvato dal Senato (**A.C. 3148**);\n- il decreto-legge sul sostegno economico e il contenimento degli effetti del rialzo dei carburanti, con misure fiscali (**A.C. 3106**);\n- le proposte sul contrasto all’antisemitismo (**A.C. 2376, 2383 e 2830**);\n- mozioni sul superamento del diritto di veto nelle decisioni dell’Unione europea;\n- mozioni sulla tutela dell’operato della Corte penale internazionale e sui crimini internazionali;\n- **interrogazioni a risposta immediata** (question time).\n\nIl giorno precedente, **martedì 3 novembre**, la Camera ha già avviato la discussione generale dell’**A.C. 3148**, il decreto su prezzi petroliferi ed energia. Resoconto della seduta del 3 novembre\n\nIl **Senato** non ha, al momento, sedute d’Aula registrate o programmate per questa settimana nei dati disponibili.",
+ "eventi": {
+  "status": 2,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

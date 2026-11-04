@@ -1,0 +1,42 @@
+{
+ "id": "DOC-019",
+ "domanda": "i lavori dell'Aula di questa settimana da proiettare il lunedì",
+ "categoria": "calendario",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "Settimana del 2/11/2026: Camera dal v3 (sedute planned), Senato mancante.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788005.607845,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "seduta",
+  "seduta"
+ ],
+ "tempo_s": 14.5,
+ "risposta_sistema": "Per la settimana **2–8 novembre 2026**, nei dati disponibili fino al **3 novembre** risulta programmata una sola seduta d’Aula: **Camera, mercoledì 4 novembre alle 10.00**. Non risultano sedute dell’Aula del Senato né altre sedute della Camera fra il 2 e l’8 novembre.\n\nAlla **Camera** è previsto il seguito dell’esame di:\n- il decreto-legge su prezzi petroliferi, infrastrutture e attività energetiche strategiche, già approvato dal Senato (**A.C. 3148**);\n- il decreto-legge sul sostegno economico e il contenimento degli effetti del rialzo dei carburanti, con misure fiscali (**A.C. 3106**);\n- le proposte sul contrasto all’antisemitismo (**A.C. 2376, 2383 e 2830**);\n- mozioni sul superamento del diritto di veto nelle decisioni dell’Unione europea;\n- mozioni sulla tutela dell’operato della Corte penale internazionale e sui crimini internazionali;\n- **interrogazioni a risposta immediata** (question time).\n\nIl giorno precedente, **martedì 3 novembre**, la Camera ha già avviato la discussione generale dell’**A.C. 3148**, il decreto su prezzi petroliferi ed energia. Resoconto della seduta del 3 novembre\n\nIl **Senato** non ha, al momento, sedute d’Aula registrate o programmate per questa settimana nei dati disponibili.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Settimana dal 2 all'8/11/2026. Camera: nel DB c'è una sola seduta convocata, martedì 3/11/2026 alle 10. Ordine del giorno: alle 11.30 interrogazioni; alle 14 discussione generale del DL 157/2026 sui prezzi petroliferi (S. 2029, approvato dal Senato, C. 3148); deliberazioni sui termini dei collegati alla manovra (concorrenza 2026, C. 3120, e autonomia di Veneto, Liguria e altre regioni, C. 3161-3164); dichiarazione d'urgenza della PDL 2916; questioni pregiudiziali sul DL 190/2026 sicurezza (C. 3159); seguito del DL 157/2026; discussione generale del DL 162/2026 carburanti (C. 3106-A, relatrice Matera). Senato: nel DB non c'è il calendario (ultima seduta registrata il 28/10/2026).",
+  "stato": "parziale",
+  "limiti": "«Questa settimana» = da lunedì 2 a domenica 8/11/2026. Per la Camera c'è solo la seduta del 3/11 (status planned), non il calendario dell'intera settimana; per il Senato mancano sedute future e calendario."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 14.5
+ },
+ "giri_precedenti": {
+  "giro1": 1,
+  "giro2": 1
+ },
+ "causa_probabile": "ragionamento_o_prompt",
+ "note": "Odg del 4/11 giusto e Senato assente, come al giro 2. Ora cita la seduta del 3/11, ma solo per la discussione generale dell'A.C. 3148: mancano interrogazioni, deliberazioni sui collegati, pregiudiziali sul DL 190 e discussione del DL 162. «Resoconto della seduta» senza URL."
+}

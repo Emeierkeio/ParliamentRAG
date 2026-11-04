@@ -1,0 +1,37 @@
+{
+  "id": "DJ-010",
+  "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
+  "categoria": "governo",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+  "trappola": true,
+  "endpoint": "agente",
+  "inizio": 1793788413.962498,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_votazioni"
+  ],
+  "tempo_s": 5.8,
+  "risposta_sistema": "Finora il Governo Meloni ha posto la questione di fiducia in **129 votazioni elettroniche**:\n\n- **Camera:** 71 votazioni, dal 25 ottobre 2022 al 7 ottobre 2026.\n- **Senato:** 58 votazioni, dal 26 ottobre 2022 al 30 settembre 2026.\n\nIl conteggio considera le votazioni contrassegnate come fiducia pubblicate dai due rami, dal 13 ottobre 2022 al 4 novembre 2026. Alla Camera una stessa legge può comportare più voti di fiducia, perché la fiducia può essere posta sui singoli articoli.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa. Alla Camera la C. 2822-B ha avuto tre questioni di fiducia (articoli 1 e 2 il 6/10/2026, articolo 3 il 7/10); la fiducia iniziale al Governo (ottobre 2022) e le mozioni di sfiducia non sono questioni poste dal Governo; Camera e Senato vanno separati. Nel DB: 71 votazioni di fiducia alla Camera e 58 al Senato, comprese le fiducie d'insediamento.",
+    "stato": "note_della_domanda",
+    "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 0,
+    "trappola": "caduta",
+    "tempo_s": 5.8
+  },
+  "giri_precedenti": {
+    "giro1": 0,
+    "giro2": 1
+  },
+  "causa_probabile": "ragionamento_o_prompt",
+  "note": "Conta 129 votazioni di fiducia (Camera 71, Senato 58) e le presenta come questioni poste, includendo la fiducia d'insediamento in entrambi i rami (25 e 26/10/2022): le questioni sono 70 alla Camera (con le 3 sulla C. 2822-B) e 57 al Senato. Separa i rami ma dà anche il totale; nessun link. Stesso punteggio del giro 2."
+}

@@ -1,0 +1,110 @@
+{
+ "id": "LOB-042",
+ "domanda": "Quando è convocata la prossima seduta della VIII Commissione sul DL 177/2026 (C. 3133) e cosa c'è all'ordine del giorno?",
+ "categoria": "calendario",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788331.36061,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "3133",
+    "start": "2026-11-04",
+    "end": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "3133",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3133\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3133\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"date\": \"2026-10-08\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "decreto-legge 8 ottobre 2026, n. 177",
+    "start": null,
+    "end": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 6, \"items\": [{\"uri\": \"it:camera:19:bol20261027:c08:sede00010:tit00010\", \"title\": \"Audizione informale di rappresentanti del Comieco – Consorzio nazionale per il recupero e il riciclo degli imballaggi a base cellulosica, in videoconferenza, di rappresentanti dell'Autorità di bacino distrettuale dell'Appennino centrale, dell'Autorità di bacino distrettuale dell'Appennino meridionale, dell'Autorità di bacino distrettuale dell'Appennino settentrionale, dell'Autorità di bacino distrettuale delle Alpi orientali e dell'Autorità di bacino distrettuale del fiume Po, in videoconferenza, di rappresentanti della Cabina di Regia per l'interazione del Sistema nazionale prevenzione salute dai rischi ambientali e climatici (SNPS) con il Sistema nazionale protezione ambiente (SNPA), in videoconferenza, di rappresentanti di Legambiente, in videoconferenza, di rappresentanti del Comando unità forestali, ambientali e agroalimentari (CUFAA), di rappresentanti della Direzione generale archeologia, belle arti e paesaggio del Ministero della cultura, in videoconferenza, di rappresentanti dell'Istituto superiore di sanità (ISS), di rappresentanti di Marseglia Group, in videoconferenza, di rappresentanti della Società italiana di geologia ambientale (SIGEA), di rappresentanti dell'Agenzia nazionale per le nuove tecnologie, l'energia e lo sviluppo economico sostenibile (ENEA), in videoconferenza, di rappresentanti dell'Azienda sanitaria locale Caserta, in videoconferenza, e di rappresentanti dell'Associazione nazionale comuni italiani (ANCI), nell'ambito dell'esame, in sede referente, del disegno di legge C. 3133, di conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l'economia circolare e le bonifiche.\", \"stage\": null, \"sitting\": \"it:camera:19:bol20261027:c08:sede00010\", \"date\": \"2026-10-27\", \"chamber\": \"camera\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"seat\": \"AUDIZIONI INFORMALI\", \"number\": 10, \"acts\": [{\"ref\": \"ac:3133\", \"uri\": \"it:camera:19:ac:3133\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}], \"speakers_total\": 1}, {\"uri\": \"it:camera:19:bol20261022:c08:sede00010:tit00010\", \"title\": \"Audizione informale di rappresentanti del WWF Italia, in videoconferenza, di rappresentanti di Unirima, di rappresentanti dell'Autorità Nazionale Anticorruzione (ANAC), in videoconferenza, e di rappresentanti di Riqualta – Consorzio per il riuso e riciclo di qualità nel sistema arredo, in videoconferenza, nell'ambito dell'esame, in sede referente, del disegno di legge C. 3133, di conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante dis"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "start": "2026-11-04",
+    "end": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "start": "2026-10-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:3133"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:3133\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3133\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"date\": \"2026-10-08\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"status_date\": \"2026-10-14\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3133\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:303089\", \"name\": \"Gilberto Pichetto Fratin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=303089&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Ambiente e della sicurezza energetica\"}, {\"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"first\": true, \"as_office\": \"Presidente del Consiglio dei ministri\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-10-08\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-09\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-14\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3133.19PDL0217500\", \"title\": \"Disegno di Legge presentato l'8 ottobre 2026\", \"date\": \"2026-10-08\", \"articles\": 7, \"length\": 26613}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  }
+ ],
+ "strumenti": [
+  "argomenti_sedute",
+  "cerca_atti",
+  "argomenti_sedute",
+  "elenco_sedute",
+  "elenco_sedute",
+  "atto"
+ ],
+ "tempo_s": 38.2,
+ "risposta_sistema": "Nei dati aggiornati fino al **3 novembre 2026** non risulta ancora convocata una prossima seduta della VIII Commissione dedicata al DL n. 177/2026 (C. 3133), né un relativo ordine del giorno.\n\nIl disegno di legge risulta comunque **in corso di esame in Commissione Ambiente dal 14 ottobre 2026**; le ultime attività disponibili sull’atto sono state audizioni informali il 27 ottobre. [Scheda ufficiale del C. 3133](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133)",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

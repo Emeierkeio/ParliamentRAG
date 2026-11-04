@@ -1,0 +1,52 @@
+{
+ "id": "DJ-010",
+ "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
+ "categoria": "governo",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793788413.962498,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_votazioni",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": true,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "chamber": null,
+    "secret": null,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni elettroniche, Camera e Senato, dal 13/10/2022 al 04/11/2026; filtri: fiducia sì. Fonte: le votazioni pubblicate dai due rami (tabella vote); i rami non sono sommati.\", \"total\": 129, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"votazioni\": 71, \"dal\": \"2022-10-25\", \"al\": \"2026-10-07\"}, {\"ramo\": \"senato\", \"votazioni\": 58, \"dal\": \"2022-10-26\", \"al\": \"2026-09-30\"}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_votazioni"
+ ],
+ "tempo_s": 5.8,
+ "risposta_sistema": "Finora il Governo Meloni ha posto la questione di fiducia in **129 votazioni elettroniche**:\n\n- **Camera:** 71 votazioni, dal 25 ottobre 2022 al 7 ottobre 2026.\n- **Senato:** 58 votazioni, dal 26 ottobre 2022 al 30 settembre 2026.\n\nIl conteggio considera le votazioni contrassegnate come fiducia pubblicate dai due rami, dal 13 ottobre 2022 al 4 novembre 2026. Alla Camera una stessa legge può comportare più voti di fiducia, perché la fiducia può essere posta sui singoli articoli.",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -11,7 +11,7 @@
  "note": "Trappola di omonimia: è Marco Meloni (PD-IDP), non Giorgia Meloni. Il resoconto scrive solo «MELONI».",
  "trappola": true,
  "endpoint": "agente",
- "inizio": 1793784684.3105888,
+ "inizio": 1793788382.0838678,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
@@ -21,7 +21,7 @@
     "chamber": "senato",
     "group": null,
     "in_office": false,
-    "limit": 20
+    "limit": 30
    },
    "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\"}]}"
   },
@@ -30,7 +30,7 @@
    "args": {
     "q": "inutile",
     "chamber": "senato",
-    "person": "it:person:senato:29490",
+    "person": null,
     "start": "2026-09-09",
     "end": "2026-09-09",
     "include_summaries": false,
@@ -38,15 +38,7 @@
     "limit": 50,
     "offset": 0
    },
-   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:sed0450:int00133\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\"}, \"speaker_label\": \"MELONI\", \"snippet\": \"condanna al tratto fondamentale di questa vostra legislatura, nella politica interna come in quella europea e internazionale: l'[[inutilità]], l'immobilismo, la palude.\\n\\nConcludo. Mi viene in mente, per concludere, proprio la frase di Giorgia Meloni, quando venne respinto\"}]}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:senato:19:sed0450",
-    "full_text": false
-   },
-   "result": "{\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:senato:19:sed0450:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0450:int00001\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032707.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"La seduta è aperta (ore 10,06).\\n\\nSi dia lettura del processo verbale.\\n\\nTERNULLO, segretario, dà lettura del processo verbale della seduta del 31 agost…\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0450:int00002\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032707.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Non essendovi osservazioni, il processo verbale è approvato.\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:sed0450:d-d1e40\", \"order\": 2, \"title\": \"Comunicazioni della Presidenza\", \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0450:int00003\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032707.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"L'elenco dei senatori in congedo e assenti per incarico ricevuto dal Senato, nonché ulteriori comunicazioni all'Assemblea saranno pubblicati nell'alle…\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:sed0450:d-d1e48\", \"order\": 3, \"title\": \"Discussione dei disegni di legge:\", \"acts\": [{\"ref\": \"ddl:1822\", \"uri\": \"it:senato:19:ddl:1822\", \"title\": \"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\"}, {\"ref\": \"ddl:1971\", \"uri\": \"it:senato:19:ddl:1971\", \"title\": \"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\"}, {\"ref\": \"ddl:61\", \"uri\": \"it:senato:19:ddl:61\", \"title\": \"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di soppressione dei col"
+   "result": "{\"total\": 6, \"items\": [{\"uri\": \"it:senato:19:sed0450:int00023\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:32681\", \"name\": \"Stefano Patuanelli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032681.jpg\"}, \"speaker_label\": \"PATUANELLI\", \"snippet\": \"maggioranza che la presenta cercando di garantirsi con la legge elettorale un risultato elettorale migliore. Ecco, io penso sia [[inutile]] essere ipocriti. In qualsiasi momento la maggioranza presenta il disegno di legge elettorale, l'opposizione dice che ci sono\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683\"}, {\"uri\": \"it:senato:19:sed0450:int00074\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:27622\", \"name\": \"Filippo Sensi\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00027622.jpg\"}, \"speaker_label\": \"SENSI\", \"snippet\": \"metodo d'Hondt. Ma, insomma, vuoi scherzare? Un brivido, un frisson.\\n\\nDelle grandi riforme abbiamo già detto, è [[inutile]] parlarne: niente, nulla, nix.\\n\\nLe misure che avevate messo in programma? Ricordate la flat tax? Il povero Giorgetti, messo alle strette\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683\"}, {\"uri\": \"it:senato:19:sed0450:int00078\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:32691\", \"name\": \"Elisa Pirro\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032691.jpg\"}, \"speaker_label\": \"PIRRO\", \"snippet\": \"già e di come potrete fare, in vista delle prossime elezioni, per continuare a scaldare [[inutilmente]] le poltrone che avete occupato fino a oggi.\\n\\nSe avete un minimo di pudore, un minimo di senso civico, un minimo di senso delle ... vostra inerzia, apatia, indifferenza totale per qualsiasi cosa che non sia il vostro attaccamento al potere, comincia a diventare [[inutile]] anche sprecare quel po' di fiato che comunque troviamo ancora per"
   },
   {
    "name": "scheda_persona",
@@ -58,21 +50,20 @@
   {
    "name": "verifica_citazioni",
    "args": {},
-   "result": "{\"quotes\": 1, \"verified\": 0, \"results\": [{\"quote\": \"inutilità\", \"found\": false, \"reason\": \"troppo corta per verificarla\"}]}"
+   "result": "{\"quotes\": 1, \"verified\": 1, \"results\": [{\"quote\": \"l'inutilità, l'immobilismo, la palude\", \"found\": true, \"speech\": \"it:senato:19:sed0450:int00133\", \"sitting\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"date\": \"2026-09-09\", \"speaker\": \"Marco Meloni\", \"group\": \"PD-IDP\"}]}"
   }
  ],
  "strumenti": [
   "cerca_persone",
   "cerca_interventi",
-  "seduta",
   "scheda_persona"
  ],
- "tempo_s": 17.1,
- "risposta_sistema": "No. Il senatore intervenuto il 9 settembre 2026 era **Marco Meloni**, del **PD-IDP**, non Giorgia Meloni. È senatore della XIX legislatura dal 13 ottobre 2022. [Scheda del Senato](http://dati.senato.it/senatore/29490)\n\nNella seduta del 9 settembre, sul disegno di legge elettorale, il riferimento trovato riguarda l’«inutilità» della legislatura e non attribuisce quella frase alla presidente del Consiglio. La premier **Giorgia Meloni non è una senatrice**.",
+ "tempo_s": 22.5,
+ "risposta_sistema": "No. Il senatore che intervenne il 9 settembre 2026 è **Marco Meloni**, del **PD-IDP**, eletto al Senato per la Sardegna; non è Giorgia Meloni né ricopre incarichi di Governo nella scheda parlamentare. [Scheda del senatore Marco Meloni](http://dati.senato.it/senatore/29490)\n\nNel suo intervento in Aula si riferiva alla legislatura e al disegno di legge elettorale, parlando di «l'inutilità, l'immobilismo, la palude»; poi citava espressamente Giorgia Meloni. [Resoconto della seduta del Senato del 9 settembre 2026](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683)",
  "eventi": {
   "status": 1,
-  "tool": 8,
-  "dati": 5,
+  "tool": 6,
+  "dati": 4,
   "delta": 1,
   "suggestions": 1,
   "done": 1
@@ -83,11 +74,12 @@
    "outcome": {
     "groups": "fail",
     "authority": "fail",
-    "quotes": "fail"
+    "quotes": "pass"
    },
    "groups": {
     "present": [
-     "PD"
+     "PD",
+     "Governo"
     ],
     "missing": [
      "Fratelli d'Italia",
@@ -100,8 +92,7 @@
      "Noi Moderati",
      "Avanti PSI (Misto)",
      "Per le Autonomie (SVP-PATT, Campobase)",
-     "Misto, non iscritti",
-     "Governo"
+     "Misto, non iscritti"
     ],
     "silent": [
      "Rifondazione Comunista (Misto)",
@@ -110,10 +101,10 @@
    },
    "quotes": [
     {
-     "quote": "inutilità",
-     "status": "not_found",
+     "quote": "l'inutilità, l'immobilismo, la palude",
+     "status": "exact",
      "closest_passage": null,
-     "url": null
+     "url": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683"
     }
    ],
    "authority": {
@@ -124,10 +115,12 @@
       "name": "Marco Meloni",
       "group": "Partito Democratico",
       "role": null,
+      "rank": 8,
+      "pool_size": 11,
+      "group_size": 11,
       "pool": "speakers_on_topic",
-      "on_topic": false,
       "authoritative": false,
-      "source": "named"
+      "source": "quoted"
      }
     ]
    },

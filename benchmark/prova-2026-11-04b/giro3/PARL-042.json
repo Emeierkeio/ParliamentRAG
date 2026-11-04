@@ -1,0 +1,41 @@
+{
+  "id": "PARL-042",
+  "domanda": "A quale componente del Misto appartiene oggi Bruno Tabacci, e come ha votato da quando ha lasciato il PD?",
+  "categoria": "gruppi",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+  "trappola": true,
+  "endpoint": "agente",
+  "inizio": 1793788412.767225,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_persone",
+    "cambi_gruppo",
+    "scheda_persona",
+    "presenze",
+    "voto_gruppi"
+  ],
+  "tempo_s": 28.7,
+  "risposta_sistema": "Bruno Tabacci è nel **Gruppo Misto senza una componente autonoma**: nelle schede di voto risulta come **“Misto (MISTO)”**. Ha lasciato il PD-IDP il **9 luglio 2026**. [Scheda ufficiale della Camera](http://dati.camera.it/ocd/persona.rdf/p34580)\n\nDal 9 luglio al 3 novembre 2026, alla Camera (le votazioni disponibili nel periodo arrivano al 28 ottobre), ha partecipato a **1.268 votazioni su 1.435**:  \n- **1.014 favorevoli**  \n- **104 contrari**  \n- **111 astensioni**  \n- **39 voti segreti espressi**  \n- **167 assenze**; nessuna missione.\n\nNei **1.228 voti palesi** confrontabili con le posizioni dei gruppi, ha votato come il **PD-IDP nel 99,0%** dei casi (1.216); come AVS nel 94,6% e come M5S nel 93,2%. L’allineamento con FdI, Lega e FI-PPE è stato del 9,3%. Quindi, dopo l’uscita formale dal PD, il suo voto è rimasto quasi sempre coincidente con quello del PD-IDP. [Scheda ufficiale della Camera](http://dati.camera.it/ocd/persona.rdf/p34580)",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+    "stato": "note_della_domanda",
+    "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": "superata",
+    "tempo_s": 28.7
+  },
+  "giri_precedenti": {
+    "giro1": 2,
+    "giro2": 2
+  },
+  "causa_probabile": null,
+  "note": "Misto senza componente dal 9/7/2026, voti uguali ai giri precedenti (1.014 sì, 104 no, 111 astenuti, 39 segreti, 167 assenze su 1.435; 99% col PD). L'unico link è la scheda, che non documenta i voti: fonti 0 per la regola sulla scheda singola."
+}

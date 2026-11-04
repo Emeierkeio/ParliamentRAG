@@ -9,13 +9,13 @@
  "note": "AC 3120.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784632.578259,
+ "inizio": 1793788310.770417,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
    "name": "cerca_atti",
    "args": {
-    "q": "legge annuale per la concorrenza 2026",
+    "q": "legge annuale per il mercato e la concorrenza 2026",
     "chamber": "camera",
     "kind": "bill",
     "number": null,
@@ -34,150 +34,72 @@
    "result": "{\"uri\": \"it:camera:19:ac:3120\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3120\", \"kind\": \"bill\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"date\": \"2026-09-28\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"status_date\": \"2026-10-27\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3120\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:39200\", \"name\": \"Adolfo Urso\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro delle Imprese e del made in Italy\"}, {\"person\": {\"uri\": \"it:person:camera:303089\", \"name\": \"Gilberto Pichetto Fratin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=303089&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Ambiente e della sicurezza energetica\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-09-28\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-21\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-27\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3120.19PDL0217530\", \"title\": \"Disegno di Legge presentato il 28 settembre 2026\", \"date\": \"2026-09-28\", \"articles\": 13, \"length\": 121071}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
   },
   {
-   "name": "elenco_sedute",
+   "name": "argomenti_sedute",
    "args": {
     "chamber": "camera",
-    "body": "commissioni",
-    "start": "2026-10-21",
+    "body": "X Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "3120",
+    "start": "2026-10-27",
     "end": "2026-11-03",
     "limit": 100,
     "offset": 0
    },
-   "result": "{\"total\": 223, \"items\": [{\"uri\": \"it:camera:19:bol20261029:c71:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 30, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c07:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c39:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4021\", \"body_name\": \"Commissione parlamentare di inchiesta sulle attività illecite connesse al ciclo dei rifiuti e su altri illeciti ambientali e agroalimentari\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c27:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4022\", \"body_"
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "Attività produttive",
+    "chamber": "camera",
+    "date": null,
+    "titles": null
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 0, \"items\": []}"
   },
   {
    "name": "elenco_sedute",
    "args": {
     "chamber": "camera",
-    "body": "it:camera:19:body:o19_3510",
-    "start": "2026-10-21",
+    "body": "X Commissione",
+    "start": "2026-10-27",
     "end": "2026-11-03",
     "limit": 100,
     "offset": 0
    },
-   "result": "{\"total\": 12, \"items\": [{\"uri\": \"it:camera:19:bol20261028:c10:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 20, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c10:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 10, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00050\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 50, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00040\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 40, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 30, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 20, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 10, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00050\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 50, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00040\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 40, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 30, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 20, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 10"
+   "result": "{\"total\": 0, \"items\": []}"
   },
   {
-   "name": "seduta",
+   "name": "argomenti_sedute",
    "args": {
-    "uri": "it:camera:19:bol20261028:c10:sede00020",
-    "full_text": true
+    "chamber": "camera",
+    "body": null,
+    "seat": null,
+    "stage": null,
+    "q": "concorrenza",
+    "start": "2026-09-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
    },
-   "result": "{\"uri\": \"it:camera:19:bol20261028:c10:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 20, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI\", \"start_time\": \"15:20\", \"end_time\": \"15:25\", \"items\": [{\"uri\": \"it:camera:19:bol20261028:c10:sede00020:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261028:c10:sede00020:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Mercoledì 28 ottobre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c10:sede00020:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"L'ufficio di presidenza si è riunito dalle 15.20 alle 15.25.\", \"reactions\": []}]}], \"votes\": []}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261028:c10:sede00010",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261028:c10:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 10, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"SEDE REFERENTE\", \"presided_by\": \"it:person:camera:307475\", \"start_time\": \"15:15\", \"end_time\": \"15:20\", \"items\": [{\"uri\": \"it:camera:19:bol20261028:c10:sede00010:tit00010\", \"order\": 1, \"title\": \"Legge annuale per il mercato e la concorrenza per il 2026.\", \"stage\": \"Seguito dell'esame e rinvio\", \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261028:c10:sede00010:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione prosegue l'esame del provvedimento, rinviato nella seduta del 27 ottobre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c10:sede00010:tit00010:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307475&legislatura=19\"}, \"speaker_label\": \"Alberto Luigi GUSMEROLI\", \"as_office\": \"presidente e relatore\", \"kind\": \"summary\", \"text\": \"Alberto Luigi GUSMEROLI, presidente e relatore, nessuno chiedendo di intervenire rinvia il seguito dell'esame ad altra seduta.\", \"reactions\": []}]}], \"votes\": []}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261027:c10:sede00050",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261027:c10:sede00050\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 50, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI\", \"start_time\": \"13:30\", \"end_time\": \"13:35\", \"items\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00050:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00050:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Martedì 27 ottobre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00050:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"L'ufficio di presidenza si è riunito dalle 13.30 alle 13.35.\", \"reactions\": []}]}], \"votes\": []}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261027:c10:sede00040",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261027:c10:sede00040\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 40, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"ATTI DEL GOVERNO\", \"presided_by\": \"it:person:camera:307475\", \"start_time\": \"13:25\", \"end_time\": \"13:30\", \"items\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00040:tit00010\", \"order\": 1, \"title\": \"Schema di decreto legislativo recante adeguamento della normativa nazionale alle disposizioni del regolamento (UE) 2023/1230 del Parlamento europeo e del Consiglio, del 14 giugno 2023, relativo alle macchine e che abroga la direttiva 2006/42/CE del Parlamento europeo e del Consiglio e la direttiva 73/361/CEE del Consiglio.\", \"stage\": \"Seguito dell'esame, ai sensi dell'articolo 143, comma 4, del Regolamento, e rinvio\", \"acts\": [{\"ref\": \"ag:445\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00040:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione prosegue l'esame dello schema di decreto, rinviato nella seduta del 20 ottobre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00040:tit00010:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307475&legislatura=19\"}, \"speaker_label\": \"Alberto Luigi GUSMEROLI\", \"as_office\": \"presidente e relatore\", \"kind\": \"summary\", \"text\": \"Alberto Luigi GUSMEROLI, presidente e relatore, ricorda che il termine per l'espressione del parere scadrà il 18 novembre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00040:tit00010:p3\", \"order\": 3, \"kind\": \"summary\", \"text\": \"Nessuno chiedendo di intervenire, rinvia il seguito dell'esame ad altra seduta.\", \"reactions\": []}]}], \"votes\": []}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261027:c10:sede00030",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261027:c10:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 30, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"SEDE REFERENTE\", \"presided_by\": \"it:person:camera:307475\", \"start_time\": \"13:20\", \"end_time\": \"13:25\", \"items\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00030:tit00010\", \"order\": 1, \"title\": \"Legge annuale per il mercato e la concorrenza per il 2026.\", \"stage\": \"Esame e rinvio\", \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00030:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione inizia l'esame del provvedimento.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00030:tit00010:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307475&legislatura=19\"}, \"speaker_label\": \"Alberto Luigi GUSMEROLI\", \"as_office\": \"presidente e relatore\", \"kind\": \"summary\", \"text\": \"Alberto Luigi GUSMEROLI, presidente e relatore, anche a nome dell'altro relatore, deputato Gianluca Caramanna, riferisce sul disegno di legge in titolo. Ricorda che la legge annuale per il mercato e la concorrenza è disciplinata dall'articolo 47 della legge n. 99 del 2009, che ne fissa cadenza, procedimento e struttura: il disegno di legge è presentato ogni anno dal Governo entro sessanta giorni dalla trasmissione della relazione annuale dell'Autorità garante della concorrenza e del mercato, tenendo conto anche delle segnalazioni dell'Autorità. In secondo luogo, rileva che quello di cui si avvia oggi l'esame è il primo disegno di legge annuale non più ancorato a uno specifico traguardo del Piano nazionale di ripresa e resilienza (PNRR): esaurita la sequenza di milestone che ha scandito le leggi dal 2021 in poi, i contenuti non sono predeterminati da obblighi di attuazione del Piano, e la scelta delle materie torna a essere interamente politica. Il Piano strutturale di bilancio di medio termine confermerebbe peraltro l'impegno a mantenere lo strumento fino al 2029. Ricorda infine che il provvedimento è stato collegato alla manovra di finanza pubblica, come indicato nella risoluzione approvata dalla Camera il 13 ottobre 2026 sul Documento programmatico di finanza pubblica. Passando all'illustrazione delle parti del disegno di legge in esame, rileva che esso si compone di tredici articoli, ripartiti in tre Capi. Il Capo I, di gran lunga il più ampio, reca una riforma organica del settore della distribuzione dei carburanti (articoli da 1 a 9). Il Capo II contiene due interventi settoriali,"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261027:c10:sede00020",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261027:c10:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 20, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"RISOLUZIONI\", \"presided_by\": \"it:person:camera:307475\", \"start_time\": \"13:15\", \"end_time\": \"13:20\", \"items\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00020:tit00010\", \"order\": 1, \"title\": \"7-00422 Andreuzza: Iniziative per sostenere in sede europea proposte normative sulla soppressione dei cambi stagionali dell'ora.\", \"stage\": \"Discussione e rinvio\", \"acts\": [{\"ref\": \"aic:7-00422\", \"uri\": \"it:camera:19:aic:7-00422\", \"title\": \"RISOLUZIONE IN COMMISSIONE 7/00422 presentata da ANDREUZZA GIORGIA (LEGA - SALVINI PREMIER) in data 20/10/2026\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00020:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione inizia la discussione della risoluzione.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00020:tit00010:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:308890\", \"name\": \"Andrea Barabotti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308890&legislatura=19\"}, \"speaker_label\": \"Andrea BARABOTTI\", \"as_group\": \"LEGA\", \"kind\": \"summary\", \"text\": \"Andrea BARABOTTI (LEGA), in qualità di cofirmatario, illustra il contenuto della risoluzione in oggetto. Fa presente che essa dà seguito al lavoro svolto dalla Commissione nell'ambito dell'indagine conoscitiva sull'ora legale permanente, con l'obiettivo di superare il doppio cambio annuale dell'ora al fine di adottare un unico standard orario. Sottolinea che tale scelta potrebbe produrre benefici sotto il profilo della competitività, dei consumi energetici, della riduzione delle emissioni, nonché della salute e della sicurezza. Ricostruisce quindi il percorso avviato in tema a livello europeo a partire dal 2018, ricordando la consultazione pubblica promossa dalla Commissione europea, alla quale parteciparono oltre 4 milioni di cittadini, l'84 per cento dei quali si espresse a favore dell'abolizione del cambio semestrale dell'ora, con una prevalenza di preferenze per l'ora legale. Ricorda che a tale consultazione ha fatto seguito un'iniziativa legislativa europea nelle forme di una direttiva approvata dal Parlamento europeo, il cui iter si è successivamente arrestato anche a seguito della pandemia. Evidenzia che il tema è tornato oggi al centro del dibattito europeo e internazionale, anche per iniziativa di alcuni Stati membri, e che la Commissione europea dovrebbe presentare entro la fine dell'anno gli esiti di uno specifico studio sulla materia. Richiama quindi le conclusioni dell'indagine conoscitiva svolta dalla Commissione, dalla quale è emersa una posizione condivisa sull'oppor"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261027:c10:sede00010",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261027:c10:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 10, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AUDIZIONI INFORMALI\", \"presided_by\": \"it:person:camera:307475\", \"items\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00010:tit00010\", \"order\": 1, \"title\": \"Audizione informale, in videoconferenza, di rappresentanti di Confcommercio, nell'ambito dell'esame, in sede referente, della proposta di legge C. 2410 Andreuzza, recante «Istituzione della qualifica di comunità marina o lacuale e disposizioni per il sostegno dell'erogazione dei servizi pubblici nei comuni».\", \"acts\": [{\"ref\": \"ac:2410\", \"uri\": \"it:camera:19:ac:2410\", \"title\": \"ANDREUZZA ed altri: \\\"Istituzione della qualifica di comunità marina o lacuale e disposizioni per il sostegno dell’erogazione dei servizi pubblici nei comuni soggetti a rilevanti variazioni della popolazione conseguenti alla pressione turistica\\\" (2410)\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261027:c10:sede00010:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"L'audizione informale è stata svolta dalle 13 alle 13.10.\", \"reactions\": []}]}], \"votes\": []}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261021:c10:sede00050",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261021:c10:sede00050\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 50, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"INTERROGAZIONI A RISPOSTA IMMEDIATA\", \"presided_by\": \"it:person:camera:308785\", \"start_time\": \"15:15\", \"end_time\": \"15:40\", \"items\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00050:tit00010\", \"order\": 1, \"title\": \"Sulla pubblicità dei lavori.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00050:tit00010:p1\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:308785\", \"name\": \"Ilaria Cavo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308785&legislatura=19\"}, \"speaker_label\": \"Ilaria CAVO\", \"as_office\": \"presidente\", \"kind\": \"summary\", \"text\": \"Ilaria CAVO, presidente, avverte che la pubblicità dei lavori sarà assicurata anche mediante la trasmissione attraverso la web-tv della Camera dei deputati.\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00050:tit00020\", \"order\": 2, \"title\": \"5-05889 Caramanna: Sul reperimento di risorse aggiuntive da destinare alle Camere di commercio italiane all'estero.\", \"acts\": [{\"ref\": \"aic:5-05889\", \"uri\": \"it:camera:19:aic:5-05889\", \"title\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN COMMISSIONE 5/05889 presentata da CARAMANNA GIANLUCA (FRATELLI D'ITALIA) in data 20/10/2026\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00050:tit00020:p1\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:308889\", \"name\": \"Fabio Pietrella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308889&legislatura=19\"}, \"speaker_label\": \"Fabio PIETRELLA\", \"as_group\": \"FDI\", \"kind\": \"summary\", \"text\": \"Fabio PIETRELLA (FDI), in qualità di cofirmatario, illustra l'interrogazione in titolo.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00050:tit00020:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:309060\", \"name\": \"Fausta Bergamotto\", \"in_office\": false}, \"speaker_label\": \"Fausta BERGAMOTTO\", \"kind\": \"summary\", \"text\": \"La sottosegretaria Fausta BERGAMOTTO risponde all'interrogazione in titolo nei termini riportati in allegato (vedi allegato 2).\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00050:tit00020:p3\", \"order\": 3, \"person\": {\"uri\": \"it:person:camera:308889\", \"name\": \"Fabio Pietrella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261021:c10:sede00040",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261021:c10:sede00040\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 40, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AUDIZIONI INFORMALI\", \"presided_by\": \"it:person:camera:308785\", \"items\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00040:tit00010\", \"order\": 1, \"title\": \"Audizione informale, in videoconferenza, di rappresentanti dell'Associazione Nazionale Comuni Italiani (ANCI), nell'ambito dell'esame, in sede referente, della proposta di legge C. 2410 Andreuzza, recante «Istituzione della qualifica di comunità marina o lacuale e disposizioni per il sostegno dell'erogazione dei servizi pubblici nei comuni».\", \"acts\": [{\"ref\": \"ac:2410\", \"uri\": \"it:camera:19:ac:2410\", \"title\": \"ANDREUZZA ed altri: \\\"Istituzione della qualifica di comunità marina o lacuale e disposizioni per il sostegno dell’erogazione dei servizi pubblici nei comuni soggetti a rilevanti variazioni della popolazione conseguenti alla pressione turistica\\\" (2410)\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00040:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"L'audizione informale è stata svolta dalle 15 alle 15.15.\", \"reactions\": []}]}], \"votes\": []}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261021:c10:sede00030",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261021:c10:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 30, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AUDIZIONI INFORMALI\", \"presided_by\": \"it:person:camera:307475\", \"items\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00030:tit00010\", \"order\": 1, \"title\": \"Audizione informale dell'amministratore delegato di Ericsson Telecomunicazioni S.p.A., Andrea Missori, sulla crisi aziendale di Ericsson Telecomunicazioni S.p.A.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00030:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"L'audizione informale è stata svolta dalle 14 alle 14.50.\", \"reactions\": []}]}], \"votes\": []}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261021:c10:sede00020",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261021:c10:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 20, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI\", \"start_time\": \"13:55\", \"end_time\": \"14:00\", \"items\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00020:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00020:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Mercoledì 21 ottobre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00020:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"L'ufficio di presidenza si è riunito dalle 13.55 alle 14.\", \"reactions\": []}]}], \"votes\": []}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261021:c10:sede00010",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261021:c10:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3510\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"number\": 10, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"SEDE CONSULTIVA\", \"presided_by\": \"it:person:camera:307475\", \"start_time\": \"13:45\", \"end_time\": \"13:55\", \"items\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00010:tit00010\", \"order\": 1, \"title\": \"DL 177/2026: Disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l'economia circolare e le bonifiche.\", \"stage\": \"Esame e conclusione – Parere favorevole\", \"acts\": [{\"ref\": \"ac:3133\", \"uri\": \"it:camera:19:ac:3133\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261021:c10:sede00010:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione inizia l'esame del provvedimento.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261021:c10:sede00010:tit00010:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307475&legislatura=19\"}, \"speaker_label\": \"Alberto Luigi GUSMEROLI\", \"as_office\": \"presidente e relatore\", \"kind\": \"summary\", \"text\": \"Alberto Luigi GUSMEROLI, presidente e relatore, fa presente che il decreto-legge in esame è composto di sei articoli. L'articolo 1 reca misure urgenti per il rafforzamento delle istruttorie ambientali. Al comma 1, dispone, a tal fine, una serie di modifiche al Codice dell'ambiente finalizzate a: attribuire alla Commissione tecnica PNRR-PNIEC le verifiche di assoggettabilità a VIA dei progetti per i quali la relativa eventuale successiva VIA spetta alla medesima Commissione (lettera a), n. 1)); disciplinare le modalità di definizione e copertura dei costi relativi al rimborso della metà dei diritti di istruttoria previsto per il mancato rispetto dei termini di conclusione del procedimento di VIA (lettera a), n. 2), e lettera b)); precisare le modalità di inclusione dell'autorizzazione paesaggistica nel Provvedimento Unico in materia Ambientale – PUA (lettera c)). Il comma 2, al fine di rafforzare, con specifico riferimento ai profili sanitari, le attività istruttorie del Ministero dell'ambiente e della sicurezza energetica (MASE) connesse al rinnovo e al riesame delle autorizzazioni integrate ambientali (AIA) di competenza statale e al rispetto delle relative condizioni, autorizza una spesa di 500 mila euro per l'anno 2027. La copertura dei relativi oneri è disciplinata dal successivo comma 3. L'articol"
+   "result": "{\"total\": 3, \"items\": [{\"uri\": \"it:camera:19:bol20261028:c10:sede00010:tit00010\", \"title\": \"Legge annuale per il mercato e la concorrenza per il 2026.\", \"stage\": \"Seguito dell'esame e rinvio\", \"sitting\": \"it:camera:19:bol20261028:c10:sede00010\", \"date\": \"2026-10-28\", \"chamber\": \"camera\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"seat\": \"SEDE REFERENTE\", \"number\": 10, \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"group\": \"LEGA\"}], \"speakers_total\": 2}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00030:tit00010\", \"title\": \"Legge annuale per il mercato e la concorrenza per il 2026.\", \"stage\": \"Esame e rinvio\", \"sitting\": \"it:camera:19:bol20261027:c10:sede00030\", \"date\": \"2026-10-27\", \"chamber\": \"camera\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"seat\": \"SEDE REFERENTE\", \"number\": 30, \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"group\": \"LEGA\"}], \"speakers_total\": 2}, {\"uri\": \"it:camera:19:bol20261021:c05:sede00010:tit00010\", \"title\": \"Legge annuale per il mercato e la concorrenza 2026.\", \"stage\": \"Esame per la verifica del contenuto proprio del disegno di legge e conclusione\", \"sitting\": \"it:camera:19:bol20261021:c05:sede00010\", \"date\": \"2026-10-21\", \"chamber\": \"camera\", \"body_name\": \"Bilancio, tesoro e programmazione (V)\", \"seat\": \"ESAME, AI SENSI DELL'ARTICOLO 123-BIS, COMMA 1, DEL REGOLAMENTO\", \"number\": 10, \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:308765\", \"name\": \"Giovanni Luca Cannata\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:307790\", \"name\": \"Gianmauro Dell'Olio\", \"group\": \"M5S\"}], \"speakers_total\": 3}], \"more\": false}"
   }
  ],
  "strumenti": [
   "cerca_atti",
   "atto",
+  "argomenti_sedute",
+  "organo",
   "elenco_sedute",
-  "elenco_sedute",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta"
+  "argomenti_sedute"
  ],
- "tempo_s": 18.8,
- "risposta_sistema": "**Nessuna audizione** risulta svolta dalla Camera sul disegno di legge C. 3120, *Legge annuale per il mercato e la concorrenza 2026*: quindi **non risulta sentito alcun soggetto**.\n\nHo verificato tutte le 12 sedute della X Commissione Attività produttive dal 21 ottobre (data dell’assegnazione) al 3 novembre 2026, ultimo aggiornamento disponibile. Il provvedimento è stato esaminato in sede referente il 27 e il 28 ottobre, senza audizioni. Il testo è ancora in corso di esame in Commissione. [Scheda ufficiale C. 3120](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120)",
+ "tempo_s": 20.6,
+ "risposta_sistema": "La Camera **non ha ancora svolto audizioni** sul disegno di legge annuale per il mercato e la concorrenza 2026 (C. 3120): **0 audizioni, quindi nessun soggetto ascoltato** nei dati disponibili fino al **3 novembre 2026**.\n\nIl provvedimento è in esame referente presso la **X Commissione Attività produttive** dal 27 ottobre; risultano due sedute di esame, il 27 e il 28 ottobre, entrambe concluse con rinvio e senza audizioni indicate. [Scheda ufficiale del C. 3120](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120)",
  "eventi": {
   "status": 1,
-  "tool": 32,
-  "dati": 16,
+  "tool": 12,
+  "dati": 6,
   "delta": 1,
   "suggestions": 1,
   "done": 1

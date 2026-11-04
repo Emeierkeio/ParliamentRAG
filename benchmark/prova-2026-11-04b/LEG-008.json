@@ -1,39 +1,38 @@
 {
- "id": "LEG-008",
- "domanda": "La legge di conversione nata dall'AC 3131 è stata pubblicata? Numero, data e link al testo vigente.",
- "categoria": "fonti",
- "tipo_risposta": "link",
- "ramo": "camera",
- "difficolta": "facile",
- "garanzie": [],
- "note_domanda": null,
- "trappola": false,
- "endpoint": "agente",
- "inizio": 1793784666.3255968,
- "endpoint_usato": "/api/agente",
- "strumenti": [
-  "cerca_atti",
-  "atto"
- ],
- "tempo_s": 10.2,
- "risposta_sistema": "Sì. L’AC 3131 è diventato la **legge 23 ottobre 2026, n. 196**, pubblicata nella **Gazzetta Ufficiale n. 249 del 26 ottobre 2026**. La legge converte, con modificazioni, il decreto-legge 28 agosto 2026, n. 154. [Scheda ufficiale dell’atto AC 3131](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).\n\nNei dati disponibili non è presente l’URL diretto al testo vigente (ad esempio su Normattiva); la scheda della Camera riporta però numero, data e pubblicazione della legge.",
- "errori": [],
- "riferimento": {
-  "risposta": "Sì: l'AC 3131 (S. 2023, conversione del decreto-legge 28 agosto 2026, n. 154, sulla continuità operativa di impianti di interesse strategico nazionale) è stato approvato definitivamente dalla Camera il 20/10/2026 ed è diventato la legge 23 ottobre 2026, n. 196 (stato «Approvato definitivamente. Legge» dal 23/10/2026). Scheda: http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131. Il database non ha la data di pubblicazione in Gazzetta Ufficiale né il link al testo vigente.",
-  "stato": "parziale",
-  "limiti": "Numero e data della legge ci sono (law_number, law_date); mancano data e numero della Gazzetta Ufficiale e il link al testo vigente su Normattiva (l'URN urn:nir:stato:legge:2026-10-23;196 si potrebbe costruire, ma non è nel database e non è verificato). «Pubblicata» si deduce solo dallo stato dell'iter «Approvato definitivamente. Legge», distinto da «non ancora pubblicato» del 20/10."
- },
- "punteggi": {
-  "correttezza": 2,
-  "fonti": 1,
-  "trappola": null,
-  "tempo_s": 10.2
- },
- "giro1": {
-  "correttezza": 2,
-  "fonti": 1,
-  "trappola": null
- },
- "causa_probabile": null,
- "note": "Come nel primo giro: legge 23 ottobre 2026 n. 196, GU n. 249 del 26/10/2026, conversione del DL 154/2026; dice che manca il link a Normattiva e linka la scheda Camera."
+  "id": "LEG-008",
+  "domanda": "La legge di conversione nata dall'AC 3131 è stata pubblicata? Numero, data e link al testo vigente.",
+  "categoria": "fonti",
+  "tipo_risposta": "link",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note_domanda": null,
+  "trappola": false,
+  "endpoint": "agente",
+  "inizio": 1793788338.31389,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "atto"
+  ],
+  "tempo_s": 22.9,
+  "risposta_sistema": "Sì. L’AC 3131 è diventato la **legge 23 ottobre 2026, n. 196**, di conversione del decreto-legge 28 agosto 2026, n. 154. È stata pubblicata nella **Gazzetta Ufficiale n. 249 del 26 ottobre 2026**. La scheda ufficiale dell’atto è [qui](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).\n\nNei dati disponibili non è indicato un link diretto al testo vigente su Normattiva; la fonte ufficiale fornita per l’atto è la [scheda della Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Sì: l'AC 3131 (S. 2023, conversione del decreto-legge 28 agosto 2026, n. 154, sulla continuità operativa di impianti di interesse strategico nazionale) è stato approvato definitivamente dalla Camera il 20/10/2026 ed è diventato la legge 23 ottobre 2026, n. 196 (stato «Approvato definitivamente. Legge» dal 23/10/2026). Scheda: http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131. Il database non ha la data di pubblicazione in Gazzetta Ufficiale né il link al testo vigente.",
+    "stato": "parziale",
+    "limiti": "Numero e data della legge ci sono (law_number, law_date); mancano data e numero della Gazzetta Ufficiale e il link al testo vigente su Normattiva (l'URN urn:nir:stato:legge:2026-10-23;196 si potrebbe costruire, ma non è nel database e non è verificato). «Pubblicata» si deduce solo dallo stato dell'iter «Approvato definitivamente. Legge», distinto da «non ancora pubblicato» del 20/10."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 22.9
+  },
+  "giri_precedenti": {
+    "giro1": 2,
+    "giro2": 2
+  },
+  "causa_probabile": null,
+  "note": "Come nei giri precedenti: legge 23 ottobre 2026 n. 196, GU n. 249 del 26/10/2026, conversione del DL 154/2026; dice che manca il link a Normattiva e linka la scheda Camera."
 }

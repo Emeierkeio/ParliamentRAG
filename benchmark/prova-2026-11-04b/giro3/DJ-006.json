@@ -1,0 +1,47 @@
+{
+  "id": "DJ-006",
+  "domanda": "Chi sono i deputati che hanno presentato più interrogazioni a risposta scritta?",
+  "categoria": "sindacato_ispettivo",
+  "tipo_risposta": "classifica",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note_domanda": "Primi firmatari distinti dai cofirmatari. Ai primi posti per firme ci sono Stefania Ascari (M5S), Francesca Ghirra, Devis Dori e Marco Grimaldi (AVS).",
+  "trappola": false,
+  "endpoint": "agente",
+  "inizio": 1793788316.814018,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_atti",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona"
+  ],
+  "tempo_s": 21.5,
+  "risposta_sistema": "La deputata che ha presentato più interrogazioni a risposta scritta nella XIX legislatura è **[Stefania Ascari (M5S)](http://dati.camera.it/ocd/persona.rdf/p307302)**: **510**, come prima firmataria.\n\nLa classifica delle prime dieci, tra gli atti presentati dal 13 ottobre 2022 al 4 novembre 2026 (gli ultimi atti nel dato sono del 30 ottobre), è:\n\n1. [Stefania Ascari (M5S)](http://dati.camera.it/ocd/persona.rdf/p307302) — **510**\n2. [Fabrizio Benzoni (Azione – Popolari Europeisti Riformatori – Renew Europe)](http://dati.camera.it/ocd/persona.rdf/p308913) — **487**\n3. [Marco Grimaldi (AVS)](http://dati.camera.it/ocd/persona.rdf/p308810) — **340**\n4. [Devis Dori (AVS)](http://dati.camera.it/ocd/persona.rdf/p307634) — **337**\n5. [Francesca Ghirra (AVS)](http://dati.camera.it/ocd/persona.rdf/p308861) — **293**\n6. [Elisabetta Piccolotti (AVS)](http://dati.camera.it/ocd/persona.rdf/p308816) — **216**\n7. [Pasqua L’Abbate (M5S)](http://dati.camera.it/ocd/persona.rdf/p307822) — **213**\n8. [Luana Zanella (AVS)](http://dati.camera.it/ocd/persona.rdf/p300469) — **191**\n9. [Emma Pavanelli (M5S)](http://dati.camera.it/ocd/persona.rdf/p308221) — **164**\n10. [Nicola Fratoianni (AVS)](http://dati.camera.it/ocd/persona.rdf/p305880) — **147**\n\nIl conteggio considera le **9.503 interrogazioni a risposta scritta alla Camera**, attribuite al **primo firmatario**.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Su 9.503 interrogazioni a risposta scritta della Camera nella XIX, i primi firmatari più attivi sono: Stefania Ascari (M5S) 510, Fabrizio Benzoni (Azione-PER-RE) 487, Marco Grimaldi (AVS) 340, Devis Dori (AVS) 337, Francesca Ghirra (AVS) 293, Elisabetta Piccolotti (AVS) 216, Pasqua L'Abbate (M5S) 213, Luana Zanella (AVS) 191, Emma Pavanelli (M5S) 164, Nicola Fratoianni (AVS) 147. Seguono Malavasi (PD-IDP) 141, Borrelli (AVS) 132, Manzi (PD-IDP) 128, Serracchiani (PD-IDP) 127.",
+    "stato": "calcolata",
+    "limiti": "Classifica per numero di interrogazioni a risposta scritta (act.kind = written_question) come primo firmatario; le cofirme sono in una colonna a parte. Il gruppo è quello alla data di oggi (2/11/2026), non quello alla data di ogni atto."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 21.5
+  },
+  "giri_precedenti": {
+    "giro1": 2,
+    "giro2": 2
+  },
+  "causa_probabile": null,
+  "note": "Classifica dei primi dieci identica al riferimento (Ascari 510, Benzoni 487, Grimaldi 340...), totale 9.503 giusto, ogni nome con la scheda su dati.camera.it come nel giro 2."
+}

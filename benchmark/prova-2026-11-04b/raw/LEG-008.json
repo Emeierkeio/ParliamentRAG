@@ -9,7 +9,7 @@
  "note": null,
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784666.3255968,
+ "inizio": 1793788338.31389,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
@@ -21,7 +21,7 @@
     "number": "3131",
     "signer": null,
     "initiative": null,
-    "limit": 10,
+    "limit": 20,
     "offset": 0
    },
    "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3131\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3131\", \"kind\": \"bill\", \"title\": \"S. 2023. - \\\"Conversione in legge, con modificazioni, del decreto-legge 28 agosto 2026, n. 154, recante misure urgenti per assicurare la continuità operativa di impianti di interesse strategico nazionale\\\" <i>(approvato dal Senato)</i> (3131)\", \"date\": \"2026-10-07\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"196\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131\", \"initiative\": \"Governo\"}]}"
@@ -38,8 +38,8 @@
   "cerca_atti",
   "atto"
  ],
- "tempo_s": 10.2,
- "risposta_sistema": "Sì. L’AC 3131 è diventato la **legge 23 ottobre 2026, n. 196**, pubblicata nella **Gazzetta Ufficiale n. 249 del 26 ottobre 2026**. La legge converte, con modificazioni, il decreto-legge 28 agosto 2026, n. 154. [Scheda ufficiale dell’atto AC 3131](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).\n\nNei dati disponibili non è presente l’URL diretto al testo vigente (ad esempio su Normattiva); la scheda della Camera riporta però numero, data e pubblicazione della legge.",
+ "tempo_s": 22.9,
+ "risposta_sistema": "Sì. L’AC 3131 è diventato la **legge 23 ottobre 2026, n. 196**, di conversione del decreto-legge 28 agosto 2026, n. 154. È stata pubblicata nella **Gazzetta Ufficiale n. 249 del 26 ottobre 2026**. La scheda ufficiale dell’atto è [qui](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).\n\nNei dati disponibili non è indicato un link diretto al testo vigente su Normattiva; la fonte ufficiale fornita per l’atto è la [scheda della Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).",
  "eventi": {
   "status": 1,
   "tool": 4,

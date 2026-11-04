@@ -1,0 +1,43 @@
+{
+ "id": "COM-012",
+ "domanda": "Fascicolo degli emendamenti sul ddl caregiver in XII Commissione: quanti per articolo e quanti articoli aggiuntivi?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "kind distingue emendamento, articoloAggiuntivo, subEmendamento.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784234.1214862,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "emendamenti",
+  "atto",
+  "atto",
+  "emendamenti",
+  "emendamenti",
+  "conta_emendamenti"
+ ],
+ "tempo_s": 28.2,
+ "risposta_sistema": "Ho identificato il ddl caregiver come **AC 2789**, “Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari”, esaminato in sede referente dalla XII Commissione della Camera. Nel fascicolo risultano **418 proposte emendative** in sede referente: il conteggio considera una proposta per numero di emendamento, senza moltiplicare eventuali riformulazioni con lo stesso numero.\n\nNon posso però ricostruire in modo affidabile il dettaglio **per ciascun articolo** né il numero degli **articoli aggiuntivi** dai dati già letti: avevo visto soltanto esempi riferiti agli articoli 1, 10 e 11, mentre l’elenco completo non è stato esaminato. Non sarebbe corretto dedurre le distribuzioni dal totale.\n\nIl riferimento ufficiale dell’atto è la [scheda Camera dell’AC 2789](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2789). Per il dato richiesto occorre consultare il **fascicolo degli emendamenti della XII Commissione**, contando i numeri raggruppati per l’articolo iniziale (per esempio 1.x, 2.x ecc.) e separando quelli formulati come articoli aggiuntivi.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il ddl caregiver è l'AC 2789 del governo («Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari»), in sede referente in XII Commissione. Le proposte distinte sono 418: 389 emendamenti (387 nel fascicolo del 22/4/2026 più gli emendamenti 1.100 e 2.100 del relatore), 23 articoli aggiuntivi e 6 subemendamenti al 2.100. Per articolo: art. 1: 29; art. 2: 63 emendamenti e 6 subemendamenti; art. 3: 18; art. 4: 71 e 1 articolo aggiuntivo; art. 5: 21 e 3; art. 6: 14; art. 7: 50 e 1; art. 8: 33 e 2; art. 9: 9; art. 10: 1; art. 11: 3; art. 12: 33 e 2; art. 13: 32 e 14; art. 14: 4; art. 15: 8. Ne risultano approvate 46.",
+  "stato": "calcolata",
+  "limiti": "Proposta = numero distinto (con tipo e articolo): lo stesso numero ricompare fra le riformulazioni e fra le approvate e va contato una volta (499 righe, 418 proposte). Gli articoli aggiuntivi sono contati sotto l'articolo dopo cui si inseriscono. Il dato degli approvati viene dai gruppi «PROPOSTE EMENDATIVE APPROVATE» del Bollettino."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 28.2
+ },
+ "giro1": {
+  "correttezza": 0,
+  "fonti": 0
+ },
+ "causa_probabile": "strumento_mancante",
+ "note": "Ora il totale è giusto (418 proposte distinte, non le 499 righe del primo giro), ma rinuncia al riparto per articolo e agli articoli aggiuntivi (23). conta_emendamenti non raggruppa per articolo né per tipo, ed emendamenti con venue «committee» rende ancora 0."
+}

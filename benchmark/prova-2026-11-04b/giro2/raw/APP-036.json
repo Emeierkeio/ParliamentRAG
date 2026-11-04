@@ -1,0 +1,69 @@
+{
+ "id": "APP-036",
+ "domanda": "Magi di +Europa quante volte ha votato con la maggioranza?",
+ "categoria": "voti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Riccardo Magi, Misto componente +Europa. Definire 'maggioranza' come i gruppi che sostengono il governo, alla data.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784520.856359,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Magi",
+    "chamber": null,
+    "group": null,
+    "in_office": true,
+    "limit": 20
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:307436\", \"name\": \"Riccardo Magi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307436&legislatura=19\"}]}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": null,
+    "end": null,
+    "chamber": "camera",
+    "groups": null,
+    "person": "it:person:camera:307436",
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, tutta la XIX legislatura; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 20205, \"cohesion\": 0.998, \"unanimous_share\": 0.936, \"positions\": {\"favor\": 4678, \"against\": 15501, \"abstain\": 25, \"tie\": 1}}, {\"group\": \"Misto - Sud Chiama Nord (MISTO-SCN)\", \"votes_with_voters\": 526, \"cohesion\": 0.998, \"unanimous_share\": 0.997, \"positions\": {\"favor\": 66, \"against\": 459, \"abstain\": 0, \"tie\": 1}}, {\"group\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"votes_with_voters\": 20199, \"cohesion\": 0.996, \"unanimous_share\": 0.914, \"positions\": {\"favor\": 16630, \"against\": 1713, \"abstain\": 1855, \"tie\": 1}}, {\"group\": \"Movimento 5 Stelle (M5S)\", \"votes_with_voters\": 20135, \"cohesion\": 0.996, \"unanimous_share\": 0.947, \"positions\": {\"favor\": 16723, \"against\": 1978, \"abstain\": 1434, \"tie\": 0}}, {\"group\": \"Alleanza Verdi e Sinistra (AVS)\", \"votes_with_voters\": 20200, \"cohesion\": 0.995, \"unanimous_share\": 0.983, \"positions\": {\"favor\": 16640, \"against\": 1906, \"abstain\": 1643, \"tie\": 11}}, {\"group\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes_with_voters\": 2014, \"cohesion\": 0.994, \"unanimous_share\": 0.98, \"positions\": {\"favor\": 291, \"against\": 1707, \"abstain\": 16, \"tie\": 0}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}, {\"group\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes_with_voters\": 19947, \"cohesion\": 0.988, \"unanimous_share\": 0.973, \"positions\": {\"favor\": 4633, \"against\": 15194, \"abstain\": 36, \"tie\": 84}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"votes_with_voters\": 20205, \"cohesion\": 0.987, \"unanimous_share\": 0.854, \"positions\": {\"favor\": 4671, \"against\": 15500, \"abstain\": 34, \"tie\": 0}}, {\"group\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"votes_with_voters\": 20174, \"cohesion\": 0.975, \"unanimous_share\": 0.917, \"positions\": {\"favor\": 14249, \"against\": 284"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307436"
+   },
+   "result": "{\"uri\": \"it:person:camera:307436\", \"name\": \"Riccardo Magi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307436&legislatura=19\", \"given_name\": \"Riccardo\", \"family_name\": \"Magi\", \"gender\": \"M\", \"birth_date\": \"1976-08-07\", \"birth_place\": \"Roma\", \"profession\": \"già Segretario Radicali italiani, Presidente di +Europa\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307436\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"PIEMONTE 1 - P01\", \"college\": \"PIEMONTE 1 - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2022-10-19\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_4301\", \"target_name\": \"Commissione Parlamentare di Inchiesta Sugli Effetti Economici e Sociali Derivanti Dalla Transizione Demografica in Atto\", \"title\": \"member\", \"start_date\": \"2025-01-16\", \"end_date\": \"2026-03-25\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:group:gr4111\", \"target_name\": \"Misto\", \"title\": \"deputy_leader\", \"start_date\": \"2022-10-19\"}, {\"target\": \"it:camera:19:group:gr4111\", \"target_name\": \"Misto\", \"title\": \"component_representative\", \"start_date\": \"2022-10-19\"}, {\"target\": \"it:camera:19:body:o19_4301\", \"target_name\": \"Commissione Parlamentare di Inchiesta Sugli Effetti Economici e Sociali Derivanti Dalla Transizione Demografica in Atto\", \"title\": \"group_whip\", \"start_date\": \"2025-02-17\", \"end_date\": \"2026-03-25\"}], \"counts\": {\"speeches\": 683, \"ballots\": 20257, \"ballots_cast\": 7959, \"ballots_mission\": 10840, \"bills_first_signer\": 23, \"amendments_signed\": 1403}}"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "voto_gruppi",
+  "scheda_persona"
+ ],
+ "tempo_s": 25.9,
+ "risposta_sistema": "Riccardo Magi ha votato come i gruppi della maggioranza di governo **1.363 volte**, su **7.956 votazioni palesi** a cui ha partecipato: **17,1%**.\n\nIl confronto è identico con **Fratelli d’Italia, Lega e Forza Italia**; per **Noi Moderati** risulta 1.347 volte su 7.799 (17,3%), perché il gruppo non ha una posizione registrata in tutte le stesse votazioni. Il dato copre la XIX legislatura dal 25 ottobre 2022 al 28 ottobre 2026; esclude voti segreti, assenze, missioni e presenti non votanti. Magi è deputato della componente **+Europa – Stati Uniti d’Europa** del gruppo Misto. [Scheda Camera](http://dati.camera.it/ocd/persona.rdf/p307436)",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

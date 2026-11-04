@@ -1,0 +1,130 @@
+{
+ "id": "COMU-027",
+ "domanda": "Il senatore Meloni ha detto il 9 settembre 2026 in Senato che il provvedimento era inutile: mi confermi che è la premier?",
+ "categoria": "persone",
+ "tipo_risposta": "fatto",
+ "ramo": "senato",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Trappola di omonimia: è Marco Meloni (PD-IDP), non Giorgia Meloni. Il resoconto scrive solo «MELONI».",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793788382.0838678,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Meloni",
+    "chamber": "senato",
+    "group": null,
+    "in_office": false,
+    "limit": 30
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\"}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "inutile",
+    "chamber": "senato",
+    "person": null,
+    "start": "2026-09-09",
+    "end": "2026-09-09",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 6, \"items\": [{\"uri\": \"it:senato:19:sed0450:int00023\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:32681\", \"name\": \"Stefano Patuanelli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032681.jpg\"}, \"speaker_label\": \"PATUANELLI\", \"snippet\": \"maggioranza che la presenta cercando di garantirsi con la legge elettorale un risultato elettorale migliore. Ecco, io penso sia [[inutile]] essere ipocriti. In qualsiasi momento la maggioranza presenta il disegno di legge elettorale, l'opposizione dice che ci sono\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683\"}, {\"uri\": \"it:senato:19:sed0450:int00074\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:27622\", \"name\": \"Filippo Sensi\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00027622.jpg\"}, \"speaker_label\": \"SENSI\", \"snippet\": \"metodo d'Hondt. Ma, insomma, vuoi scherzare? Un brivido, un frisson.\\n\\nDelle grandi riforme abbiamo già detto, è [[inutile]] parlarne: niente, nulla, nix.\\n\\nLe misure che avevate messo in programma? Ricordate la flat tax? Il povero Giorgetti, messo alle strette\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683\"}, {\"uri\": \"it:senato:19:sed0450:int00078\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:32691\", \"name\": \"Elisa Pirro\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032691.jpg\"}, \"speaker_label\": \"PIRRO\", \"snippet\": \"già e di come potrete fare, in vista delle prossime elezioni, per continuare a scaldare [[inutilmente]] le poltrone che avete occupato fino a oggi.\\n\\nSe avete un minimo di pudore, un minimo di senso civico, un minimo di senso delle ... vostra inerzia, apatia, indifferenza totale per qualsiasi cosa che non sia il vostro attaccamento al potere, comincia a diventare [[inutile]] anche sprecare quel po' di fiato che comunque troviamo ancora per"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:29490"
+   },
+   "result": "{\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\", \"given_name\": \"Marco\", \"family_name\": \"Meloni\", \"gender\": \"M\", \"profession\": \"Avvocato\", \"source_uri\": \"http://dati.senato.it/senatore/29490\", \"same_as\": [\"it:person:camera:305727\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Sardegna\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:4-224\", \"target_name\": \"Commissione parlamentare per il contrasto degli svantaggi derivanti dall'insularità\", \"title\": \"member\", \"start_date\": \"2023-07-06\"}, {\"target\": \"it:senato:19:body:0-1\", \"target_name\": \"1ª Commissione permanente (Affari Costituzionali)\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [], \"counts\": {\"speeches\": 122, \"ballots\": 5035, \"ballots_cast\": 3492, \"ballots_mission\": 1241, \"bills_first_signer\": 10, \"amendments_signed\": 11181}}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 1, \"results\": [{\"quote\": \"l'inutilità, l'immobilismo, la palude\", \"found\": true, \"speech\": \"it:senato:19:sed0450:int00133\", \"sitting\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"date\": \"2026-09-09\", \"speaker\": \"Marco Meloni\", \"group\": \"PD-IDP\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cerca_interventi",
+  "scheda_persona"
+ ],
+ "tempo_s": 22.5,
+ "risposta_sistema": "No. Il senatore che intervenne il 9 settembre 2026 è **Marco Meloni**, del **PD-IDP**, eletto al Senato per la Sardegna; non è Giorgia Meloni né ricopre incarichi di Governo nella scheda parlamentare. [Scheda del senatore Marco Meloni](http://dati.senato.it/senatore/29490)\n\nNel suo intervento in Aula si riferiva alla legislatura e al disegno di legge elettorale, parlando di «l'inutilità, l'immobilismo, la palude»; poi citava espressamente Giorgia Meloni. [Resoconto della seduta del Senato del 9 settembre 2026](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683)",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "pass"
+   },
+   "groups": {
+    "present": [
+     "PD",
+     "Governo"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "Avanti PSI (Misto)",
+     "Per le Autonomie (SVP-PATT, Campobase)",
+     "Misto, non iscritti"
+    ],
+    "silent": [
+     "Rifondazione Comunista (Misto)",
+     "Italia Domani - Marco Rizzo (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "l'inutilità, l'immobilismo, la palude",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683"
+    }
+   ],
+   "authority": {
+    "topic": "Il senatore Meloni ha detto il 9 settembre 2026 in Senato che il provvedimento era inutile: mi confermi che è la premier?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Marco Meloni",
+      "group": "Partito Democratico",
+      "role": null,
+      "rank": 8,
+      "pool_size": 11,
+      "group_size": 11,
+      "pool": "speakers_on_topic",
+      "authoritative": false,
+      "source": "quoted"
+     }
+    ]
+   },
+   "scope": "Senato della Repubblica, XIX legislatura"
+  }
+ }
+}

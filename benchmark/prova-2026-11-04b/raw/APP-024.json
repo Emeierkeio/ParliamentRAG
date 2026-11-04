@@ -9,7 +9,7 @@
  "note": "Tommaso Antonino Calderone: FI-PPE fino al 21/9/2026, poi Misto, componente Futuro Nazionale Vannacci - Free.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784186.928301,
+ "inizio": 1793787928.465463,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
@@ -35,8 +35,8 @@
   "cerca_persone",
   "scheda_persona"
  ],
- "tempo_s": 12.0,
- "risposta_sistema": "Sì. Il deputato **Tommaso Antonino Calderone** ha lasciato il gruppo **Forza Italia–Berlusconi Presidente–PPE** il **21 settembre 2026**. Dalla stessa data aderisce alla componente **Futuro Nazionale Vannacci - Free** del Gruppo Misto. [Scheda della Camera](http://dati.camera.it/ocd/persona.rdf/p308766)",
+ "tempo_s": 9.0,
+ "risposta_sistema": "Sì. Il deputato **Tommaso Antonino Calderone** ha lasciato il gruppo **Forza Italia - Berlusconi Presidente - PPE** il **21 settembre 2026**. Da quella stessa data aderisce alla componente **Futuro Nazionale Vannacci - Free** del Gruppo Misto. [Scheda della Camera](http://dati.camera.it/ocd/persona.rdf/p308766)",
  "eventi": {
   "status": 1,
   "tool": 4,

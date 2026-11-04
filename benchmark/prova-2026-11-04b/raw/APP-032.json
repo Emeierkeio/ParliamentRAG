@@ -9,7 +9,7 @@
  "note": "Notizia falsa: nel v3 il S. 1408 sulla morte medicalmente assistita è in esame in commissione al Senato. Dirlo con la fonte.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784175.399449,
+ "inizio": 1793790296.791115,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
@@ -27,10 +27,24 @@
    "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:1886\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1886\", \"kind\": \"bill\", \"title\": \"S. 737. - Senatori PIROVANO ed altri: \\\"Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti\\\" <em>(approvata dalla 1ª Commissione permanente del Senato) </em> (1886)\", \"date\": \"2024-05-20\", \"status\": \"In corso di esame in Commissione\", \"law_number\": \"175\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1886\", \"initiative\": \"Parlamentare\"}]}"
   },
   {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "norme sul fine vita, suicidio medicalmente assistito e disposizioni di fine vita",
+    "fonti": [
+     "atti"
+    ],
+    "ramo": "camera",
+    "da": "2022-10-13",
+    "a": "2026-11-04",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"norme sul fine vita, suicidio medicalmente assistito e disposizioni di fine vita\", \"fonti\": [\"atti\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:313\", \"atto\": \"it:camera:19:ac:313\", \"titolo\": \"SPORTIELLO ed altri: \\\"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\\\" (313)\", \"testo\": \"SPORTIELLO ed altri: \\\"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\\\" (313)\", \"ramo\": \"camera\", \"data\": \"2022-10-13\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313\", \"similarita\": 0.857}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:949\", \"atto\": \"it:camera:19:ac:949\", \"titolo\": \"ZANELLA ed altri: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (949)\", \"testo\": \"ZANELLA ed altri: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (949)\", \"ramo\": \"camera\", \"data\": \"2023-03-03\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;949\", \"similarita\": 0.85}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:1659\", \"atto\": \"it:camera:19:ac:1659\", \"titolo\": \"ZANELLA ed altri: \\\"Disciplina delle procedure e dei tempi per l’assistenza sanitaria al suicidio medicalmente assistito\\\" (1659)\", \"testo\": \"ZANELLA ed altri: \\\"Disciplina delle procedure e dei tempi per l’assistenza sanitaria al suicidio medicalmente assistito\\\" (1659)\", \"ramo\": \"camera\", \"data\": \"2024-01-19\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1659\", \"similarita\": 0.849}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:1559\", \"atto\": \"it:camera:19:ac:1559\", \"titolo\": \"SERRACCHIANI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (1559)\", \"testo\": \"SERRACCHIANI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (1559)\", \"ramo\": \"camera\", \"data\": \"2023-11-20\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559\", \"similarita\": 0.839}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:87\", \"atto\": \"it:camera:19:ac:87\", \"titolo\": \"ENRICO COSTA: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (87)\", \"testo\": \"ENRICO COSTA: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (87)\", \"ramo\": \"camera\", \"data\": \"2022-10-13\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;87\", \"similarita\": 0.837}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:4-07520\", \"atto\": \"it:camera:19:aic:4-07520\", \"titolo\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/07520 presentata da BENZONI FABRIZIO (AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE) in data 08/04/2026\", \"testo\": \"Sono a tal proposito indicative le numerose proposte "
+  },
+  {
    "name": "cerca_atti",
    "args": {
-    "q": "fine vita",
-    "chamber": "senato",
+    "q": "suicidio medicalmente assistito",
+    "chamber": "camera",
     "kind": "bill",
     "number": null,
     "signer": null,
@@ -38,12 +52,12 @@
     "limit": 100,
     "offset": 0
    },
-   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:737\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"737\", \"kind\": \"bill\", \"title\": \"Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti\", \"date\": \"2023-05-29\", \"status\": \"approvato\", \"law_number\": \"175\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52749.htm\", \"initiative\": \"Sen. Pirovano Daisy ed altri\"}]}"
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:ac:1659\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1659\", \"kind\": \"bill\", \"title\": \"ZANELLA ed altri: \\\"Disciplina delle procedure e dei tempi per l’assistenza sanitaria al suicidio medicalmente assistito\\\" (1659)\", \"date\": \"2024-01-19\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1659\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:313\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"313\", \"kind\": \"bill\", \"title\": \"SPORTIELLO ed altri: \\\"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\\\" (313)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313\", \"initiative\": \"Parlamentare\"}]}"
   },
   {
    "name": "cerca_atti",
    "args": {
-    "q": "disposizioni in materia di morte volontaria medicalmente assistita",
+    "q": "morte volontaria medicalmente assistita",
     "chamber": "camera",
     "kind": "bill",
     "number": null,
@@ -57,138 +71,34 @@
   {
    "name": "cerca_per_significato",
    "args": {
-    "testo": "proposta di legge sul fine vita, suicidio assistito, morte volontaria medicalmente assistita approvata dalla Camera",
+    "testo": "legge nazionale fine vita suicidio medicalmente assistito",
     "fonti": [
-     "atti",
-     "documenti",
-     "interventi"
+     "atti"
     ],
-    "ramo": "camera",
+    "ramo": "senato",
     "da": "2022-10-13",
-    "a": "2026-11-03",
+    "a": "2026-11-04",
     "quanti": 30
    },
-   "result": "{\"testo\": \"proposta di legge sul fine vita, suicidio assistito, morte volontaria medicalmente assistita approvata dalla Camera\", \"fonti\": [\"atti\", \"documenti\", \"interventi\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-21983\", \"atto\": null, \"titolo\": \"Il controllo di costituzionalità delle leggi\", \"testo\": \"Attivit� parlamentare\\n\\nNel corso della attuale legislatura il Parlamento sta affrontando la questione relativa alla morte volontaria medicalmente assistita, attraverso l'esame al Senato, in sede referente presso le Commissioni riunite Giustizia e Affari sociali, di una serie di proposte di legge di iniziativa parlamentare. Si tratta in particolare degli Atti Senato n. 65 di iniziativa dei senatori Parrini e Fina; n. 104, di iniziativa dei senatori Bazoli, Mirabelli e altri; n. 124, di iniziativa della senatrice Pirro e altri; n. 570, di iniziativa del senatore De Cristofaro e altri; n. 1083, di iniziativa dei senatori Paroli, Zanettin ed altri e infine n. 1408, d'iniziativa delle senatrici G\", \"ramo\": \"camera\", \"data\": \"2025-08-05\", \"esito\": null, \"url\": \"https://temi.camera.it/leg19/dossier/OCD18-21983/il-controllo-costituzionalita-leggi.html\", \"similarita\": 0.848}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-21654\", \"atto\": null, \"titolo\": \"Il controllo di costituzionalità delle leggi\", \"testo\": \"Gli articoli 2 e 3 modificano, rispettivamente, la legge 15 marzo 2010, n. 38 (recante disposizioni per garantire l'accesso alle cure palliative e alla terapia del dolore) e la legge n. 219/2017 (recante norme in materia di consenso informato e di disposizioni anticipate di trattamento).\\n\\nIl disegno di legge A.S. n. 104 reca disposizioni in materia di \\\"morte volontaria medicalmente assistista\\\", disciplinando la facolt� di richiedere assistenza medica, al fine di porre fine volontariamente ed autonomamente alla propria vita, in presenza di specifici presupposti e condizioni.\\n\\nIl disegno di legge A.S. n. 124 prevede per ogni soggetto maggiorenne, capace di intendere e volere, il diritto, a det\", \"ramo\": \"camera\", \"data\": \"2025-06-05\", \"esito\": null, \"url\": \"https://temi.camera.it/leg19/dossier/OCD18-21654/il-controllo-costituzionalita-leggi.html\", \"similarita\": 0.843}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-22149\", \"atto\": null, \"titolo\": \"Il controllo di costituzionalità delle leggi\", \"testo\": \"Il giudice a quo (il Tribunale di Firenze) dovr� pertanto, al fine della definizione del caso in oggetto, riavviare l�accertamento circa la sussistenza o meno di dispositivi che consentano alla ricorrente di auto-somministrarsi il farmaco letale. In via generale, afferma la Corte, nell�ipotesi di reperibilit� di tali dispositivi, il Servizio sanitario nazionale dovr� prontamente acquisirli e metterli a disposizione � con il proprio ausilio, se necessario � del paziente che sia stato ammesso alla procedura di suicidio medicalmente assistito. Per l�ipotesi opposta di non sus"
-  },
-  {
-   "name": "cerca_atti",
-   "args": {
-    "q": "morte volontaria medicalmente assistita",
-    "chamber": "senato",
-    "kind": "bill",
-    "number": null,
-    "signer": null,
-    "initiative": null,
-    "limit": 100,
-    "offset": 0
-   },
-   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:senato:19:ddl:570\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"570\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di morte volontaria medicalmente assistita\", \"date\": \"2023-03-02\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52356.htm\", \"initiative\": \"Sen. De Cristofaro Peppe ed altri\"}, {\"uri\": \"it:senato:19:ddl:104\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"104\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di morte volontaria medicalmente assistita\", \"date\": \"2022-10-13\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/50966.htm\", \"initiative\": \"Sen. Bazoli Alfredo ed altri\"}]}"
-  },
-  {
-   "name": "atto",
-   "args": {
-    "uri": "it:camera:19:ac:1559"
-   },
-   "result": "{\"uri\": \"it:camera:19:ac:1559\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1559\", \"kind\": \"bill\", \"title\": \"SERRACCHIANI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (1559)\", \"date\": \"2023-11-20\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2024-02-07\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_1559\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307374\", \"name\": \"Debora Serracchiani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307374&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:305974\", \"name\": \"Roberto Speranza\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305974&legislatura=19\"}, \"first\": false}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2023-11-20\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2024-02-07\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.1559.19PDL0063040\", \"title\": \"Disegno di Legge presentato il 20 novembre 2023\", \"date\": \"2023-11-20\", \"articles\": 11, \"length\": 46779}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
-  },
-  {
-   "name": "atto",
-   "args": {
-    "uri": "it:camera:19:ac:313"
-   },
-   "result": "{\"uri\": \"it:camera:19:ac:313\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"313\", \"kind\": \"bill\", \"title\": \"SPORTIELLO ed altri: \\\"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\\\" (313)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2022-11-23\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_313\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307202\", \"name\": \"Gilda Sportiello\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307202&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308896\", \"name\": \"Andrea Quartini\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308896&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307210\", \"name\": \"Carmela Di Lauro\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307210&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307926\", \"name\": \"Giuseppe Conte\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307926&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"first\": false}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2022-10-13\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2022-11-23\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.313.19PDL0005770\", \"title\": \"Disegno di Legge presentato il 13 ottobre 2022\", \"date\": \"2022-10-13\", \"articles\": 9, \"length\": 27671}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
-  },
-  {
-   "name": "verifica_citazioni",
-   "args": {},
-   "result": "{\"quotes\": 2, \"verified\": 1, \"results\": [{\"quote\": \"Assegnato\", \"found\": false, \"reason\": \"troppo corta per verificarla\"}, {\"quote\": \"Disposizioni in materia di morte volontaria medicalmente assistita\", \"found\": true, \"speech\": \"it:senato:19:sed0326:int00062\", \"sitting\": \"it:senato:19:sed0326\", \"chamber\": \"senato\", \"date\": \"2025-07-09\", \"speaker\": \"Maria Domenica Castellone\", \"group\": \"M5S\"}]}"
+   "result": "{\"testo\": \"legge nazionale fine vita suicidio medicalmente assistito\", \"fonti\": [\"atti\"], \"rami\": [\"senato\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:senato:19:ddl:104\", \"atto\": \"it:senato:19:ddl:104\", \"titolo\": \"Disposizioni in materia di morte volontaria medicalmente assistita\", \"testo\": \"Disposizioni in materia di morte volontaria medicalmente assistita\", \"ramo\": \"senato\", \"data\": \"2022-10-13\", \"esito\": null, \"url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/50966.htm\", \"similarita\": 0.884}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:ddl:570\", \"atto\": \"it:senato:19:ddl:570\", \"titolo\": \"Disposizioni in materia di morte volontaria medicalmente assistita\", \"testo\": \"Disposizioni in materia di morte volontaria medicalmente assistita\", \"ramo\": \"senato\", \"data\": \"2023-03-02\", \"esito\": null, \"url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52356.htm\", \"similarita\": 0.884}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:ddl:124\", \"atto\": \"it:senato:19:ddl:124\", \"titolo\": \"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\", \"testo\": \"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\", \"ramo\": \"senato\", \"data\": \"2022-10-13\", \"esito\": null, \"url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/50988.htm\", \"similarita\": 0.884}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:ddl:1408\", \"atto\": \"it:senato:19:ddl:1408\", \"titolo\": \"Disposizioni in materia di morte medicalmente assistita\", \"testo\": \"Disposizioni in materia di morte medicalmente assistita\", \"ramo\": \"senato\", \"data\": \"2025-03-04\", \"esito\": null, \"url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54350.htm\", \"similarita\": 0.87}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:ddl:65\", \"atto\": \"it:senato:19:ddl:65\", \"titolo\": \"Disposizioni in materia di terapia del dolore e dignità nella fase finale della vita, nonché modifiche all'articolo 580 del codice penale\", \"testo\": \"Disposizioni in materia di terapia del dolore e dignità nella fase finale della vita, nonché modifiche all'articolo 580 del codice penale\", \"ramo\": \"senato\", \"data\": \"2022-10-13\", \"esito\": null, \"url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/50907.htm\", \"similarita\": 0.85}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:ddl:1597\", \"atto\": \"it:senato:19:ddl:1597\", \"titolo\": \"Disposizioni in materia di aiuto medico alla morte volontaria\", \"testo\": \"Disposizioni in materia di aiuto medico alla morte volontaria\", \"ramo\": \"senato\", \"data\": \"2025-07-15\", \"esito\": null, \"url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54755.htm\", \"similarita\": 0.848}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:ddl:516\", \"atto\": \"it:senato:19:ddl:516\", \"titolo\": \"Disposizioni in materia di ospedalizzazione domiciliare per i malati terminali\", \"testo\": \"Disposizioni in materia di ospedalizzazione domiciliare per i malati terminali\", \"ramo\": \"senato\", \"data\": \"2023-01-30\", \"esito\": null, \"url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52216.htm\", \"similarita\": 0.817}, {\"fonte"
   }
  ],
  "strumenti": [
   "cerca_atti",
-  "cerca_atti",
-  "cerca_atti",
   "cerca_per_significato",
   "cerca_atti",
-  "atto",
-  "atto"
+  "cerca_atti",
+  "cerca_per_significato"
  ],
- "tempo_s": 20.8,
- "risposta_sistema": "No. Nella **XIX legislatura** la Camera non ha approvato una legge sul fine vita / suicidio medicalmente assistito.\n\nLe proposte presentate alla Camera risultano ancora nello stato di **«Assegnato»**, senza votazioni né passaggi conclusivi: per esempio la proposta C. 1559, sulle «Disposizioni in materia di morte volontaria medicalmente assistita», è assegnata dal 7 febbraio 2024. [Scheda Camera C. 1559](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559) Anche la C. 313 sul suicidio medicalmente assistito e trattamento eutanasico è assegnata, dal 23 novembre 2022. [Scheda Camera C. 313](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313)\n\nL’esame parlamentare principale della materia è invece al **Senato**, dove i disegni di legge S. 104 e S. 570 risultano ancora in esame in Commissione, non approvati dall’Aula. [Scheda Senato S. 104](https://www.senato.it/leg/19/BGT/Schede/Ddliter/50966.htm) [Scheda Senato S. 570](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52356.htm)\n\nProbabilmente la notizia confonde l’attività della legislatura precedente o iniziative regionali con un’approvazione della Camera in questa legislatura. Dati aggiornati alle sedute del 3 novembre 2026.",
+ "tempo_s": 74.4,
+ "risposta_sistema": "No: nei dati parlamentari disponibili non risulta che la Camera abbia già approvato una legge nazionale sul fine vita o sulla morte medicalmente assistita.\n\nAlla Camera risultano varie proposte, ma sono ancora **assegnate** e non approvate dall’Aula, tra cui:\n\n- [C. 313, “Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico”](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313);\n- [C. 1659, sulle procedure e i tempi dell’assistenza sanitaria al suicidio medicalmente assistito](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1659);\n- [C. 87](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;87), [C. 251](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;251), [C. 949](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;949) e [C. 1559](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559), tutte in materia di morte volontaria medicalmente assistita.\n\nAnche al Senato sono stati presentati disegni di legge sul tema, per esempio il [S. 104](https://www.senato.it/leg/19/BGT/Schede/Ddliter/50966.htm) e il [S. 1408](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54350.htm), ma questo non equivale a un’approvazione della Camera. Dati aggiornati alle sedute del 3 novembre 2026.",
  "eventi": {
   "status": 1,
-  "tool": 14,
-  "dati": 8,
+  "tool": 10,
+  "dati": 5,
   "delta": 1,
   "suggestions": 1,
   "done": 1
  },
- "errori": [],
- "verifica": {
-  "dati": {
-   "outcome": {
-    "groups": "fail",
-    "authority": "pass",
-    "quotes": "fail"
-   },
-   "groups": {
-    "present": [],
-    "missing": [
-     "Fratelli d'Italia",
-     "Partito Democratico",
-     "Lega - Salvini Premier",
-     "Movimento 5 Stelle",
-     "Forza Italia",
-     "Alleanza Verdi e Sinistra",
-     "Azione - PER",
-     "Italia Viva - Casa Riformista",
-     "Noi Moderati",
-     "+Europa (Misto)",
-     "Futuro Nazionale Vannacci (Misto)",
-     "Minoranze linguistiche (Misto)",
-     "Per le Autonomie (SVP-PATT, Campobase)",
-     "Misto, non iscritti",
-     "Governo"
-    ],
-    "silent": [
-     "Sud chiama Nord (Misto)",
-     "Avanti PSI (Misto)",
-     "Rifondazione Comunista (Misto)",
-     "Italia Domani - Marco Rizzo (Misto)"
-    ]
-   },
-   "quotes": [
-    {
-     "quote": "Assegnato",
-     "status": "not_found",
-     "closest_passage": null,
-     "url": null
-    },
-    {
-     "quote": "Disposizioni in materia di morte volontaria medicalmente assistita",
-     "status": "exact",
-     "closest_passage": null,
-     "url": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1465249"
-    }
-   ],
-   "authority": {
-    "topic": "ho letto che la Camera ha già approvato il fine vita, è vero?",
-    "available": true,
-    "voices": [
-     {
-      "name": "Maria Domenica Castellone",
-      "group": "Movimento 5 Stelle",
-      "role": null,
-      "rank": 2,
-      "pool_size": 5,
-      "group_size": 5,
-      "pool": "speakers_on_topic",
-      "authoritative": true,
-      "source": "quoted"
-     }
-    ]
-   },
-   "scope": "Camera dei deputati e Senato della Repubblica, XIX legislatura"
-  }
- }
+ "errori": []
 }

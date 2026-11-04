@@ -9,13 +9,24 @@
  "note": "Riccardo Magi, Misto componente +Europa. Definire 'maggioranza' come i gruppi che sostengono il governo, alla data.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784520.856359,
+ "inizio": 1793788219.4774022,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
    "name": "cerca_persone",
    "args": {
     "q": "Magi",
+    "chamber": null,
+    "group": "+Europa",
+    "in_office": true,
+    "limit": 20
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Riccardo Magi",
     "chamber": null,
     "group": null,
     "in_office": true,
@@ -32,15 +43,15 @@
     "confidence": null,
     "act": null,
     "q": null,
-    "start": null,
-    "end": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
     "chamber": "camera",
     "groups": null,
     "person": "it:person:camera:307436",
     "limit": 50,
     "offset": 0
    },
-   "result": "{\"counted\": \"Votazioni palesi, Camera, tutta la XIX legislatura; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 20205, \"cohesion\": 0.998, \"unanimous_share\": 0.936, \"positions\": {\"favor\": 4678, \"against\": 15501, \"abstain\": 25, \"tie\": 1}}, {\"group\": \"Misto - Sud Chiama Nord (MISTO-SCN)\", \"votes_with_voters\": 526, \"cohesion\": 0.998, \"unanimous_share\": 0.997, \"positions\": {\"favor\": 66, \"against\": 459, \"abstain\": 0, \"tie\": 1}}, {\"group\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"votes_with_voters\": 20199, \"cohesion\": 0.996, \"unanimous_share\": 0.914, \"positions\": {\"favor\": 16630, \"against\": 1713, \"abstain\": 1855, \"tie\": 1}}, {\"group\": \"Movimento 5 Stelle (M5S)\", \"votes_with_voters\": 20135, \"cohesion\": 0.996, \"unanimous_share\": 0.947, \"positions\": {\"favor\": 16723, \"against\": 1978, \"abstain\": 1434, \"tie\": 0}}, {\"group\": \"Alleanza Verdi e Sinistra (AVS)\", \"votes_with_voters\": 20200, \"cohesion\": 0.995, \"unanimous_share\": 0.983, \"positions\": {\"favor\": 16640, \"against\": 1906, \"abstain\": 1643, \"tie\": 11}}, {\"group\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes_with_voters\": 2014, \"cohesion\": 0.994, \"unanimous_share\": 0.98, \"positions\": {\"favor\": 291, \"against\": 1707, \"abstain\": 16, \"tie\": 0}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}, {\"group\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes_with_voters\": 19947, \"cohesion\": 0.988, \"unanimous_share\": 0.973, \"positions\": {\"favor\": 4633, \"against\": 15194, \"abstain\": 36, \"tie\": 84}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"votes_with_voters\": 20205, \"cohesion\": 0.987, \"unanimous_share\": 0.854, \"positions\": {\"favor\": 4671, \"against\": 15500, \"abstain\": 34, \"tie\": 0}}, {\"group\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"votes_with_voters\": 20174, \"cohesion\": 0.975, \"unanimous_share\": 0.917, \"positions\": {\"favor\": 14249, \"against\": 284"
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 13/10/2022 al 03/11/2026; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 20205, \"cohesion\": 0.998, \"unanimous_share\": 0.936, \"positions\": {\"favor\": 4678, \"against\": 15501, \"abstain\": 25, \"tie\": 1}}, {\"group\": \"Misto - Sud Chiama Nord (MISTO-SCN)\", \"votes_with_voters\": 526, \"cohesion\": 0.998, \"unanimous_share\": 0.997, \"positions\": {\"favor\": 66, \"against\": 459, \"abstain\": 0, \"tie\": 1}}, {\"group\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"votes_with_voters\": 20199, \"cohesion\": 0.996, \"unanimous_share\": 0.914, \"positions\": {\"favor\": 16630, \"against\": 1713, \"abstain\": 1855, \"tie\": 1}}, {\"group\": \"Movimento 5 Stelle (M5S)\", \"votes_with_voters\": 20135, \"cohesion\": 0.996, \"unanimous_share\": 0.947, \"positions\": {\"favor\": 16723, \"against\": 1978, \"abstain\": 1434, \"tie\": 0}}, {\"group\": \"Alleanza Verdi e Sinistra (AVS)\", \"votes_with_voters\": 20200, \"cohesion\": 0.995, \"unanimous_share\": 0.983, \"positions\": {\"favor\": 16640, \"against\": 1906, \"abstain\": 1643, \"tie\": 11}}, {\"group\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes_with_voters\": 2014, \"cohesion\": 0.994, \"unanimous_share\": 0.98, \"positions\": {\"favor\": 291, \"against\": 1707, \"abstain\": 16, \"tie\": 0}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}, {\"group\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes_with_voters\": 19947, \"cohesion\": 0.988, \"unanimous_share\": 0.973, \"positions\": {\"favor\": 4633, \"against\": 15194, \"abstain\": 36, \"tie\": 84}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"votes_with_voters\": 20205, \"cohesion\": 0.987, \"unanimous_share\": 0.854, \"positions\": {\"favor\": 4671, \"against\": 15500, \"abstain\": 34, \"tie\": 0}}, {\"group\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"votes_with_voters\": 20174, \"cohesion\": 0.975, \"unanimous_share\": 0.917, \"positions\": {\"favor\": 14249, \"against\":"
   },
   {
    "name": "scheda_persona",
@@ -52,15 +63,16 @@
  ],
  "strumenti": [
   "cerca_persone",
+  "cerca_persone",
   "voto_gruppi",
   "scheda_persona"
  ],
- "tempo_s": 25.9,
- "risposta_sistema": "Riccardo Magi ha votato come i gruppi della maggioranza di governo **1.363 volte**, su **7.956 votazioni palesi** a cui ha partecipato: **17,1%**.\n\nIl confronto è identico con **Fratelli d’Italia, Lega e Forza Italia**; per **Noi Moderati** risulta 1.347 volte su 7.799 (17,3%), perché il gruppo non ha una posizione registrata in tutte le stesse votazioni. Il dato copre la XIX legislatura dal 25 ottobre 2022 al 28 ottobre 2026; esclude voti segreti, assenze, missioni e presenti non votanti. Magi è deputato della componente **+Europa – Stati Uniti d’Europa** del gruppo Misto. [Scheda Camera](http://dati.camera.it/ocd/persona.rdf/p307436)",
+ "tempo_s": 46.4,
+ "risposta_sistema": "Riccardo Magi (+Europa–Stati Uniti d’Europa, componente del Misto) ha votato **1.363 volte** nello stesso modo di **Fratelli d’Italia, Lega e Forza Italia**, cioè dei gruppi della maggioranza, su **7.956 votazioni palesi** alle quali ha partecipato: **17,1%**.\n\nIl dato copre dal 13 ottobre 2022 al 3 novembre 2026; esclude voti segreti, assenze, missioni e presenti non votanti. Il confronto considera la posizione prevalente di ciascun gruppo e non include il voto di Magi nel calcolo della posizione della sua componente. [Scheda di Riccardo Magi](http://dati.camera.it/ocd/persona.rdf/p307436)",
  "eventi": {
   "status": 1,
-  "tool": 6,
-  "dati": 3,
+  "tool": 8,
+  "dati": 4,
   "delta": 1,
   "suggestions": 1,
   "done": 1

@@ -9,14 +9,14 @@
  "note_domanda": "Tommaso Antonino Calderone: FI-PPE fino al 21/9/2026, poi Misto, componente Futuro Nazionale Vannacci - Free.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784186.928301,
+ "inizio": 1793787928.465463,
  "endpoint_usato": "/api/agente",
  "strumenti": [
   "cerca_persone",
   "scheda_persona"
  ],
- "tempo_s": 12.0,
- "risposta_sistema": "Sì. Il deputato **Tommaso Antonino Calderone** ha lasciato il gruppo **Forza Italia–Berlusconi Presidente–PPE** il **21 settembre 2026**. Dalla stessa data aderisce alla componente **Futuro Nazionale Vannacci - Free** del Gruppo Misto. [Scheda della Camera](http://dati.camera.it/ocd/persona.rdf/p308766)",
+ "tempo_s": 9.0,
+ "risposta_sistema": "Sì. Il deputato **Tommaso Antonino Calderone** ha lasciato il gruppo **Forza Italia - Berlusconi Presidente - PPE** il **21 settembre 2026**. Da quella stessa data aderisce alla componente **Futuro Nazionale Vannacci - Free** del Gruppo Misto. [Scheda della Camera](http://dati.camera.it/ocd/persona.rdf/p308766)",
  "errori": [],
  "riferimento": {
   "risposta": "Sì. Il deputato Tommaso Antonino Calderone è stato nel gruppo Forza Italia - Berlusconi Presidente - PPE dal 18/10/2022 al 21/9/2026. Dal 21/9/2026 è nel gruppo Misto, componente Futuro Nazionale Vannacci - Free, e lo è ancora al 2/11/2026. Da non confondere con Marina Elvira Calderone, ministra del Lavoro, che non è deputata.",
@@ -27,12 +27,12 @@
   "correttezza": 2,
   "fonti": 1,
   "trappola": null,
-  "tempo_s": 12.0
+  "tempo_s": 9.0
  },
- "giro1": {
-  "correttezza": 2,
-  "fonti": 0
+ "giri_precedenti": {
+  "giro1": 2,
+  "giro2": 2
  },
  "causa_probabile": null,
- "note": "FI-PPE lasciato il 21/9/2026, dalla stessa data Futuro Nazionale Vannacci - Free del Misto: giusto. Ora linka la scheda dati.camera.it."
+ "note": "Uscito da FI-PPE il 21/9/2026, dalla stessa data nella componente Futuro Nazionale Vannacci - Free del Misto: giusto come ai giri precedenti. Link alla scheda dati.camera.it, sufficiente per un cambio di gruppo."
 }

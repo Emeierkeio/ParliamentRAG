@@ -9,7 +9,7 @@
  "note": "Solo deputati in carica oggi, con data di nascita.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784546.79613,
+ "inizio": 1793788242.697672,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
@@ -24,30 +24,15 @@
    "result": "{\"total\": 398, \"items\": [{\"uri\": \"it:person:camera:307394\", \"name\": \"Davide Aiello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307394&legislatura=19\"}, {\"uri\": \"it:person:camera:308421\", \"name\": \"Lucia Albano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308421&legislatura=19\"}, {\"uri\": \"it:person:camera:308872\", \"name\": \"Enrica Alifano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308872&legislatura=19\"}, {\"uri\": \"it:person:camera:308910\", \"name\": \"Cristina Almici\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308910&legislatura=19\"}, {\"uri\": \"it:person:camera:308849\", \"name\": \"Gaetano Amato\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308849&legislatura=19\"}, {\"uri\": \"it:person:camera:308832\", \"name\": \"Alessia Ambrosi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308832&legislatura=19\"}, {\"uri\": \"it:person:camera:305931\", \"name\": \"Vincenzo Amendola\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305931&legislatura=19\"}, {\"uri\": \"it:person:camera:308825\", \"name\": \"Vincenzo Amich\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308825&legislatura=19\"}, {\"uri\": \"it:person:camera:308884\", \"name\": \"Alessandro Amorese\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308884&legislatura=19\"}, {\"uri\": \"it:person:camera:307686\", \"name\": \"Giorgia Andreuzza\", \"chamber\": \"camera"
   },
   {
-   "name": "cerca_per_significato",
-   "args": {
-    "testo": "il deputato più giovane della Camera dei deputati nella diciannovesima legislatura",
-    "fonti": [
-     "documenti",
-     "interventi"
-    ],
-    "ramo": "camera",
-    "da": null,
-    "a": null,
-    "quanti": 30
-   },
-   "result": "{\"testo\": \"il deputato più giovane della Camera dei deputati nella diciannovesima legislatura\", \"fonti\": [\"documenti\", \"interventi\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0513:tit00040.sub00030.int00170\", \"testo\": \"Ieri sera, mentre scrivevo gli appunti per questo intervento, mi è tornato in mente il me stesso dei 14 anni: le serate di riunioni fumose - perché si poteva ancora fumare dappertutto -, l'odore acre del ciclostile, quello della colla di pesce, che si rovesciava in macchina, per attaccare i manifesti con le scope e con i secchi, la passione per le cose in cui credevamo e in cui si crede a quell'età. Perché abbiamo scelto di dedicarci alla politica, invece di andare a ballare, quando avevamo 14 anni? Non certo credo per caso o per sbaglio; non per i vitalizi, che non esistono; non per saltare le file, che non saltiamo. Molti, credo tutti quelli che sono qua presenti, che siedono in quest'Aula\", \"chi\": \"Paolo Emilio Russo\", \"persona\": \"it:person:camera:308899\", \"gruppo\": \"Forza Italia - Berlusconi Presidente - PPE\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2025-07-17\", \"seduta\": 513, \"organo\": null, \"dibattito\": \"Seguito della discussione della proposta di legge: Paolo Emilio Russo ed altri: Istituzione della Giornata nazionale in memoria dei giornalisti uccisi a causa dello svolgimento della loro professione (A.C. 1447-A) .\", \"riassunto\": false, \"url\": \"https://www.camera.it/leg19/410?idSeduta=0513&tipo=stenografico#sed0513.stenografico.tit00040.sub00030.int00170\", \"similarita\": 0.767}, {\"fonte\": \"intervento\", \"uri\": \"it:camera:19:bol20221216:c05:sede00010:tit00010:p45\", \"testo\": \"Antonio CASO (M5S), illustrando l'emendamento 18.12 a sua prima firma, evidenzia che esso è volto a estendere l'agevolazione per l'acquisto della prima casa in favore degli under 36 anche ai giovani tra i 36 e i 40 anni e a portare la copertura della garanzia dello Stato sui relativi mutui dall'80 al 100 per cento. In proposito sottolinea come oggi, a causa dell'inflazione e del basso livello dei salari, per i giovani sia estremamente difficile accedere a un mutuo. Infine, nel rimarcare che nel nostro Paese a 40 anni si può essere ancora considerati giovani, fa presente che svariati interventi di sostegno sono stati estesi anche ai soggetti tra i 36 e i 40 anni, come ad esempio la misura «Re\", \"chi\": \"Antonio Caso\", \"persona\": \"it:person:camera:308840\", \"gruppo\": \"Movimento 5 Stelle\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2022-12-16\", \"seduta\": 10, \"organo\": \"Bilancio, tesoro e programmazione (V)\", \"dibattito\": \"Bilancio di previsione dello Stato per l'anno finanziario 2023 e bilancio pluriennale per il triennio 2023-2025.\", \"riassunto\": true, \"url\": null, \"similarita\": 0.763}, {\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0196:tit00090.sub00010.int00700\", \"testo\": \"Io sono entrata in politica perché sentivo sempre tutti dire che i giovani sono il futuro. I giovani sono il presente di questo Paese e bisogna"
-  },
-  {
    "name": "cerca_persone",
    "args": {
-    "q": "Rachele Scarpa",
+    "q": "Marco Perissa",
     "chamber": "camera",
     "group": null,
     "in_office": true,
     "limit": 10
    },
-   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:308803\", \"name\": \"Rachele Scarpa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308803&legislatura=19\"}]}"
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:308812\", \"name\": \"Marco Perissa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308812&legislatura=19\"}]}"
   },
   {
    "name": "cerca_persone",
@@ -61,11 +46,22 @@
    "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:302942\", \"name\": \"Antonio Angelucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302942&legislatura=19\"}]}"
   },
   {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Andrea",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 100
+   },
+   "result": "{\"total\": 19, \"items\": [{\"uri\": \"it:person:camera:308890\", \"name\": \"Andrea Barabotti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308890&legislatura=19\"}, {\"uri\": \"it:person:camera:308807\", \"name\": \"Andrea Caroppo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308807&legislatura=19\"}, {\"uri\": \"it:person:camera:308600\", \"name\": \"Andrea Casu\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308600&legislatura=19\"}, {\"uri\": \"it:person:camera:307639\", \"name\": \"Andrea Crippa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307639&legislatura=19\"}, {\"uri\": \"it:person:camera:307683\", \"name\": \"Andrea Dara\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307683&legislatura=19\"}, {\"uri\": \"it:person:camera:307918\", \"name\": \"Andrea De Bertoldi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307918&legislatura=19\"}, {\"uri\": \"it:person:camera:305698\", \"name\": \"Andrea De Maria\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305698&legislatura=19\"}, {\"uri\": \"it:person:camera:307479\", \"name\": \"Andrea Delmastro delle Vedove\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307479&legislatura=19\"}, {\"uri\": \"it:person:camera:308784\", \"name\": \"Andrea Di Giuseppe\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=3087"
+  },
+  {
    "name": "scheda_persona",
    "args": {
-    "uri": "it:person:camera:308803"
+    "uri": "it:person:camera:308812"
    },
-   "result": "{\"uri\": \"it:person:camera:308803\", \"name\": \"Rachele Scarpa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308803&legislatura=19\", \"given_name\": \"Rachele\", \"family_name\": \"Scarpa\", \"gender\": \"F\", \"birth_date\": \"1997-01-29\", \"birth_place\": \"Treviso\", \"profession\": \"Studentessa\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308803\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"VENETO 1 - P01\", \"list\": \"PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2024-06-26\"}, {\"target\": \"it:camera:19:body:o19_4002\", \"target_name\": \"Comitato Parlamentare di Controllo sull'Attuazione dell'Accordo di Schengen, di Vigilanza sull'Attivita' di Europol, di Controllo e Vigilanza in Materia di Immigrazione\", \"title\": \"member\", \"start_date\": \"2023-08-04\"}, {\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2023-07-20\", \"end_date\": \"2024-06-26\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2023-05-02\", \"end_date\": \"2023-07-20\"}, {\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2023-05-02\"}], \"offices\": [], \"counts\": {\"speeches\": 293, \"ballots\": 20257, \"ballots_cast\": 16520, \"ballots_mission\": 56, \"bills_first_signer\": 2, \"amendments_signed\": 4032}}"
+   "result": "{\"uri\": \"it:person:camera:308812\", \"name\": \"Marco Perissa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308812&legislatura=19\", \"given_name\": \"Marco\", \"family_name\": \"Perissa\", \"gender\": \"M\", \"birth_date\": \"1982-05-22\", \"birth_place\": \"Roma\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308812\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"PIEMONTE 1 - P01\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3903\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulle Condizioni di Sicurezza e Sullo Stato di Degrado delle Citta' e delle Loro Periferie\", \"title\": \"member\", \"start_date\": \"2023-06-08\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"secretary\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_3903\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulle Condizioni di Sicurezza e Sullo Stato di Degrado delle Citta' e delle Loro Periferie\", \"title\": \"vice_chair\", \"start_date\": \"2023-06-21\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"secretary\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-09\"}], \"counts\": {\"speeches\": 122, \"ballots\": 20257, \"ballots_cast\": 16984, \"ballots_mission\": 0, \"bills_first_signer\": 1, \"amendments_signed\": 53}}"
   },
   {
    "name": "scheda_persona",
@@ -73,22 +69,42 @@
     "uri": "it:person:camera:302942"
    },
    "result": "{\"uri\": \"it:person:camera:302942\", \"name\": \"Antonio Angelucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302942&legislatura=19\", \"given_name\": \"Antonio\", \"family_name\": \"Angelucci\", \"gender\": \"M\", \"birth_date\": \"1944-09-16\", \"birth_place\": \"Sante Marie\", \"profession\": \"Imprenditore\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p302942\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"LAZIO 1 - P02\", \"list\": \"LEGA PER SALVINI PREMIER\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2025-06-11\"}, {\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2025-06-10\", \"end_date\": \"2025-06-11\"}, {\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2025-01-30\", \"end_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2022-12-21\", \"end_date\": \"2025-01-30\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2022-12-21\"}], \"offices\": [], \"counts\": {\"speeches\": 0, \"ballots\": 20256, \"ballots_cast\": 116, \"ballots_mission\": 0, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Rachele Scarpa",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:308803\", \"name\": \"Rachele Scarpa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308803&legislatura=19\"}]}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308803"
+   },
+   "result": "{\"uri\": \"it:person:camera:308803\", \"name\": \"Rachele Scarpa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308803&legislatura=19\", \"given_name\": \"Rachele\", \"family_name\": \"Scarpa\", \"gender\": \"F\", \"birth_date\": \"1997-01-29\", \"birth_place\": \"Treviso\", \"profession\": \"Studentessa\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308803\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"VENETO 1 - P01\", \"list\": \"PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2024-06-26\"}, {\"target\": \"it:camera:19:body:o19_4002\", \"target_name\": \"Comitato Parlamentare di Controllo sull'Attuazione dell'Accordo di Schengen, di Vigilanza sull'Attivita' di Europol, di Controllo e Vigilanza in Materia di Immigrazione\", \"title\": \"member\", \"start_date\": \"2023-08-04\"}, {\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2023-07-20\", \"end_date\": \"2024-06-26\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2023-05-02\", \"end_date\": \"2023-07-20\"}, {\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2023-05-02\"}], \"offices\": [], \"counts\": {\"speeches\": 293, \"ballots\": 20257, \"ballots_cast\": 16520, \"ballots_mission\": 56, \"bills_first_signer\": 2, \"amendments_signed\": 4032}}"
   }
  ],
  "strumenti": [
   "cerca_persone",
-  "cerca_per_significato",
+  "cerca_persone",
   "cerca_persone",
   "cerca_persone",
   "scheda_persona",
+  "scheda_persona",
+  "cerca_persone",
   "scheda_persona"
  ],
- "tempo_s": 42.1,
- "risposta_sistema": "Alla Camera, tra i deputati attualmente in carica:\n\n- la più giovane è **Rachele Scarpa** (PD-IDP), nata il **29 gennaio 1997**. [Scheda ufficiale](http://dati.camera.it/ocd/persona.rdf/p308803)\n- il più anziano è **Antonio Angelucci** (Lega), nato il **16 settembre 1944**. [Scheda ufficiale](http://dati.camera.it/ocd/persona.rdf/p302942)",
+ "tempo_s": 34.8,
+ "risposta_sistema": "Tra i deputati attualmente in carica:\n\n- La più giovane è **Rachele Scarpa** (PD-IDP), nata il **29 gennaio 1997**: ha 29 anni al 4 novembre 2026. [Scheda ufficiale della Camera](http://dati.camera.it/ocd/persona.rdf/p308803)\n- Il più anziano è **Antonio Angelucci** (Lega), nato il **16 settembre 1944**: ha 82 anni. [Scheda ufficiale della Camera](http://dati.camera.it/ocd/persona.rdf/p302942)",
  "eventi": {
   "status": 1,
-  "tool": 12,
-  "dati": 6,
+  "tool": 16,
+  "dati": 8,
   "delta": 1,
   "suggestions": 1,
   "done": 1

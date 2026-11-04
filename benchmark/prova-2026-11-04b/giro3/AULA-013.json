@@ -1,0 +1,110 @@
+{
+ "id": "AULA-013",
+ "domanda": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+ "categoria": "regolamento",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note_domanda": "Molti risultati della ricerca sono di commissioni e giunte (Bollettino): vanno separati dall'Aula.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788075.178622,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "elenco_votazioni",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta"
+ ],
+ "tempo_s": 42.3,
+ "risposta_sistema": "Ho trovato una seduta in cui il tema è emerso, ma **non una verifica formale conclusa con la dichiarazione di mancanza del numero legale né la relativa votazione**.\n\n- **Seduta n. 640, 8 aprile 2026**: durante un intervento sull’ordine dei lavori, il Presidente di turno Giorgio Mulè ha detto che non si poteva votare perché «non c'è manco il numero legale». Il passaggio riguardava la richiesta del deputato Claudio Mancini di intervenire sul processo verbale, non identifica una votazione specifica. [Resoconto stenografico della seduta n. 640](https://www.camera.it/leg19/410?idSeduta=0640&tipo=stenografico#sed0640.stenografico.tit00020.int01950)\n\nQuindi non posso affermare che quella sia stata una seduta in cui il numero legale sia **formalmente mancato**, né indicare “su quale votazione”: nei dati già letti manca l’esito di un’apposita verifica e manca il collegamento a una votazione annullata o rinviata per questo motivo.\n\nPer completare il controllo, bisogna consultare il resoconto stenografico ufficiale della seduta n. 640, in particolare le parti successive agli interventi sull’ordine dei lavori e l’eventuale sezione delle votazioni, oltre ai resoconti delle altre sedute d’Aula del 2026.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "PD",
+     "FI"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "non c'è manco il numero legale",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Giorgio Mulè",
+      "group": "Forza Italia",
+      "role": null,
+      "rank": 1,
+      "pool_size": 2,
+      "group_size": 2,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     },
+     {
+      "name": "Claudio Mancini",
+      "group": "Partito Democratico",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Nei resoconti d'Aula della Camera caricati per il 2026 non risulta alcuna seduta in cui il Presidente constati la mancanza del numero legale. In tutta la legislatura il Presidente nomina il numero legale solo 5 volte, per dire che è raggiunto (5/3/2024, 26/11/2025) o in battute (12/6/2024, 8/4/2026). Nessuna votazione della Camera porta l'indicazione del numero legale.",
+  "stato": "parziale",
+  "limiti": "Ricerca per testo nei resoconti stenografici d'Aula (sitting.kind = assembly_verbatim) con le formule «manca/mancanza del/mancando il/non è in numero legale»; nessun campo strutturato registra l'evento. Il risultato «nessuna» vale per i testi caricati: non si può escludere che la formula del Presidente sia scritta in altro modo o non sia nel testo canonico. Le sedute del Bollettino (commissioni) sono escluse."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 42.3
+ },
+ "giri_precedenti": {
+  "giro1": 2,
+  "giro2": 2
+ },
+ "causa_probabile": null,
+ "note": "Nessuna mancanza formale del numero legale in Aula nel 2026: scarta la battuta di Mulè dell'8/4 (seduta 640) e ora la linka. Più prudente del giro 2 (suggerisce di controllare altre sedute), ma la sostanza coincide col riferimento."
+}

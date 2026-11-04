@@ -1,50 +1,41 @@
 {
- "id": "PARL-034",
- "domanda": "Su quali temi ha presentato più atti l'on. Eleonora Evi? Classifica per argomento.",
- "categoria": "temi",
- "tipo_risposta": "classifica",
- "ramo": "camera",
- "difficolta": "media",
- "garanzie": [],
- "note_domanda": "Evi è passata da AVS al PD il 23/4/2024: se si chiede «per il suo gruppo», usare il gruppo alla data.",
- "trappola": false,
- "endpoint": "agente",
- "inizio": 1793784484.24017,
- "endpoint_usato": "/api/agente",
- "strumenti": [
-  "cerca_persone",
-  "scheda_persona",
-  "cerca_atti",
-  "conta_atti",
-  "cerca_atti",
-  "conta_atti",
-  "conta_atti",
-  "conta_atti",
-  "conta_atti",
-  "conta_atti",
-  "conta_atti",
-  "conta_atti",
-  "conta_atti"
- ],
- "tempo_s": 36.6,
- "risposta_sistema": "L’on. Eleonora Evi ha presentato soprattutto atti classificati sul tema dell’**ambiente**: **90**. Seguono **protezione degli animali** (**31**), **energia** (**22**) e **trasporti** (**20**).\n\nClassifica dei temi (Camera, XIX legislatura, atti con Evi come prima firmataria, fino al 28 settembre 2026 per l’ultimo tema classificato):\n\n1. **Ambiente** — 90 atti  \n2. **Protezione degli animali** — 31  \n3. **Energia** — 22  \n4. **Trasporti** — 20  \n5. **Rifiuti e materiali di scarto** — 10  \n6. **Cambiamento climatico** — 8  \n6. **Salute** — 8  \n8. **Agricoltura** — 4  \n\nI temi derivano dal thesaurus associato agli atti e **non sono categorie mutuamente esclusive**: uno stesso atto può quindi comparire, per esempio, sia in “ambiente” sia in “energia” o “rifiuti”. Nel complesso gli atti di cui Evi risulta prima firmataria sono **206**, di vari tipi (interrogazioni, ordini del giorno, proposte di legge ecc.). [Scheda ufficiale della deputata](http://dati.camera.it/ocd/persona.rdf/p308893)\n\nTra le sue proposte di legge, gli esempi coerenti con i temi più frequenti includono la riforma dell’Arma dei carabinieri per la tutela forestale, ambientale e agroalimentare ([AC 3064](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3064)), la transizione agroecologica degli allevamenti intensivi ([AC 1760](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1760)), la tutela degli equidi ([AC 2585](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2585)) e la riduzione delle emissioni dei voli privati ([AC 1092](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1092)).",
- "errori": [],
- "riferimento": {
-  "risposta": "Per gli atti a prima firma di Eleonora Evi con temi EuroVoc, i temi più frequenti sono: protezione dell'ambiente (36 atti), benessere degli animali (35), protezione degli animali (31), allevamento (27), protezione del consumatore (18), protezione della fauna (17), fauna (16), sanità pubblica (15), impatto ambientale (15), diritto dell'UE (12). Contando anche gli atti che ha solo cofirmato, l'ordine in testa resta protezione dell'ambiente (63), poi benessere degli animali (43), sanità pubblica (42), cambiamento climatico (42), protezione del consumatore (41).",
-  "stato": "parziale",
-  "limiti": "I temi coprono solo atti di indirizzo e di sindacato ispettivo (interrogazioni, interpellanze, mozioni, risoluzioni, ordini del giorno): nessun progetto di legge ha righe in act_subject, quindi le 11 proposte di legge a prima firma di Evi (61 con le cofirme) restano fuori dalla classifica. Un atto conta in più temi; i temi sono i descrittori EuroVoc così come assegnati, senza raggruppamento per aree. Classifica per numero di atti a prima firma, poi per atti anche cofirmati; mostrati i primi 20."
- },
- "punteggi": {
-  "correttezza": 1,
-  "fonti": 1,
-  "trappola": null,
-  "tempo_s": 36.6
- },
- "giro1": {
-  "correttezza": 1,
-  "fonti": 0,
-  "trappola": null
- },
- "causa_probabile": "strumento_sbagliato_o_argomenti",
- "note": "Stessa classifica a temi larghi del primo giro (ambiente 90, protezione degli animali 31, energia 22, trasporti 20): mancano ancora benessere degli animali (35) e allevamento (27) dei descrittori EuroVoc. Ora linka la scheda della deputata e quattro PDL su camera.it, quindi fonti passa a 1."
+  "id": "PARL-034",
+  "domanda": "Su quali temi ha presentato più atti l'on. Eleonora Evi? Classifica per argomento.",
+  "categoria": "temi",
+  "tipo_risposta": "classifica",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "Evi è passata da AVS al PD il 23/4/2024: se si chiede «per il suo gruppo», usare il gruppo alla data.",
+  "trappola": false,
+  "endpoint": "agente",
+  "inizio": 1793788186.3694751,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_persone",
+    "conta_atti",
+    "scheda_persona",
+    "conta_atti",
+    "scheda_persona"
+  ],
+  "tempo_s": 33.1,
+  "risposta_sistema": "L’on. Eleonora Evi ha presentato soprattutto atti sui temi ambientali e della tutela degli animali. Considerando gli atti della XIX legislatura alla Camera in cui risulta prima firmataria, i descrittori tematici più frequenti sono:\n\n1. **Protezione dell’ambiente** — 36 atti  \n2. **Benessere degli animali** — 35  \n3. **Protezione degli animali** — 31  \n4. **Allevamento** — 27  \n5. **Protezione del consumatore** — 18  \n6. **Protezione della fauna** — 17  \n7. **Fauna** — 16  \n8. **Impatto ambientale** — 15  \n9. **Sanità pubblica** — 15  \n10. **Diritto dell’Unione europea** — 12  \n11. **Studio d’impatto** — 11  \n12. **Energia rinnovabile** — 10  \n13. **Malattia** — 10  \n14. **Suino** — 10  \n15. **Allevamento intensivo** — 9  \n\nSeguono, con 8 atti ciascuno: caccia, cambiamento climatico, diritto alla salute, energia dolce, ispezione veterinaria, mammifero selvatico, produzione d’energia, regolamentazione della caccia e zona protetta.\n\nLa classifica usa i **descrittori tematici associati agli atti**, che non sono mutuamente esclusivi: uno stesso atto può essere classificato sotto più argomenti, quindi i numeri non si sommano al totale degli atti. Nel complesso, il conteggio considera **206 atti** presentati da Evi alla Camera nella XIX legislatura (76 ordini del giorno, 62 interrogazioni a risposta scritta, 30 interrogazioni in commissione, 20 orali, 10 progetti di legge e altri atti). La sua [scheda ufficiale della Camera](http://dati.camera.it/ocd/persona.rdf/p308893) riporta 11 progetti di legge come prima firmataria.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Per gli atti a prima firma di Eleonora Evi con temi EuroVoc, i temi più frequenti sono: protezione dell'ambiente (36 atti), benessere degli animali (35), protezione degli animali (31), allevamento (27), protezione del consumatore (18), protezione della fauna (17), fauna (16), sanità pubblica (15), impatto ambientale (15), diritto dell'UE (12). Contando anche gli atti che ha solo cofirmato, l'ordine in testa resta protezione dell'ambiente (63), poi benessere degli animali (43), sanità pubblica (42), cambiamento climatico (42), protezione del consumatore (41).",
+    "stato": "parziale",
+    "limiti": "I temi coprono solo atti di indirizzo e di sindacato ispettivo (interrogazioni, interpellanze, mozioni, risoluzioni, ordini del giorno): nessun progetto di legge ha righe in act_subject, quindi le 11 proposte di legge a prima firma di Evi (61 con le cofirme) restano fuori dalla classifica. Un atto conta in più temi; i temi sono i descrittori EuroVoc così come assegnati, senza raggruppamento per aree. Classifica per numero di atti a prima firma, poi per atti anche cofirmati; mostrati i primi 20."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 33.1
+  },
+  "giri_precedenti": {
+    "giro1": 1,
+    "giro2": 1
+  },
+  "causa_probabile": null,
+  "note": "Ora classifica i descrittori EuroVoc come il riferimento (protezione dell'ambiente 36, benessere degli animali 35, protezione degli animali 31, allevamento 27): sale da 1 a 2. Linka solo la scheda della deputata, che non documenta gli atti: fonti 0. Dice che i 206 atti comprendono 10 PDL, che però non hanno temi."
 }

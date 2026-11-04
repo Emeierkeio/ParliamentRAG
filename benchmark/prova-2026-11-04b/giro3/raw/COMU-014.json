@@ -1,0 +1,54 @@
+{
+ "id": "COMU-014",
+ "domanda": "Il voto finale sulla legge elettorale dell'8 ottobre: mi dai l'elenco di chi ha votato sì nominativamente?",
+ "categoria": "voti",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Trappola: scrutinio segreto (secret = true, risultato «voted»). Il sistema deve rifiutare l'elenco e spiegare perché; solo totali 227-164.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793788369.5859551,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": null,
+    "act": null,
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": "2022-10-13",
+    "end": "2026-10-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 660, \"items\": [{\"uri\": \"it:camera:19:sed0723:v001\", \"sitting\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-08\", \"title\": \"Votazione finale PDL n. 2822-B\", \"kind\": \"final\", \"favor\": 227, \"against\": 164, \"abstain\": 0, \"approved\": true, \"secret\": true, \"confidence\": false, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio\"}, {\"uri\": \"it:senato:19:sed0463:v035\", \"sitting\": \"it:senato:19:sed0463\", \"chamber\": \"senato\", \"number\": 35, \"date\": \"2026-10-07\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 72, \"against\": 40, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Delega al Governo per la riforma e il riordino della legislazione farmaceutica in materia di accesso al farmaco, monitoraggio e controllo della spesa farmaceutica, prestazione di servizi sanitari sul \"}, {\"uri\": \"it:senato:19:sed0463:v006\", \"sitting\": \"it:senato:19:sed0463\", \"chamber\": \"senato\", \"number\": 6, \"date\": \"2026-10-07\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 73, \"against\": 49, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Conversione in legge, con modificazioni, del decreto-legge 28 agosto 2026, n. 154, recante misure urgenti per assicurare la continuità operativa di impianti di interesse strategico nazionale\"}, {\"uri\": \"it:camera:19:sed0718:v024\", \"sitting\": \"it:camera:19:sed0718\", \"chamber\": \"camera\", \"number\": 24, \"date\": \"2026-10-01\", \"title\": \"Votazione finale DDL n. 3118\", \"kind\": \"final\", \"favor\": 178, \"against\": 57, \"abstain\": 79, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 2020. - \\\"Conversione in legge, con modificazioni, del decreto-legge 7 agosto 2026, n. 143, recante disposizioni urgenti in materia di obbligo di compostabilità di determinate tipologie di imballagg\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=718_24&tipo=dettaglio\"}, {\"uri\": \"it:senato:19:sed0460:v001\", \"sitting\": \"it:senato:19:sed0460\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-09-30\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 78, \"against\": 51, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Riordino e riorganizzazione del Consiglio universitario nazionale\"}, {\"uri\": \"it:camera:19:sed0716:v055\", \"sitting\": \"it:camera:19:sed0716\", \"chamber\": \"camera\", \"number\": 55, \"date\": \"2026-09-28\", \"title\": \"Votazione finale DDL n. 3083\", \"kind\": \"final\", \"favor\": 133, \"against\": 66, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"\\\"Conversione in legge del decreto-legge 7 agosto 2026, n. 1"
+  },
+  {
+   "name": "votazione",
+   "args": {
+    "uri": "it:camera:19:sed0723:v001",
+    "with_ballots": true
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0723:v001\", \"sitting\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-08\", \"title\": \"Votazione finale PDL n. 2822-B\", \"kind\": \"final\", \"favor\": 227, \"against\": 164, \"abstain\": 0, \"approved\": true, \"secret\": true, \"confidence\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio\", \"description\": \"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica, comprensiva dell&amp;#39;errata corrige (Approvata dalla Camera e modificata dal Senato) (PDL 2822-B)\", \"present\": 391, \"voting\": 391, \"majority\": 196, \"final\": true, \"acts\": [{\"ref\": \"ac19_2822-B\", \"uri\": \"it:camera:19:ac:2822-B\", \"title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\"}], \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 1, \"other\": 117}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 68}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 2, \"mission\": 1, \"other\": 52}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 52}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 1, \"mission\": 0, \"other\": 47}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 10}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 1, \"other\": 9}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 9}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 8}, {\"group\": {\"uri\":"
+  }
+ ],
+ "strumenti": [
+  "elenco_votazioni",
+  "votazione"
+ ],
+ "tempo_s": 12.5,
+ "risposta_sistema": "Non è possibile fornire l’elenco nominativo dei sì: il voto finale dell’**8 ottobre 2026** alla Camera sulla legge elettorale **C. 2822-B** si è svolto **a scrutinio segreto**. I dati nominativi indicano quindi soltanto chi era presente e ha votato, non se abbia votato sì o no.\n\nIl risultato è stato: **227 favorevoli, 164 contrari, nessun astenuto**, su 391 votanti; provvedimento approvato. [Scheda ufficiale della votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio)",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

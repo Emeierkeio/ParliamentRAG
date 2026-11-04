@@ -1,0 +1,81 @@
+{
+ "id": "COMU-038",
+ "domanda": "Mi fai un confronto tra quanto parla in Aula la maggioranza e quanto l'opposizione, per mese, nel 2026? Per una infografica.",
+ "categoria": "statistiche",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Misto per componente: alcune componenti non sono né maggioranza né opposizione in modo stabile.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788277.544605,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese",
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 10050, \"parole\": 4361209}, \"rows_total\": 32, \"offset\": 0, \"rows\": [{\"mese\": \"2026-07\", \"schieramento\": \"opposizione\", \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\", \"interventi\": 1238, \"parole\": 391037}, {\"mese\": \"2026-04\", \"schieramento\": \"opposizione\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 1216, \"parole\": 484419}, {\"mese\": \"2026-10\", \"schieramento\": \"opposizione\", \"dal\": \"2026-10-01\", \"al\": \"2026-10-30\", \"interventi\": 881, \"parole\": 400873}, {\"mese\": \"2026-06\", \"schieramento\": \"opposizione\", \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\", \"interventi\": 799, \"parole\": 346265}, {\"mese\": \"2026-02\", \"schieramento\": \"opposizione\", \"dal\": \"2026-02-02\", \"al\": \"2026-02-27\", \"interventi\": 657, \"parole\": 295859}, {\"mese\": \"2026-01\", \"schieramento\": \"opposizione\", \"dal\": \"2026-01-13\", \"al\": \"2026-01-30\", \"interventi\": 587, \"parole\": 243661}, {\"mese\": \"2026-05\", \"schieramento\": \"opposizione\", \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\", \"interventi\": 535, \"parole\": 275772}, {\"mese\": \"2026-03\", \"schieramento\": \"opposizione\", \"dal\": \"2026-03-02\", \"al\": \"2026-03-31\", \"interventi\": 489, \"parole\": 218117}, {\"mese\": \"2026-08\", \"schieramento\": \"opposizione\", \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\", \"interventi\": 452, \"parole\": 176080}, {\"mese\": \"2026-09\", \"schieramento\": \"opposizione\", \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\", \"interventi\": 392, \"parole\": 201107}, {\"mese\": \"2026-07\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\", \"interventi\": 350, \"parole\": 153878}, {\"mese\": \"2026-02\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-02-02\", \"al\": \"2026-02-25\", \"interventi\": 287, \"parole\": 124498}, {\"mese\": \"2026-04\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 284, \"parole\": 154105}, {\"mese\": \"2026-03\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-03-02\", \"al\": \"2026-03-31\", \"interventi\": 269, \"parole\": 115399}, {\"mese\": \"2026-10\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\", \"interventi\": 265, \"parole\": 148725}, {\"mese\": \"2026-08\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\", \"interventi\": 240, \"parole\": 89803}, {\"mese\": \"2026-05\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\", \"interven"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese",
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 6707, \"parole\": 1967803}, \"rows_total\": 25, \"offset\": 0, \"rows\": [{\"mese\": \"2026-04\", \"schieramento\": \"opposizione\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 1080, \"parole\": 214600}, {\"mese\": \"2026-09\", \"schieramento\": \"opposizione\", \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\", \"interventi\": 816, \"parole\": 226595}, {\"mese\": \"2026-06\", \"schieramento\": \"opposizione\", \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\", \"interventi\": 749, \"parole\": 177738}, {\"mese\": \"2026-10\", \"schieramento\": \"opposizione\", \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\", \"interventi\": 483, \"parole\": 121285}, {\"mese\": \"2026-07\", \"schieramento\": \"opposizione\", \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\", \"interventi\": 471, \"parole\": 158406}, {\"mese\": \"2026-03\", \"schieramento\": \"opposizione\", \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\", \"interventi\": 400, \"parole\": 119276}, {\"mese\": \"2026-01\", \"schieramento\": \"opposizione\", \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\", \"interventi\": 354, \"parole\": 113849}, {\"mese\": \"2026-04\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 288, \"parole\": 100214}, {\"mese\": \"2026-01\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\", \"interventi\": 250, \"parole\": 79049}, {\"mese\": \"2026-03\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\", \"interventi\": 244, \"parole\": 80709}, {\"mese\": \"2026-07\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\", \"interventi\": 224, \"parole\": 86130}, {\"mese\": \"2026-02\", \"schieramento\": \"opposizione\", \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\", \"interventi\": 221, \"parole\": 73527}, {\"mese\": \"2026-06\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\", \"interventi\": 220, \"parole\": 80176}, {\"mese\": \"2026-10\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\", \"interventi\": 204, \"parole\": 71853}, {\"mese\": \"2026-09\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\", \"interventi\": 190, \"parole\": 57721}, {\"mese\": \"2026-05\", \"schieramento\": \"opposizione\", \"dal\": \"2026-05-12\", \"al\": \"2026-05-19\", \"interventi\": 132, \"parole\": 52414}, {\"mese\": \"2026-02\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\", \"interventi\": 125,"
+  }
+ ],
+ "strumenti": [
+  "conta_interventi",
+  "conta_interventi"
+ ],
+ "tempo_s": 33.2,
+ "risposta_sistema": "Per l’infografica, il confronto più diretto è sugli **interventi in Aula** dei soli parlamentari (non Presidenza, Governo o relatori). L’opposizione parla più della maggioranza in ogni mese con sedute, in entrambi i rami.\n\n**Camera — 1 gennaio-3 novembre 2026**\n\n| Mese | Maggioranza: interventi | Maggioranza: parole | Opposizione: interventi | Opposizione: parole |\n|---|---:|---:|---:|---:|\n| Gennaio | 229 | 116.230 | 587 | 243.661 |\n| Febbraio | 287 | 124.498 | 657 | 295.859 |\n| Marzo | 269 | 115.399 | 489 | 218.117 |\n| Aprile | 284 | 154.105 | 1.216 | 484.419 |\n| Maggio | 230 | 125.641 | 535 | 275.772 |\n| Giugno | 225 | 120.385 | 799 | 346.265 |\n| Luglio | 350 | 153.878 | 1.238 | 391.037 |\n| Agosto | 240 | 89.803 | 452 | 176.080 |\n| Settembre | 161 | 92.990 | 392 | 201.107 |\n| Ottobre | 265 | 148.725 | 881 | 400.873 |\n| Novembre* | 16 | 7.782 | 81 | 37.551 |\n| **Totale** | **2.556** | **1.249.436** | **7.327** | **3.070.741** |\n\n**Senato — 1 gennaio-3 novembre 2026**\n\n| Mese | Maggioranza: interventi | Maggioranza: parole | Opposizione: interventi | Opposizione: parole |\n|---|---:|---:|---:|---:|\n| Gennaio | 250 | 79.049 | 354 | 113.849 |\n| Febbraio | 125 | 41.759 | 221 | 73.527 |\n| Marzo | 244 | 80.709 | 400 | 119.276 |\n| Aprile | 288 | 100.214 | 1.080 | 214.600 |\n| Maggio | 78 | 27.840 | 132 | 52.414 |\n| Giugno | 220 | 80.176 | 749 | 177.738 |\n| Luglio | 224 | 86.130 | 471 | 158.406 |\n| Agosto | 62 | 31.085 | 110 | 49.801 |\n| Settembre | 190 | 57.721 | 816 | 226.595 |\n| Ottobre | 204 | 71.853 | 483 | 121.285 |\n| Novembre* | 0 | 0 | 0 | 0 |\n| **Totale** | **1.885** | **656.536** | **4.816** | **1.307.491** |\n\n\\* Dati aggiornati all’ultima seduta disponibile, **3 novembre 2026**.\n\nDue messaggi pronti per il grafico:\n- **Camera:** opposizione 7.327 interventi contro 2.556 della maggioranza: quasi **tre volte** tanto.\n- **Senato:** opposizione 4.816 interventi contro 1.885 della maggioranza: circa **due volte e mezzo**.\n\nLe componenti del **Gruppo Misto** sono tenute fuori dal confronto maggioranza-opposizione: alla Camera contano 167 interventi e 41.032 parole; al Senato 6 interventi e 3.776 parole. La classificazione di maggioranza e opposizione segue il voto di fiducia dei gruppi alla data di ciascun intervento. Fonte: resoconti stenografici d’Aula di Camera e Senato.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

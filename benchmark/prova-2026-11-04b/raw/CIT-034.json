@@ -9,7 +9,7 @@
  "note": "Contare le leggi una volta sola (lo stesso atto compare in due rami). Distinguere iniziativa del governo e parlamentare, e i decreti convertiti.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784227.217605,
+ "inizio": 1793790371.254787,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
@@ -17,7 +17,7 @@
    "args": {
     "chamber": null,
     "kind": "bill",
-    "initiative": "governo",
+    "initiative": null,
     "q": null,
     "subject": null,
     "signer": null,
@@ -25,28 +25,78 @@
     "group": null,
     "addressee": null,
     "became_law": true,
-    "start": "2022-10-13",
+    "start": "2022-10-22",
+    "end": "2026-11-04",
+    "laws": true,
+    "group_by": [],
+    "sum_chambers": true,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Leggi nate da atti della XIX, Camera e Senato, atti presentati dal 22/10/2022 al 04/11/2026; filtri: tipo bill, diventati_legge sì. Una legge = numero e anno della legge (law_number, law_date), ordinarie e costituzionali a parte: conta una volta anche se l'atto compare in tutti e due i rami o in più atti. Iniziativa per categoria (governo, parlamentare, regione, cnel, popolare), «mista» se gli atti di una legge ne hanno più d'una; conversione_decreto = titolo con «conversione in legge». Esclusi i testi approvati non ancora pubblicati (senza numero di legge).\", \"total\": 366, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"leggi\": 366, \"dal\": \"2022-11-17\", \"al\": \"2026-10-23\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "bill",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": true,
+    "start": "2022-10-22",
     "end": "2026-11-04",
     "laws": true,
     "group_by": [
      "iniziativa"
     ],
     "sum_chambers": true,
-    "limit": 20,
+    "limit": 100,
     "offset": 0
    },
-   "result": "{\"counted\": \"Leggi nate da atti della XIX, Camera e Senato, atti presentati dal 13/10/2022 al 04/11/2026; filtri: tipo bill, iniziativa governo, diventati_legge sì. Una legge = numero e anno della legge (law_number, law_date), ordinarie e costituzionali a parte: conta una volta anche se l'atto compare in tutti e due i rami o in più atti. Iniziativa per categoria (governo, parlamentare, regione, cnel, popolare), «mista» se gli atti di una legge ne hanno più d'una; conversione_decreto = titolo con «conversione in legge». Esclusi i testi approvati non ancora pubblicati (senza numero di legge).\", \"total\": 274, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"iniziativa\": \"governo\", \"leggi\": 274, \"dal\": \"2022-11-17\", \"al\": \"2026-10-23\"}]}"
+   "result": "{\"counted\": \"Leggi nate da atti della XIX, Camera e Senato, atti presentati dal 22/10/2022 al 04/11/2026; filtri: tipo bill, diventati_legge sì. Una legge = numero e anno della legge (law_number, law_date), ordinarie e costituzionali a parte: conta una volta anche se l'atto compare in tutti e due i rami o in più atti. Iniziativa per categoria (governo, parlamentare, regione, cnel, popolare), «mista» se gli atti di una legge ne hanno più d'una; conversione_decreto = titolo con «conversione in legge». Esclusi i testi approvati non ancora pubblicati (senza numero di legge).\", \"total\": 366, \"rows_total\": 5, \"offset\": 0, \"rows\": [{\"iniziativa\": \"governo\", \"leggi\": 274, \"dal\": \"2022-11-17\", \"al\": \"2026-10-23\"}, {\"iniziativa\": \"parlamentare\", \"leggi\": 87, \"dal\": \"2023-02-09\", \"al\": \"2026-10-15\"}, {\"iniziativa\": \"mista\", \"leggi\": 3, \"dal\": \"2023-06-13\", \"al\": \"2025-09-26\"}, {\"iniziativa\": \"popolare\", \"leggi\": 1, \"dal\": \"2025-05-15\", \"al\": \"2025-05-15\"}, {\"iniziativa\": \"regione\", \"leggi\": 1, \"dal\": \"2026-01-26\", \"al\": \"2026-01-26\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "bill",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": true,
+    "start": "2022-10-22",
+    "end": "2026-11-04",
+    "laws": true,
+    "group_by": [
+     "conversione_decreto"
+    ],
+    "sum_chambers": true,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Leggi nate da atti della XIX, Camera e Senato, atti presentati dal 22/10/2022 al 04/11/2026; filtri: tipo bill, diventati_legge sì. Una legge = numero e anno della legge (law_number, law_date), ordinarie e costituzionali a parte: conta una volta anche se l'atto compare in tutti e due i rami o in più atti. Iniziativa per categoria (governo, parlamentare, regione, cnel, popolare), «mista» se gli atti di una legge ne hanno più d'una; conversione_decreto = titolo con «conversione in legge». Esclusi i testi approvati non ancora pubblicati (senza numero di legge).\", \"total\": 366, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"conversione_decreto\": false, \"leggi\": 241, \"dal\": \"2022-12-29\", \"al\": \"2026-10-16\"}, {\"conversione_decreto\": true, \"leggi\": 125, \"dal\": \"2022-11-17\", \"al\": \"2026-10-23\"}]}"
   }
  ],
  "strumenti": [
+  "conta_atti",
+  "conta_atti",
   "conta_atti"
  ],
- "tempo_s": 6.9,
- "risposta_sistema": "Questo governo ha fatto approvare **274 leggi** di iniziativa governativa nella XIX legislatura: dalla prima pubblicata il **17 novembre 2022** all’ultima il **23 ottobre 2026**.\n\nIl conteggio considera ciascuna legge una sola volta, anche quando l’iter passa da Camera e Senato, ed esclude i testi già approvati ma non ancora pubblicati con numero di legge. Dati aggiornati al **4 novembre 2026**.",
+ "tempo_s": 9.9,
+ "risposta_sistema": "Il Governo Meloni, dal suo insediamento, ha portato all’approvazione di **366 leggi** nella XIX legislatura, fino al **4 novembre 2026** (l’ultima legge pubblicata nei dati è del 23 ottobre).\n\nDi queste:\n- **274** sono nate da iniziativa del Governo;\n- **87** da iniziativa parlamentare;\n- **3** da iniziativa mista;\n- **1** da iniziativa popolare;\n- **1** da iniziativa regionale.\n\nLe **leggi di conversione di decreti-legge** sono **125**; le altre leggi sono **241**.\n\nIl conteggio considera ogni legge una sola volta, anche quando il relativo disegno di legge è passato in entrambi i rami, ed esclude i testi approvati ma non ancora pubblicati con un numero di legge.",
  "eventi": {
   "status": 1,
-  "tool": 2,
-  "dati": 1,
+  "tool": 6,
+  "dati": 3,
   "delta": 1,
   "suggestions": 1,
   "done": 1

@@ -9,9 +9,24 @@
  "note": null,
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784651.3892019,
+ "inizio": 1793788331.36061,
  "endpoint_usato": "/api/agente",
  "dati": [
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "3133",
+    "start": "2026-11-04",
+    "end": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
   {
    "name": "cerca_atti",
    "args": {
@@ -21,27 +36,32 @@
     "number": "3133",
     "signer": null,
     "initiative": null,
-    "limit": 10,
+    "limit": 20,
     "offset": 0
    },
    "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3133\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3133\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"date\": \"2026-10-08\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133\", \"initiative\": \"Governo\"}]}"
   },
   {
-   "name": "organo",
+   "name": "argomenti_sedute",
    "args": {
-    "q": "VIII Commissione",
     "chamber": "camera",
-    "date": null,
-    "titles": null
+    "body": "VIII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "decreto-legge 8 ottobre 2026, n. 177",
+    "start": null,
+    "end": null,
+    "limit": 100,
+    "offset": 0
    },
-   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 1, \"items\": [{\"uri\": \"it:camera:19:body:o19_3508\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"VIII Commissione\", \"members\": 32, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Mauro Rotelli\", \"uri\": \"it:person:camera:307455\", \"group\": \"FDI\"}, {\"title\": \"VICEPRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Piergiorgio Cortelazzo\", \"uri\": \"it:person:camera:307580\", \"group\": \"FI-PPE\"}, {\"title\": \"VICEPRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Agostino Santillo\", \"uri\": \"it:person:camera:307892\", \"group\": \"M5S\"}, {\"title\": \"SEGRETARIO\", \"since\": \"2025-06-10\", \"person\": \"Angelo Bonelli\", \"uri\": \"it:person:camera:302080\", \"group\": \"AVS\"}, {\"title\": \"SEGRETARIO\", \"since\": \"2025-06-10\", \"person\": \"Massimo Milani\", \"uri\": \"it:person:camera:308922\", \"group\": \"FDI\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Angelo Bonelli\", \"uri\": \"it:person:camera:302080\", \"group\": \"AVS\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Aldo Mattia\", \"uri\": \"it:person:camera:308939\", \"group\": \"FDI\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Marco Simiani\", \"uri\": \"it:person:camera:308894\", \"group\": \"PD-IDP\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Daniela Ruffino\", \"uri\": \"it:person:camera:307478\", \"group\": \"AZ-PER-RE\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Franco Manes\", \"uri\": \"it:person:camera:308760\", \"group\": \"MISTO-MIN.LING.\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Martina Semenzato\", \"uri\": \"it:person:camera:308797\", \"group\": \"NM(N-C-U-I)M-CP\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Gianpiero Zinzi\", \"uri\": \"it:person:camera:308873\", \"group\": \"LEGA\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2025-06-30\", \"person\": \"Piergiorgio Cortelazzo\", \"uri\": \"it:person:camera:307580\", \"group\": \"FI-PPE\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2025-07-23\", \"person\": \"Daniela Morfino\", \"uri\": \"it:person:camera:308818\", \"group\": \"M5S\"}]}]}"
+   "result": "{\"total\": 6, \"items\": [{\"uri\": \"it:camera:19:bol20261027:c08:sede00010:tit00010\", \"title\": \"Audizione informale di rappresentanti del Comieco – Consorzio nazionale per il recupero e il riciclo degli imballaggi a base cellulosica, in videoconferenza, di rappresentanti dell'Autorità di bacino distrettuale dell'Appennino centrale, dell'Autorità di bacino distrettuale dell'Appennino meridionale, dell'Autorità di bacino distrettuale dell'Appennino settentrionale, dell'Autorità di bacino distrettuale delle Alpi orientali e dell'Autorità di bacino distrettuale del fiume Po, in videoconferenza, di rappresentanti della Cabina di Regia per l'interazione del Sistema nazionale prevenzione salute dai rischi ambientali e climatici (SNPS) con il Sistema nazionale protezione ambiente (SNPA), in videoconferenza, di rappresentanti di Legambiente, in videoconferenza, di rappresentanti del Comando unità forestali, ambientali e agroalimentari (CUFAA), di rappresentanti della Direzione generale archeologia, belle arti e paesaggio del Ministero della cultura, in videoconferenza, di rappresentanti dell'Istituto superiore di sanità (ISS), di rappresentanti di Marseglia Group, in videoconferenza, di rappresentanti della Società italiana di geologia ambientale (SIGEA), di rappresentanti dell'Agenzia nazionale per le nuove tecnologie, l'energia e lo sviluppo economico sostenibile (ENEA), in videoconferenza, di rappresentanti dell'Azienda sanitaria locale Caserta, in videoconferenza, e di rappresentanti dell'Associazione nazionale comuni italiani (ANCI), nell'ambito dell'esame, in sede referente, del disegno di legge C. 3133, di conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l'economia circolare e le bonifiche.\", \"stage\": null, \"sitting\": \"it:camera:19:bol20261027:c08:sede00010\", \"date\": \"2026-10-27\", \"chamber\": \"camera\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"seat\": \"AUDIZIONI INFORMALI\", \"number\": 10, \"acts\": [{\"ref\": \"ac:3133\", \"uri\": \"it:camera:19:ac:3133\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}], \"speakers_total\": 1}, {\"uri\": \"it:camera:19:bol20261022:c08:sede00010:tit00010\", \"title\": \"Audizione informale di rappresentanti del WWF Italia, in videoconferenza, di rappresentanti di Unirima, di rappresentanti dell'Autorità Nazionale Anticorruzione (ANAC), in videoconferenza, e di rappresentanti di Riqualta – Consorzio per il riuso e riciclo di qualità nel sistema arredo, in videoconferenza, nell'ambito dell'esame, in sede referente, del disegno di legge C. 3133, di conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante dis"
   },
   {
    "name": "elenco_sedute",
    "args": {
     "chamber": "camera",
-    "body": "commissioni",
-    "start": "2026-11-03",
+    "body": "VIII Commissione",
+    "start": "2026-11-04",
     "end": null,
     "limit": 100,
     "offset": 0
@@ -52,13 +72,13 @@
    "name": "elenco_sedute",
    "args": {
     "chamber": "camera",
-    "body": "it:camera:19:body:o19_3508",
-    "start": null,
-    "end": null,
-    "limit": 20,
+    "body": "VIII Commissione",
+    "start": "2026-10-28",
+    "end": "2026-11-03",
+    "limit": 100,
     "offset": 0
    },
-   "result": "{\"total\": 1295, \"items\": [{\"uri\": \"it:camera:19:bol20261028:c08:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 20, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c08:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 10, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c08:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 30, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c08:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 20, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c08:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 10, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261022:c08:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 10, \"date\": \"2026-10-22\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c08:sede00080\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 80, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c08:sede00070\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 70, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c08:sede00060\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 60, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c08:sede00050\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 50, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c08:sede00040\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 40, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c08:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\""
+   "result": "{\"total\": 0, \"items\": []}"
   },
   {
    "name": "atto",
@@ -66,28 +86,20 @@
     "uri": "it:camera:19:ac:3133"
    },
    "result": "{\"uri\": \"it:camera:19:ac:3133\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3133\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"date\": \"2026-10-08\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"status_date\": \"2026-10-14\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3133\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:303089\", \"name\": \"Gilberto Pichetto Fratin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=303089&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Ambiente e della sicurezza energetica\"}, {\"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"first\": true, \"as_office\": \"Presidente del Consiglio dei ministri\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-10-08\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-09\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-14\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3133.19PDL0217500\", \"title\": \"Disegno di Legge presentato l'8 ottobre 2026\", \"date\": \"2026-10-08\", \"articles\": 7, \"length\": 26613}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
-  },
-  {
-   "name": "seduta",
-   "args": {
-    "uri": "it:camera:19:bol20261028:c08:sede00020",
-    "full_text": true
-   },
-   "result": "{\"uri\": \"it:camera:19:bol20261028:c08:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 20, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI\", \"start_time\": \"15:25\", \"end_time\": \"15:30\", \"items\": [{\"uri\": \"it:camera:19:bol20261028:c08:sede00020:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261028:c08:sede00020:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Mercoledì 28 ottobre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c08:sede00020:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"L'ufficio di presidenza si è riunito dalle 15.25 alle 15.30.\", \"reactions\": []}]}], \"votes\": []}"
   }
  ],
  "strumenti": [
+  "argomenti_sedute",
   "cerca_atti",
-  "organo",
+  "argomenti_sedute",
   "elenco_sedute",
   "elenco_sedute",
-  "atto",
-  "seduta"
+  "atto"
  ],
- "tempo_s": 14.9,
- "risposta_sistema": "Nei dati disponibili non risulta ancora una **prossima seduta convocata** della VIII Commissione dedicata al DL 177/2026, **C. 3133**. L’atto risulta comunque **in corso di esame in Commissione** dal 14 ottobre 2026: [scheda ufficiale C. 3133](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133).\n\nL’ultima seduta della VIII Commissione presente nei dati è del **28 ottobre 2026**, ma era un ufficio di presidenza integrato dai rappresentanti dei gruppi e non riportava il C. 3133 né un ordine del giorno legislativo: resoconto della seduta.\n\nQuindi non posso indicare né data/ora né l’ordine del giorno della prossima riunione sul provvedimento. I dati sono aggiornati fino al **3 novembre 2026**.",
+ "tempo_s": 38.2,
+ "risposta_sistema": "Nei dati aggiornati fino al **3 novembre 2026** non risulta ancora convocata una prossima seduta della VIII Commissione dedicata al DL n. 177/2026 (C. 3133), né un relativo ordine del giorno.\n\nIl disegno di legge risulta comunque **in corso di esame in Commissione Ambiente dal 14 ottobre 2026**; le ultime attività disponibili sull’atto sono state audizioni informali il 27 ottobre. [Scheda ufficiale del C. 3133](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133)",
  "eventi": {
-  "status": 2,
+  "status": 1,
   "tool": 12,
   "dati": 6,
   "delta": 1,

@@ -1,0 +1,166 @@
+{
+ "id": "PARL-033",
+ "domanda": "Testo dell'articolo 2 del decreto Piano Casa come convertito, e quali emendamenti approvati lo hanno modificato.",
+ "categoria": "testi",
+ "tipo_risposta": "testo",
+ "ramo": "entrambi",
+ "difficolta": "difficile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784483.182231,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "articolo",
+  "emendamenti",
+  "emendamenti",
+  "articolo",
+  "articolo",
+  "articolo",
+  "articolo"
+ ],
+ "tempo_s": 31.6,
+ "risposta_sistema": "Ho trovato che il “decreto Piano Casa” è il **decreto-legge 7 maggio 2026, n. 66**, convertito dalla **legge 2 luglio 2026, n. 116**. L’iter parlamentare è quello del [C. 2920](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2920), poi [S. 1944](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55369.htm).\n\nL’articolo 2, nel testo approvato dalla Commissione della Camera e poi trasmesso al Senato, reca il titolo:\n\n**«Programma straordinario nazionale di recupero e di manutenzione del patrimonio di edilizia pubblica e di edilizia sociale».**\n\nDispone, in sintesi:\n\n1. istituisce un programma straordinario nazionale per ampliare l’offerta abitativa a canone sostenibile, ripristinando alloggi ERP non assegnabili per carenze manutentive e recuperando immobili per edilizia sociale;\n2. autorizza il Ministero delle infrastrutture e dei trasporti a erogare contributi agli enti territoriali competenti e agli enti da questi costituiti o partecipati, attraverso una convenzione con **Invitalia**;\n3. disciplina la gestione delle risorse, gli avvisi pubblici e la selezione delle proposte; \n4. autorizza una spesa complessiva di **970 milioni di euro**: 116 milioni nel 2026, 216 nel 2027, 228 nel 2028, 180 nel 2029 e 230 nel 2030;\n5. destina inoltre al conto dedicato una quota del 50 per cento delle risorse per famiglie vulnerabili del Fondo sociale per il clima, per la componente ERP;\n6. consente ulteriori conferimenti di risorse per progetti comunali;\n7. applica agli interventi il codice dei contratti pubblici.\n\nIl testo che ho potuto leggere non riporta integralmente due lettere del comma 3: al loro posto compare **«identica»**, perché si tratta di una stampa parlamentare comparata. Per il testo letterale completo e definitivo occorre verificare la legge n. 116/2026 pubblicata in Gazzetta Ufficiale, indicata nella scheda del [C. 2920](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2920) come pubblicata nella **G.U. n. 152 del 3 luglio 2026**.\n\nQuanto agli emendamenti approvati che incidono sull’articolo 2, ho trovato:\n\n- **Emendamento 2.107 dei relatori**, approvato in Commissione alla Camera il 18 giugno 2026. Ha:\n  - riscritto il comma 2, chiarendo che i contributi possono andare agli enti territoriali titolari di funzioni in materia di edilizia pubblica **o agli enti da essi costituiti o partecipati**;\n  - eliminato nel comma 3 l’aggettivo «integrate»;\n  - precisato, alla lettera b) del comma 3, che gli immobili possono essere individuati dai soggetti attuatori anche nell’ambito dell’elenco dell’articolo 3, comma 3;\n  - aggiunto, alla lettera c) del comma 3, che i programmi di contrasto del degrado o rigenerazione urbana devono essere definiti nel rispetto della normativa e della pianificazione territoriale di settore.  \n  L’emendamento conteneva anche modifiche conseguenziali agli articoli 3 e 8.\n\n- **Subemendamento 0.2.107.29**, presentato da Daniela Morfino, Agostino Santillo, Ilaria Fontana e Patty L’Abbate (M5S), approvato il 18 giugno 2026. Ha soppresso, nelle modifiche conseguenziali dell’emendamento 2.107, il rinvio «e all’articolo 5». Non cambia direttamente il testo dell’articolo 2, ma interviene su una conseguenza dell’emendamento principale.\n\nNon ho potuto verificare oltre, in questa risposta, se nel passaggio al Senato vi siano state ulteriori modifiche all’articolo 2: la scheda del [S. 1944](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55369.htm) e la Gazzetta Ufficiale della legge n. 116/2026 sono le fonti ufficiali da controllare per la conferma finale.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "M5S"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Per le Autonomie (SVP-PATT, Campobase)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)",
+     "Avanti PSI (Misto)",
+     "Rifondazione Comunista (Misto)",
+     "Italia Domani - Marco Rizzo (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "Programma straordinario nazionale di recupero e di manutenzione del patrimonio di edilizia pubblica e di edilizia sociale",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "identica",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "integrate",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "e all’articolo 5",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "Testo dell'articolo 2 del decreto Piano Casa come convertito, e quali emendamenti approvati lo hanno modificato.",
+    "available": true,
+    "voices": [
+     {
+      "name": "GIUSEPPE SMERALDI",
+      "group": "Misto (non iscritto a una componente)",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "quoted"
+     },
+     {
+      "name": "Ilaria Fontana",
+      "group": "Movimento 5 Stelle",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     },
+     {
+      "name": "Agostino Santillo",
+      "group": "Movimento 5 Stelle",
+      "role": null,
+      "rank": 1,
+      "pool_size": 6,
+      "group_size": 6,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     },
+     {
+      "name": "Daniela Morfino",
+      "group": "Movimento 5 Stelle",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     },
+     {
+      "name": "Pasqua L'Abbate",
+      "group": "Movimento 5 Stelle",
+      "role": null,
+      "rank": 5,
+      "pool_size": 6,
+      "group_size": 6,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati e Senato della Repubblica, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Il decreto Piano Casa è il DL 7 maggio 2026, n. 66 (C. 2920, S. 1944), convertito con modificazioni dalla legge 116 del 2/7/2026. Il DB ha il testo originario dell'articolo 2 («Programma straordinario nazionale di recupero e di manutenzione del patrimonio di edilizia pubblica e di edilizia sociale»), riportato in «risultato», e l'allegato «Modificazioni apportate in sede di conversione», che per l'articolo 2 cambia i commi 2, 3 (alinea e lettere b e c), 4, 5, 6 e 7: fra l'altro sostituisce «INVITALIA S.p.A.» con «il soggetto gestore» e aggiunge alla lettera c) «, definiti nel rispetto della normativa e della pianificazione territoriale di settore». Emendamenti approvati sull'articolo 2, tutti nella VIII Commissione della Camera il 18/6/2026: il 2.107 dei relatori e il subemendamento 0.2.107.29 di Morfino, Santillo, Fontana e L'Abbate (M5S). Il testo consolidato dell'articolo 2 come convertito non è nel DB.",
+  "stato": "parziale",
+  "limiti": "Il DB non ha il testo vigente coordinato (Normattiva): si danno il testo originario dell'art. 2 e le modificazioni della legge di conversione, che vanno lette insieme. Esiti degli emendamenti solo per la sede referente della Camera (VIII Commissione, 60 su 492 con esito); per la C. 2920 non ci sono emendamenti d'Aula nel DB, e i 771 emendamenti del Senato (399 in commissione, 372 in Aula) non hanno esito. Il legame emendamento-articolo è il campo amendment.article."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 31.6
+ },
+ "giro1": {
+  "correttezza": 1,
+  "fonti": 1
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "DL 66/2026, L. 116/2026, emendamento 2.107 dei relatori e 0.2.107.29 giusti. Dell'art. 2 dà una sintesi del testo di Commissione, che cita ancora Invitalia (la conversione la sostituisce con «il soggetto gestore»), non il testo: articolo non legge l'art. 2 del decreto (numeri «?»)."
+}

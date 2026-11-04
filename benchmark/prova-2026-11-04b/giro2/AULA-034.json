@@ -1,0 +1,47 @@
+{
+ "id": "AULA-034",
+ "domanda": "Ricostruisci la navetta della legge elettorale: C. 2822, S. 1971, C. 2822-B, con la data di ogni passaggio e l'esito di ogni lettura.",
+ "categoria": "iter",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "Alla Camera la terza lettura ha un uri a parte (it:camera:19:ac:2822-B). Trasmissioni: 17/7/2026 al Senato, 15/9/2026 alla Camera.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784544.354082,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "atto",
+  "atto",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni"
+ ],
+ "tempo_s": 17.4,
+ "risposta_sistema": "La navetta si è conclusa in **tre letture**, con modifiche del Senato e approvazione definitiva della Camera.\n\n1. **Camera — C. 2822, prima lettura**\n   - **26 febbraio 2026:** presentazione della proposta.\n   - **16 luglio 2026:** la Camera l’ha **approvata e trasmessa al Senato**. Nei dati disponibili non è associato il dettaglio numerico della votazione finale a questo fascicolo. [Scheda C. 2822](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822)\n\n2. **Senato — S. 1971, seconda lettura**\n   - **17 luglio 2026:** il testo è stato assegnato al Senato con il nuovo numero S. 1971.\n   - **15 settembre 2026:** il Senato lo ha **approvato con modificazioni**, rinviandolo quindi alla Camera. La votazione finale è stata approvata con **113 voti favorevoli, 71 contrari e 2 astenuti**. [Scheda S. 1971](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55214.htm)\n\n3. **Camera — C. 2822-B, terza e definitiva lettura**\n   - **15 settembre 2026:** il testo modificato dal Senato è tornato alla Camera come C. 2822-B.\n   - **8 ottobre 2026:** la Camera lo ha **approvato definitivamente**, con **227 favorevoli, 164 contrari e nessun astenuto**; voto segreto. [Votazione finale C. 2822-B](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio)\n   - **9 ottobre 2026:** è diventato la **legge n. 180 del 2026**, pubblicata nella *Gazzetta Ufficiale* n. 235 dello stesso giorno. [Scheda C. 2822-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B)",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Prima lettura Camera (C. 2822, Bignami e altri): presentata il 26/2/2026, assegnata il 3/3, in commissione dal 31/3, in Aula dal 26/6; approvata il 16/7/2026 con voto finale segreto (presenti 371, votanti 369, 217 sì, 152 no, 2 astenuti). Trasmessa al Senato il 17/7/2026 (S. 1971). Senato: approvata con modificazioni il 15/9/2026 (113 sì, 71 no, 2 astenuti) e trasmessa alla Camera lo stesso giorno (C. 2822-B). Terza lettura Camera: assegnata il 16/9, esame in commissione concluso il 30/9; il 1/10 respinte le pregiudiziali (151 sì, 229 no); il 6 e 7/10 fiducia sugli articoli 1, 2 e 3 (226-147, 227-149, 228-144); l'8/10/2026 approvata definitivamente con voto finale segreto (presenti e votanti 391, 227 sì, 164 no). Legge n. 180 del 9/10/2026.",
+  "stato": "calcolata",
+  "limiti": "Il voto finale della prima lettura (it:camera:19:sed0691:v001, 16/7/2026) non è legato all'atto e ha titolo vuoto: è stato attribuito alla C. 2822 perché l'unico argomento con votazioni di quella seduta è il seguito della discussione della C. 2822-A ed è l'unica votazione finale della seduta. Il voto finale del Senato (15/9/2026) invece oggi è legato a S. 1971 in vote_act."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 17.4
+ },
+ "giro1": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null
+ },
+ "causa_probabile": "dato_mancante",
+ "note": "Peggiora: per la prima lettura del 16/7/2026 dice che il voto finale non è associato alla C. 2822 e omette 217-152-2, che il primo giro aveva trovato; elenco_votazioni per atto restituisce 0 perché la votazione sed0691 non è legata all'atto. Senato 113-71-2, 8/10 227-164 e legge 180 del 9/10 giusti, con link."
+}

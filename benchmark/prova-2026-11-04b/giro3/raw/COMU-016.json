@@ -1,0 +1,300 @@
+{
+ "id": "COMU-016",
+ "domanda": "Da quando esiste la componente del Misto «Futuro Nazionale Vannacci - Free» e chi ne fa parte?",
+ "categoria": "gruppi",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Nove deputati: Pozzolo, Ravetto, Sasso e Ziello dal 27/5/2026; Bergamini, Bof, Furgiuele e Pierro dall'8/6/2026; Calderone dal 21/9/2026.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788037.022466,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "composizione",
+   "args": {
+    "chamber": "camera",
+    "date": null
+   },
+   "result": "{\"chamber\": \"camera\", \"date\": \"2026-11-04\", \"members\": 398, \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"members\": 117, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"members\": 68, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"members\": 54, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"members\": 52, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"members\": 48, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"members\": 24, \"components\": [{\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 9, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4137\", \"name\": \"Minoranze Linguistiche\", \"short_name\": \"MISTO-MIN.LING.\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 4, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 3, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4331\", \"name\": \"Sud Chiama Nord\", \"short_name\": \"MISTO-SCN\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 3, \"components\": []}]}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"members\": 8, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"members\": 7, \"components\": []}], \"not_in_group\": 0}"
+  },
+  {
+   "name": "composizione",
+   "args": {
+    "chamber": "senato",
+    "date": null
+   },
+   "result": "{\"chamber\": \"senato\", \"date\": \"2026-11-04\", \"members\": 205, \"groups\": [{\"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"members\": 63, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"members\": 35, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"members\": 29, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"members\": 25, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"members\": 20, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:9\", \"name\": \"Misto\", \"short_name\": \"Misto\", \"kind\": \"group\"}, \"members\": 11, \"components\": [{\"group\": {\"uri\": \"it:senato:19:group:misto-avs\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 3, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:misto-az\", \"name\": \"Azione-Renew Europe\", \"short_name\": \"Az-RE\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 2, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:misto-cm\", \"name\": \"Italia Domani - Marco Rizzo\", \"short_name\": \"ID-MR\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 1, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:misto-a-psi\", \"name\": \"Avanti PSI - Progetto Civico Italia\", \"short_name\": \"A-PSI-PrCivIt\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 1, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:misto-prc-se-os\", \"name\": \"Partito della Rifondazione Comunista - Sinistra Europea - Open Sinistra\", \"short_name\": \"PRC-SE-OS\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 1, \"components\": []}]}, {\"group\": {\"uri\": \"it:senato:19:group:91\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"members\": 8, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:92\", \"name\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare\", \"short_name\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\", \"kind\": \"group\"}, \"members\": 7, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:69\", \"name\": \"Per le Autonomie (SVP-PATT, Campobase)\", \"short_name\": \"Aut (SVP-PATT, Cb)\", \"kind\": \"group\"}, \"members\": 7, \"components\": []}], \"not_in_group\": 0}"
+  },
+  {
+   "name": "cambi_gruppo",
+   "args": {
+    "chamber": null,
+    "start": null,
+    "end": null,
+    "person": null,
+    "group": "Futuro Nazionale Vannacci Free",
+    "components": true,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"gruppo non trovato: Futuro Nazionale Vannacci Free\"}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "group": "it:camera:19:group:cgm4271",
+    "in_office": true,
+    "limit": 100
+   },
+   "result": "{\"total\": 9, \"items\": [{\"uri\": \"it:person:camera:308928\", \"name\": \"Davide Bergamini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308928&legislatura=19\"}, {\"uri\": \"it:person:camera:308801\", \"name\": \"Gianangelo Bof\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308801&legislatura=19\"}, {\"uri\": \"it:person:camera:308766\", \"name\": \"Tommaso Antonino Calderone\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308766&legislatura=19\"}, {\"uri\": \"it:person:camera:307718\", \"name\": \"Domenico Furgiuele\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307718&legislatura=19\"}, {\"uri\": \"it:person:camera:308791\", \"name\": \"Attilio Pierro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308791&legislatura=19\"}, {\"uri\": \"it:person:camera:308822\", \"name\": \"Emanuele Pozzolo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308822&legislatura=19\"}, {\"uri\": \"it:person:camera:301459\", \"name\": \"Laura Ravetto\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301459&legislatura=19\"}, {\"uri\": \"it:person:camera:307360\", \"name\": \"Rossano Sasso\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": "
+  },
+  {
+   "name": "cambi_gruppo",
+   "args": {
+    "chamber": "camera",
+    "start": null,
+    "end": null,
+    "person": null,
+    "group": "it:camera:19:group:cgm4271",
+    "components": true,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Passaggi di gruppo, Camera, tutta la XIX legislatura; filtri: gruppo it:camera:19:group:cgm4271. Conta anche l'ingresso o l'uscita da una componente del Misto. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio prima della costituzione dei gruppi). La nascita di un gruppo nuovo (es. IV-CR alla Camera) conta come cambio; un ritorno al gruppo di prima conta come un nuovo cambio. Data = inizio dell'appartenenza nuova. Fonte: appartenenze ai gruppi dell'anagrafica dei due rami.\", \"by_chamber\": {\"camera\": {\"persons\": 9, \"changes\": 9}}, \"rows_total\": 9, \"offset\": 0, \"rows\": [{\"persona\": \"Tommaso Antonino Calderone\", \"ramo\": \"camera\", \"date\": \"2026-09-21\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308766\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Domenico Furgiuele\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307718\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Attilio Pierro\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308791\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Gianangelo Bof\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308801\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Davide Bergamini\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308928\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Laura Ravetto\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:301459\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Edoardo Ziello\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307143\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Rossano Sasso\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307360\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Emanuele Pozzolo\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Fratelli d'Italia (FDI)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308822\", \"gruppo_oggi\": \"MISTO-FNV-F\"}]}"
+  },
+  {
+   "name": "composizione",
+   "args": {
+    "chamber": "camera",
+    "date": "2025-01-01"
+   },
+   "result": "{\"chamber\": \"camera\", \"date\": \"2025-01-01\", \"members\": 400, \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"members\": 117, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"members\": 70, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"members\": 65, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"members\": 50, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"members\": 48, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"members\": 13, \"components\": [{\"group\": {\"uri\": \"it:camera:19:group:cgm4137\", \"name\": \"Minoranze Linguistiche\", \"short_name\": \"MISTO-MIN.LING.\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 4, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 3, \"components\": []}]}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"members\": 7, \"components\": []}], \"not_in_group\": 0}"
+  },
+  {
+   "name": "composizione",
+   "args": {
+    "chamber": "camera",
+    "date": "2026-01-01"
+   },
+   "result": "{\"chamber\": \"camera\", \"date\": \"2026-01-01\", \"members\": 398, \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"members\": 116, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"members\": 70, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"members\": 62, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"members\": 52, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"members\": 49, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"members\": 14, \"components\": [{\"group\": {\"uri\": \"it:camera:19:group:cgm4137\", \"name\": \"Minoranze Linguistiche\", \"short_name\": \"MISTO-MIN.LING.\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 4, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 3, \"components\": []}]}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"members\": 9, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"members\": 6, \"components\": []}], \"not_in_group\": 0}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:301459"
+   },
+   "result": "{\"uri\": \"it:person:camera:301459\", \"name\": \"Laura Ravetto\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301459&legislatura=19\", \"given_name\": \"Laura\", \"family_name\": \"Ravetto\", \"gender\": \"F\", \"birth_date\": \"1971-01-25\", \"birth_place\": \"Cuneo\", \"profession\": \"Avvocato\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p301459\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-03\", \"constituency\": \"LOMBARDIA 1 - P01\", \"college\": \"LOMBARDIA 1 - U05\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-05-20\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-05-20\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-05-27\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-17\"}, {\"target\": \"it:camera:19:body:o19_3941\", \"target_name\": \"Commissione Parlamentare di Inchiesta sul Femminicidio, Nonche' Su Ogni Forma di Violenza di Genere\", \"title\": \"member\", \"start_date\": \"2023-07-03\"}, {\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-09\", \"end_date\": \"2026-06-17\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2025-12-03\", \"end_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"member\", \"start_date\": \"2025-04-17\", \"end_date\": \"2025-12-03\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-04-17\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3941\", \"target_name\": \"Commissione Parlamentare di Inchiesta sul Femminicidio, Nonche' Su Ogni Forma di Violenza di Genere\", \"title\": \"secretary\", \"start_date\": \"2023-07-26\"}], \"counts\": {\"speeches\": 123, \"ballots\": 20257, \"ballots_cast\": 14626, \"ballots_mission\": 62, \"bills_first_signer\": 11, \"amendments_signed\": 684}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307143"
+   },
+   "result": "{\"uri\": \"it:person:camera:307143\", \"name\": \"Edoardo Ziello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307143&legislatura=19\", \"given_name\": \"Edoardo\", \"family_name\": \"Ziello\", \"gender\": \"M\", \"birth_date\": \"1992-04-11\", \"birth_place\": \"Civitavecchia\", \"profession\": \"Giurista\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307143\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"TOSCANA - P03\", \"college\": \"TOSCANA - U04\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-02-06\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-02-06\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-05-27\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3903\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulle Condizioni di Sicurezza e Sullo Stato di Degrado delle Citta' e delle Loro Periferie\", \"title\": \"member\", \"start_date\": \"2023-06-08\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:group:gr4111\", \"target_name\": \"Misto\", \"title\": \"deputy_leader\", \"start_date\": \"2026-05-27\"}, {\"target\": \"it:camera:19:group:gr4111\", \"target_name\": \"Misto\", \"title\": \"component_representative\", \"start_date\": \"2026-05-27\"}, {\"target\": \"it:camera:19:body:o19_3903\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulle Condizioni di Sicurezza e Sullo Stato di Degrado delle Citta' e delle Loro Periferie\", \"title\": \"secretary\", \"start_date\": \"2023-06-21\"}, {\"target\": \"it:camera:19:group:gr4132\", \"target_name\": \"Lega - Salvini Premier\", \"title\": \"floor_delegate\", \"start_date\": \"2022-10-19\", \"end_date\": \"2026-02-06\"}], \"counts\": {\"speeches\": 256, \"ballots\": 20257, \"ballots_cast\": 18378, \"ballots_mission\": 176, \"bills_first_signer\": 14, \"amendments_signed\": 824}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307360"
+   },
+   "result": "{\"uri\": \"it:person:camera:307360\", \"name\": \"Rossano Sasso\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307360&legislatura=19\", \"given_name\": \"Rossano\", \"family_name\": \"Sasso\", \"gender\": \"M\", \"birth_date\": \"1975-06-18\", \"birth_place\": \"Bari\", \"profession\": \"Insegnante\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307360\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"PUGLIA - P03\", \"college\": \"PUGLIA - U06\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-02-06\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-02-06\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-05-27\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3961\", \"target_name\": \"Commissione Parlamentare per l'Infanzia e l'Adolescenza\", \"title\": \"member\", \"start_date\": \"2023-07-12\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"group_whip\", \"start_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\", \"end_date\": \"2026-02-06\"}, {\"target\": \"it:gov:182:og182_624\", \"target_name\": \"Ministero dell'Istruzione\", \"title\": \"undersecretary\", \"start_date\": \"2021-02-25\", \"end_date\": \"2022-10-21\"}], \"counts\": {\"speeches\": 515, \"ballots\": 20257, \"ballots_cast\": 15275, \"ballots_mission\": 0, \"bills_first_signer\": 7, \"amendments_signed\": 301}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308822"
+   },
+   "result": "{\"uri\": \"it:person:camera:308822\", \"name\": \"Emanuele Pozzolo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308822&legislatura=19\", \"given_name\": \"Emanuele\", \"family_name\": \"Pozzolo\", \"gender\": \"M\", \"birth_date\": \"1985-08-25\", \"birth_place\": \"Vercelli\", \"profession\": \"Consulente legale\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308822\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"PIEMONTE 2 - P01\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2025-05-14\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2025-05-14\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-05-27\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2025-05-16\", \"end_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2024-11-05\", \"end_date\": \"2025-05-16\"}, {\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"member\", \"start_date\": \"2024-10-31\", \"end_date\": \"2024-11-05\"}, {\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"replacement\", \"start_date\": \"2024-10-31\", \"end_date\": \"2024-11-05\"}, {\"target\": \"it:camera:19:body:o19_3982\", \"target_name\": \"Comitato Permanente sui Diritti Umani nel Mondo\", \"title\": \"member\", \"start_date\": \"2023-07-28\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:camera:19:body:o19_3981\", \"target_name\": \"Comitato Permanente sull'Attuazione dell'Agenda 2030 e lo Sviluppo Sostenibile\", \"title\": \"member\", \"start_date\": \"2023-07-27\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:camera:19:body:o19_3985\", \"target_name\": \"Comitato Permanente sulla Tutela della Liberta' Religiosa nella Sfera Internazionale\", \"title\": \"member\", \"start_date\": \"2023-07-27\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-10-31\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"group_whip\", \"start_d"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308928"
+   },
+   "result": "{\"uri\": \"it:person:camera:308928\", \"name\": \"Davide Bergamini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308928&legislatura=19\", \"given_name\": \"Davide\", \"family_name\": \"Bergamini\", \"gender\": \"M\", \"birth_date\": \"1973-02-07\", \"birth_place\": \"Bondeno\", \"profession\": \"Sindaco\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308928\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-10\", \"constituency\": \"EMILIA-ROMAGNA - P03\", \"list\": \"LEGA PER SALVINI PREMIER\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-01-07\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-01-07\", \"end_date\": \"2026-01-20\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-01-20\", \"end_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-17\"}, {\"target\": \"it:camera:19:body:o19_4301\", \"target_name\": \"Commissione Parlamentare di Inchiesta Sugli Effetti Economici e Sociali Derivanti Dalla Transizione Demografica in Atto\", \"title\": \"member\", \"start_date\": \"2025-01-16\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"member\", \"start_date\": \"2026-01-22\", \"end_date\": \"2026-06-17\"}, {\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2026-01-21\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"group_whip\", \"start_date\": \"2026-06-17\"}, {\"target\": \"it:camera:19:body:o19_4301\", \"target_name\": \"Commissione Parlamentare di Inchiesta Sugli Effetti Economici e Sociali Derivanti Dalla Transizione Demografica in Atto\", \"title\": \"secretary\", \"start_date\": \"2025-02-11\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"group_whip\", \"start_date\": \"2026-06-09\", \"end_date\": \"2026-06-17\"}, {\"target\": \"it:camera:19:body:o19_3513\", \"target_name\":"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308801"
+   },
+   "result": "{\"uri\": \"it:person:camera:308801\", \"name\": \"Gianangelo Bof\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308801&legislatura=19\", \"given_name\": \"Gianangelo\", \"family_name\": \"Bof\", \"gender\": \"M\", \"birth_date\": \"1975-01-07\", \"birth_place\": \"Vittorio Veneto\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308801\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"VENETO 1 - P01\", \"list\": \"LEGA PER SALVINI PREMIER\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_4221\", \"target_name\": \"Commissione Parlamentare per la Semplificazione\", \"title\": \"member\", \"start_date\": \"2024-03-19\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2025-04-16\", \"end_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-04-16\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_4221\", \"target_name\": \"Commissione Parlamentare per la Semplificazione\", \"title\": \"vice_chair\", \"start_date\": \"2024-03-26\"}], \"counts\": {\"speeches\": 313, \"ballots\": 20256, \"ballots_cast\": 18298, \"ballots_mission\": 20, \"bills_first_signer\": 10, \"amendments_signed\": 1234}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308791"
+   },
+   "result": "{\"uri\": \"it:person:camera:308791\", \"name\": \"Attilio Pierro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308791&legislatura=19\", \"given_name\": \"Attilio\", \"family_name\": \"Pierro\", \"gender\": \"M\", \"birth_date\": \"1974-11-10\", \"birth_place\": \"Maratea\", \"profession\": \"Operaio comunità montana\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308791\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-05\", \"constituency\": \"CAMPANIA 2 - P02\", \"college\": \"CAMPANIA 2 - U07\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2025-12-30\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2025-12-30\", \"end_date\": \"2026-01-20\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-01-20\", \"end_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_4301\", \"target_name\": \"Commissione Parlamentare di Inchiesta Sugli Effetti Economici e Sociali Derivanti Dalla Transizione Demografica in Atto\", \"title\": \"member\", \"start_date\": \"2025-01-16\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"member\", \"start_date\": \"2026-01-22\", \"end_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2026-01-22\"}], \"offices\": [], \"counts\": {\"speeches\": 87, \"ballots\": 20257, \"ballots_cast\": 16072, \"ballots_mission\": 0, \"bills_first_signer\": 1, \"amendments_signed\": 393}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307718"
+   },
+   "result": "{\"uri\": \"it:person:camera:307718\", \"name\": \"Domenico Furgiuele\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307718&legislatura=19\", \"given_name\": \"Domenico\", \"family_name\": \"Furgiuele\", \"gender\": \"M\", \"birth_date\": \"1983-01-01\", \"birth_place\": \"Lamezia Terme\", \"profession\": \"Imprenditore edile\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307718\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-01\", \"constituency\": \"CALABRIA - P01\", \"college\": \"CALABRIA - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_4161\", \"target_name\": \"Commissione Parlamentare di Vigilanza sulla Cassa Depositi e Prestiti\", \"title\": \"member\", \"start_date\": \"2024-02-14\"}, {\"target\": \"it:camera:19:body:o19_3509\", \"target_name\": \"IX Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3509\", \"target_name\": \"IX Commissione\", \"title\": \"secretary\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_3509\", \"target_name\": \"IX Commissione\", \"title\": \"secretary\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:camera:19:group:gr4132\", \"target_name\": \"Lega - Salvini Premier\", \"title\": \"deputy_leader\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-06-08\"}], \"counts\": {\"speeches\": 177, \"ballots\": 20257, \"ballots_cast\": 15305, \"ballots_mission\": 29, \"bills_first_signer\": 5, \"amendments_signed\": 548}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308766"
+   },
+   "result": "{\"uri\": \"it:person:camera:308766\", \"name\": \"Tommaso Antonino Calderone\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308766&legislatura=19\", \"given_name\": \"Tommaso Antonino\", \"family_name\": \"Calderone\", \"gender\": \"M\", \"birth_date\": \"1963-01-30\", \"birth_place\": \"Barcellona Pozzo di Gotto\", \"profession\": \"Avvocato patrocinante in cassazione\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308766\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"SICILIA 2 - P01\", \"college\": \"SICILIA 2 - U05\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-09-21\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-09-21\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-09-21\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3962\", \"target_name\": \"Commissione Parlamentare per il Contrasto degli Svantaggi Derivanti dall'Insularita'\", \"title\": \"member\", \"start_date\": \"2023-07-12\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"vice_chair\", \"start_date\": \"2026-04-22\"}, {\"target\": \"it:camera:19:body:o19_3962\", \"target_name\": \"Commissione Parlamentare per il Contrasto degli Svantaggi Derivanti dall'Insularita'\", \"title\": \"chair\", \"start_date\": \"2023-07-26\"}, {\"target\": \"it:camera:19:body:o19_3962\", \"target_name\": \"Commissione Parlamentare per il Contrasto degli Svantaggi Derivanti dall'Insularita'\", \"title\": \"group_whip\", \"start_date\": \"2023-08-02\", \"end_date\": \"2026-09-22\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}], \"counts\": {\"speeches\": 1139, \"ballots\": 20256, \"ballots_cast\": 8711, \"ballots_mission\": 7336, \"bills_first_signer\": 26, \"amendments_signed\": 266}}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 1, \"results\": [{\"quote\": \"Futuro Nazionale Vannacci - Free\", \"found\": true, \"speech\": \"it:camera:19:sed0713:tit00020.int00010\", \"sitting\": \"it:camera:19:sed0713\", \"chamber\": \"camera\", \"date\": \"2026-09-22\", \"speaker\": \"Fabio Rampelli\", \"group\": \"FDI\"}]}"
+  }
+ ],
+ "strumenti": [
+  "composizione",
+  "composizione",
+  "cambi_gruppo",
+  "cerca_persone",
+  "cambi_gruppo",
+  "composizione",
+  "composizione",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona"
+ ],
+ "tempo_s": 43.7,
+ "risposta_sistema": "La componente della Camera **«Futuro Nazionale Vannacci - Free»** esiste dal **27 maggio 2026**: in quella data risultano iscritti alla componente i suoi primi quattro membri. Al **4 novembre 2026** conta **9 deputati**.\n\nNe fanno parte:\n- [Laura Ravetto](http://dati.camera.it/ocd/persona.rdf/p301459)\n- [Edoardo Ziello](http://dati.camera.it/ocd/persona.rdf/p307143)\n- [Rossano Sasso](http://dati.camera.it/ocd/persona.rdf/p307360)\n- [Emanuele Pozzolo](http://dati.camera.it/ocd/persona.rdf/p308822)\n- [Davide Bergamini](http://dati.camera.it/ocd/persona.rdf/p308928)\n- [Gianangelo Bof](http://dati.camera.it/ocd/persona.rdf/p308801)\n- [Attilio Pierro](http://dati.camera.it/ocd/persona.rdf/p308791)\n- [Domenico Furgiuele](http://dati.camera.it/ocd/persona.rdf/p307718)\n- [Tommaso Antonino Calderone](http://dati.camera.it/ocd/persona.rdf/p308766)\n\nI primi quattro risultano nella componente dal 27 maggio; gli altri quattro sono entrati l’8 giugno e Calderone il 21 settembre 2026. Dati aggiornati al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 32,
+  "dati": 17,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "warn"
+   },
+   "groups": {
+    "present": [
+     "FN"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": []
+   },
+   "quotes": [
+    {
+     "quote": "Futuro Nazionale Vannacci - Free",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0713&tipo=stenografico#sed0713.stenografico.tit00020.int00010"
+    }
+   ],
+   "authority": {
+    "topic": "Da quando esiste la componente del Misto «Futuro Nazionale Vannacci - Free» e chi ne fa parte?",
+    "available": false,
+    "voices": [
+     {
+      "name": "Fabio Rampelli",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "authoritative": null,
+      "source": "quoted"
+     },
+     {
+      "name": "Laura Ravetto",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Edoardo Ziello",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Rossano Sasso",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Domenico Furgiuele",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Tommaso Antonino Calderone",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Attilio Pierro",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Gianangelo Bof",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Emanuele Pozzolo",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Davide Bergamini",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

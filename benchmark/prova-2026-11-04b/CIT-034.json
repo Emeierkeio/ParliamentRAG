@@ -1,37 +1,40 @@
 {
- "id": "CIT-034",
- "domanda": "quante leggi ha fatto questo governo?",
- "categoria": "statistiche",
- "tipo_risposta": "conteggio",
- "ramo": "entrambi",
- "difficolta": "difficile",
- "garanzie": [],
- "note_domanda": "Contare le leggi una volta sola (lo stesso atto compare in due rami). Distinguere iniziativa del governo e parlamentare, e i decreti convertiti.",
- "trappola": false,
- "endpoint": "agente",
- "inizio": 1793784227.217605,
- "endpoint_usato": "/api/agente",
- "strumenti": [
-  "conta_atti"
- ],
- "tempo_s": 6.9,
- "risposta_sistema": "Questo governo ha fatto approvare **274 leggi** di iniziativa governativa nella XIX legislatura: dalla prima pubblicata il **17 novembre 2022** all’ultima il **23 ottobre 2026**.\n\nIl conteggio considera ciascuna legge una sola volta, anche quando l’iter passa da Camera e Senato, ed esclude i testi già approvati ma non ancora pubblicati con numero di legge. Dati aggiornati al **4 novembre 2026**.",
- "errori": [],
- "riferimento": {
-  "risposta": "Dall'insediamento del governo Meloni (22/10/2022) al 2/11/2026 sono state approvate e promulgate 366 leggi: 363 ordinarie e 3 costituzionali. Tutte cadono sotto il governo Meloni (la prima è del 17/11/2022). Di iniziativa del governo sono 274: 125 leggi di conversione di decreti-legge, 148 altri disegni di legge del governo e 1 legge costituzionale. Di iniziativa parlamentare 87 (86 ordinarie e 1 costituzionale); 3 hanno iniziativa mista, 1 popolare e 1 costituzionale è di iniziativa regionale.",
-  "stato": "calcolata",
-  "limiti": "Legge = coppia (law_number, anno di law_date) distinta, separando leggi ordinarie e costituzionali (constitutional); conta una volta la legge anche se compare in più atti o in tutti e due i rami. Esclusa la riga con law_date 2100-01-01. Iniziativa normalizzata dal testo grezzo del Senato; se gli atti di una legge hanno iniziative diverse è «Mista». Decreto convertito = titolo con «conversione in legge». Dati fino al 2/11/2026. «Questo governo» = I Governo Meloni (it:gov:202, dal 21-22/10/2022): tutte le leggi della XIX in archivio sono successive."
- },
- "punteggi": {
-  "correttezza": 1,
-  "fonti": 0,
-  "trappola": null,
-  "tempo_s": 6.9
- },
- "giro1": {
-  "correttezza": 1,
-  "fonti": 0
- },
- "causa_probabile": "ragionamento_o_prompt",
- "note": "Uguale al primo giro: 274 leggi di iniziativa governativa, contate una volta, giusto. Manca il totale di 366 leggi (87 parlamentari) e i 125 decreti convertiti; nessun link."
+  "id": "CIT-034",
+  "domanda": "quante leggi ha fatto questo governo?",
+  "categoria": "statistiche",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "difficile",
+  "garanzie": [],
+  "note_domanda": "Contare le leggi una volta sola (lo stesso atto compare in due rami). Distinguere iniziativa del governo e parlamentare, e i decreti convertiti.",
+  "trappola": false,
+  "endpoint": "agente",
+  "inizio": 1793790371.254787,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_atti",
+    "conta_atti",
+    "conta_atti"
+  ],
+  "tempo_s": 9.9,
+  "risposta_sistema": "Il Governo Meloni, dal suo insediamento, ha portato all’approvazione di **366 leggi** nella XIX legislatura, fino al **4 novembre 2026** (l’ultima legge pubblicata nei dati è del 23 ottobre).\n\nDi queste:\n- **274** sono nate da iniziativa del Governo;\n- **87** da iniziativa parlamentare;\n- **3** da iniziativa mista;\n- **1** da iniziativa popolare;\n- **1** da iniziativa regionale.\n\nLe **leggi di conversione di decreti-legge** sono **125**; le altre leggi sono **241**.\n\nIl conteggio considera ogni legge una sola volta, anche quando il relativo disegno di legge è passato in entrambi i rami, ed esclude i testi approvati ma non ancora pubblicati con un numero di legge.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Dall'insediamento del governo Meloni (22/10/2022) al 2/11/2026 sono state approvate e promulgate 366 leggi: 363 ordinarie e 3 costituzionali. Tutte cadono sotto il governo Meloni (la prima è del 17/11/2022). Di iniziativa del governo sono 274: 125 leggi di conversione di decreti-legge, 148 altri disegni di legge del governo e 1 legge costituzionale. Di iniziativa parlamentare 87 (86 ordinarie e 1 costituzionale); 3 hanno iniziativa mista, 1 popolare e 1 costituzionale è di iniziativa regionale.",
+    "stato": "calcolata",
+    "limiti": "Legge = coppia (law_number, anno di law_date) distinta, separando leggi ordinarie e costituzionali (constitutional); conta una volta la legge anche se compare in più atti o in tutti e due i rami. Esclusa la riga con law_date 2100-01-01. Iniziativa normalizzata dal testo grezzo del Senato; se gli atti di una legge hanno iniziative diverse è «Mista». Decreto convertito = titolo con «conversione in legge». Dati fino al 2/11/2026. «Questo governo» = I Governo Meloni (it:gov:202, dal 21-22/10/2022): tutte le leggi della XIX in archivio sono successive."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 9.9
+  },
+  "giri_precedenti": {
+    "giro1": 1,
+    "giro2": 1,
+    "giro3": 1
+  },
+  "causa_probabile": null,
+  "note": "Ora dà il totale: 366 leggi, 274 di iniziativa del governo, 87 parlamentare, 3 mista, 1 popolare, 1 regionale, 125 conversioni di decreti: tutto come il riferimento. Nessun link."
 }

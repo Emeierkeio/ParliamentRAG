@@ -1,57 +1,47 @@
 {
- "id": "DJ-026",
- "domanda": "Quanti interventi ha fatto la presidente del Consiglio Giorgia Meloni in Parlamento, e quanti question time?",
- "categoria": "governo",
- "tipo_risposta": "conteggio",
- "ramo": "entrambi",
- "difficolta": "media",
- "garanzie": [],
- "note_domanda": "Al Senato i membri del governo hanno un id proprio legato con person_same_as. Il premier time si riconosce dall'argomento della seduta.",
- "trappola": false,
- "endpoint": "agente",
- "inizio": 1793784666.332293,
- "endpoint_usato": "/api/agente",
- "strumenti": [
-  "cerca_persone",
-  "conta_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "scheda_persona",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta",
-  "seduta"
- ],
- "tempo_s": 44.6,
- "risposta_sistema": "Giorgia Meloni ha svolto **225 interventi parlamentari** nella XIX legislatura, fino al **3 novembre 2026**: **157 alla Camera** e **68 al Senato**. Il conteggio considera ogni turno di parola nei resoconti d’Aula e di commissione. [Scheda istituzionale](http://dati.camera.it/ocd/persona.rdf/p302103)\n\nHa partecipato a **6 question time** come Presidente del Consiglio: **3 alla Camera** e **3 al Senato**.\n\n- Camera: 15 marzo 2023; 24 gennaio 2024; 14 maggio 2025.\n- Senato: 23 novembre 2023; 7 maggio 2025; 13 maggio 2026.\n\nPer “question time” qui intendo le **sedute/eventi di interrogazioni a risposta immediata**, non i singoli interventi di risposta all’interno di ciascuna seduta. I resoconti ufficiali sono quelli stenografici di Camera e Senato relativi alle date indicate; nei dati consultati non era disponibile l’URL diretto per ciascuna seduta.",
- "errori": [],
- "riferimento": {
-  "risposta": "Giorgia Meloni (it:person:camera:302103; al Senato it:person:senato:23006) ha 159 interventi registrati alla Camera in 26 sedute (24 d'Aula e 2 audizioni in commissione) e 68 al Senato in 25 sedute d'Aula: 227 in tutto. Di questi, 16 alla Camera e 8 al Senato sono testi consegnati e non letti. Question time (premier time): 3 alla Camera (15/3/2023, 24/1/2024, 14/5/2025, 40 interventi) e 3 al Senato (23/11/2023, 7/5/2025, 13/5/2026, 30 interventi): 6 in tutto.",
-  "stato": "calcolata",
-  "limiti": "«Interventi» = righe di speech attribuite a lei, comprese repliche e testi consegnati per la pubblicazione (contati a parte). Question time = sedute in cui un suo intervento sta sotto un argomento «interrogazioni a risposta immediata». Esclusi Marco Meloni (senatore) e Giuseppe Meloni (assessore audito)."
- },
- "punteggi": {
-  "correttezza": 2,
-  "fonti": 1,
-  "trappola": null,
-  "tempo_s": 44.6
- },
- "giro1": {
-  "correttezza": 1,
-  "fonti": 0,
-  "trappola": null
- },
- "causa_probabile": null,
- "note": "Ora i question time sono 6 (3 Camera: 15/3/2023, 24/1/2024, 14/5/2025; 3 Senato), con le date del riferimento: sale da 1 a 2. Interventi 157+68=225 contro 159+68=227: dice di includere le commissioni ma mancano le 2 audizioni. Link alla scheda Camera."
+  "id": "DJ-026",
+  "domanda": "Quanti interventi ha fatto la presidente del Consiglio Giorgia Meloni in Parlamento, e quanti question time?",
+  "categoria": "governo",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "Al Senato i membri del governo hanno un id proprio legato con person_same_as. Il premier time si riconosce dall'argomento della seduta.",
+  "trappola": false,
+  "endpoint": "agente",
+  "inizio": 1793790492.3208241,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_persone",
+    "conta_interventi",
+    "argomenti_sedute",
+    "cerca_interventi",
+    "scheda_persona",
+    "cerca_per_significato",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute"
+  ],
+  "tempo_s": 63.3,
+  "risposta_sistema": "Giorgia Meloni ha svolto **228 interventi parlamentari** nella XIX legislatura, dal 13 ottobre 2022 al 3 novembre 2026:\n\n- **Camera:** 160 interventi  \n- **Senato:** 68 interventi  \n\nIl conteggio considera i turni di parola registrati nei resoconti d’Aula e di commissione; per Meloni gli interventi disponibili vanno dal 25 ottobre 2022 al 14 ottobre 2026. Un esempio di intervento alla Camera è nelle [comunicazioni del 25 ottobre 2022](https://www.camera.it/leg19/410?idSeduta=0004&tipo=stenografico#sed0004.stenografico.tit00020.int00020).\n\nPer i **question time**, non posso darti un totale verificato con i dati estratti: gli appuntamenti sono classificati come argomenti di seduta e vanno contati per ciascuna seduta in cui figura tra gli oratori, non come semplice ricerca negli interventi. Nei dati risulta, ad esempio, il question time al Senato del [23 novembre 2023](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1391924), con Meloni fra gli oratori.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Giorgia Meloni (it:person:camera:302103; al Senato it:person:senato:23006) ha 159 interventi registrati alla Camera in 26 sedute (24 d'Aula e 2 audizioni in commissione) e 68 al Senato in 25 sedute d'Aula: 227 in tutto. Di questi, 16 alla Camera e 8 al Senato sono testi consegnati e non letti. Question time (premier time): 3 alla Camera (15/3/2023, 24/1/2024, 14/5/2025, 40 interventi) e 3 al Senato (23/11/2023, 7/5/2025, 13/5/2026, 30 interventi): 6 in tutto.",
+    "stato": "calcolata",
+    "limiti": "«Interventi» = righe di speech attribuite a lei, comprese repliche e testi consegnati per la pubblicazione (contati a parte). Question time = sedute in cui un suo intervento sta sotto un argomento «interrogazioni a risposta immediata». Esclusi Marco Meloni (senatore) e Giuseppe Meloni (assessore audito)."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 63.3
+  },
+  "giri_precedenti": {
+    "giro1": 1,
+    "giro2": 2,
+    "giro3": 1
+  },
+  "causa_probabile": "strumento_sbagliato_o_argomenti",
+  "note": "Interventi 160+68=228 (riferimento 159+68=227, scarto di 1). Sui question time di nuovo nessun numero: cita solo quello del Senato del 23/11/2023, mentre sono 6 (3 Camera, 3 Senato). Le cinque chiamate ad argomenti_sedute non trovano gli argomenti «interrogazioni a risposta immediata»."
 }

@@ -1,0 +1,254 @@
+{
+ "id": "AULA-015",
+ "domanda": "Chi è intervenuto a fine seduta il 28 ottobre 2026 alla Camera e su quali argomenti?",
+ "categoria": "interventi",
+ "tipo_risposta": "sintesi_con_citazioni",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Seduta it:camera:19:sed0735, argomento «Interventi di fine seduta.» (fra gli altri Maria Stefania Marino). Il PRESIDENTE non è un intervento di fine seduta.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784424.7046459,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}]}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0735",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 99, c…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0735:tit00020\", \"order\": 2, \"title\": \"Preavviso di votazioni elettroniche (ore 9,38). (ore 9,38) (ore 9,38)\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Poiché nel corso della seduta potranno aver luogo votazioni mediante procedimento elettronico, decorrono da questo momento i termini di preavviso di 5…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0735:tit00030\", \"order\": 3, \"title\": \"Sull'ordine dei lavori.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0735:tit00030.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Ha chiesto di parlare, sull'ordine dei lavori, l'onorevole Federico Cafiero De Raho. Ne ha facoltà.\", \"reactions\": []}, {\"uri\": \"it:camera:19:sed0735:tit00030.int00020\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:308933\", \"name\": \"Federico Cafiero De Raho\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308933&legislatura=19\"}, \"speaker_label\": \"FEDERICO CAFIERO DE RAHO\", \"as_group\": \"M5S\", \"text\": \"Grazie, Presidente. Questo intervento mira a chiedere che il Ministro dell'Interno ci porga un'informativa in relazione alle… naturalmente, c'è semp"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"La seduta è tolta\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "tolta",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 4, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00030.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:308933\", \"name\": \"Federico Cafiero De Raho\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308933&legislatura=19\"}, \"speaker_label\": \"FEDERICO CAFIERO DE RAHO\", \"snippet\": \"quest'Aula per spiegarci bene: perché a Napoli non c'è stato nulla? A Napoli la Polizia si è [[tolta]] il casco e ha detto: noi siamo tutti sullo stesso piano , vogliamo che tutto si manifesti in modo civile\"}, {\"uri\": \"it:camera:19:sed0735:tit00060.sub00010.int00070\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Iezzi ed altri: Modifiche alla legge 5 febbraio 1992, n. 91, in materia di acquisto e di revoca della cittadinanza (A.C. 2124-A) (ore 13,31). (ore 13,31) (ore 13,31)\", \"person\": {\"uri\": \"it:person:camera:305757\", \"name\": \"Laura Boldrini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305757&legislatura=19\"}, \"speaker_label\": \"LAURA BOLDRINI\", \"snippet\": \"nostra pregiudiziale, si agisce fuori da ogni principio di ragionevolezza e calpestando principi costituzionali. Alla fine avete [[tolto]], o avete ridotto, direi, il numero di pagine, perché erano pagine e pagine piene zeppe di reati ostativi all'acquisto della cittadinanza\"}, {\"uri\": \"it:camera:19:sed0735:tit00060.sub00010.int00210\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Iezzi ed altri: Modifiche alla legge 5 febbraio 1992, n. 91, in materia di acquisto e di revoca della cittadinanza (A.C. 2124-A) (ore 13,31). (ore 13,31) (ore 13,31)\", \"person\": {\"uri\": \"it:person:camera:307143\", \"name\": \"Edoardo Ziello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307143&legislatura=19\"}, \"speaker_label\": \"EDOARDO ZIELLO\", \"snippet\": \"ascolta: stiamo parla"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"L'ordine del giorno della seduta\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"seduta termina\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"La seduta è tolta\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-27",
+    "end": "2026-10-29",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "interrogazione",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-28",
+    "end": "2026-10-28",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 26, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00030.int00100\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:308810\", \"name\": \"Marco Grimaldi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308810&legislatura=19\"}, \"speaker_label\": \"MARCO GRIMALDI\", \"snippet\": \"chiediamo a lei, Presidente: ma come mai Piantedosi ha annunciato la sua presenza nel question time - c'erano tante [[interrogazioni]] che avremmo voluto sottoporgli - e poi, dopo aver annunciato la sua presenza, ha disdetto per non sappiamo quali impegni istituzionali ... guardi, con diversi colleghi abbiamo depositato [[interrogazioni]] per chiedere conto di quello che è successo, perché è davvero assurdo che, a distanza di una settimana, si sono moltiplicati in tutta Italia, come si vede su tutti i giornali, l'identificazione\"}, {\"uri\": \"it:camera:19:sed0735:tit00040.sub00010.int00160\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie (A.C. 2700-A) (ore 10,23). (ore 10,23) (ore 10,23)\", \"person\": {\"uri\": \"it:person:camera:308820\", \"name\": \"Ida Carmina\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308820&legislatura=19\"}, \"speaker_label\": \"IDA CARMINA\", \"snippet\": \"quanto riguarda l'iscrizione alle scuole - di questo dovrebbe occuparsi un Ministro della Salute e io ho fatto un'[[interrogazione]] in tal senso -, questa avviene non in base all'effettiva vaccinazione, ma si aggira l'ostacolo facendo la domanda amministrativa\"}, {\"uri\": \"it:camera:19:sed0735:tit00060.sub00010.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Iezzi ed altri: Modifiche alla legge 5 febbraio 1992, n. 91, in materia di acquisto e di revoca della cittadinanza (A.C. 2124-A) (ore 13,31). (ore 13,31) (ore 13,31)\", \"person\": {\"uri\": \"it:person:camera:307634\", \"name\": \"Devis Dori\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "oral_question",
+    "number": "3-02980",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:3-02980\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3/02980\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02980 presentata da MALAVASI ILENIA (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 27/10/2026\", \"date\": \"2026-10-27\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02980\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "oral_question",
+    "number": "3-02981",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:3-02981\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3/02981\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02981 presentata da ZIELLO EDOARDO (MISTO-FUTURO NAZIONALE VANNACCI - FREE) in data 27/10/2026\", \"date\": \"2026-10-27\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02981\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "oral_question",
+    "number": "3-02982",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:3-02982\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3/02982\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02982 presentata da BIGNAMI GALEAZZO (FRATELLI D'ITALIA) in data 27/10/2026\", \"date\": \"2026-10-27\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02982\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "oral_question",
+    "number": "3-02983",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:3-02983\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3/02983\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02983 presentata da MAZZETTI ERICA (FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE) in data 27/10/2026\", \"date\": \"2026-10-27\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02983\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "oral_question",
+    "number": "3-02984",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:3-02984\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3/02984\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02984 presentata da BARABOTTI ANDREA (LEGA - SALVINI PREMIER) in data 27/10/2026\", \"date\": \"2026-10-27\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02984\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "oral_question",
+    "number": "3-02985",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:3-02985\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3/02985\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02985 presentata da CAPPELLETTI ENRICO (MOVIMENTO 5 STELLE) in data 27/10/2026\", \"date\": \"2026-10-27\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02985\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "oral_question",
+    "number": "3-02986",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:3-02986\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3/02986\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02986 presentata da BOSCHI MARIA ELENA (ITALIA VIVA-CASA RIFORMISTA) in data 27/10/2026\", \"date\": \"2026-10-27\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02986\"}]}"
+  }
+ ],
+ "strumenti": [
+  "elenco_sedute",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti"
+ ],
+ "tempo_s": 31.0,
+ "risposta_sistema": "Ho trovato che la parte finale della seduta della Camera del **28 ottobre 2026** è stata lo **svolgimento di interrogazioni a risposta immediata**. I relativi atti ufficiali sono le interrogazioni **3/02980–3/02986**, tutte presentate il 27 ottobre.\n\nGli interventi iniziali delle singole interrogazioni sono stati di:\n\n- **Ilenia Malavasi** (PD-IDP), interrogazione **3/02980**: sullo stato di adozione del decreto di riparto del **Fondo nazionale per l’infanzia e l’adolescenza**. Ha risposto la ministra Eugenia Roccella. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02980)\n- **Laura Ravetto** (componente Misto–Futuro Nazionale Vannacci-Free), per l’interrogazione di Edoardo Ziello **3/02981**: possibilità di **revocare la cittadinanza** anche a persone nate in Italia da genitori extracomunitari in caso di violazione del “patto sociale”. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02981)\n- **Giovanni Maiorano** (FdI), per l’interrogazione di Galeazzo Bignami **3/02982**. Ho verificato il suo intervento, ma nei dati già letti non ho il contenuto sufficiente per indicarne l’argomento senza rischiare di inventarlo. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02982)\n- **Erica Mazzetti** (FI-PPE), interrogazione **3/02983**: argomento non ricostruibile dai dati che ho già letto. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02983)\n- **Andrea Barabotti** (Lega), interrogazione **3/02984**: argomento non ricostruibile dai dati già disponibili. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02984)\n- **Enrico Cappelletti** (M5S), interrogazione **3/02985**: argomento non ricostruibile dai dati già disponibili. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02985)\n- **Maria Elena Boschi** (Italia Viva-Casa Riformista), interrogazione **3/02986**: argomento non ricostruibile dai dati già disponibili. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02986)\n\nPrima di questa fase, nella stessa seduta risultano anche interventi sull’ordine dei lavori riguardo alla richiesta di un’informativa del ministro dell’Interno sui fatti avvenuti nelle manifestazioni di **Milano, Torino, Bologna e Napoli**: sono intervenuti Federico Cafiero De Raho (M5S), Marco Grimaldi (AVS), Davide Faraone (IV-CR), Simona Bonafè (PD-IDP), Domenico Furgiuele (componente Misto–Futuro Nazionale Vannacci-Free) e Galeazzo Bignami (FdI).\n\nPer il quadro completo — inclusi argomenti e repliche delle ultime cinque interrogazioni — occorre consultare il resoconto stenografico della seduta n. 735 della Camera del 28 ottobre 2026 e le schede ufficiali degli atti linkate sopra.",
+ "eventi": {
+  "status": 1,
+  "tool": 30,
+  "dati": 15,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

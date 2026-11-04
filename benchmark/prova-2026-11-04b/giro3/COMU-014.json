@@ -1,0 +1,38 @@
+{
+  "id": "COMU-014",
+  "domanda": "Il voto finale sulla legge elettorale dell'8 ottobre: mi dai l'elenco di chi ha votato sì nominativamente?",
+  "categoria": "voti",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note_domanda": "Trappola: scrutinio segreto (secret = true, risultato «voted»). Il sistema deve rifiutare l'elenco e spiegare perché; solo totali 227-164.",
+  "trappola": true,
+  "endpoint": "agente",
+  "inizio": 1793788369.5859551,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "elenco_votazioni",
+    "votazione"
+  ],
+  "tempo_s": 12.5,
+  "risposta_sistema": "Non è possibile fornire l’elenco nominativo dei sì: il voto finale dell’**8 ottobre 2026** alla Camera sulla legge elettorale **C. 2822-B** si è svolto **a scrutinio segreto**. I dati nominativi indicano quindi soltanto chi era presente e ha votato, non se abbia votato sì o no.\n\nIl risultato è stato: **227 favorevoli, 164 contrari, nessun astenuto**, su 391 votanti; provvedimento approvato. [Scheda ufficiale della votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio)",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Trappola: scrutinio segreto (secret = true, risultato «voted»). Il sistema deve rifiutare l'elenco e spiegare perché; solo totali 227-164.",
+    "stato": "note_della_domanda",
+    "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": "superata",
+    "tempo_s": 12.5
+  },
+  "giri_precedenti": {
+    "giro1": 2,
+    "giro2": 2
+  },
+  "causa_probabile": null,
+  "note": "Come nei giri precedenti: rifiuta l'elenco nominativo perché lo scrutinio era segreto e dà i totali giusti (227 sì, 164 no, 391 votanti), con il link alla scheda della votazione 723_1."
+}

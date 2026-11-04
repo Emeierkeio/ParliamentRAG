@@ -11,27 +11,23 @@
  "note_domanda": "Seduta it:camera:19:sed0735, argomento «Interventi di fine seduta.» (fra gli altri Maria Stefania Marino). Il PRESIDENTE non è un intervento di fine seduta.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784424.7046459,
+ "inizio": 1793788111.995884,
  "endpoint_usato": "/api/agente",
  "strumenti": [
-  "elenco_sedute",
+  "argomenti_sedute",
   "seduta",
   "cerca_interventi",
   "cerca_interventi",
   "cerca_interventi",
   "cerca_interventi",
+  "seduta",
   "cerca_interventi",
   "cerca_interventi",
-  "cerca_atti",
-  "cerca_atti",
-  "cerca_atti",
-  "cerca_atti",
-  "cerca_atti",
-  "cerca_atti",
-  "cerca_atti"
+  "cerca_interventi",
+  "cerca_interventi"
  ],
- "tempo_s": 31.0,
- "risposta_sistema": "Ho trovato che la parte finale della seduta della Camera del **28 ottobre 2026** è stata lo **svolgimento di interrogazioni a risposta immediata**. I relativi atti ufficiali sono le interrogazioni **3/02980–3/02986**, tutte presentate il 27 ottobre.\n\nGli interventi iniziali delle singole interrogazioni sono stati di:\n\n- **Ilenia Malavasi** (PD-IDP), interrogazione **3/02980**: sullo stato di adozione del decreto di riparto del **Fondo nazionale per l’infanzia e l’adolescenza**. Ha risposto la ministra Eugenia Roccella. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02980)\n- **Laura Ravetto** (componente Misto–Futuro Nazionale Vannacci-Free), per l’interrogazione di Edoardo Ziello **3/02981**: possibilità di **revocare la cittadinanza** anche a persone nate in Italia da genitori extracomunitari in caso di violazione del “patto sociale”. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02981)\n- **Giovanni Maiorano** (FdI), per l’interrogazione di Galeazzo Bignami **3/02982**. Ho verificato il suo intervento, ma nei dati già letti non ho il contenuto sufficiente per indicarne l’argomento senza rischiare di inventarlo. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02982)\n- **Erica Mazzetti** (FI-PPE), interrogazione **3/02983**: argomento non ricostruibile dai dati che ho già letto. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02983)\n- **Andrea Barabotti** (Lega), interrogazione **3/02984**: argomento non ricostruibile dai dati già disponibili. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02984)\n- **Enrico Cappelletti** (M5S), interrogazione **3/02985**: argomento non ricostruibile dai dati già disponibili. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02985)\n- **Maria Elena Boschi** (Italia Viva-Casa Riformista), interrogazione **3/02986**: argomento non ricostruibile dai dati già disponibili. [Atto ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02986)\n\nPrima di questa fase, nella stessa seduta risultano anche interventi sull’ordine dei lavori riguardo alla richiesta di un’informativa del ministro dell’Interno sui fatti avvenuti nelle manifestazioni di **Milano, Torino, Bologna e Napoli**: sono intervenuti Federico Cafiero De Raho (M5S), Marco Grimaldi (AVS), Davide Faraone (IV-CR), Simona Bonafè (PD-IDP), Domenico Furgiuele (componente Misto–Futuro Nazionale Vannacci-Free) e Galeazzo Bignami (FdI).\n\nPer il quadro completo — inclusi argomenti e repliche delle ultime cinque interrogazioni — occorre consultare il resoconto stenografico della seduta n. 735 della Camera del 28 ottobre 2026 e le schede ufficiali degli atti linkate sopra.",
+ "tempo_s": 21.0,
+ "risposta_sistema": "Alla Camera, negli **interventi di fine seduta del 28 ottobre 2026**, sono intervenuti quattro deputati:\n\n- **Maria Stefania Marino (PD-IDP)**: difficoltà denunciate da agricoltori e autotrasportatori, con riferimento ai costi e alla tenuta delle imprese del settore. [Resoconto](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00020) · [Video Camera, da 10:04:03](https://webtv.camera.it/evento/32715)\n- **Rachele Scarpa (PD-IDP)**: astensione dell’Italia all’Assemblea generale ONU sulla risoluzione che chiedeva la fine dell’embargo su Cuba. [Resoconto](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00060) · [Video Camera, da 10:06:13](https://webtv.camera.it/evento/32715)\n- **Stefania Ascari (M5S)**: la stessa votazione ONU e l’astensione italiana sull’embargo a Cuba. [Resoconto](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00120) · [Video Camera, da 10:08:54](https://webtv.camera.it/evento/32715)\n- **Arnaldo Lomuti (M5S)**: rapine e furti nel Vulture-Melfese, in Basilicata — in particolare nelle aree di Venosa e Lavello — e richiesta di maggiore presenza di personale per la sicurezza. [Resoconto](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00140) · [Video Camera, da 10:10:18](https://webtv.camera.it/evento/32715)",
  "errori": [],
  "riferimento": {
   "risposta": "Nella seduta n. 735 della Camera del 28/10/2026, punto «Interventi di fine seduta», sono intervenuti quattro deputati: Maria Stefania Marino (PD-IDP), solidarietà agli agricoltori e agli autotrasportatori che manifestano per chiedere aiuti; Rachele Scarpa (PD-IDP), l'astensione dell'Italia all'Assemblea generale dell'ONU sul voto per la fine dell'embargo a Cuba; Stefania Ascari (M5S), sullo stesso voto su Cuba («Una sola parola: vergogna»); Arnaldo Lomuti (M5S), rapine e furti violenti nel Vulture-Melfese (Venosa e Lavello). Gli interventi di Marino e Scarpa sono spezzati in più frammenti dalle interruzioni della Presidenza.",
@@ -39,15 +35,15 @@
   "limiti": "Esclusi gli interventi del PRESIDENTE. Gli argomenti sono ricavati dall'inizio del testo di ciascun intervento."
  },
  "punteggi": {
-  "correttezza": 0,
+  "correttezza": 2,
   "fonti": 1,
   "trappola": null,
-  "tempo_s": 31.0
+  "tempo_s": 21.0
  },
- "giro1": {
-  "correttezza": 0,
-  "fonti": 1
+ "giri_precedenti": {
+  "giro1": 0,
+  "giro2": 0
  },
- "causa_probabile": "ragionamento_o_prompt",
- "note": "Ancora sbagliata: scambia il question time per la fine seduta ed elenca Malavasi, Ravetto, Maiorano e altri. Non nomina nessuno dei quattro intervenuti a fine seduta (Marino, Scarpa, Ascari, Lomuti), anche se seduta 735 era stata letta."
+ "causa_probabile": null,
+ "note": "Ora giusta: Marino e Scarpa (PD-IDP), Ascari e Lomuti (M5S) con gli argomenti del riferimento, link al resoconto e al video. Al giro 2 scambiava il question time per la fine seduta: da 0 a 2."
 }

@@ -1,0 +1,40 @@
+{
+ "id": "COM-031",
+ "domanda": "Il Bollettino delle commissioni del 30 ottobre 2026 è definitivo o ancora provvisorio?",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "sitting.provisional: 352 sedute provvisorie, tutte resoconti stenografici di commissione. Le risposte su sedute provvisorie vanno marcate.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788020.100516,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "argomenti_sedute",
+  "elenco_sedute",
+  "elenco_sedute"
+ ],
+ "tempo_s": 16.9,
+ "risposta_sistema": "Non posso stabilirlo dai dati disponibili: per il **30 ottobre 2026** non risulta alcuna seduta di commissione né alla Camera né al Senato, quindi non c’è un Bollettino delle commissioni associato a quella data di cui sia indicato lo stato “definitivo” o “provvisorio”. Risulta invece una sola seduta dell’Aula della Camera, n. 736, svolta quel giorno.\n\nPer verificarne lo stato editoriale occorre consultare direttamente il Bollettino ufficiale pubblicato dalla Camera o dal Senato per quella data; questo campo non è presente nei dati acquisiti.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il Bollettino delle commissioni del 30/10/2026 non è nel database: l'ultimo caricato è il n. 756 del 29/10/2026 (11 sedute). I Bollettini dal 26 al 29/10/2026 (n. 753-756) risultano tutti non provvisori. Gli unici resoconti provvisori della settimana sono 4 stenografici di commissione del 27/10/2026, che non fanno parte del Bollettino.",
+  "stato": "non_calcolabile",
+  "limiti": "Il Bollettino del 30/10/2026 manca (non si sa dai dati se sia uscito). Il flag sitting.provisional riguarda di fatto i resoconti stenografici di commissione (committee_verbatim, 352 provvisori); per il Bollettino (committee_summary) vale sempre false, quindi non distingue un Bollettino provvisorio da uno definitivo."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": null,
+  "trappola": null,
+  "tempo_s": 16.9
+ },
+ "giri_precedenti": {
+  "giro1": 2,
+  "giro2": 2
+ },
+ "causa_probabile": null,
+ "note": "Per il 30/10/2026 non c'è nessuna seduta di commissione nei dati, quindi non si può dire se il Bollettino sia provvisorio: giusto come ai giri precedenti. Non ricorda più che l'ultimo Bollettino è del 29/10."
+}

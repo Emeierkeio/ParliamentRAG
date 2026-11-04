@@ -9,17 +9,16 @@
  "note_domanda": "Camera 25/11/2025: 237 sì, 0 no, 0 astenuti. Unanimità dei votanti, non dei 400 deputati. Il voto finale del Senato è del 23/7/2025 (S. 1433).",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784175.3990889,
+ "inizio": 1793787893.2021818,
  "endpoint_usato": "/api/agente",
  "strumenti": [
   "cerca_atti",
   "atto",
   "atto",
-  "elenco_votazioni",
   "elenco_votazioni"
  ],
- "tempo_s": 11.5,
- "risposta_sistema": "Sì, **il testo finale è stato approvato senza voti contrari né astensioni in entrambi i rami**, quindi all’unanimità dei votanti:\n\n- **Senato**, 23 luglio 2025: **161 favorevoli, 0 contrari, 0 astenuti**. [Disegno di legge S. 1433](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54411.htm)\n- **Camera**, 25 novembre 2025: **237 favorevoli, 0 contrari, 0 astenuti**. [Votazione finale sul DDL C. 2528](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=571_45&tipo=dettaglio)\n\nNon vuol dire che abbiano votato tutti i componenti di Camera e Senato: i numeri indicano i presenti che hanno espresso il voto. Il provvedimento è diventato la **legge n. 181 del 2 dicembre 2025**, sull’introduzione del delitto di femminicidio e altre misure di contrasto alla violenza contro le donne. [Scheda della legge alla Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2528)",
+ "tempo_s": 35.3,
+ "risposta_sistema": "Sì, **se per “all’unanimità” intendi che non ci sono stati voti contrari né astensioni tra i presenti alla votazione finale**.\n\n- Al **Senato**, il 23 luglio 2025, il disegno di legge sul nuovo delitto di femminicidio è stato approvato con **161 favorevoli, 0 contrari e 0 astenuti**. [Votazione finale del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54411.htm)\n- Alla **Camera**, il 25 novembre 2025, l’approvazione definitiva è stata con **237 favorevoli, 0 contrari e 0 astenuti**. [Votazione finale della Camera](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=571_45&tipo=dettaglio)\n\nQuindi la legge n. 181 del 2 dicembre 2025 è passata con voto unanime **dei votanti presenti** in entrambi i rami; non significa che abbiano votato tutti i componenti di Camera e Senato. [Iter della legge alla Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2528)",
  "errori": [],
  "riferimento": {
   "risposta": "Sì, all'unanimità dei votanti, non di tutti i parlamentari. La legge sul delitto di femminicidio (S. 1433, C. 2528, legge 181/2025) è passata al Senato il 23/7/2025 con 161 sì, 0 no e 0 astenuti (4 presenti non votanti: Zanettin, Delrio, Alfieri, Camusso; 30 in missione) e alla Camera, in via definitiva, il 25/11/2025 con 237 sì, 0 no e 0 astenuti (89 assenti, 72 in missione).",
@@ -30,12 +29,12 @@
   "correttezza": 2,
   "fonti": 1,
   "trappola": null,
-  "tempo_s": 11.5
+  "tempo_s": 35.3
  },
- "giro1": {
-  "correttezza": 2,
-  "fonti": 0
+ "giri_precedenti": {
+  "giro1": 2,
+  "giro2": 2
  },
  "causa_probabile": null,
- "note": "Senato 23/7/2025 161-0-0 e Camera 25/11/2025 237-0-0, L. 181/2025, unanimità dei votanti: giusto come al primo giro. Ora linka scheda Senato S. 1433, votazione Camera e scheda C. 2528, quindi fonti 1."
+ "note": "Senato 23/7/2025 161-0-0 e Camera 25/11/2025 237-0-0, L. 181/2025, unanimità dei votanti e non di tutti i componenti: giusto come al giro 2. Link alla scheda S. 1433, alla votazione della Camera e alla scheda C. 2528."
 }

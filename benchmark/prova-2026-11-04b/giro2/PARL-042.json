@@ -1,0 +1,43 @@
+{
+ "id": "PARL-042",
+ "domanda": "A quale componente del Misto appartiene oggi Bruno Tabacci, e come ha votato da quando ha lasciato il PD?",
+ "categoria": "gruppi",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793784704.7162728,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "cambi_gruppo",
+  "scheda_persona",
+  "composizione",
+  "voto_gruppi",
+  "presenze"
+ ],
+ "tempo_s": 14.9,
+ "risposta_sistema": "Bruno Tabacci oggi è nel **Gruppo Misto della Camera, senza appartenere a una componente**: non figura nelle quattro componenti costituite del Misto. Ha lasciato il PD-IDP il **9 luglio 2026**. [Scheda anagrafica e appartenenze](http://dati.camera.it/ocd/persona.rdf/p34580) · [composizione della Camera al 4 novembre 2026](http://dati.camera.it/ocd/persona.rdf/p34580)\n\nDal 9 luglio al 3 novembre 2026, nelle **1.435 votazioni** considerate alla Camera (svolte dal 14 luglio al 28 ottobre), Tabacci ha:\n- votato **a favore 1.014 volte**;\n- votato **contro 104 volte**;\n- **astenuto 111 volte**;\n- espresso **39 voti segreti**;\n- risultando **assente 167 volte** e mai in missione.\n\nNei **1.228 voti palesi** espressi, ha votato come la posizione prevalente del **PD-IDP** in **1.216 casi (99%)**; la corrispondenza è stata del 94,6% con AVS e del 93,2% con M5S, mentre è stata del 9,3% con FdI, Lega e FI-PPE. [Scheda di Bruno Tabacci](http://dati.camera.it/ocd/persona.rdf/p34580)",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+  "stato": "note_della_domanda",
+  "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": "superata",
+  "tempo_s": 14.9
+ },
+ "giro1": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": "superata"
+ },
+ "causa_probabile": null,
+ "note": "Misto senza componente dal 9/7/2026, giusto. Voti dal 9/7 uguali al primo giro (1.014 sì, 104 no, 111 astenuti, 39 segreti, 167 assenze su 1.435; 99% col PD). Ora linka la scheda su dati.camera.it: fonti passa a 1."
+}

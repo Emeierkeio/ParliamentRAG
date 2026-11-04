@@ -1,0 +1,52 @@
+{
+ "id": "LEG-008",
+ "domanda": "La legge di conversione nata dall'AC 3131 è stata pubblicata? Numero, data e link al testo vigente.",
+ "categoria": "fonti",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788338.31389,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "3131",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3131\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3131\", \"kind\": \"bill\", \"title\": \"S. 2023. - \\\"Conversione in legge, con modificazioni, del decreto-legge 28 agosto 2026, n. 154, recante misure urgenti per assicurare la continuità operativa di impianti di interesse strategico nazionale\\\" <i>(approvato dal Senato)</i> (3131)\", \"date\": \"2026-10-07\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"196\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:3131"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:3131\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3131\", \"kind\": \"bill\", \"title\": \"S. 2023. - \\\"Conversione in legge, con modificazioni, del decreto-legge 28 agosto 2026, n. 154, recante misure urgenti per assicurare la continuità operativa di impianti di interesse strategico nazionale\\\" <i>(approvato dal Senato)</i> (3131)\", \"date\": \"2026-10-07\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"196\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"description\": \"Legge 196 del 23 ottobre 2026 pubblicata nella Gazzetta Ufficiale n. 249 del 26 ottobre 2026\", \"law_date\": \"2026-10-23\", \"status_date\": \"2026-10-23\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3131\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:39200\", \"name\": \"Adolfo Urso\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro delle Imprese e del made in Italy\"}, {\"person\": {\"uri\": \"it:person:camera:50115\", \"name\": \"Giancarlo Giorgetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50115&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dello Sviluppo economico\"}, {\"person\": {\"uri\": \"it:person:camera:303089\", \"name\": \"Gilberto Pichetto Fratin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=303089&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Ambiente e della sicurezza energetica\"}, {\"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"first\": true, \"as_office\": \"Presidente del Consiglio dei ministri\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-10-07\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-07\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-13\"}, {\"order\": 4, \"title\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"date\": \"2026-10-14\"}, {\"order\": 5, \"title\": \"In discussione\", \"date\": \"2026-10-19\"}, {\"order\": 6, \"title\": \"Approvato definitivamente, non ancora pubblicato\", \"date\": \"2026-10-20\"}, {\"order\": 7, \"title\": \"Approvato definitivamente. Legge\", \"date\": \"2026-10-23\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3131.19PDL0216860\", \"title\": \"Disegno di legge trasmesso dal Senato il 7 ottobre 2026\", \"date\":"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "atto"
+ ],
+ "tempo_s": 22.9,
+ "risposta_sistema": "Sì. L’AC 3131 è diventato la **legge 23 ottobre 2026, n. 196**, di conversione del decreto-legge 28 agosto 2026, n. 154. È stata pubblicata nella **Gazzetta Ufficiale n. 249 del 26 ottobre 2026**. La scheda ufficiale dell’atto è [qui](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).\n\nNei dati disponibili non è indicato un link diretto al testo vigente su Normattiva; la fonte ufficiale fornita per l’atto è la [scheda della Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,53 @@
+{
+ "id": "GIO-009",
+ "domanda": "Quante sedute d'Aula ha fatto la Camera nel 2026 e quante ore in totale? Confronto con il Senato.",
+ "categoria": "confronto",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788149.104152,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "by_month": false
+   },
+   "result": "{\"counted\": \"Sedute tenute (status held), Aula salvo body diverso; ore = somma della durata dei video della WebTV della Camera (sospensioni comprese). Il Senato non ha video nei dati: per il Senato le ore non ci sono.\", \"rows\": [{\"ramo\": \"camera\", \"sedute\": 147, \"sedute_con_video\": 147, \"ore_da_video\": \"863.8\"}]}"
+  },
+  {
+   "name": "conta_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "by_month": false
+   },
+   "result": "{\"counted\": \"Sedute tenute (status held), Aula salvo body diverso; ore = somma della durata dei video della WebTV della Camera (sospensioni comprese). Il Senato non ha video nei dati: per il Senato le ore non ci sono.\", \"rows\": [{\"ramo\": \"senato\", \"sedute\": 93, \"sedute_con_video\": 0, \"ore_da_video\": null}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_sedute",
+  "conta_sedute"
+ ],
+ "tempo_s": 6.8,
+ "risposta_sistema": "Nel **2026, fino al 3 novembre** (ultima seduta disponibile nei dati):\n\n- **Camera:** **147 sedute d’Aula**, per **863,8 ore** complessive di video WebTV (circa **863 ore e 48 minuti**). Il conteggio include le sospensioni.\n- **Senato:** **93 sedute d’Aula**. Le ore complessive non sono disponibili nei dati, perché per il Senato non sono presenti i video WebTV da cui calcolare la durata.\n\nLa Camera ha quindi tenuto **54 sedute d’Aula in più** del Senato nel periodo considerato.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

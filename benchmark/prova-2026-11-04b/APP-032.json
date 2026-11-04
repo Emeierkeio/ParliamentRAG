@@ -1,110 +1,42 @@
 {
- "id": "APP-032",
- "domanda": "ho letto che la Camera ha già approvato il fine vita, è vero?",
- "categoria": "iter",
- "tipo_risposta": "fatto",
- "ramo": "entrambi",
- "difficolta": "facile",
- "garanzie": [],
- "note_domanda": "Notizia falsa: nel v3 il S. 1408 sulla morte medicalmente assistita è in esame in commissione al Senato. Dirlo con la fonte.",
- "trappola": false,
- "endpoint": "agente",
- "inizio": 1793784175.399449,
- "endpoint_usato": "/api/agente",
- "strumenti": [
-  "cerca_atti",
-  "cerca_atti",
-  "cerca_atti",
-  "cerca_per_significato",
-  "cerca_atti",
-  "atto",
-  "atto"
- ],
- "tempo_s": 20.8,
- "risposta_sistema": "No. Nella **XIX legislatura** la Camera non ha approvato una legge sul fine vita / suicidio medicalmente assistito.\n\nLe proposte presentate alla Camera risultano ancora nello stato di **«Assegnato»**, senza votazioni né passaggi conclusivi: per esempio la proposta C. 1559, sulle «Disposizioni in materia di morte volontaria medicalmente assistita», è assegnata dal 7 febbraio 2024. [Scheda Camera C. 1559](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559) Anche la C. 313 sul suicidio medicalmente assistito e trattamento eutanasico è assegnata, dal 23 novembre 2022. [Scheda Camera C. 313](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313)\n\nL’esame parlamentare principale della materia è invece al **Senato**, dove i disegni di legge S. 104 e S. 570 risultano ancora in esame in Commissione, non approvati dall’Aula. [Scheda Senato S. 104](https://www.senato.it/leg/19/BGT/Schede/Ddliter/50966.htm) [Scheda Senato S. 570](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52356.htm)\n\nProbabilmente la notizia confonde l’attività della legislatura precedente o iniziative regionali con un’approvazione della Camera in questa legislatura. Dati aggiornati alle sedute del 3 novembre 2026.",
- "errori": [],
- "verifica": {
-  "dati": {
-   "outcome": {
-    "groups": "fail",
-    "authority": "pass",
-    "quotes": "fail"
-   },
-   "groups": {
-    "present": [],
-    "missing": [
-     "Fratelli d'Italia",
-     "Partito Democratico",
-     "Lega - Salvini Premier",
-     "Movimento 5 Stelle",
-     "Forza Italia",
-     "Alleanza Verdi e Sinistra",
-     "Azione - PER",
-     "Italia Viva - Casa Riformista",
-     "Noi Moderati",
-     "+Europa (Misto)",
-     "Futuro Nazionale Vannacci (Misto)",
-     "Minoranze linguistiche (Misto)",
-     "Per le Autonomie (SVP-PATT, Campobase)",
-     "Misto, non iscritti",
-     "Governo"
-    ],
-    "silent": [
-     "Sud chiama Nord (Misto)",
-     "Avanti PSI (Misto)",
-     "Rifondazione Comunista (Misto)",
-     "Italia Domani - Marco Rizzo (Misto)"
-    ]
-   },
-   "quotes": [
-    {
-     "quote": "Assegnato",
-     "status": "not_found",
-     "closest_passage": null,
-     "url": null
-    },
-    {
-     "quote": "Disposizioni in materia di morte volontaria medicalmente assistita",
-     "status": "exact",
-     "closest_passage": null,
-     "url": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1465249"
-    }
-   ],
-   "authority": {
-    "topic": "ho letto che la Camera ha già approvato il fine vita, è vero?",
-    "available": true,
-    "voices": [
-     {
-      "name": "Maria Domenica Castellone",
-      "group": "Movimento 5 Stelle",
-      "role": null,
-      "rank": 2,
-      "pool_size": 5,
-      "group_size": 5,
-      "pool": "speakers_on_topic",
-      "authoritative": true,
-      "source": "quoted"
-     }
-    ]
-   },
-   "scope": "Camera dei deputati e Senato della Repubblica, XIX legislatura"
-  }
- },
- "riferimento": {
-  "risposta": "No. Nei dati la Camera non ha approvato alcuna legge sul fine vita: le proposte della Camera (AC 87 Costa, 251 Magi, 313 Sportiello, 949 e 1659 Zanella, 1559 Serracchiani) risultano «Assegnato», la AC 1656 Zan «Da assegnare», e nessuna votazione della Camera è legata a questi atti. Il testo è all'esame del Senato: i ddl 1408 «Disposizioni in materia di morte medicalmente assistita» e connessi (104, 124, 570, 1597) sono «esame in comm.»; il 3/6/2026 l'Aula del Senato ha rinviato in Commissione il ddl 104, le Commissioni 2ª e 10ª riunite lo hanno esaminato in sede referente fino al 10/6/2026 e la 5ª Commissione in sede consultiva il 29/9/2026.",
-  "stato": "calcolata",
-  "limiti": "Per il Senato l'iter strutturato (act_step, act_assignment, status_date) è vuoto: lo stato viene da act.status e le fasi dalle sedute (agenda_item_act). Si considerano i progetti con «morte medicalmente assistita», «suicidio medicalmente assistito», «eutanasia», «aiuto medico alla morte» nel titolo; le proposte sulla prevenzione del suicidio non sono fine vita."
- },
- "punteggi": {
-  "correttezza": 2,
-  "fonti": 1,
-  "trappola": null,
-  "tempo_s": 20.8
- },
- "giro1": {
-  "correttezza": 1,
-  "fonti": 0
- },
- "causa_probabile": null,
- "note": "«No» giusto, C. 1559 e C. 313 «Assegnato» con link, e ora dice che la materia è in commissione al Senato (S. 104, S. 570 con scheda). Non nomina il S. 1408 né il rinvio in commissione del 3/6/2026, ma non dà più un conteggio sbagliato delle proposte: sale da 1 a 2."
+  "id": "APP-032",
+  "domanda": "ho letto che la Camera ha già approvato il fine vita, è vero?",
+  "categoria": "iter",
+  "tipo_risposta": "fatto",
+  "ramo": "entrambi",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note_domanda": "Notizia falsa: nel v3 il S. 1408 sulla morte medicalmente assistita è in esame in commissione al Senato. Dirlo con la fonte.",
+  "trappola": false,
+  "endpoint": "agente",
+  "inizio": 1793790296.791115,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "cerca_per_significato",
+    "cerca_atti",
+    "cerca_atti",
+    "cerca_per_significato"
+  ],
+  "tempo_s": 74.4,
+  "risposta_sistema": "No: nei dati parlamentari disponibili non risulta che la Camera abbia già approvato una legge nazionale sul fine vita o sulla morte medicalmente assistita.\n\nAlla Camera risultano varie proposte, ma sono ancora **assegnate** e non approvate dall’Aula, tra cui:\n\n- [C. 313, “Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico”](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;313);\n- [C. 1659, sulle procedure e i tempi dell’assistenza sanitaria al suicidio medicalmente assistito](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1659);\n- [C. 87](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;87), [C. 251](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;251), [C. 949](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;949) e [C. 1559](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559), tutte in materia di morte volontaria medicalmente assistita.\n\nAnche al Senato sono stati presentati disegni di legge sul tema, per esempio il [S. 104](https://www.senato.it/leg/19/BGT/Schede/Ddliter/50966.htm) e il [S. 1408](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54350.htm), ma questo non equivale a un’approvazione della Camera. Dati aggiornati alle sedute del 3 novembre 2026.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "No. Nei dati la Camera non ha approvato alcuna legge sul fine vita: le proposte della Camera (AC 87 Costa, 251 Magi, 313 Sportiello, 949 e 1659 Zanella, 1559 Serracchiani) risultano «Assegnato», la AC 1656 Zan «Da assegnare», e nessuna votazione della Camera è legata a questi atti. Il testo è all'esame del Senato: i ddl 1408 «Disposizioni in materia di morte medicalmente assistita» e connessi (104, 124, 570, 1597) sono «esame in comm.»; il 3/6/2026 l'Aula del Senato ha rinviato in Commissione il ddl 104, le Commissioni 2ª e 10ª riunite lo hanno esaminato in sede referente fino al 10/6/2026 e la 5ª Commissione in sede consultiva il 29/9/2026.",
+    "stato": "calcolata",
+    "limiti": "Per il Senato l'iter strutturato (act_step, act_assignment, status_date) è vuoto: lo stato viene da act.status e le fasi dalle sedute (agenda_item_act). Si considerano i progetti con «morte medicalmente assistita», «suicidio medicalmente assistito», «eutanasia», «aiuto medico alla morte» nel titolo; le proposte sulla prevenzione del suicidio non sono fine vita."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 74.4
+  },
+  "giri_precedenti": {
+    "giro1": 1,
+    "giro2": 2,
+    "giro3": 1
+  },
+  "causa_probabile": "ragionamento_o_prompt",
+  "note": "«No» giusto, con le sei proposte della Camera «assegnate» (C. 87, 251, 313, 949, 1559, 1659) e link. Ora nomina S. 104 e S. 1408 con scheda, ma dice solo che sono «stati presentati»: manca che il testo è all'esame in commissione al Senato (rinvio del 3/6/2026), che al giro 2 c'era."
 }

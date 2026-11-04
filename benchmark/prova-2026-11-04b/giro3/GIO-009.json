@@ -1,0 +1,38 @@
+{
+ "id": "GIO-009",
+ "domanda": "Quante sedute d'Aula ha fatto la Camera nel 2026 e quante ore in totale? Confronto con il Senato.",
+ "categoria": "confronto",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788149.104152,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "conta_sedute",
+  "conta_sedute"
+ ],
+ "tempo_s": 6.8,
+ "risposta_sistema": "Nel **2026, fino al 3 novembre** (ultima seduta disponibile nei dati):\n\n- **Camera:** **147 sedute d’Aula**, per **863,8 ore** complessive di video WebTV (circa **863 ore e 48 minuti**). Il conteggio include le sospensioni.\n- **Senato:** **93 sedute d’Aula**. Le ore complessive non sono disponibili nei dati, perché per il Senato non sono presenti i video WebTV da cui calcolare la durata.\n\nLa Camera ha quindi tenuto **54 sedute d’Aula in più** del Senato nel periodo considerato.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nel 2026, fino al 30/10 per la Camera e al 28/10 per il Senato, la Camera ha tenuto 146 sedute d'Aula (dalla n. 591 alla n. 736) e il Senato 93 (dalla n. 377 alla n. 469). Alla Camera la durata dalle registrazioni della WebTV somma circa 854 ore, in media 5,85 ore per seduta (dalla più breve, 4 minuti e 50 secondi il 5/1/2026, alla seduta 648 del 22-24/4/2026 sul decreto sicurezza, con due video per circa 38 ore). Per il Senato le ore non sono calcolabili.",
+  "stato": "parziale",
+  "limiti": "Le ore si ricavano solo dai video della Camera (end_ts - start_ts, sospensioni comprese): sitting non ha orari di inizio e fine per le sedute d'Aula di nessuno dei due rami e per il Senato non ci sono video. Il confronto sulle ore con il Senato non è quindi possibile; il confronto sul numero di sedute sì."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 6.8
+ },
+ "giri_precedenti": {
+  "giro1": 1,
+  "giro2": 1
+ },
+ "causa_probabile": null,
+ "note": "Camera 147 sedute e 863,8 ore di video (854 del riferimento al 30/10 più 9,7 ore del 3/11, verificato nel DB), Senato 93 sedute e ore non disponibili. Il nuovo conteggio delle ore porta da 1 a 2; nessun link."
+}

@@ -11,19 +11,19 @@
  "note_domanda": null,
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784455.750256,
+ "inizio": 1793788132.993491,
  "endpoint_usato": "/api/agente",
  "strumenti": [
   "elenco_sedute",
   "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta",
   "conta_reazioni",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi"
+  "argomenti_sedute"
  ],
- "tempo_s": 22.9,
- "risposta_sistema": "Nel resoconto delle comunicazioni di Giorgia Meloni al Senato del 14 ottobre 2026, **non è indicato alcun gruppo** né tra gli applausi né tra le proteste.\n\nSono registrati **45 applausi**, tutti nella forma generica «(Applausi)»; **nessuna protesta** è registrata durante il suo intervento. I gruppi che hanno applaudito non sono quindi identificabili dal resoconto. Seduta n. 466 del Senato, 14 ottobre 2026 (id: `it:senato:19:sed0466`).",
+ "tempo_s": 27.9,
+ "risposta_sistema": "Nel resoconto delle comunicazioni di Giorgia Meloni al Senato il 14 ottobre 2026 risultano **45 applausi**, ma tutti registrati semplicemente come **«Applausi»**, senza indicazione del gruppo che applaudiva. Non posso quindi attribuirli a FdI, Lega, Forza Italia o ad altri gruppi.\n\nNon risultano invece **proteste** durante il suo intervento. Il resoconto registra anche alcuni **«Commenti»**, anch’essi senza attribuzione a gruppi.\n\nPer identificare eventuali attribuzioni non riportate nei dati consultati, va verificato il **resoconto stenografico ufficiale della seduta n. 466 del Senato, 14 ottobre 2026**, nel punto: “Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026”.",
  "errori": [],
  "verifica": {
   "dati": {
@@ -34,13 +34,13 @@
    },
    "groups": {
     "present": [
-     "PD"
+     "FdI",
+     "PD",
+     "Lega",
+     "FI"
     ],
     "missing": [
-     "Fratelli d'Italia",
-     "Lega - Salvini Premier",
      "Movimento 5 Stelle",
-     "Forza Italia",
      "Alleanza Verdi e Sinistra",
      "Azione - PER",
      "Italia Viva - Casa Riformista",
@@ -57,7 +57,13 @@
    },
    "quotes": [
     {
-     "quote": "(Applausi)",
+     "quote": "Applausi",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "Commenti",
      "status": "not_found",
      "closest_passage": null,
      "url": null
@@ -90,12 +96,12 @@
   "correttezza": 2,
   "fonti": 0,
   "trappola": null,
-  "tempo_s": 22.9
+  "tempo_s": 27.9
  },
- "giro1": {
-  "correttezza": 0,
-  "fonti": 0
+ "giri_precedenti": {
+  "giro1": 0,
+  "giro2": 2
  },
  "causa_probabile": null,
- "note": "Ora risponde giusto: il resoconto non indica i gruppi, 45 applausi (33+12 del riferimento) e nessuna protesta. Al primo giro attribuiva una protesta M5S con una citazione del 2023; non cita i commenti (fra cui Turco). Nessun link."
+ "note": "45 applausi senza gruppo, nessuna protesta e ora anche i «Commenti» senza attribuzione: coincide col riferimento non calcolabile, come al giro 2. Rimanda al resoconto della seduta 466 senza link."
 }

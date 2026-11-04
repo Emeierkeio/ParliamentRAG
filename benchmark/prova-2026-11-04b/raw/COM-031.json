@@ -9,7 +9,7 @@
  "note": "sitting.provisional: 352 sedute provvisorie, tutte resoconti stenografici di commissione. Le risposte su sedute provvisorie vanno marcate.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784329.378359,
+ "inizio": 1793788020.100516,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
@@ -25,50 +25,39 @@
    "result": "{\"total\": 0, \"items\": []}"
   },
   {
-   "name": "elenco_sedute",
+   "name": "argomenti_sedute",
    "args": {
-    "chamber": "camera",
-    "body": "commissioni",
-    "start": "2026-10-29",
-    "end": "2026-10-31",
+    "chamber": null,
+    "body": null,
+    "seat": null,
+    "stage": null,
+    "q": null,
+    "start": "2026-10-30",
+    "end": "2026-10-30",
     "limit": 100,
     "offset": 0
    },
-   "result": "{\"total\": 11, \"items\": [{\"uri\": \"it:camera:19:bol20261029:c71:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 30, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c07:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c27:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4022\", \"body_name\": \"Commissione parlamentare di controllo sull'attività degli enti gestori di forme obbligatorie di previdenza e assistenza sociale\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c39:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4021\", \"body_name\": \"Commissione parlamentare di inchiesta sulle attività illecite connesse al ciclo dei rifiuti e su altri illeciti ambientali e agroalimentari\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19"
+   "result": "{\"total\": 5, \"items\": [{\"uri\": \"it:camera:19:sed0736:tit00010\", \"title\": \"Missioni.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"acts\": [], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0736:tit00020\", \"title\": \"Modifica nella composizione di gruppi parlamentari.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"acts\": [], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0736:tit00030\", \"title\": \"Annuncio dell'elezione del nuovo presidente della Commissione parlamentare di controllo sull'attività degli enti gestori di forme obbligatorie di previdenza e assistenza sociale.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"acts\": [], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0736:tit00040\", \"title\": \"Svolgimento di una interpellanza urgente.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"group\": \"M5S\"}, {\"uri\": \"it:person:camera:307332\", \"name\": \"Marcello Gemmato\", \"group\": \"FDI\"}], \"speakers_total\": 2}, {\"uri\": \"it:camera:19:sed0736:tit00050\", \"title\": \"Ordine del giorno della prossima seduta.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"acts\": [], \"speakers\": [], \"speakers_total\": 0}], \"more\": false}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": null,
+    "start": "2026-10-30",
+    "end": "2026-10-30",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0736\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 736, \"date\": \"2026-10-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}]}"
   },
   {
    "name": "elenco_sedute",
    "args": {
     "chamber": "senato",
-    "body": "commissioni",
-    "start": "2026-10-29",
-    "end": "2026-10-31",
-    "limit": 100,
-    "offset": 0
-   },
-   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:som:3acommissionepermanente:sed0209\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-145\", \"body_name\": \"3ª Commissione permanente\", \"number\": 209, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}]}"
-  },
-  {
-   "name": "cerca_per_significato",
-   "args": {
-    "testo": "Bollettino delle commissioni 30 ottobre 2026 provvisorio definitivo",
-    "fonti": [
-     "documenti"
-    ],
-    "ramo": null,
-    "da": "2026-10-30",
-    "a": "2026-10-30",
-    "quanti": 30
-   },
-   "result": "{\"testo\": \"Bollettino delle commissioni 30 ottobre 2026 provvisorio definitivo\", \"fonti\": [\"documenti\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [], \"nota\": \"brani per vicinanza di significato, non per parole: controlla che parlino davvero del tema; i riassunti (riassunto: true) non si citano tra «…»\"}"
-  },
-  {
-   "name": "elenco_sedute",
-   "args": {
-    "chamber": "camera",
-    "body": "commissioni",
+    "body": null,
     "start": "2026-10-30",
-    "end": "2026-11-03",
+    "end": "2026-10-30",
     "limit": 100,
     "offset": 0
    },
@@ -77,17 +66,16 @@
  ],
  "strumenti": [
   "elenco_sedute",
+  "argomenti_sedute",
   "elenco_sedute",
-  "elenco_sedute",
-  "cerca_per_significato",
   "elenco_sedute"
  ],
- "tempo_s": 16.1,
- "risposta_sistema": "Non risulta nei dati alcun Bollettino o seduta di commissione del **30 ottobre 2026**, né alla Camera né al Senato. Non posso quindi stabilire se quel Bollettino fosse definitivo o provvisorio dalla fonte disponibile.\n\nI dati delle sedute arrivano fino al 3 novembre 2026; l’ultima attività di commissione registrata prima di quella data è del 29 ottobre.",
+ "tempo_s": 16.9,
+ "risposta_sistema": "Non posso stabilirlo dai dati disponibili: per il **30 ottobre 2026** non risulta alcuna seduta di commissione né alla Camera né al Senato, quindi non c’è un Bollettino delle commissioni associato a quella data di cui sia indicato lo stato “definitivo” o “provvisorio”. Risulta invece una sola seduta dell’Aula della Camera, n. 736, svolta quel giorno.\n\nPer verificarne lo stato editoriale occorre consultare direttamente il Bollettino ufficiale pubblicato dalla Camera o dal Senato per quella data; questo campo non è presente nei dati acquisiti.",
  "eventi": {
-  "status": 1,
-  "tool": 10,
-  "dati": 5,
+  "status": 2,
+  "tool": 8,
+  "dati": 4,
   "delta": 1,
   "suggestions": 1,
   "done": 1

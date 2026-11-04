@@ -9,11 +9,12 @@
  "note_domanda": "Nove deputati: Pozzolo, Ravetto, Sasso e Ziello dal 27/5/2026; Bergamini, Bof, Furgiuele e Pierro dall'8/6/2026; Calderone dal 21/9/2026.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784345.4908679,
+ "inizio": 1793788037.022466,
  "endpoint_usato": "/api/agente",
  "strumenti": [
   "composizione",
   "composizione",
+  "cambi_gruppo",
   "cerca_persone",
   "cambi_gruppo",
   "composizione",
@@ -28,8 +29,8 @@
   "scheda_persona",
   "scheda_persona"
  ],
- "tempo_s": 33.3,
- "risposta_sistema": "La componente della Camera nel Gruppo Misto **«Futuro Nazionale Vannacci - Free»** risulta costituita dal **27 maggio 2026**: quel giorno aveva quattro aderenti. Al **4 novembre 2026** conta **9 deputati**.\n\nNe fanno parte:\n\n- [Laura Ravetto](http://dati.camera.it/ocd/persona.rdf/p301459), [Edoardo Ziello](http://dati.camera.it/ocd/persona.rdf/p307143), [Rossano Sasso](http://dati.camera.it/ocd/persona.rdf/p307360) ed [Emanuele Pozzolo](http://dati.camera.it/ocd/persona.rdf/p308822), aderenti dal 27 maggio 2026;\n- [Domenico Furgiuele](http://dati.camera.it/ocd/persona.rdf/p307718), [Attilio Pierro](http://dati.camera.it/ocd/persona.rdf/p308791), [Gianangelo Bof](http://dati.camera.it/ocd/persona.rdf/p308801) e [Davide Bergamini](http://dati.camera.it/ocd/persona.rdf/p308928), aderenti dall’8 giugno 2026;\n- [Tommaso Antonino Calderone](http://dati.camera.it/ocd/persona.rdf/p308766), aderente dal 21 settembre 2026.",
+ "tempo_s": 43.7,
+ "risposta_sistema": "La componente della Camera **«Futuro Nazionale Vannacci - Free»** esiste dal **27 maggio 2026**: in quella data risultano iscritti alla componente i suoi primi quattro membri. Al **4 novembre 2026** conta **9 deputati**.\n\nNe fanno parte:\n- [Laura Ravetto](http://dati.camera.it/ocd/persona.rdf/p301459)\n- [Edoardo Ziello](http://dati.camera.it/ocd/persona.rdf/p307143)\n- [Rossano Sasso](http://dati.camera.it/ocd/persona.rdf/p307360)\n- [Emanuele Pozzolo](http://dati.camera.it/ocd/persona.rdf/p308822)\n- [Davide Bergamini](http://dati.camera.it/ocd/persona.rdf/p308928)\n- [Gianangelo Bof](http://dati.camera.it/ocd/persona.rdf/p308801)\n- [Attilio Pierro](http://dati.camera.it/ocd/persona.rdf/p308791)\n- [Domenico Furgiuele](http://dati.camera.it/ocd/persona.rdf/p307718)\n- [Tommaso Antonino Calderone](http://dati.camera.it/ocd/persona.rdf/p308766)\n\nI primi quattro risultano nella componente dal 27 maggio; gli altri quattro sono entrati l’8 giugno e Calderone il 21 settembre 2026. Dati aggiornati al 3 novembre 2026.",
  "errori": [],
  "verifica": {
   "dati": {
@@ -156,12 +157,12 @@
   "correttezza": 2,
   "fonti": 1,
   "trappola": null,
-  "tempo_s": 33.3
+  "tempo_s": 43.7
  },
- "giro1": {
-  "correttezza": 2,
-  "fonti": 0
+ "giri_precedenti": {
+  "giro1": 2,
+  "giro2": 2
  },
  "causa_probabile": null,
- "note": "Dal 27/5/2026, nove deputati con le tre date d'ingresso giuste (27/5, 8/6, 21/9), più precise del primo giro. Link alle schede dati.camera.it."
+ "note": "Dal 27/5/2026, nove deputati con le tre date d'ingresso giuste (27/5, 8/6, 21/9): uguale al giro 2. Link alle schede dati.camera.it."
 }

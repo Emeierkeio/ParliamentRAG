@@ -1,0 +1,40 @@
+{
+ "id": "COM-012",
+ "domanda": "Fascicolo degli emendamenti sul ddl caregiver in XII Commissione: quanti per articolo e quanti articoli aggiuntivi?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "kind distingue emendamento, articoloAggiuntivo, subEmendamento.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793787944.593366,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "emendamenti",
+  "conta_emendamenti"
+ ],
+ "tempo_s": 24.2,
+ "risposta_sistema": "Nel fascicolo degli emendamenti esaminati in sede referente dalla XII Commissione sul ddl caregiver **C. 2789**, risultano **418 proposte**: **389 emendamenti**, **6 subemendamenti** e **23 articoli aggiuntivi**. Scheda ufficiale del C. 2789\n\nEmendamenti ordinari, per articolo:\n- articolo 1: **29**\n- articolo 2: **63** *(più 6 subemendamenti)*\n- articolo 3: **18**\n- articolo 4: **71**\n- articolo 5: **21**\n- articolo 6: **14**\n- articolo 7: **50**\n- articolo 8: **33**\n- articolo 9: **9**\n- articolo 10: **1**\n- articolo 11: **3**\n- articolo 12: **33**\n- articolo 13: **32**\n- articolo 14: **4**\n- articolo 15: **8**\n\nArticoli aggiuntivi: **23** in tutto:\n- dopo l’articolo 4: **1**\n- dopo l’articolo 5: **3**\n- dopo l’articolo 7: **1**\n- dopo l’articolo 8: **2**\n- dopo l’articolo 12: **2**\n- dopo l’articolo 13: **14**\n\nIl conteggio considera una proposta per numero e sede; le riformulazioni con lo stesso numero valgono una sola volta. La fonte dei dati avverte che la completezza dei fascicoli caricati non è verificata.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il ddl caregiver è l'AC 2789 del governo («Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari»), in sede referente in XII Commissione. Le proposte distinte sono 418: 389 emendamenti (387 nel fascicolo del 22/4/2026 più gli emendamenti 1.100 e 2.100 del relatore), 23 articoli aggiuntivi e 6 subemendamenti al 2.100. Per articolo: art. 1: 29; art. 2: 63 emendamenti e 6 subemendamenti; art. 3: 18; art. 4: 71 e 1 articolo aggiuntivo; art. 5: 21 e 3; art. 6: 14; art. 7: 50 e 1; art. 8: 33 e 2; art. 9: 9; art. 10: 1; art. 11: 3; art. 12: 33 e 2; art. 13: 32 e 14; art. 14: 4; art. 15: 8. Ne risultano approvate 46.",
+  "stato": "calcolata",
+  "limiti": "Proposta = numero distinto (con tipo e articolo): lo stesso numero ricompare fra le riformulazioni e fra le approvate e va contato una volta (499 righe, 418 proposte). Gli articoli aggiuntivi sono contati sotto l'articolo dopo cui si inseriscono. Il dato degli approvati viene dai gruppi «PROPOSTE EMENDATIVE APPROVATE» del Bollettino."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 24.2
+ },
+ "giri_precedenti": {
+  "giro1": 0,
+  "giro2": 1
+ },
+ "causa_probabile": null,
+ "note": "Ora completa: 418 proposte (389 emendamenti, 6 subemendamenti, 23 articoli aggiuntivi) e riparto per articolo identico al riferimento, compresi gli aggiuntivi dopo gli articoli 4, 5, 7, 8, 12 e 13. Sale da 1 a 2. «Scheda ufficiale del C. 2789» è un'etichetta senza URL: fonti 0."
+}

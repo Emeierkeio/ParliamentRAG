@@ -11,22 +11,37 @@
  "note": "Trappola. Il 6/12/2023 la Camera approvò la PDL 1275 (153 sì, 118 no, 3 astenuti), ma con l'emendamento della maggioranza che la trasformò in delega al governo: i firmatari (Conte ed altri) ritirarono la firma e le opposizioni votarono no. È diventata la legge 144/2025. Il sistema deve spiegarlo prima di elencare chi ha votato no.",
  "trappola": true,
  "endpoint": "agente",
- "inizio": 1793784719.5980742,
+ "inizio": 1793788419.751321,
  "endpoint_usato": "/api/agente",
  "dati": [
   {
    "name": "cerca_atti",
    "args": {
-    "q": "salario minimo",
+    "q": "\"salario minimo\"",
     "chamber": null,
-    "kind": null,
+    "kind": "bill",
     "number": null,
     "signer": null,
     "initiative": null,
-    "limit": 50,
+    "limit": 100,
     "offset": 0
    },
    "result": "{\"total\": 11, \"items\": [{\"uri\": \"it:senato:19:ddl:1922\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1922\", \"kind\": \"bill\", \"title\": \"Disposizioni per il sostegno alle microimprese, alle piccole imprese e alle imprese artigiane nella transizione verso il salario minimo legale\", \"date\": \"2026-06-04\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55418.htm\", \"initiative\": \"Sen. Turco Mario ed altri\"}, {\"uri\": \"it:camera:19:ac:2373\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2373\", \"kind\": \"bill\", \"title\": \"BARZOTTI ed altri: \\\"Modifiche al decreto legislativo 9 aprile 2008, n. 81, e altre disposizioni in materia di tutela della salute e della sicurezza nei luoghi di lavoro, nonché introduzione del salario minimo legale\\\" (2373)\", \"date\": \"2025-04-30\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2373\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2179\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2179\", \"kind\": \"bill\", \"title\": \"PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \\\"Disposizioni per l’istituzione del salario minimo\\\" (2179)\", \"date\": \"2024-12-19\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2179\", \"initiative\": \"Popolare\"}, {\"uri\": \"it:senato:19:ddl:1237\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1237\", \"kind\": \"bill\", \"title\": \"Disposizioni per l'istituzione del salario minimo\", \"date\": \"2024-09-19\", \"status\": \"assorbito\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53986.htm\", \"initiative\": \"Sen. Magni Tino ed altri\"}, {\"uri\": \"it:senato:19:ddl:956\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"956\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di salario minimo\", \"date\": \"2023-11-28\", \"status\": \"assorbito\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53324.htm\", \"initiative\": \"Popolare\"}, {\"uri\": \"it:camera:19:ac:1275\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1275\", \"kind\": \"bill\", \"title\": \"CONTE ed altri (i firmatari hanno ritirato la propria sottoscrizione alla proposta di legge): \\\"Disposizioni per l’istituzione del salario minimo\\\" (1275)\", \"date\": \"2023-07-04\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"144\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1275\", \"initiative\": \"Mista (Governo, Parlamentare, Regioni)\"}, {\"uri\": \"it:camera:19:ac:141\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"141\", \"kind\": \"bill\", \"title\": \"FRATOIANNI e MARI: \\\"Istituzione del salario minimo legale\\\" (141)\", \"date\": \"2022-10-13\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legisla"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": null,
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 28670, \"items\": [{\"uri\": \"it:camera:19:sed0735:v019\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 19, \"date\": \"2026-10-28\", \"title\": \"Votazione \", \"kind\": \"other\", \"favor\": 103, \"against\": 142, \"abstain\": 7, \"approved\": false, \"secret\": false, \"confidence\": false, \"act_title\": \"IEZZI ed altri: \\\"Modifiche alla legge 5 febbraio 1992, n. 91, in materia di acquisto e di revoca della cittadinanza\\\" (2124)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_19&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v018\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 18, \"date\": \"2026-10-28\", \"title\": \"Votazione \", \"kind\": \"other\", \"favor\": 104, \"against\": 145, \"abstain\": 7, \"approved\": false, \"secret\": false, \"confidence\": false, \"act_title\": \"IEZZI ed altri: \\\"Modifiche alla legge 5 febbraio 1992, n. 91, in materia di acquisto e di revoca della cittadinanza\\\" (2124)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_18&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v017\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 17, \"date\": \"2026-10-28\", \"title\": \"Votazione finale \", \"kind\": \"final\", \"favor\": 143, \"against\": 113, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"\\\"Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie\\\" (2700)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_17&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v016\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 16, \"date\": \"2026-10-28\", \"title\": \"Votazione Ordine del giorno 9/2700-A/52 \", \"kind\": \"agenda_order\", \"favor\": 8, \"against\": 145, \"abstain\": 107, \"approved\": false, \"secret\": false, \"confidence\": false, \"act_title\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02700-A/052 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 27/10/2026\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_16&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v015\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 15, \"date\": \"2026-10-28\", \"title\": \"Votazione Ordine del giorno 9/2700-A/45 \", \"kind\": \"agenda_order\", \"favor\": 114, \"against\": 148, \"abstain\": 3, \"approved\": false, \"secret\": false, \"confidence\": false, \"act_title\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02700-A/045 presentata da IARIA ANTONINO (MOVIMENTO 5 STELLE) in data 27/10/2026\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_15&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v014\", \"sitting\": \"it:camera:19:sed0735\", \"chambe"
   },
   {
    "name": "atto",
@@ -46,15 +61,16 @@
  ],
  "strumenti": [
   "cerca_atti",
+  "elenco_votazioni",
   "atto",
   "votazione"
  ],
- "tempo_s": 18.6,
- "risposta_sistema": "Nella votazione finale alla Camera del **6 dicembre 2023**, non è stato bocciato il salario minimo: è stata approvata, con **153 sì, 118 no e 3 astenuti**, la legge-delega del Governo su retribuzioni e contrattazione collettiva (PDL 1275 e abbinate). [Risultato e voti nominali ufficiali](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=210_1&tipo=dettaglio)\n\nI **118 contrari** furono tutti nei gruppi di opposizione:\n- **PD-IDP:** 59;\n- **Movimento 5 Stelle:** 35;\n- **Azione–Popolari Europeisti Riformatori–Renew Europe:** 7;\n- **Alleanza Verdi e Sinistra:** 7;\n- **Italia Viva–Casa Riformista:** 6;\n- **+Europa–Stati Uniti d’Europa** (componente del Misto): 2;\n- altri 2 contrari risultano nel totale dei voti nominali ufficiali.\n\nQuindi, in quella votazione, questi deputati non votarono contro l’introduzione di un salario minimo in sé: votarono contro il testo finale approvato dalla maggioranza, che era una **delega al Governo**. Le proposte originarie sull’istituzione del salario minimo erano abbinate nel provvedimento. [Scheda dell’atto AC 1275](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1275)",
+ "tempo_s": 17.5,
+ "risposta_sistema": "Non c’è stata una votazione finale in cui l’Aula abbia semplicemente votato “sì/no al salario minimo legale”. La proposta originaria C. 1275, che parlava di istituzione del salario minimo, è stata modificata e la Camera ha votato il 6 dicembre 2023 un testo intitolato **“Deleghe al Governo in materia di retribuzione dei lavoratori e di contrattazione collettiva”**. Il provvedimento è poi diventato la legge n. 144/2025. [Scheda dell’atto C. 1275](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1275)\n\nIn quella **votazione finale**, hanno votato **contro** 118 deputati:  \n- **PD-IDP:** 59  \n- **Movimento 5 Stelle:** 35  \n- **Azione – Popolari Europeisti Riformatori – Renew Europe:** 7  \n- **Alleanza Verdi e Sinistra:** 7  \n- **Italia Viva – Casa Riformista:** 6  \n- **+Europa – Stati Uniti d’Europa** (componente del Misto): 2  \n- **Misto, non iscritti:** 2  \n\nLa votazione è passata con 153 favorevoli, 118 contrari e 3 astenuti. Quindi, tecnicamente, questi gruppi votarono contro il **testo finale modificato**, non contro una votazione finale su un salario minimo legale nella formulazione originaria. [Risultato nominale della votazione del 6 dicembre 2023](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=210_1&tipo=dettaglio)",
  "eventi": {
   "status": 1,
-  "tool": 6,
-  "dati": 3,
+  "tool": 8,
+  "dati": 4,
   "delta": 1,
   "suggestions": 1,
   "done": 1

@@ -1,0 +1,108 @@
+{
+ "id": "COMU-036",
+ "domanda": "Quante audizioni ha fatto la Camera sulla legge annuale per la concorrenza 2026 e chi è stato sentito?",
+ "categoria": "audizioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "AC 3120.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788310.770417,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "legge annuale per il mercato e la concorrenza 2026",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3120\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3120\", \"kind\": \"bill\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"date\": \"2026-09-28\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:3120"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:3120\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3120\", \"kind\": \"bill\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"date\": \"2026-09-28\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"status_date\": \"2026-10-27\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3120\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:39200\", \"name\": \"Adolfo Urso\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro delle Imprese e del made in Italy\"}, {\"person\": {\"uri\": \"it:person:camera:303089\", \"name\": \"Gilberto Pichetto Fratin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=303089&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Ambiente e della sicurezza energetica\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-09-28\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-21\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-27\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3120.19PDL0217530\", \"title\": \"Disegno di Legge presentato il 28 settembre 2026\", \"date\": \"2026-09-28\", \"articles\": 13, \"length\": 121071}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "X Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "3120",
+    "start": "2026-10-27",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "Attività produttive",
+    "chamber": "camera",
+    "date": null,
+    "titles": null
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "X Commissione",
+    "start": "2026-10-27",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": null,
+    "seat": null,
+    "stage": null,
+    "q": "concorrenza",
+    "start": "2026-09-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 3, \"items\": [{\"uri\": \"it:camera:19:bol20261028:c10:sede00010:tit00010\", \"title\": \"Legge annuale per il mercato e la concorrenza per il 2026.\", \"stage\": \"Seguito dell'esame e rinvio\", \"sitting\": \"it:camera:19:bol20261028:c10:sede00010\", \"date\": \"2026-10-28\", \"chamber\": \"camera\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"seat\": \"SEDE REFERENTE\", \"number\": 10, \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"group\": \"LEGA\"}], \"speakers_total\": 2}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00030:tit00010\", \"title\": \"Legge annuale per il mercato e la concorrenza per il 2026.\", \"stage\": \"Esame e rinvio\", \"sitting\": \"it:camera:19:bol20261027:c10:sede00030\", \"date\": \"2026-10-27\", \"chamber\": \"camera\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"seat\": \"SEDE REFERENTE\", \"number\": 30, \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"group\": \"LEGA\"}], \"speakers_total\": 2}, {\"uri\": \"it:camera:19:bol20261021:c05:sede00010:tit00010\", \"title\": \"Legge annuale per il mercato e la concorrenza 2026.\", \"stage\": \"Esame per la verifica del contenuto proprio del disegno di legge e conclusione\", \"sitting\": \"it:camera:19:bol20261021:c05:sede00010\", \"date\": \"2026-10-21\", \"chamber\": \"camera\", \"body_name\": \"Bilancio, tesoro e programmazione (V)\", \"seat\": \"ESAME, AI SENSI DELL'ARTICOLO 123-BIS, COMMA 1, DEL REGOLAMENTO\", \"number\": 10, \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:308765\", \"name\": \"Giovanni Luca Cannata\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:307790\", \"name\": \"Gianmauro Dell'Olio\", \"group\": \"M5S\"}], \"speakers_total\": 3}], \"more\": false}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "argomenti_sedute",
+  "organo",
+  "elenco_sedute",
+  "argomenti_sedute"
+ ],
+ "tempo_s": 20.6,
+ "risposta_sistema": "La Camera **non ha ancora svolto audizioni** sul disegno di legge annuale per il mercato e la concorrenza 2026 (C. 3120): **0 audizioni, quindi nessun soggetto ascoltato** nei dati disponibili fino al **3 novembre 2026**.\n\nIl provvedimento è in esame referente presso la **X Commissione Attività produttive** dal 27 ottobre; risultano due sedute di esame, il 27 e il 28 ottobre, entrambe concluse con rinvio e senza audizioni indicate. [Scheda ufficiale del C. 3120](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120)",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

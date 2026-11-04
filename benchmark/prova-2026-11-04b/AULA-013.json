@@ -9,19 +9,19 @@
  "note_domanda": "Molti risultati della ricerca sono di commissioni e giunte (Bollettino): vanno separati dall'Aula.",
  "trappola": false,
  "endpoint": "agente",
- "inizio": 1793784411.2351098,
+ "inizio": 1793788075.178622,
  "endpoint_usato": "/api/agente",
  "strumenti": [
   "cerca_interventi",
   "cerca_interventi",
+  "elenco_votazioni",
   "cerca_interventi",
   "cerca_interventi",
   "cerca_interventi",
-  "cerca_interventi",
-  "cerca_interventi"
+  "seduta"
  ],
- "tempo_s": 32.7,
- "risposta_sistema": "Non ho trovato, nei risultati già consultati, una registrazione che attesti formalmente la mancanza del numero legale **in Aula alla Camera** nel 2026, né quindi una votazione specifica a cui associarla.\n\nHo trovato invece questi riferimenti, che **non documentano** una verifica d’Aula conclusa per mancanza del numero legale:\n\n- Seduta n. 640, 8 aprile 2026: durante un richiamo all’ordine dei lavori, il Presidente afferma che non c’era «manco il numero legale»; dal risultato letto non emerge però una votazione né un accertamento formale.\n- Seduta n. 677, 17 giugno 2026: Marco Grimaldi (AVS) parla del numero legale riferendosi al precedente passaggio del provvedimento al Senato, non a una votazione della Camera.\n- Le sedute del 3, 4, 5 e 11 febbraio e del 15 maggio contengono riferimenti alla mancanza del numero legale nella **Commissione parlamentare di vigilanza Rai**, non nell’Aula della Camera.\n\nPer una risposta completa occorrerebbe controllare i resoconti stenografici delle sedute d’Aula del 2026, in particolare le formule della Presidenza immediatamente successive alle richieste di verifica del numero legale, e l’eventuale ripetizione/rinvio della votazione. La fonte ufficiale è l’archivio dei resoconti dell’Assemblea della Camera.",
+ "tempo_s": 42.3,
+ "risposta_sistema": "Ho trovato una seduta in cui il tema è emerso, ma **non una verifica formale conclusa con la dichiarazione di mancanza del numero legale né la relativa votazione**.\n\n- **Seduta n. 640, 8 aprile 2026**: durante un intervento sull’ordine dei lavori, il Presidente di turno Giorgio Mulè ha detto che non si poteva votare perché «non c'è manco il numero legale». Il passaggio riguardava la richiesta del deputato Claudio Mancini di intervenire sul processo verbale, non identifica una votazione specifica. [Resoconto stenografico della seduta n. 640](https://www.camera.it/leg19/410?idSeduta=0640&tipo=stenografico#sed0640.stenografico.tit00020.int01950)\n\nQuindi non posso affermare che quella sia stata una seduta in cui il numero legale sia **formalmente mancato**, né indicare “su quale votazione”: nei dati già letti manca l’esito di un’apposita verifica e manca il collegamento a una votazione annullata o rinviata per questo motivo.\n\nPer completare il controllo, bisogna consultare il resoconto stenografico ufficiale della seduta n. 640, in particolare le parti successive agli interventi sull’ordine dei lavori e l’eventuale sezione delle votazioni, oltre ai resoconti delle altre sedute d’Aula del 2026.",
  "errori": [],
  "verifica": {
   "dati": {
@@ -32,14 +32,14 @@
    },
    "groups": {
     "present": [
-     "AVS"
+     "PD",
+     "FI"
     ],
     "missing": [
      "Fratelli d'Italia",
-     "Partito Democratico",
      "Lega - Salvini Premier",
      "Movimento 5 Stelle",
-     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
      "Azione - PER",
      "Italia Viva - Casa Riformista",
      "Noi Moderati",
@@ -55,7 +55,7 @@
    },
    "quotes": [
     {
-     "quote": "manco il numero legale",
+     "quote": "non c'è manco il numero legale",
      "status": "not_found",
      "closest_passage": null,
      "url": null
@@ -66,13 +66,22 @@
     "available": true,
     "voices": [
      {
-      "name": "Marco Grimaldi",
-      "group": "Alleanza Verdi e Sinistra",
+      "name": "Giorgio Mulè",
+      "group": "Forza Italia",
       "role": null,
-      "rank": 7,
-      "pool_size": 11,
-      "group_size": 11,
+      "rank": 1,
+      "pool_size": 2,
+      "group_size": 2,
       "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     },
+     {
+      "name": "Claudio Mancini",
+      "group": "Partito Democratico",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
       "authoritative": false,
       "source": "named"
      }
@@ -88,14 +97,14 @@
  },
  "punteggi": {
   "correttezza": 2,
-  "fonti": 0,
+  "fonti": 1,
   "trappola": null,
-  "tempo_s": 32.7
+  "tempo_s": 42.3
  },
- "giro1": {
-  "correttezza": 2,
-  "fonti": 0
+ "giri_precedenti": {
+  "giro1": 2,
+  "giro2": 2
  },
  "causa_probabile": null,
- "note": "Nessuna mancanza del numero legale in Aula nel 2026, scartando Vigilanza Rai e la battuta dell'8/4: coincide col riferimento come al primo giro. Nessun link."
+ "note": "Nessuna mancanza formale del numero legale in Aula nel 2026: scarta la battuta di Mulè dell'8/4 (seduta 640) e ora la linka. Più prudente del giro 2 (suggerisce di controllare altre sedute), ma la sostanza coincide col riferimento."
 }

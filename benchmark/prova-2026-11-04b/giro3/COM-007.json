@@ -1,0 +1,42 @@
+{
+ "id": "COM-007",
+ "domanda": "Elenco degli auditi nell'indagine conoscitiva della VII Commissione sulle nuove tecnologie nella scuola.",
+ "categoria": "audizioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793787968.838948,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "argomenti_sedute",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta"
+ ],
+ "tempo_s": 19.0,
+ "risposta_sistema": "Dalle **cinque audizioni svolte** finora nell’indagine conoscitiva della VII Commissione della Camera sulle nuove tecnologie nella scuola, risultano questi **27 auditi**:\n\n- **29 settembre 2026**: Antonia Salzano Acutis; Esther Flocco, presidente nazionale dell’Associazione italiana maestri cattolici (AIMC); Giuseppe Desideri, presidente della Fondazione AIMC Onlus; Ivano Zoppi, segretario generale della Fondazione Carolina; Angelo Boccato, psicologo dell’orientamento; Sileno Rampado, direttore generale del La Salle International Campus; Paola Bortoletto, presidente nazionale dell’Associazione nazionale dirigenti scolastici (ANDIS). Seduta della VII Commissione\n- **30 settembre 2026**: Marco Crepaldi, presidente dell’Associazione Hikikomori Italia; suor Anna Monia Alfieri, esperta di politiche scolastiche; Michele Liuzzi, esperto; Carlo Nofri, presidente dell’Osservatorio nazionale della mediazione linguistica e culturale (OSSMED); Concita De Simone, coordinatrice della comunicazione della Fondazione Oltre; Marco Gui, presidente della Fondazione Patti digitali; Vincenzo Pantalena, coordinatore del Tavolo interassociativo della scuola; Daniele Grassucci, direttore di Skuola.net. Seduta della VII Commissione\n- **13 ottobre 2026**: Ernesto Caffo, presidente della Fondazione SOS Il Telefono Azzurro ETS. Seduta della VII Commissione\n- **14 ottobre 2026**: Benedetto Scoppola, presidente dell’Opera nazionale Montessori; Daniela Lucangeli, professoressa ordinaria di psicologia dello sviluppo all’Università di Padova; Matteo Lancini, presidente della Fondazione Minotauro. Seduta della VII Commissione\n- **20 ottobre 2026**: Giusy D’Alconzo, responsabile delle politiche per l’infanzia e l’adolescenza di Save the Children; Damiano Sabuzi Giuliani, coordinatore dell’advocacy educazione e povertà di Save the Children; Angela Nava Mambretti, presidente nazionale del Coordinamento genitori democratici (CGD); Sandra Scicolone, componente dello staff del presidente dell’Associazione nazionale dirigenti pubblici (ANP); Liboria Pantaleo, segreteria nazionale del Movimento di cooperazione educativa (MCE); Giulia Bovassi, ricercatrice della Fondazione Machiavelli e della Cattedra UNESCO di Bioetica e diritti umani; Valentina Chinnici, presidente nazionale del Centro iniziativa democratica insegnanti (CIDI); Antonio Affinita, direttore generale del Movimento italiano genitori (MOIGE). Seduta della VII Commissione\n\nL’indagine riguarda dipendenza da schermi e social media, uso dell’intelligenza artificiale, abbandono scolastico, comunità educante e benessere degli studenti. Dati aggiornati alle sedute disponibili fino al **3 novembre 2026**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "L'indagine conoscitiva della VII Commissione «sulle sfide educative e culturali e sull'impatto delle nuove tecnologie nella scuola» è stata deliberata il 17/6/2026; le audizioni si sono tenute il 29/9, 30/9, 13/10, 14/10, 20/10 e 28/10/2026. Auditi: 29/9 Esther Flocco (AIMC) e Giuseppe Desideri (Fondazione AIMC), Ivano Zoppi (Fondazione Carolina), Angelo Boccato (psicologo dell'orientamento), Sileno Rampado (La Salle International Campus), Paola Bortoletto (ANDIS); 30/9 Marco Crepaldi (Hikikomori Italia), suor Anna Monia Alfieri, Michele Liuzzi, Carlo Nofri (OSSMED), Concita De Simone (Fondazione Oltre), Marco Gui (Fondazione Patti digitali), Vincenzo Pantalena (Tavolo interassociativo della scuola), Daniele Grassucci (Skuola.net); 13/10 Ernesto Caffo (Telefono Azzurro); 20/10 Giusy D'Alconzo e Damiano Sabuzi Giuliani (Save the Children), Angela Nava Mambretti (CGD), Sandra Scicolone (ANP), Liboria Pantaleo (MCE), Giulia Bovassi (Fondazione Machiavelli), Valentina Chinnici (CIDI), Antonio Affinita (MOIGE); 28/10 Gabriele Benassi (Liceo Galvani, Servizio Marconi TSI), Elena Fazi (UCIIM), Giovanna Mascheroni. Per la seduta del 14/10 il database non ha i nomi degli auditi.",
+  "stato": "parziale",
+  "limiti": "Gli auditi non sono strutturati (entity vuota): l'elenco si legge dal campo hearing delle memorie depositate, che ripete il titolo completo dell'audizione, oppure dal titolo dell'argomento del Bollettino. Il Bollettino tronca il titolo a «Audizione di:» per 29/9, 30/9, 14/10, 20/10 e 28/10; per il 14/10 non ci sono memorie, quindi quell'elenco manca. Dati fino al 2/11/2026."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 19.0
+ },
+ "giri_precedenti": {
+  "giro1": 1,
+  "giro2": 1
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "27 auditi in cinque sedute: torna Caffo (13/10) e aggiunge i tre del 14/10 (Scoppola, Lucangeli, Lancini), che sono nel resoconto anche se il riferimento li dava per mancanti. Perde però i tre del 28/10 (Benassi, Fazi, Mascheroni), che al giro 2 c'erano: argomenti_sedute non restituisce la seduta del 28/10. Le «Seduta della VII Commissione» non hanno URL."
+}

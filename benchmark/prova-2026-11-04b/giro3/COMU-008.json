@@ -1,0 +1,61 @@
+{
+ "id": "COMU-008",
+ "domanda": "Fammi l'elenco delle leggi di conversione dei decreti approvate con la fiducia nel 2026, con data e numero dell'atto.",
+ "categoria": "governo",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "Al Senato le fiducie non hanno vote_act: l'atto si legge dal titolo del voto («Disegno di legge n. 1718. Votazione questione fiducia»).",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788024.64122,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti"
+ ],
+ "tempo_s": 33.2,
+ "risposta_sistema": "Nel 2026 risultano **12 leggi di conversione di decreti-legge** sulle quali il Governo ha ottenuto la fiducia. Indico la data della votazione di fiducia e il numero dell’atto nei due rami quando presenti.\n\n- **8 gennaio (Senato, S. 1718)** e **14 gennaio (Camera, C. 2758)** — decreto-legge n. 175/2025, Piano Transizione 5.0 e fonti rinnovabili; **legge n. 4/2026**. [S. 1718](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55029.htm) · [C. 2758](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2758)\n- **11 febbraio (Camera, C. 2754)** e **25 febbraio (Senato, S. 1793)** — decreto-legge n. 201/2025, cessione di mezzi all’Ucraina, permessi di soggiorno e sicurezza dei freelance; **legge n. 27/2026**. [S. 1793](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55100.htm) · [C. 2754](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2754)\n- **23 febbraio (Camera, C. 2753)** e **25 febbraio (Senato, S. 1812)** — decreto-legge n. 200/2025, termini normativi; **legge n. 26/2026**. [S. 1812](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55099.htm) · [C. 2753](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2753)\n- **31 marzo (Camera, C. 2809)** e **8 aprile (Senato, S. 1857)** — decreto-legge n. 21/2026, energia, competitività e decarbonizzazione; **legge n. 49/2026**. [S. 1857](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55189.htm) · [C. 2809](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2809)\n- **9 aprile (Camera, C. 2807)** e **15 aprile (Senato, S. 1867)** — decreto-legge n. 19/2026, attuazione PNRR e politiche di coesione; **legge n. 50/2026**. [S. 1867](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55182.htm) · [C. 2807](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2807)\n- **29 aprile (Senato, S. 1832)** e **6 maggio (Camera, C. 2910)** — decreto-legge n. 32/2026, commissari straordinari e concessioni; **legge n. 71/2026**. [S. 1832](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55236.htm) · [C. 2910](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2910)\n- **14 maggio (Senato, S. 1852)** e **20 maggio (Camera, C. 2935)** — decreto-legge n. 38/2026, materia fiscale ed economica; **legge n. 88/2026**. [S. 1852](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55271.htm) · [C. 2935](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2935)\n- **10 giugno (Camera, C. 2911)** e **24 giugno (Senato, S. 1933)** — decreto-legge n. 62/2026, salario giusto, occupazione e caporalato digitale; **legge n. 112/2026**. [S. 1933](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55354.htm) · [C. 2911](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2911)\n- **22 giugno (Camera, C. 2920)** e **1º luglio (Senato, S. 1944)** — decreto-legge n. 66/2026, Piano Casa; **legge n. 116/2026**. [S. 1944](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55369.htm) · [C. 2920](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2920)\n- **30 luglio (Senato, S. 1939)** e **5 agosto (Camera, atto collegato a S. 1939)** — decreto-legge n. 100/2026, giustizia e attuazione del Patto UE su migrazione e asilo; **legge n. 145/2026**. [S. 1939](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55442.htm)\n- **5 agosto (Senato, S. 2001)** — decreto-legge n. 107/2026, infrastrutture, PNRR e disposizioni finanziarie urgenti; **legge n. 152/2026**. [S. 2001](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55473.htm)\n- **28 settembre (Camera, C. 3083)** e **30 settembre (Senato, S. 2047)** — decreto-legge n. 144/2026, pubblica amministrazione, enti territoriali e protezione civile; **legge n. 174/2026**. [S. 2047](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55624.htm) · [C. 3083](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3083)\n\nAlla Camera, la fiducia è stata votata su un articolo o sul testo; al Senato come questione di fiducia sul disegno di legge. Dati aggiornati alle sedute del **3 novembre 2026**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nel 2026 (fino al 2/11) 13 leggi di conversione sono state approvate con almeno un voto di fiducia: L. 4/2026 del 15/1 (DL 175/2025; C. 2758, S. 1718; fiducia Senato 8/1, Camera 14/1); L. 26/2026 del 27/2 (DL 200/2025, termini normativi; C. 2753, S. 1812); L. 27/2026 del 27/2 (DL 201/2025, cessione di mezzi militari; C. 2754, S. 1793); L. 49/2026 del 10/4 (DL 21/2026, costo dell'energia; C. 2809, S. 1857); L. 50/2026 del 20/4 (DL 19/2026, PNRR; C. 2807, S. 1867); L. 54/2026 del 24/4 (DL 23/2026, sicurezza pubblica; fiducia solo alla Camera, C. 2886); L. 71/2026 dell'8/5 (DL 32/2026, commissari e concessioni; S. 1832, C. 2910); L. 88/2026 del 22/5 (DL 38/2026, fiscale; S. 1852, C. 2935); L. 112/2026 del 25/6 (DL 62/2026, salario giusto; C. 2911, S. 1933); L. 116/2026 del 2/7 (DL 66/2026, Piano Casa; C. 2920, S. 1944); L. 145/2026 del 7/8 (DL 100/2026, giustizia e Patto UE migrazione; S. 1939, C. 3053); L. 152/2026 del 7/8 (DL 107/2026, infrastrutture; fiducia solo al Senato, S. 2001); L. 174/2026 del 5/10 (DL 144/2026, PA ed enti territoriali; C. 3083, S. 2047). Tutte con fiducia in entrambi i rami tranne L. 54 e L. 152. Le altre fiducie del 2026 (tre votazioni alla Camera il 6-7/10) riguardano la legge elettorale, che non è una conversione.",
+  "stato": "calcolata",
+  "limiti": "Lettura: leggi di conversione con almeno un voto di fiducia nel 2026 in uno dei due rami, comprese quelle di decreti del 2025 convertiti nel 2026. Alla Camera l'atto è preso da vote_act.act o, se manca, dalla descrizione del voto (C. 2920-A e C. 3053 non hanno vote_act); al Senato dal numero nel titolo del voto, perché i voti di fiducia del Senato non hanno righe in vote_act. Se al Senato manca un voto di fiducia nei dati (es. DL 23/2026, S. 1818, senza nessun voto), la legge risulta con fiducia in un solo ramo."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 33.2
+ },
+ "giri_precedenti": {
+  "giro1": 1,
+  "giro2": 2
+ },
+ "causa_probabile": "ragionamento_o_prompt",
+ "note": "Dodici leggi su tredici con date di fiducia, atti e numeri di legge giusti e link. Manca di nuovo la L. 54/2026 (DL 23/2026, fiducia solo alla Camera, C. 2886), che al giro 2 c'era, e per la L. 145 non dà il C. 3053. Scende da 2 a 1."
+}

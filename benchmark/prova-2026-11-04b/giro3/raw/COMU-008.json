@@ -1,0 +1,406 @@
+{
+ "id": "COMU-008",
+ "domanda": "Fammi l'elenco delle leggi di conversione dei decreti approvate con la fiducia nel 2026, con data e numero dell'atto.",
+ "categoria": "governo",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Al Senato le fiducie non hanno vote_act: l'atto si legge dal titolo del voto («Disegno di legge n. 1718. Votazione questione fiducia»).",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793788024.64122,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 15, \"items\": [{\"uri\": \"it:camera:19:sed0722:v034\", \"sitting\": \"it:camera:19:sed0722\", \"chamber\": \"camera\", \"number\": 34, \"date\": \"2026-10-07\", \"title\": \"Votazione Articolo 3 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 228, \"against\": 144, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=722_34&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0721:v002\", \"sitting\": \"it:camera:19:sed0721\", \"chamber\": \"camera\", \"number\": 2, \"date\": \"2026-10-06\", \"title\": \"Votazione Articolo 2 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 227, \"against\": 149, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_2&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0721:v001\", \"sitting\": \"it:camera:19:sed0721\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-06\", \"title\": \"Votazione Articolo 1 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 226, \"against\": 147, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_1&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0716:v056\", \"sitting\": \"it:camera:19:sed0716\", \"chamber\": \"camera\", \"number\": 56, \"date\": \"2026-09-28\", \"title\": \"Votazione Articolo unico DDL n. 3083\", \"kind\": \"article\", \"favor\": 167, \"against\": 93, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Conversione in legge del decreto-legge 7 agosto 2026, n. 144, recante disposizioni urgenti per la funzionalità della pubblica amministrazione e degli enti territoriali, nonché in materia di protezion\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=716_56&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0704:v045\", \"sitting\": \"it:camera:19:sed0704\", \"chamber\": \"camera\", \"number\": 45, \"date\": \"2026-08-05\", \"title\": \"Votazione \", \"kind\": \"other\", \"favor\": 191, \"against\": 112, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1939. - \\\"Conversione in legge del decreto-legge 12 giugno 2026, n. 100, recante misure urgenti in"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "senato",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 12, \"items\": [{\"uri\": \"it:senato:19:sed0460:v002\", \"sitting\": \"it:senato:19:sed0460\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-09-30\", \"title\": \"Disegno di Legge n.2047. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 95, \"against\": 53, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0447:v001\", \"sitting\": \"it:senato:19:sed0447\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-08-05\", \"title\": \"Disegno di legge n. 2001. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 104, \"against\": 62, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0444:v001\", \"sitting\": \"it:senato:19:sed0444\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-07-30\", \"title\": \"Disegno di legge n. 1939. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 92, \"against\": 63, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0434:v002\", \"sitting\": \"it:senato:19:sed0434\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-07-01\", \"title\": \"DDL  n. 1944. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 106, \"against\": 62, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0432:v003\", \"sitting\": \"it:senato:19:sed0432\", \"chamber\": \"senato\", \"number\": 3, \"date\": \"2026-06-24\", \"title\": \"Disegno di legge n.1933. Votazione questione di fiducia.\", \"kind\": \"confidence\", \"favor\": 94, \"against\": 61, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0420:v001\", \"sitting\": \"it:senato:19:sed0420\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-05-14\", \"title\": \"Disegno di legge n. 1852. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 99, \"against\": 56, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0416:v002\", \"sitting\": \"it:senato:19:sed0416\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-04-29\", \"title\": \"DDL n.1832. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 95, \"against\": 58, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0409:v001\", \"sitting\": \"it:senato:19:sed0409\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-04-15\", \"title\": \"Disegno di legge n. 1867. Votazione questione di fiducia.\", \"kind\": \"confidence\", \"favor\": 101, \"against\": 63, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0406:v001\", \"sitting\": \"it:senato:19:sed0406\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-04-08\", \"title\": \"Disegno di legge n. 1857. Votazione questione di fiducia.\", \"kind\": \"confidence\", \"favor\": 102, \"against\": 64, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0393:v002\", \"sitting\": \"it:senato:19:sed0393\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-02-25\", \"title\": \"Disegn"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "3083",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3083\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3083\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 7 agosto 2026, n. 144, recante disposizioni urgenti per la funzionalità della pubblica amministrazione e degli enti territoriali, nonché in materia di protezione civile\\\" (3083)\", \"date\": \"2026-08-07\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"174\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3083\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2920",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2920\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2920\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 7 maggio 2026, n. 66, recante disposizioni urgenti per il Piano Casa\\\" (2920)\", \"date\": \"2026-05-07\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"116\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2920\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2911",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2911\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2911\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 30 aprile 2026, n. 62, recante disposizioni urgenti in materia di salario giusto, di incentivi all’occupazione e di contrasto del caporalato digitale\\\" (2911)\", \"date\": \"2026-04-30\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"112\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2911\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2935",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2935\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2935\", \"kind\": \"bill\", \"title\": \"S. 1852. - \\\"Conversione in legge, con modificazioni, del decreto-legge 27 marzo 2026, n. 38, recante disposizioni urgenti in materia fiscale ed economica\\\" <em>(approvato dal Senato)</em> (2935)\", \"date\": \"2026-05-14\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"88\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2935\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2910",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2910\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2910\", \"kind\": \"bill\", \"title\": \"S. 1832. - \\\"Conversione in legge, con modificazioni, del decreto-legge 11 marzo 2026, n. 32, recante disposizioni urgenti in materia di commissari straordinari e concessioni\\\"<em>(approvato dal Senato)</em> (2910)\", \"date\": \"2026-04-30\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"71\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2910\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2886",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2886\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2886\", \"kind\": \"bill\", \"title\": \"S. 1818. - \\\"Conversione in legge, con modificazioni, del decreto-legge 24 febbraio 2026, n. 23, recante disposizioni urgenti in materia di sicurezza pubblica, di attività di indagine dell'autorità giudiziaria in presenza di cause di giustificazione, di funzionalità delle forze di polizia e del Ministero dell'interno, nonché di immigrazione e protezione internazionale\\\" <em>(approvato dal Senato)</em> (2886)\", \"date\": \"2026-04-17\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"54\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2886\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2807",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2807\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2807\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 19 febbraio 2026, n. 19, recante ulteriori disposizioni urgenti per l’attuazione del Piano nazionale di ripresa e resilienza (PNRR) e in materia di politiche di coesione\\\" (2807)\", \"date\": \"2026-02-19\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"50\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2807\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2809",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2809\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2809\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 20 febbraio 2026, n. 21, recante misure urgenti per la riduzione del costo dell’energia elettrica e del gas in favore delle famiglie e delle imprese, per la competitività delle imprese e per la decarbonizzazione delle industrie, nonché disposizioni urgenti in materia di risoluzione della saturazione virtuale delle reti elettriche e di integrazione dei centri di elaborazione dati nel sistema elettrico\\\" (2809)\", \"date\": \"2026-02-20\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"49\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2809\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2753",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2753\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2753\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 31 dicembre 2025, n. 200, recante disposizioni urgenti in materia di termini normativi\\\" (2753)\", \"date\": \"2025-12-31\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"26\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2753\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2754",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2754\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2754\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 31 dicembre 2025, n. 201, recante disposizioni urgenti per la proroga dell’autorizzazione alla cessione di mezzi, materiali ed equipaggiamenti militari in favore delle autorità governative dell’Ucraina, per il rinnovo dei permessi di soggiorno in possesso di cittadini ucraini, nonché per la sicurezza dei giornalisti <em>freelance</em>\\\" (2754)\", \"date\": \"2025-12-31\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"27\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2754\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2758",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2758\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2758\", \"kind\": \"bill\", \"title\": \"S. 1718. - \\\"Conversione in legge, con modificazioni, del decreto-legge 21 novembre 2025, n. 175, recante misure urgenti in materia di Piano Transizione 5.0 e di produzione di energia da fonti rinnovabili\\\" <em>(approvato dal Senato)</em> (2758)\", \"date\": \"2026-01-08\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"4\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2758\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "2047",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:2047\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2047\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 7 agosto 2026, n. 144, recante disposizioni urgenti per la funzionalità della pubblica amministrazione e degli enti territoriali, nonché in materia di protezione civile\", \"date\": \"2026-09-28\", \"status\": \"appr. definit. Legge\", \"law_number\": \"174\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55624.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro PA Zangrillo Paolo (Meloni-I) ed altri.\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "2001",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:2001\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2001\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 26 giugno 2026, n. 107, recante disposizioni urgenti per interventi infrastrutturali e per l'attuazione del Piano nazionale di ripresa e resilienza (PNRR), nonché ulteriori disposizioni finanziarie urgenti\", \"date\": \"2026-08-03\", \"status\": \"appr. definit. Legge\", \"law_number\": \"152\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55473.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro infra. e tra. Salvini Matteo (Meloni-I) ed altri.\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1939",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1939\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1939\", \"kind\": \"bill\", \"title\": \"Conversione in legge del decreto-legge 12 giugno 2026, n. 100, recante misure urgenti in materia di giustizia e per l'attuazione del Patto dell'Unione europea sulla migrazione e l'asilo del 14 maggio 2024\", \"date\": \"2026-06-12\", \"status\": \"approvato\", \"law_number\": \"145\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55442.htm\", \"initiative\": \"Gov. Meloni-I: Pres. Consiglio Meloni, Ministro aff. europei, PNRR e politiche di coesione Foti ed altri\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1944",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1944\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1944\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 7 maggio 2026, n. 66, recante disposizioni urgenti per il Piano Casa\", \"date\": \"2026-06-23\", \"status\": \"appr. definit. Legge\", \"law_number\": \"116\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55369.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro infra. e tra. Salvini Matteo (Meloni-I) ed altri.\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1933",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1933\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1933\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 30 aprile 2026, n. 62, recante disposizioni urgenti in materia di salario giusto, di incentivi all'occupazione e di contrasto del caporalato digitale\", \"date\": \"2026-06-11\", \"status\": \"appr. definit. Legge\", \"law_number\": \"112\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55354.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro lavoro Calderone Marina Elvira (Meloni-I) ed altri.\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1852",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1852\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1852\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 27 marzo 2026, n. 38, recante disposizioni urgenti in materia fiscale ed economica\", \"date\": \"2026-03-27\", \"status\": \"approvato\", \"law_number\": \"88\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55271.htm\", \"initiative\": \"Gov. Meloni-I: Pres. Consiglio Meloni, Ministro economia e finanze Giorgetti\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1832",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1832\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1832\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 11 marzo 2026, n. 32, recante disposizioni urgenti in materia di commissari straordinari e concessioni\", \"date\": \"2026-03-11\", \"status\": \"approvato\", \"law_number\": \"71\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55236.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro infra. e tra. Salvini Matteo (Meloni-I) ed altri.\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1867",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1867\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1867\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 19 febbraio 2026, n. 19, recante ulteriori disposizioni urgenti per l'attuazione del Piano nazionale di ripresa e resilienza (PNRR) e in materia di politiche di coesione\", \"date\": \"2026-04-10\", \"status\": \"appr. definit. Legge\", \"law_number\": \"50\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55182.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro aff.eu,pnrr,pol.coe Foti Tommaso (Meloni-I) ed altri.\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1857",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1857\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1857\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 20 febbraio 2026, n. 21, recante misure urgenti per la riduzione del costo dell'energia elettrica e del gas in favore delle famiglie e delle imprese, per la competitività delle imprese e per la decarbonizzazione delle industrie, nonché disposizioni urgenti in materia di risoluzione della saturazione virtuale delle reti elettriche e di integrazione dei centri di elaborazione dati nel sistema elettrico\", \"date\": \"2026-04-01\", \"status\": \"appr. definit. Legge\", \"law_number\": \"49\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55189.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro amb. e sic. ener. Pichetto Fratin Gilberto (Meloni-I) ed altri.\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1812",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1812\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1812\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 31 dicembre 2025, n. 200, recante disposizioni urgenti in materia di termini normativi\", \"date\": \"2026-02-24\", \"status\": \"appr. definit. Legge\", \"law_number\": \"26\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55099.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro economia e finanze Giorgetti Giancarlo (Meloni-I)\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1793",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1793\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1793\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 31 dicembre 2025, n. 201, recante disposizioni urgenti per la proroga dell'autorizzazione alla cessione di mezzi, materiali ed equipaggiamenti militari in favore delle autorità governative dell'Ucraina, per il rinnovo dei permessi di soggiorno in possesso di cittadini ucraini, nonché per la sicurezza dei giornalisti freelance\", \"date\": \"2026-02-12\", \"status\": \"appr. definit. Legge\", \"law_number\": \"27\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55100.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro aff. esteri e coop. Tajani Antonio (Meloni-I) ed altri.\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1718",
+    "signer": null,
+    "initiative": null,
+    "limit": 5,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1718\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1718\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 21 novembre 2025, n. 175, recante misure urgenti in materia di Piano Transizione 5.0 e di produzione di energia da fonti rinnovabili\", \"date\": \"2025-11-21\", \"status\": \"approvato\", \"law_number\": \"4\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55029.htm\", \"initiative\": \"Gov. Meloni-I: Pres. Consiglio Meloni, Ministro economia e finanze Giorgetti ed altri\"}]}"
+  }
+ ],
+ "strumenti": [
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti"
+ ],
+ "tempo_s": 33.2,
+ "risposta_sistema": "Nel 2026 risultano **12 leggi di conversione di decreti-legge** sulle quali il Governo ha ottenuto la fiducia. Indico la data della votazione di fiducia e il numero dell’atto nei due rami quando presenti.\n\n- **8 gennaio (Senato, S. 1718)** e **14 gennaio (Camera, C. 2758)** — decreto-legge n. 175/2025, Piano Transizione 5.0 e fonti rinnovabili; **legge n. 4/2026**. [S. 1718](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55029.htm) · [C. 2758](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2758)\n- **11 febbraio (Camera, C. 2754)** e **25 febbraio (Senato, S. 1793)** — decreto-legge n. 201/2025, cessione di mezzi all’Ucraina, permessi di soggiorno e sicurezza dei freelance; **legge n. 27/2026**. [S. 1793](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55100.htm) · [C. 2754](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2754)\n- **23 febbraio (Camera, C. 2753)** e **25 febbraio (Senato, S. 1812)** — decreto-legge n. 200/2025, termini normativi; **legge n. 26/2026**. [S. 1812](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55099.htm) · [C. 2753](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2753)\n- **31 marzo (Camera, C. 2809)** e **8 aprile (Senato, S. 1857)** — decreto-legge n. 21/2026, energia, competitività e decarbonizzazione; **legge n. 49/2026**. [S. 1857](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55189.htm) · [C. 2809](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2809)\n- **9 aprile (Camera, C. 2807)** e **15 aprile (Senato, S. 1867)** — decreto-legge n. 19/2026, attuazione PNRR e politiche di coesione; **legge n. 50/2026**. [S. 1867](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55182.htm) · [C. 2807](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2807)\n- **29 aprile (Senato, S. 1832)** e **6 maggio (Camera, C. 2910)** — decreto-legge n. 32/2026, commissari straordinari e concessioni; **legge n. 71/2026**. [S. 1832](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55236.htm) · [C. 2910](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2910)\n- **14 maggio (Senato, S. 1852)** e **20 maggio (Camera, C. 2935)** — decreto-legge n. 38/2026, materia fiscale ed economica; **legge n. 88/2026**. [S. 1852](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55271.htm) · [C. 2935](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2935)\n- **10 giugno (Camera, C. 2911)** e **24 giugno (Senato, S. 1933)** — decreto-legge n. 62/2026, salario giusto, occupazione e caporalato digitale; **legge n. 112/2026**. [S. 1933](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55354.htm) · [C. 2911](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2911)\n- **22 giugno (Camera, C. 2920)** e **1º luglio (Senato, S. 1944)** — decreto-legge n. 66/2026, Piano Casa; **legge n. 116/2026**. [S. 1944](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55369.htm) · [C. 2920](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2920)\n- **30 luglio (Senato, S. 1939)** e **5 agosto (Camera, atto collegato a S. 1939)** — decreto-legge n. 100/2026, giustizia e attuazione del Patto UE su migrazione e asilo; **legge n. 145/2026**. [S. 1939](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55442.htm)\n- **5 agosto (Senato, S. 2001)** — decreto-legge n. 107/2026, infrastrutture, PNRR e disposizioni finanziarie urgenti; **legge n. 152/2026**. [S. 2001](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55473.htm)\n- **28 settembre (Camera, C. 3083)** e **30 settembre (Senato, S. 2047)** — decreto-legge n. 144/2026, pubblica amministrazione, enti territoriali e protezione civile; **legge n. 174/2026**. [S. 2047](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55624.htm) · [C. 3083](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3083)\n\nAlla Camera, la fiducia è stata votata su un articolo o sul testo; al Senato come questione di fiducia sul disegno di legge. Dati aggiornati alle sedute del **3 novembre 2026**.",
+ "eventi": {
+  "status": 1,
+  "tool": 50,
+  "dati": 25,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}
