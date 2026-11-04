@@ -26,6 +26,7 @@ from pipeline.ambiente import env
 
 from . import agente, conversazioni, pubblico, statistiche
 from .db import connessione, connessione_sito as _db_sito
+from .pulisci import pulisci
 from .rete import ip
 
 log = logging.getLogger("parliamentrag.sito")
@@ -232,7 +233,7 @@ async def condividi(req: Request):
         raise HTTPException(400, "formato non valido")
     ident = secrets.token_urlsafe(12)
     dati = {"titolo": d.titolo[:200], "lingua": "en" if d.lingua == "en" else "it", "creata": time.strftime("%Y-%m-%dT%H:%M:%S"),
-            "turni": [{"q": t.q[:1000], "html": t.html} for t in d.turni[:30]]}
+            "turni": [{"q": t.q[:1000], "html": pulisci(t.html)} for t in d.turni[:30]]}
     with _db_sito() as c:
         if c is None:
             return JSONResponse({"errore": "condivisione non disponibile"}, status_code=503)
@@ -248,7 +249,8 @@ def condivisa(ident: str):
         r = c.execute("SELECT conversazione FROM sito.condivisa WHERE id = %s", (ident,)).fetchone() if c else None
     if not r:
         return JSONResponse({"errore": "conversazione non trovata"}, status_code=404)
-    return r["conversazione"]
+    x = r["conversazione"]                              # ripulite anche in lettura: valgono pure per quelle di prima
+    return {**x, "turni": [{**t, "html": pulisci(t.get("html") or "")} for t in x.get("turni") or []]}
 
 
 # ---------- segnalazioni ----------
