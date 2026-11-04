@@ -257,6 +257,10 @@ def script_voti(righe: list[dict]) -> str:
     if amb.get("chamber", "camera") == "camera":
         parti.append(f"UPDATE vote_act v SET act = a.uri FROM act a JOIN vote x ON x.sitting = {_lit(amb['sitting'])} "
                      f"WHERE v.vote = x.uri AND a.chamber = 'camera' AND a.legislature = {leg} AND v.act_ref = 'ac{leg}_' || a.number;")
+        # mozioni e risoluzioni (aic1_00346_19 -> it:camera:19:aic:1-00346): anche quando il mese degli atti non si ricarica
+        parti.append(f"UPDATE vote_act v SET act = a.uri FROM act a JOIN vote x ON x.sitting = {_lit(amb['sitting'])} "
+                     f"WHERE v.vote = x.uri AND v.act IS NULL AND v.act_ref ~ '^aic\\d_\\d+_{leg}$' "
+                     f"AND a.uri = 'it:camera:{leg}:aic:' || replace(regexp_replace(v.act_ref, '^aic|_{leg}$', '', 'g'), '_', '-');")
     else:  # il Senato non dà il gruppo nel voto: lo si prende dall'anagrafica alla data della votazione
         parti.append(f"UPDATE ballot b SET grp = group_at(b.person, x.date) FROM vote x WHERE x.sitting = {_lit(amb['sitting'])} AND b.vote = x.uri;")
     parti.append("COMMIT;")
@@ -316,15 +320,16 @@ def script_atti(righe: list[dict]) -> str:
             parti.append(f"COPY {tabella} ({', '.join(ATTI[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
     parti += [
         # relatore: «SCHIFONE Marta» = cognome in maiuscolo e nome; si lega solo se c'è una persona sola con quel nome
+        # (non gli stub: un membro del governo ha anche la scheda dell'id del Senato, con lo stesso nome)
         f"""UPDATE act_rapporteur r SET person = x.uri FROM (
               SELECT r2.ctid AS c, min(p.uri) AS uri FROM act_rapporteur r2 JOIN act a ON a.uri = r2.act
-              JOIN person p ON upper(p.family_name || ' ' || p.given_name) = upper(r2.name_raw)
+              JOIN person p ON upper(p.family_name || ' ' || p.given_name) = upper(r2.name_raw) AND NOT p.stub
               WHERE a.chamber = {ramo} AND a.legislature = {leg} GROUP BY r2.ctid HAVING count(*) = 1) x
             WHERE r.ctid = x.c;""",
         # poi cognome uguale e nome che comincia allo stesso modo («IEZZI Igor» = Iezzi Igor Giancarlo), sempre se unico
         f"""UPDATE act_rapporteur r SET person = x.uri FROM (
               SELECT r2.ctid AS c, min(p.uri) AS uri FROM act_rapporteur r2 JOIN act a ON a.uri = r2.act
-              JOIN person p ON upper(p.family_name) = upper(substring(r2.name_raw from '^((?:[[:upper:]''’]+ ?)+) '))
+              JOIN person p ON upper(p.family_name) = upper(substring(r2.name_raw from '^((?:[[:upper:]''’]+ ?)+) ')) AND NOT p.stub
                AND (upper(p.given_name) LIKE upper(regexp_replace(r2.name_raw, '^(?:[[:upper:]''’]+ ?)+ ', '')) || '%'
                     OR upper(regexp_replace(r2.name_raw, '^(?:[[:upper:]''’]+ ?)+ ', '')) LIKE upper(split_part(p.given_name, ' ', 1)) || '%')
               WHERE r2.person IS NULL AND a.chamber = {ramo} AND a.legislature = {leg} GROUP BY r2.ctid HAVING count(*) = 1) x
@@ -732,9 +737,10 @@ def applica_schema(registro: Registro) -> str:
 
 
 def _legami() -> None:
-    # dopo voti e atti: gli id dei gruppi nei voti e gli ordini del giorno votati (schema/v3.sql); poi le reazioni
+    # dopo voti e atti: gli id dei gruppi nei voti, gli ordini del giorno votati e le votazioni su emendamenti e articoli
+    # (schema/v3.sql); poi le reazioni
     # ancora senza chi reagisce, se sono arrivati gruppi o persone nuovi
-    psql("SELECT lega_gruppi_voti();\nSELECT lega_odg_voti(l) FROM (SELECT DISTINCT legislature AS l FROM vote WHERE chamber = 'camera') x;", timeout=3600)
+    psql("SELECT lega_gruppi_voti();\nSELECT lega_odg_voti(l), lega_voti_seguito(l) FROM (SELECT DISTINCT legislature AS l FROM vote WHERE chamber = 'camera') x;", timeout=3600)
     psql("SELECT lega_reazioni('it:');", timeout=3600)
 
 
@@ -788,7 +794,7 @@ def carica(ctx) -> dict:
         di_fila = 0
         registro.caricato(f, h)
         conti[voce] = conti.get(voce, 0) + 1
-        if voce in ("voti", "anagrafiche_e_atti"):
+        if voce in ("voti", "anagrafiche_e_atti") or (righe and righe[0].get("kind") == "emendamenti"):   # i fascicoli legano le votazioni
             registro.scrivi("legami", "da fare")        # si ricorda anche se il passo si interrompe prima dei legami
     if registro.leggi("legami"):
         _legami()

@@ -4,9 +4,10 @@ import json
 import unittest
 from pathlib import Path
 
-from pipeline.carica.postgres import script_governo
+from pipeline.carica.postgres import psql, script_governo
 from pipeline.controlli.uscite import _regole_governo
 from pipeline.trasforma.camera_governo import trasforma
+from tests import db_locale
 
 GREZZI = json.loads((Path(__file__).parent / "fixtures" / "camera_governo_campione.json").read_text(encoding="utf-8"))
 
@@ -38,6 +39,33 @@ class TestGoverno(unittest.TestCase):
         s = script_governo(righe)
         self.assertIn("coalesce(person.given_name, EXCLUDED.given_name)", s)  # non sovrascrive l'anagrafica della Camera
         self.assertTrue(s.rstrip().endswith("COMMIT;"))
+
+
+
+@unittest.skipUnless(db_locale(), "serve il Postgres locale")
+class TestNomeDelloStub(unittest.TestCase):
+    """Un ministro non parlamentare che parla al Senato ha un id di senato.it senza anagrafica: lega_governo lo lega
+    alla scheda del governo e gli dà nome e cognome. Transazione annullata, legislatura finta."""
+
+    def test_nome_dalla_carica(self):
+        out = psql("\n".join([
+            "BEGIN;",
+            "INSERT INTO person (uri, stub, given_name, family_name, sort_name) VALUES "
+            "('it:person:camera:prova1', false, 'Marina Elvira', 'Calderone', 'Calderone Marina Elvira');",
+            "INSERT INTO person (uri) VALUES ('it:person:senato:prova1'), ('it:person:senato:prova2');",
+            "INSERT INTO office (person, target, title, start_date) VALUES ('it:person:camera:prova1', 'it:gov:prova', 'minister', '2099-01-01');",
+            "INSERT INTO sitting (uri, chamber, body, number, date, source) VALUES ('it:prova:sed1', 'senato', 'aula', 1, '2099-02-01', 'prova');",
+            "INSERT INTO agenda_item (uri, sitting, ord) VALUES ('it:prova:sed1:t1', 'it:prova:sed1', 1);",
+            "INSERT INTO speech (uri, item, ord, person, speaker_label, as_office, kind, hash, text) VALUES "
+            "('it:prova:sed1:t1:p1', 'it:prova:sed1:t1', 1, 'it:person:senato:prova1', 'CALDERONE, ministro del lavoro e delle politiche sociali', 'ministro', 'speech', 'h', 't'), "
+            "('it:prova:sed1:t1:p2', 'it:prova:sed1:t1', 2, 'it:person:senato:prova2', 'ROSSI, sottosegretario di Stato', 'sottosegretario', 'speech', 'h', 't');",
+            "SELECT lega_governo('it:prova:');",
+            "SELECT 'nomi:' || string_agg(uri || '=' || coalesce(given_name || ' ' || family_name, '-') || '/' || stub, ' ' ORDER BY uri) "
+            "FROM person WHERE uri LIKE 'it:person:senato:prova%';",
+            "ROLLBACK;"]) + "\n")
+        riga = next(r.strip() for r in out.splitlines() if "nomi:" in r)
+        # Rossi non ha una carica di governo alla data: resta senza nome
+        self.assertEqual(riga, "nomi:it:person:senato:prova1=Marina Elvira Calderone/true it:person:senato:prova2=-/true")
 
 
 if __name__ == "__main__":

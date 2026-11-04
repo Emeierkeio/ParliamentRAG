@@ -17,18 +17,27 @@ def _pulito(frammento: str) -> str:
     return testo_html(frammento.encode("utf-8"))
 
 
+# «La Commissione propone la reiezione della proposta di legge.» (o «del disegno di legge»)
+REIEZIONE = re.compile(r"propone (?:la )?reiezione", re.I)
+
+
 def _testo_a_fronte(t: str) -> list[dict]:
     """Stampato «A» con il testo a fronte: una tabella a due colonne, a sinistra il testo presentato e a destra quello
     della commissione, con i titoli d'articolo in <p class="articolo" title="art.1">. Gli articoli sono quelli di destra;
-    dove la commissione non ha cambiato niente la cella dice solo «Identico» (o «1. Identico:») e vale quella di sinistra."""
-    destra = ""
+    dove la commissione non ha cambiato niente la cella dice solo «Identico» (o «1. Identico:») e vale quella di sinistra.
+    Se la commissione propone di respingere l'atto, a destra c'è solo quella frase: l'Aula esamina il testo di sinistra."""
+    sinistra = destra = ""
     for r in re.findall(r"<tr[^>]*>(.*?)</tr>", t, re.S):
         celle = re.findall(r"<td[^>]*>(.*?)</td>", r, re.S)
         if len(re.findall(r'<td[^>]*width="50%"', r)) != 2 or len(celle) != 2:
             continue
         identico = re.fullmatch(r"(?:[\w-]+[.)]\s*)?Identic[oa]\s*[.:]?", _pulito(celle[1]).strip())
         destra += celle[0] if identico else celle[1]
-    titoli = list(re.finditer(r'<p class="articolo" title="art\.([\w-]+)"', destra))
+        sinistra += celle[0]
+    titolo = r'<p class="articolo" title="art\.([\w-]+)"'
+    if not re.search(titolo, destra) and REIEZIONE.search(_pulito(destra)):
+        destra = sinistra
+    titoli = list(re.finditer(titolo, destra))
     return [{"anchor": f"art{m.group(1)}", "number": m.group(1),
              "text": _pulito(destra[m.start():titoli[i + 1].start() if i + 1 < len(titoli) else len(destra)])}
             for i, m in enumerate(titoli)]

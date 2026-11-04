@@ -34,6 +34,19 @@ class TestTesti(unittest.TestCase):
         self.assertIn("Comma rimasto", arts[0]["text"])
         self.assertNotIn("Identico", arts[0]["text"] + arts[1]["text"])
 
+    def test_testo_a_fronte_reiezione(self):
+        """Stampato «A» con la proposta di reiezione (C. 1741-A): a destra solo quella frase, gli articoli sono a sinistra."""
+        riga = lambda sx, dx: f'<tr><td valign="top" width="50%">{sx}</td><td valign="top" width="50%">{dx}</td></tr>'
+        corpo = ("<html><body><table>" + riga("<p>TESTO della proposta di legge</p>", "<p>TESTO della Commissione</p>")
+                 + riga('<p class="articolo" title="art.1">Art. 1.</p>', "<p>  <i>La Commissione propone la reiezione della proposta di legge.</i></p>")
+                 + riga("<p>1. Primo comma.</p>", "")
+                 + riga('<p class="articolo" title="art.2">Art. 2.</p>', "")
+                 + riga("<p>1. Secondo articolo.</p>", "") + "</table></body></html>").encode()
+        arts = trasforma(corpo, {"chiave": "leg19-testo-leg.19.pdl.camera.1741_A.19PDL0093250"})["nodi"][0]["articles"]
+        self.assertEqual([a["number"] for a in arts], ["1", "2"])
+        self.assertIn("Primo comma", arts[0]["text"])
+        self.assertNotIn("reiezione", arts[0]["text"])
+
     def test_senza_articoli(self):
         """Stampato con solo frontespizio e pareri (C. 2935-A, relazione orale): testo senza menu né piè di pagina."""
         corpo = (Path(__file__).parent / "fixtures" / "camera_testo_2935A_senza_articoli.htm").read_bytes()

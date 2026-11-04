@@ -534,7 +534,8 @@ FROM reaction r JOIN speech s ON s.uri = r.speech JOIN agenda_item i ON i.uri = 
 -- membri del governo che parlano al Senato senza esserne membri: senato.it dà loro un id proprio, senza anagrafica.
 -- Si legano alla scheda del governo (dalla Camera): per ogni intervento, i membri del governo in carica alla data con
 -- il cognome scritto prima della virgola («PIANTEDOSI, ministro dell'interno»); l'id si lega a chi copre almeno il 90%
--- dei suoi interventi (la fonte a volte sbaglia il nome: Savino scritta «ALBANO» in 2 interventi su 79).
+-- dei suoi interventi (la fonte a volte sbaglia il nome: Savino scritta «ALBANO» in 2 interventi su 79), e la sua
+-- scheda prende nome e cognome da quella del governo.
 CREATE OR REPLACE FUNCTION lega_governo(prefisso text) RETURNS void LANGUAGE sql AS $$
   WITH interventi AS (
     SELECT s.uri, s.person AS senato, s.speaker_label, t.date
@@ -552,6 +553,12 @@ CREATE OR REPLACE FUNCTION lega_governo(prefisso text) RETURNS void LANGUAGE sql
   INSERT INTO person_same_as (person, same_as, method)
   SELECT persona, senato, 'governo: carica alla data e cognome' FROM quote WHERE k >= 0.9 * tot
   ON CONFLICT DO NOTHING;
+  -- la scheda dell'id del Senato prende il nome da quella del governo (resta stub: le API la risolvono con person_same_as)
+  UPDATE person p SET given_name = coalesce(p.given_name, q.given_name), family_name = coalesce(p.family_name, q.family_name),
+         sort_name = coalesce(p.sort_name, q.sort_name)
+  FROM person_same_as x JOIN person q ON q.uri = x.person
+  WHERE x.same_as = p.uri AND x.method = 'governo: carica alla data e cognome' AND p.stub
+    AND (p.given_name IS NULL OR p.family_name IS NULL) AND q.given_name IS NOT NULL AND q.family_name IS NOT NULL;
 $$;
 
 -- gruppi nei voti della Camera: il voto porta a volte l'id di una versione del gruppo dopo un cambio di nome (gr4212
@@ -594,6 +601,43 @@ CREATE OR REPLACE FUNCTION lega_odg_voti(leg int) RETURNS void LANGUAGE sql AS $
      AND base_odg(regexp_replace(a.number, '^\d/(.*)/\d+$', '\1')) = r.base AND a.date <= r.vdate),
   unici AS (SELECT vote, act_ref, min(uri) AS uri FROM cand WHERE date = ultima GROUP BY 1, 2 HAVING count(*) = 1)
   UPDATE vote_act v SET act = u.uri FROM unici u WHERE v.vote = u.vote AND v.act_ref = u.act_ref;
+$$;
+
+-- votazioni d'Aula della Camera su emendamenti e articoli («EM 1.2», «ART AGG 9.01», «ARTICOLO 3»): la descrizione non
+-- nomina il progetto di legge. Si lega 1) se l'emendamento con quel numero sta nel fascicolo di quella seduta per un atto
+-- solo; 2) altrimenti se la votazione segue, senza altre votazioni in mezzo, quella che apre il blocco nominando l'atto
+-- («DDL 2700-A - EM 1.1»), l'atto è fra i punti all'ordine del giorno della seduta e nessuna votazione del blocco
+-- è legata a un atto diverso
+CREATE OR REPLACE FUNCTION lega_voti_seguito(leg int) RETURNS void LANGUAGE sql AS $$
+  WITH v AS (
+    SELECT v.uri, v.sitting, substring(v.sitting from 'sed(\d+)$')::int AS sed,
+           lower(substring(v.description from '^(?:EM|SUBEM|ART AGG|ART PREM)\s+([0-9A-Za-z.-]*[0-9A-Za-z])')) AS em
+    FROM vote v WHERE v.chamber = 'camera' AND v.legislature = leg
+      AND NOT EXISTS (SELECT 1 FROM vote_act x WHERE x.vote = v.uri)),
+  unici AS (
+    SELECT v.uri, min(e.act) AS act FROM v JOIN amendment e ON e.venue = 'assembly' AND e.sitting_number = v.sed
+      AND lower(e.number) = v.em AND e.act LIKE 'it:camera:' || leg || ':ac:%'
+    GROUP BY v.uri HAVING count(DISTINCT e.act) = 1)
+  INSERT INTO vote_act (vote, act_ref, act)
+  SELECT u.uri, 'ac' || leg || '_' || a.number, a.uri FROM unici u JOIN act a ON a.uri = u.act;
+
+  WITH v AS (
+    SELECT v.uri, v.sitting, v.number,
+           v.description ~ '^(EM|SUBEM|ART|ARTICOLO|MANTENIMENTO)\M' AS seguito,
+           (SELECT min(x.act) FROM vote_act x WHERE x.vote = v.uri AND x.act LIKE '%:ac:%') AS atto,
+           (SELECT count(DISTINCT x.act) FROM vote_act x WHERE x.vote = v.uri) AS atti,
+           EXISTS (SELECT 1 FROM vote_act x WHERE x.vote = v.uri) AS legato
+    FROM vote v WHERE v.chamber = 'camera' AND v.legislature = leg),
+  b AS (SELECT *, sum((NOT seguito)::int) OVER (PARTITION BY sitting ORDER BY number) AS blocco FROM v),
+  apre AS (SELECT sitting, blocco, atto FROM b WHERE NOT seguito AND atti = 1 AND atto IS NOT NULL),
+  buoni AS (
+    SELECT p.sitting, p.blocco, p.atto FROM apre p
+    WHERE EXISTS (SELECT 1 FROM agenda_item i JOIN agenda_item_act y ON y.item = i.uri WHERE i.sitting = p.sitting AND y.act = p.atto)
+      AND NOT EXISTS (SELECT 1 FROM b WHERE b.sitting = p.sitting AND b.blocco = p.blocco AND b.seguito AND b.legato
+                      AND b.atto IS DISTINCT FROM p.atto))
+  INSERT INTO vote_act (vote, act_ref, act)
+  SELECT b.uri, 'ac' || leg || '_' || a.number, a.uri FROM b JOIN buoni p ON p.sitting = b.sitting AND p.blocco = b.blocco
+  JOIN act a ON a.uri = p.atto WHERE b.seguito AND NOT b.legato;
 $$;
 
 -- concetti dei thesauri: EuroVoc (temi di interrogazioni e mozioni, da dati.camera.it) e, in seguito, TESEO (Senato).

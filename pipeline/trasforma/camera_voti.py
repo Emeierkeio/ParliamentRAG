@@ -16,7 +16,12 @@ from .camera_anagrafica import data, id_persona
 SFIDUCIA = re.compile(r"articolo 115, comma 3|sfiducia", re.I)
 # «PDL 2822-A E ABB - VOTO FINALE», «DDL n. 3083», «Votazione Articolo 1 PDL n. 2822-B»: -A è il testo della commissione
 # dello stesso atto, -B (-C…) il numero dell'atto tornato dall'altro ramo
-NUMERO_ATTO = re.compile(r"\b(?:PDL|DDL)\s*(?:n\.\s*)?(\d{1,5})(?:-([A-Z]))?\b")
+# anche «DDL.n. 2920-A» e «Votazione Fiducia A.C. 3053»
+NUMERO_ATTO = re.compile(r"\b(?:PDL|DDL|A\.C\.)\s*\.?\s*(?:n\.\s*)?(\d{1,5})(?:-([A-Z]))?\b")
+# atti di indirizzo: «MOZ 1-346 CPV 13 DISP», «R6-280,281,284,285 D EUR2…», «RIS 280,281,282 D MIS…» (in Aula le
+# risoluzioni sono del tipo 6); il numero diventa il riferimento di dati.camera.it, aic1_00346_19
+MOZIONE = re.compile(r"^MOZ\s+(\d)-(\d{1,5})\b")
+RISOLUZIONE = re.compile(r"^R(?:IS\s+|(?=\d-))(?:(6)-)?(\d{1,5}(?:\s*,\s*\d{1,5})*)")
 
 
 def atti_dalla_descrizione(testo: str | None, leg: int) -> list[str]:
@@ -26,6 +31,15 @@ def atti_dalla_descrizione(testo: str | None, leg: int) -> list[str]:
         if ref not in out:
             out.append(ref)
     return out
+
+
+def aic_dalla_descrizione(testo: str | None, leg: int) -> list[str]:
+    testo = (testo or "").strip()
+    if m := MOZIONE.match(testo):
+        return [f"aic{m.group(1)}_{int(m.group(2)):05d}_{leg}"]
+    if m := RISOLUZIONE.match(testo):
+        return [f"aic6_{int(n):05d}_{leg}" for n in re.split(r"\s*,\s*", m.group(2))]
+    return []
 
 TIPI = {"Finale atto Camera": "final", "Articolo": "article", "Emendamento": "amendment", "Ordine del Giorno": "agenda_order",
         "Mozione": "motion", "Risoluzione": "resolution", "Pregiudiziali": "preliminary_question", "Sospensiva": "suspensive_question",
@@ -88,6 +102,8 @@ def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
     for v in voti.values():
         if not v["acts"]:                            # dati.camera.it non lega l'atto: il numero sta nella descrizione
             v["acts"] = atti_dalla_descrizione(v["description"], leg)
+        if not v["acts"] and not v["aics"]:          # né l'atto né l'atto di indirizzo: mozioni e risoluzioni dalla descrizione
+            v["aics"] = aic_dalla_descrizione(v["description"], leg)
     archi = []
     for r in d["voti"]:
         u = uri_votazione(r["votazione"], leg)
