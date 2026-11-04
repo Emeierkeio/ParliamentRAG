@@ -399,6 +399,7 @@ def _iter(letture: list[dict], prime: dict[tuple[str, str], str], finali: dict[s
 @router.get("/dati/emendamenti/leggi/index.json")
 def elenco(c: Db):
     def calcola():
+        c.execute("SET statement_timeout = '30s'")  # tutti gli emendamenti di tutte le leggi, a freddo
         leggi = _leggi(c)
         atti = [a["uri"] for xs in leggi.values() for a in xs]
         prime = {(r["act"], SEDE.get(r["venue"], "commissione")): compatta(r["d"]) for r in c.execute(
