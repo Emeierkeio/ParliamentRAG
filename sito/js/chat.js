@@ -166,7 +166,8 @@
     if (d) {
       const c = d.counts || {}, v = d.votes || {}, num = (x) => (x == null ? "–" : B.num(x));
       const ruoli = [d.institutionalRole, ...(d.committees || []).filter((x) => !x.to).map((x) => (x.role ? `${x.role}, ${x.name}` : x.name))].filter(Boolean).slice(0, 4);
-      dati = `${d.group ? `<p style="margin:8px 0 0;color:var(--t2)">${e(d.mistoComponent ? `${d.group.name} · ${d.mistoComponent.name}` : d.group.name)}</p>` : ""}${ruoli.length ? `<div class="ruoli">${ruoli.map((x) => `<span>${e(x)}</span>`).join("")}</div>` : ""}
+      // il gruppo c'è già nell'etichetta sopra: qui solo la componente del Misto
+      dati = `${d.group && d.mistoComponent ? `<p style="margin:8px 0 0;color:var(--t2)">${e(`${d.group.name} · ${d.mistoComponent.name}`)}</p>` : ""}${ruoli.length ? `<div class="ruoli">${ruoli.map((x) => `<span>${e(x)}</span>`).join("")}</div>` : ""}
         <dl class="persona__n"><div><dt>${TT("Interventi in Aula", "Floor speeches")}</dt><dd>${num(c.speeches)}</dd></div><div><dt>${TT("Atti con la prima firma", "Acts as first signatory")}</dt><dd>${num(c.actsPrimary)}</dd></div>${v.participationPct != null ? `<div><dt>${TT("Presenza ai voti", "Votes attended")}</dt><dd>${String(v.participationPct).replace(".", window.LANG === "en" ? "." : ",")}%</dd></div>` : ""}</dl>`;
     }
     blocco(t, "persona", TT("Scheda", "Profile"), "", `<div class="persona${sen ? " persona--sen" : ""}">${foto}<div><div class="persona__testa"><h4>${e(p.n)}</h4>${B.link(url, TT("Apri la scheda completa", "Open the full profile"))}</div><div style="margin-top:6px">${sen ? TT("Senato", "Senate") + " · " : ""}${B.sig(p.sigla)}</div>${dati}</div>${sen ? "" : `<div>${B.emiciclo({ evidenzia: p.id, r: 15, etichetta: `Il seggio di ${p.n}` })}</div>`}</div>`, "voti");
