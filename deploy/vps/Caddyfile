@@ -20,7 +20,8 @@ parliamentrag.it {
 	redir https://www.parliamentrag.it{uri} permanent
 }
 
-# Quando Fascicoli, Scranno e Stenografo chiudono: togliere il commento e spostare i loro record www sulla VPS.
-# www.fascicoli.it, www.scranno.it, www.stenografo.it {
-# 	redir https://www.parliamentrag.it permanent
-# }
+# Fascicoli, Scranno e Stenografo sono confluiti in ParliamentRAG (4/11/2026): i loro www rimandano qui. Gli apex li
+# rimanda a www una regola di Cloudflare.
+www.fascicoli.it, www.scranno.it, www.stenografo.it {
+	redir https://www.parliamentrag.it permanent
+}
