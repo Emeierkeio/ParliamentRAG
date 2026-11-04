@@ -247,7 +247,6 @@
  "Posso usare una risposta in un articolo?": "Can I use an answer in an article?",
  "Sì. Cita la fonte ufficiale linkata accanto a ogni frase, non il testo generato.": "Yes. Cite the official source linked next to each sentence, not the generated text.",
  "Cosa fate dei miei dati?": "What do you do with my data?",
- "Non serve un account e non usiamo strumenti di pubblicità. Contiamo le visite con Plausible, senza cookie e senza dati che ti identificano.": "You don't need an account and we use no advertising tools. We count visits with Plausible, without cookies and without data that identifies you.",
  "Progetto di ricerca indipendente dell'Università di Milano-Bicocca.": "Independent research project of the University of Milano-Bicocca.",
  "Usa": "Use",
  "Progetto": "Project",
@@ -751,8 +750,8 @@
 
   Object.assign(window.LINGUA_EN.testi, { "Il Parlamento è pubblico.": "Parliament is public.", "Ora è anche leggibile.": "Now it's readable too." });
 
-  Object.assign(window.LINGUA_EN.testi, { "Riconoscimenti": "Recognition", "Ne hanno scritto": "In the press", "Demo paper accettato": "Demo paper accepted", "Presentato a Bari, 25–29 ottobre 2026": "Presented in Bari, 25–29 October 2026", "Leggi il paper su arXiv": "Read the paper on arXiv" });
-  window.LINGUA_EN.modelli.unshift([/^(.+), (\d+) ottobre 2026$/, (m) => `${m[1]}, ${m[2]} October 2026`]);
+  Object.assign(window.LINGUA_EN.testi, { "Riconoscimenti": "Recognition", "Ne hanno parlato": "In the media", "Da PC trovi tutti gli strumenti di ParliamentRAG.": "Open ParliamentRAG on a computer for all the tools.", "Demo paper accettato": "Demo paper accepted", "Presentato a Bari, 25–29 ottobre 2026": "Presented in Bari, 25–29 October 2026", "Leggi il paper su arXiv": "Read the paper on arXiv" });
+  window.LINGUA_EN.modelli.unshift([/^(.+), (\d+) (ottobre|novembre) 2026$/, (m) => `${m[1]}, ${m[2]} ${m[3] === "ottobre" ? "October" : "November"} 2026`]);
 
   Object.assign(window.LINGUA_EN.testi, { "Candidato al Best Paper": "Best Paper nominee" });
 

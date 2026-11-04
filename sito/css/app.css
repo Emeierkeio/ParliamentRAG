@@ -1249,7 +1249,7 @@ html.scorre .compositore .chat{transition:none}
  /* home: titolo, domande di esempio, campo in basso a portata di pollice */
  #home>.sez,#home .oggi{display:none!important}
  #home .eroe{min-height:0;padding:0}
- #home .chat-eroe{min-height:calc(100svh - 57px);display:flex;flex-direction:column;padding:0 16px calc(12px + env(safe-area-inset-bottom));text-align:left}
+ #home .chat-eroe{min-height:calc(100svh - 57px - 28px);display:flex;flex-direction:column;padding:0 16px calc(12px + env(safe-area-inset-bottom));text-align:left}
  #home .eroe__sx{display:flex;flex-direction:column;flex:1}
  .chat-eroe h1{font-size:30px;line-height:1.12;letter-spacing:-.02em;margin:auto 0;padding:0 4px 24px;text-align:left}
  .chat-eroe h1 span{display:block}
@@ -1875,3 +1875,6 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
  .persona{grid-template-columns:72px minmax(0,1fr);column-gap:16px;align-items:start}
  .persona>.foto{width:72px;height:96px}
 }
+/* da telefono: una fascia sopra la testata dice che gli strumenti completi sono da PC */
+.avviso-pc{display:none}
+@media (max-width:760px){.avviso-pc{display:block;margin:0;height:28px;padding:0 16px;line-height:28px;text-align:center;font-size:12.5px;color:var(--t2);background:var(--sup2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}

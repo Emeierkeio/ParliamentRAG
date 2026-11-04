@@ -34,11 +34,13 @@
 </script>
 <style>.trad-attesa body{visibility:hidden}</style>
 <link rel="stylesheet" href="/css/grafo-v3.css">
-<!-- statistiche di visita fatte da noi (api/statistiche.py): niente cookie, niente IP; solo su www.parliamentrag.it o con ?stat=1 -->
-<script>(function(){if(location.hostname!=="www.parliamentrag.it"&&!/[?&]stat=1/.test(location.search))return;var u="";function v(){var p=location.pathname+location.hash;if(p===u)return;u=p;var b=JSON.stringify({p:p,r:document.referrer,w:innerWidth,l:navigator.language});if(navigator.sendBeacon)navigator.sendBeacon("/api/visita",new Blob([b],{type:"application/json"}));else fetch("/api/visita",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}v();addEventListener("hashchange",v)})()</script>
+<!-- statistiche di visita fatte da noi (api/statistiche.py): niente cookie, niente IP; solo su www.parliamentrag.it o con ?stat=1.
+     /api/presenza una volta al minuto, solo con la pagina in primo piano: conta gli attivi ora, in memoria -->
+<script>(function(){if(location.hostname!=="www.parliamentrag.it"&&!/[?&]stat=1/.test(location.search))return;var u="";function v(){var p=location.pathname+location.hash;if(p===u)return;u=p;var b=JSON.stringify({p:p,r:document.referrer,w:innerWidth,l:navigator.language});if(navigator.sendBeacon)navigator.sendBeacon("/api/visita",new Blob([b],{type:"application/json"}));else fetch("/api/visita",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}v();addEventListener("hashchange",v);function a(){if(!document.hidden&&navigator.sendBeacon)navigator.sendBeacon("/api/presenza")}a();setInterval(a,60000);addEventListener("visibilitychange",a)})()</script>
 </head>
 <body>
 <a class="salta" href="#principale">Vai al contenuto</a>
+<p class="avviso-pc">Da PC trovi tutti gli strumenti di ParliamentRAG.</p>
 <header class="testata">
 
  <div class="barra">
@@ -121,14 +123,16 @@
    <li><span class="ric2__ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><div><small class="ric2__ev">ISWC 2026 · In-Use Track</small><b>Candidato al Best Paper</b><span class="ric2__desc" translate="no">Who Speaks Matters: Authority-Aware Multi-View RAG over Italian Parliamentary Proceedings</span><span class="ric2__aut" translate="no">Tritella, Pozzi, Palmonari</span></div><a class="ic-a" href="https://arxiv.org/abs/2608.13410" target="_blank" rel="noopener" aria-label="Who Speaks Matters, su arXiv"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></li>
    <li><span class="ric2__ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><div><small class="ric2__ev">ISWC 2026 · Posters &amp; Demos</small><b>Demo accettata</b><span class="ric2__desc">Presentata a Bari, 25–29 ottobre 2026</span></div></li>
   </ul>
-  <p class="ric__sotto">Ne hanno scritto</p>
+  <p class="ric__sotto">Ne hanno parlato</p>
   <ul class="stampa">
+   <li><a href="https://www.avvenire.it/politica/la-bicocca-ha-lanciato-un-sito-per-navigare-facilmente-i-lavori-parlamentari_115206" target="_blank" rel="noopener" aria-label="Avvenire, 3 novembre 2026"><img src="/loghi/stampa/avvenire.png" alt="Avvenire"></a></li>
+   <li><a href="https://www.radiopopolare.it/puntata/popolare-doppioclick/doppioclick_04_11_2026_21_30" target="_blank" rel="noopener" aria-label="Radio Popolare, Doppioclick, 4 novembre 2026"><img src="/loghi/stampa/radiopopolare.png" alt="Radio Popolare"></a></li>
    <li><a href="https://www.lapresse.it/tecnologia/2026/10/28/ai-e-online-parliamentrag-per-navigare-nei-lavori-delparlamento/" target="_blank" rel="noopener" aria-label="LaPresse, 28 ottobre 2026"><img src="/loghi/stampa/lapresse.png" alt="LaPresse"></a></li>
+   <li><a href="https://www.unimib.it/news/parliamentrag-atti-parlamentari-e-partiti-al-microscopio-grazie-allia-affidabile" target="_blank" rel="noopener" aria-label="Università di Milano-Bicocca, 28 ottobre 2026"><img src="/loghi/stampa/unimib.png" alt="Università di Milano-Bicocca"></a></li>
    <li><a href="https://www.primanotizia24.it/articoli/tecnologia-dall-universit-di-milano-bicocca-arriva-parliamentrag-l-intelligenza-artificiale-per-esplorare-gli-atti-del-parlamento-563837" target="_blank" rel="noopener" aria-label="Prima Notizia 24, 28 ottobre 2026"><img src="/loghi/stampa/primanotizia24.png" alt="Prima Notizia 24"></a></li>
    <li><a href="https://www.ildenaro.it/parliamentrag-arriva-lassistente-virtuale-che-esplora-e-decifra-gli-atti-delle-camere/" target="_blank" rel="noopener" aria-label="Il Denaro, 28 ottobre 2026"><img src="/loghi/stampa/ildenaro.png" alt="Il Denaro"></a></li>
    <li><a href="https://www.controcampus.it/2026/10/parliamentrag-bicocca-analisi-degli-atti-parlamentari-con-ia/" target="_blank" rel="noopener" aria-label="Controcampus, 28 ottobre 2026"><img src="/loghi/stampa/controcampus.png" alt="Controcampus"></a></li>
    <li><a href="https://www.italia24.news/milano-bicocca-arriva-parliamentrag-lia-che-fa-parlare-tutti-i-gruppi-parlamentari-senza-distorsioni" target="_blank" rel="noopener" aria-label="Italia24 News, 28 ottobre 2026"><img src="/loghi/stampa/italia24.png" alt="Italia24 News"></a></li>
-   <li><a href="https://www.unimib.it/news/parliamentrag-atti-parlamentari-e-partiti-al-microscopio-grazie-allia-affidabile" target="_blank" rel="noopener" aria-label="Università di Milano-Bicocca, 28 ottobre 2026"><img src="/loghi/stampa/unimib.png" alt="Università di Milano-Bicocca"></a></li>
    <li><a href="https://innovazionesociale.org/index.php/2997-parliamentrag-lia-al-servizio-della-trasparenza-del-dibattito-parlamentare" target="_blank" rel="noopener" aria-label="Innovazione Sociale, 29 ottobre 2026"><img src="/loghi/stampa/innovazionesociale.png" alt="Innovazione Sociale"></a></li>
   </ul>
  </div></section>
