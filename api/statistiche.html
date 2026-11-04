@@ -44,6 +44,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;color:var(--t2);width:72
 .blocco p.nota{color:var(--t3);font-size:13px;margin:-6px 0 10px}
 .fonte{color:var(--t3);font-size:12.5px;margin:8px 0 0}
 .fonte a{color:inherit}
+svg.mappa{display:block;width:100%;max-width:300px;height:auto;margin:0 auto 12px}
+svg.mappa path{stroke:var(--sup);stroke-width:.8}
 @media (max-width:760px){.cifre{grid-template-columns:repeat(2,minmax(0,1fr))}.cifra--ora{grid-column:1/-1}.griglia{grid-template-columns:1fr}h1{font-size:24px}}
 </style>
 </head>
@@ -67,13 +69,13 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;color:var(--t2);width:72
   <section class="blocco"><h2>Browser</h2><div id="browser"></div></section>
   <section class="blocco"><h2>Lingua del browser</h2><div id="lingue"></div></section>
   <section class="blocco"><h2>Paesi</h2><div id="paesi"></div></section>
-  <section class="blocco"><h2>Regioni italiane</h2><p class="nota">Dall'indirizzo IP: da rete mobile l'operatore spesso risulta a Milano o a Roma.</p><div id="regioni"></div></section>
+  <section class="blocco"><h2>Regioni italiane</h2><p class="nota">Dall'indirizzo IP: da rete mobile l'operatore spesso risulta a Milano o a Roma.</p><svg class="mappa" id="mappa" role="img" aria-label="Visitatori per regione"></svg><div id="regioni"></div></section>
   <section class="blocco"><h2>Da quale pagina fanno domande alla chat</h2><p class="nota">L'ultima pagina vista prima di ogni domanda.</p><div id="arrivi_chat"></div></section>
   <section class="blocco"><h2>Pagine di uscita</h2><p class="nota">L'ultima pagina vista da ogni visitatore nel giorno.</p><div id="uscite"></div></section>
   <section class="blocco"><h2>Strumenti usati dalla chat</h2><p class="nota">Solo le chat dal sito.</p><div id="strumenti"></div></section>
   <section class="blocco"><h2>Cosa cerca la chat</h2><p class="nota">Le parole che la chat passa agli strumenti di ricerca, non le domande.</p><div id="ricerche"></div></section>
  </div>
- <p class="fonte">Paesi e regioni: <a href="https://db-ip.com" target="_blank" rel="noopener">IP Geolocation by DB-IP</a> (CC BY 4.0).</p>
+ <p class="fonte">Paesi e regioni: <a href="https://db-ip.com" target="_blank" rel="noopener">IP Geolocation by DB-IP</a> (CC BY 4.0). Confini delle regioni: ISTAT, via <a href="https://github.com/openpolis/geojson-italy" target="_blank" rel="noopener">openpolis/geojson-italy</a> (CC BY 4.0).</p>
 </div>
 <script>
 const $ = (s) => document.querySelector(s);
@@ -87,6 +89,21 @@ const REGIONI = { Abruzzo: "Abruzzo", "Aosta Valley": "Valle d'Aosta", Apulia: "
   Liguria: "Liguria", Lombardy: "Lombardia", "The Marches": "Marche", Molise: "Molise", Piedmont: "Piemonte", Sardinia: "Sardegna",
   Sicily: "Sicilia", "Trentino-Alto Adige": "Trentino-Alto Adige", Tuscany: "Toscana", Umbria: "Umbria", Veneto: "Veneto" };
 const PAESI = (() => { try { return new Intl.DisplayNames(["it"], { type: "region" }); } catch { return null; } })();
+const MAPPA = /*MAPPA*/null;                        // il servizio mette qui api/regioni-italia.json
+
+function mappa(righe) {
+  const el = $("#mappa");
+  if (!MAPPA) { el.remove(); return; }
+  const per = Object.fromEntries((righe || []).map((r) => [REGIONI[r.voce] || r.voce, r.visitatori]));
+  const max = Math.max(1, ...Object.values(per));
+  el.setAttribute("viewBox", `0 0 ${MAPPA.larghezza} ${MAPPA.altezza}`);
+  el.innerHTML = Object.entries(MAPPA.regioni).map(([nome, d]) => {
+    const breve = nome.split("/")[0], v = per[breve] || 0;
+    const colore = v ? `color-mix(in srgb, var(--acc) ${Math.round(25 + 75 * v / max)}%, var(--sup2))` : "var(--sup2)";
+    return `<path d="${d}" fill="${colore}"><title>${esc(breve)}: ${num(v)} visitatori</title></path>`;
+  }).join("");
+}
+
 const NOMI = { paesi: (v) => (PAESI && /^[A-Z]{2}$/.test(v) ? PAESI.of(v) : v), regioni: (v) => REGIONI[v] || v };
 // colonne di ogni tabella: la prima fa la barra
 const COLONNE = { arrivi_chat: [["domande", "Domande"], ["visitatori", "Visitatori"]], uscite: [["visitatori", "Visitatori"]],
@@ -149,6 +166,7 @@ async function carica(g) {
   orario(d.per_ora || [], d.adesso);
   for (const k of ["pagine", "provenienze", "dispositivi", "browser", "lingue", "paesi", "regioni", "arrivi_chat", "uscite", "strumenti", "ricerche"])
     tabella($("#" + k), d[k], COLONNE[k], NOMI[k]);
+  mappa(d.regioni);
 }
 let periodo = 30;
 document.querySelectorAll(".periodo button").forEach((b) => b.addEventListener("click", () => carica(periodo = b.dataset.g)));

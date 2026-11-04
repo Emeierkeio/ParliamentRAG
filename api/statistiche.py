@@ -39,6 +39,7 @@ from .rete import ip
 router = APIRouter()
 log = logging.getLogger("parliamentrag.statistiche")
 PAGINA = Path(__file__).parent / "statistiche.html"
+MAPPA = Path(__file__).parent / "regioni-italia.json"      # confini delle regioni ISTAT semplificati, per la mappa del pannello
 NOSTRI = ("parliamentrag.it", "www.parliamentrag.it", "mcp.parliamentrag.it")
 ROBOT = re.compile(r"bot|crawl|spider|slurp|headless|preview|monitor|curl|wget|python|httpx|go-http|scrapy", re.I)
 GIORNI_TENUTI = 400
@@ -177,7 +178,8 @@ def _login(req: Request) -> None:
 @router.get("/statistiche", response_class=HTMLResponse, include_in_schema=False)
 def pannello(req: Request) -> HTMLResponse:
     _login(req)
-    return HTMLResponse(PAGINA.read_text(encoding="utf-8"), headers={"Cache-Control": "no-store", "X-Robots-Tag": "noindex"})
+    pagina = PAGINA.read_text(encoding="utf-8").replace("/*MAPPA*/null", MAPPA.read_text(encoding="utf-8"))
+    return HTMLResponse(pagina, headers={"Cache-Control": "no-store", "X-Robots-Tag": "noindex"})
 
 
 @router.get("/api/statistiche", include_in_schema=False)
