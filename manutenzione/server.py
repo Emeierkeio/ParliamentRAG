@@ -1,4 +1,6 @@
-"""Pagina di manutenzione: risponde 503 con Retry-After su ogni percorso.
+"""Rimando a www.parliamentrag.it per i servizi vecchi su Railway: un 301 su ogni percorso (dal 4/11/2026 sera, al
+posto della pagina di manutenzione). Così la demo di ISWC citata nei paper e gli indirizzi *.up.railway.app portano alla
+versione nuova.
 
 Solo libreria standard. La porta arriva da $PORT (Railway la assegna), in locale 8080.
 /salute e /v1/salute rispondono 200: servono al controllo di Railway a ogni rilascio,
@@ -11,6 +13,7 @@ from pathlib import Path
 
 PAGINA = (Path(__file__).resolve().parent / "index.html").read_bytes()
 SALUTE = {"/salute", "/v1/salute"}
+DESTINAZIONE = "https://www.parliamentrag.it/"
 
 
 class Manutenzione(BaseHTTPRequestHandler):
@@ -23,14 +26,14 @@ class Manutenzione(BaseHTTPRequestHandler):
         if percorso in SALUTE or self.headers.get("User-Agent", "").startswith("RailwayHealthCheck"):
             stato, dati, tipo = 200, b"ok\n", "text/plain; charset=utf-8"
         else:
-            stato, dati, tipo = 503, PAGINA, "text/html; charset=utf-8"
+            stato, dati, tipo = 301, PAGINA, "text/html; charset=utf-8"
         self.send_response(stato)
         self.send_header("Content-Type", tipo)
         self.send_header("Content-Length", str(len(dati)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Robots-Tag", "noindex")
-        if stato == 503:
-            self.send_header("Retry-After", "3600")
+        if stato == 301:
+            self.send_header("Location", DESTINAZIONE)
         self.end_headers()
         if corpo:
             self.wfile.write(dati)
