@@ -141,7 +141,7 @@ class TestVettori(unittest.TestCase):
 
     def test_controllo_dell_indice(self):
         with mock.patch.object(vettori, "_leggi", lambda sql: [["t"]]):
-            self.assertTrue(vettori.controlla_indice()["valido"])
+            self.assertTrue(vettori.controlla_indice()["validi"])
         with mock.patch.object(vettori, "_leggi", lambda sql: []):
             with self.assertRaises(RuntimeError):
                 vettori.controlla_indice()

@@ -56,6 +56,22 @@ def atto(c: psycopg.Connection, uri: str) -> Act | None:
                amendments=AmendmentCounts(total=sum(e["n"] for e in esiti), by_outcome={e["esito"]: e["n"] for e in esiti}))
 
 
+def articolo(c: psycopg.Connection, code: str, number: str | None = None) -> dict | None:
+    """Il testo di un articolo di una versione dell'atto (il codice viene da `atto`, campo versions); senza numero
+    l'elenco degli articoli con le prime parole."""
+    t = c.execute("SELECT code, kind, length(text) AS length FROM act_text WHERE code = %s", (code,)).fetchone()
+    if not t:
+        return None
+    righe = c.execute("SELECT ord, number, text FROM act_article WHERE code = %s ORDER BY ord", (code,)).fetchall()
+    if number is None:
+        return {"code": code, "kind": t["kind"], "articles": [{"number": r["number"], "start": (r["text"] or "")[:160]} for r in righe]}
+    n = number.strip().lower().removeprefix("art.").removeprefix("articolo").strip()
+    scelti = [r for r in righe if (r["number"] or "").strip().lower().removeprefix("art.").strip() == n]
+    if not scelti:
+        return {"code": code, "error": f"nessun articolo {number}: ci sono {', '.join(r['number'] or '?' for r in righe[:60])}"}
+    return {"code": code, "kind": t["kind"], "number": scelti[0]["number"], "text": scelti[0]["text"]}
+
+
 def emendamenti(c: psycopg.Connection, act: str, signer: str | None = None, group: str | None = None, outcome: str | None = None,
                 venue: str | None = None, q: str | None = None, limit: int = 50, offset: int = 0) -> tuple[int, list[Amendment]]:
     """Emendamenti di un atto, filtrati per firmatario (uri), gruppo del firmatario alla data, esito, sede e parole del testo."""

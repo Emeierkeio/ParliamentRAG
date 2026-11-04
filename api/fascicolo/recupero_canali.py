@@ -85,7 +85,7 @@ def vicini(c: psycopg.Connection, vettore: list[float] | str, fonti: list[str], 
     sql = f"""
         WITH x AS MATERIALIZED (
           SELECT p.source, p.uri, p.ord, p.start_char, p.end_char, p.hash, v.embedding <=> %(q)s::halfvec(1024) AS d
-          FROM {"speech_vector" if interventi else "passage_vector"} v JOIN passage p ON p.hash = v.hash {unisci}
+          FROM {"speech_vector" if interventi else "act_vector" if set(fonti) <= {"act", "act_title"} else "passage_vector"} v JOIN passage p ON p.hash = v.hash {unisci}
           WHERE {' AND '.join(dove)}
           ORDER BY v.embedding <=> %(q)s::halfvec(1024)
           LIMIT %(k)s)
@@ -290,7 +290,7 @@ def similarita_atti(c: psycopg.Connection, vettore: str, uris: list[str]) -> dic
         c.execute(f"SET LOCAL statement_timeout = '{TEMPO_MASSIMO}'")
         righe = c.execute("""
             SELECT p.uri, max(1 - (v.embedding <=> %(q)s::halfvec(1024))) AS cos
-            FROM passage p JOIN passage_vector v ON v.hash = p.hash AND v.model = %(m)s
+            FROM passage p JOIN act_vector v ON v.hash = p.hash AND v.model = %(m)s
             WHERE p.source IN ('act', 'act_title') AND p.uri = ANY(%(u)s) GROUP BY p.uri""",
             {"q": vettore, "m": modello.MODELLO_VETTORI, "u": list(uris)}).fetchall()
     return {r["uri"]: float(r["cos"]) for r in righe}

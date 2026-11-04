@@ -11,6 +11,10 @@ import re
 from ..fonti.camera_voti import leggi
 from .camera_anagrafica import data, id_persona
 
+# dati.camera.it segna «fiducia» anche le mozioni di sfiducia a un ministro (art. 115, comma 3, del Regolamento):
+# non sono questioni di fiducia poste dal Governo
+SFIDUCIA = re.compile(r"articolo 115, comma 3|sfiducia", re.I)
+
 TIPI = {"Finale atto Camera": "final", "Articolo": "article", "Emendamento": "amendment", "Ordine del Giorno": "agenda_order",
         "Mozione": "motion", "Risoluzione": "resolution", "Pregiudiziali": "preliminary_question", "Sospensiva": "suspensive_question",
         "Note di variazione": "budget_note", "Chiusura della discussione": "closure", "Dimissioni": "resignation", "Altre": "other"}
@@ -60,7 +64,7 @@ def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
                            "favor": _intero(r.get("favorevoli")), "against": _intero(r.get("contrari")), "abstain": _intero(r.get("astenuti")),
                            "present": _intero(r.get("presenti")), "voting": _intero(r.get("votanti")), "majority": _intero(r.get("maggioranza")),
                            "approved": _vero(r.get("approvato")), "secret": _vero(r.get("segreta")), "final": _vero(r.get("finale")),
-                           "confidence": _vero(r.get("fiducia")), "presided_by": id_persona(r.get("presidente") or ""),
+                           "confidence": _vero(r.get("fiducia")) and not SFIDUCIA.search(r.get("descrizione") or ""), "presided_by": id_persona(r.get("presidente") or ""),
                            "source_url": r.get("scheda"), "source_uri": r["votazione"], "acts": [], "aics": [],
                            "source": "ocd", "source_key": fonte.get("chiave"), "source_hash": fonte.get("impronta")}
         for campo, chiave in (("atto", "acts"), ("aic", "aics")):

@@ -63,6 +63,11 @@ class Uri(Parametri):
     uri: str
 
 
+class Articolo(Parametri):
+    code: str = Field(description="codice della versione del testo, dal campo versions di atto")
+    number: str | None = Field(None, description="numero dell'articolo («2», «3-bis»); senza, l'elenco degli articoli")
+
+
 class Composizione(Parametri):
     chamber: Ramo
     date: dt.date | None = Field(None, description="la data; vuota per oggi")
@@ -243,6 +248,7 @@ class ContaAtti(Parametri):
     signer: str | None = Field(None, description="uri di un firmatario")
     first_signer: bool = Field(False, description="con signer: solo come primo firmatario")
     group: str | None = Field(None, description="gruppo del primo firmatario alla data")
+    addressee: str | None = Field(None, description="ministero a cui sono rivolti (interrogazioni, interpellanze), parte del nome: «interno»")
     became_law: bool | None = Field(None, description="vero: solo gli atti diventati legge")
     start: dt.date | None = Field(None, description="presentati dal giorno")
     end: dt.date | None = None
@@ -332,6 +338,8 @@ STRUMENTI: list[Strumento] = [
               CercaAtti, lambda c, p: atti.cerca_atti(c, p.q, p.chamber, p.kind, p.number, p.signer, p.limit, p.offset, p.initiative)),
     Strumento("atto", "Un atto: firmatari, iter, testi con il numero di articoli, votazioni, emendamenti per esito.",
               Uri, lambda c, p: atti.atto(c, p.uri)),
+    Strumento("articolo", "Il testo di un articolo di una versione dell'atto (presentato, della commissione, approvato), o l'elenco degli articoli.",
+              Articolo, lambda c, p: atti.articolo(c, p.code, p.number)),
     Strumento("emendamenti", "Emendamenti di un progetto di legge, con testo e firmatari, filtrati per firmatario, gruppo, esito, sede o parole.",
               Emendamenti, lambda c, p: atti.emendamenti(c, p.act, p.signer, p.group, p.outcome, p.venue, p.q, p.limit, p.offset)),
     Strumento("cerca_interventi", "Interventi in Aula e in commissione che contengono le parole cercate, dal più recente, con un estratto; "
@@ -366,10 +374,10 @@ STRUMENTI: list[Strumento] = [
                                                                 p.speaker_group, p.from_group, p.speaker_role, p.contains, p.group_by,
                                                                 p.sum_chambers, p.limit, p.offset)),
     Strumento("conta_atti", "CONTEGGIO. Quanti atti (progetti di legge, interrogazioni, mozioni…) per ramo, tipo, iniziativa, tema, "
-              "firmatario, gruppo del primo firmatario, periodo, diventati legge; con laws le leggi approvate contate una volta sola.",
+              "firmatario, gruppo del primo firmatario, ministero destinatario, periodo, diventati legge; con laws le leggi approvate contate una volta sola.",
               ContaAtti, lambda c, p: conti.conta_atti(c, p.chamber, p.kind, p.initiative, p.q, p.subject, p.signer, p.first_signer,
                                                         p.group, p.became_law, p.start, p.end, p.laws, p.group_by, p.sum_chambers,
-                                                        p.limit, p.offset)),
+                                                        p.limit, p.offset, p.addressee)),
     Strumento("conta_emendamenti", "CONTEGGIO. Quante proposte emendative per ramo, atto, sede, esito, anno, gruppo dei firmatari o "
               "coppia di gruppi che le cofirmano.",
               ContaEmendamenti, lambda c, p: conti.conta_emendamenti(c, p.chamber, p.act, p.outcome, p.venue, p.group, p.start, p.end,

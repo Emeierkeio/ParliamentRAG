@@ -30,7 +30,7 @@ class TestVoci(unittest.TestCase):
         self.assertEqual(V.voce_del_gruppo("Misto", "+Europa - Stati Uniti d'Europa", False).key, "+Europa")
         self.assertEqual(V.voce_del_gruppo("Misto", "Alleanza Verdi e Sinistra", False).key, "AVS")   # componente col nome di un gruppo
         self.assertEqual(V.voce_del_gruppo("Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia)", None, False).key, "NM")
-        self.assertIsNone(V.voce_del_gruppo("Misto", None, False))
+        self.assertEqual(V.voce_del_gruppo("Misto", None, False).key, "Misto NI")          # nel Misto senza componente
         self.assertEqual(V.voce_del_gruppo("Fratelli d'Italia", None, True).key, "Governo")
 
     def test_nominata_come(self):

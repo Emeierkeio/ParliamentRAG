@@ -167,7 +167,8 @@
     const C = [["speeches", TT("Interventi in Aula", "Floor speeches"), .25], ["committee", TT("Commissione", "Committee"), .25], ["acts", TT("Atti firmati", "Signed acts"), .20], ["profession", TT("Professione", "Profession"), .15], ["education", TT("Formazione", "Education"), .10], ["role", TT("Ruolo istituzionale", "Institutional role"), .05]];
     const b = x.score_breakdown || {}, id = (/p(\d+)$/.exec(x.id || "") || [])[1], nome = B.nome(`${x.first_name} ${x.last_name}`), g = B.sigla(x.group);
     const p = id ? (B.persona(id) || { id, n: nome, sigla: g }) : null, senato = B.ramoDi(x) === "senato";
-    B.pannello(TT("Autorevolezza", "Authority"), `<div class="crit-testa">${p ? B.fotoHtml(p) : ""}<div><b>${e(nome)}</b><span class="ramo-v">${B.carica(x)}</span>${B.sigLungo(g)}<span class="crit-tot">${Number(x.authority_score).toFixed(2)}</span></div></div>
+    const sid = (/senatore\/(\d+)$/.exec(x.id || "") || [])[1];
+    B.pannello(TT("Autorevolezza", "Authority"), `<div class="crit-testa">${p ? B.fotoHtml(p) : sid ? `<span class="foto"><img src="/dati/foto/senatori/${sid}.jpg" alt="" onerror="this.remove()"></span>` : ""}<div><b>${e(nome)}</b><span class="ramo-v">${B.carica(x)}</span>${B.sigLungo(g)}<span class="crit-tot">${Number(x.authority_score).toFixed(2)}</span></div></div>
       <ul class="crit">${C.map(([k, t, w], i) => { const v = b[k] || 0, peso = pesi ? pesi[i] : w;
         // professione e formazione: senza il dato il criterio non conta; con il dato, 0 vuol dire sotto la mediana dei parlamentari su questo tema
         const manca = (k === "profession" || k === "education") && !x[k];

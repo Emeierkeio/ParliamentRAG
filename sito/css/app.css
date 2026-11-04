@@ -635,7 +635,7 @@ body[data-vista=strumento] .pagina:has(#pagina-c){grid-template-columns:52px min
 .prosa .f-tit:first-child{margin-top:0}
 .prosa q{font-style:normal;color:var(--t);background:linear-gradient(transparent 62%,var(--acc-f) 62%)}
 .esperti{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.esperto{display:grid;grid-template-columns:39px 1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--bordo);border-radius:12px;background:var(--fondo);color:var(--t);text-decoration:none}
+.esperto{display:grid;grid-template-columns:39px 1fr auto 16px;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--bordo);border-radius:12px;background:var(--fondo);color:var(--t);text-decoration:none}
 .esperto:hover{border-color:var(--bordo2);background:var(--sup2)}
 .esperto .foto{width:39px;height:52px;border-radius:6px;font-size:14px}
 .esperto>span:nth-child(2){display:grid;gap:3px}.esperto b{font-weight:600;font-size:14.5px}
@@ -1846,3 +1846,4 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
 /* titolo della home in una frase; l'avviso della demo è una «i» accanto a «Chiedi» */
 @media (min-width:761px){.chat-eroe h1#t-eroe{font-size:clamp(28px,3.3vw,48px)!important;line-height:1.1;max-width:min(21em,calc(100vw - 48px))}}
 #f-eroe .info--demo{margin-left:auto;color:var(--t3)}#f-eroe .info--demo+.invia{margin-left:0}
+.esperto>.ic{width:16px;height:16px;color:var(--t3)}.esperto:hover>.ic{color:var(--t)}

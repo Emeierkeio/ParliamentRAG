@@ -127,7 +127,7 @@ def progetti_vicini(c: psycopg.Connection, vettore: str, ramo: str, quanti: int 
               GROUP BY a.uri, a.number)
             SELECT b.uri, b.number, b.commissioni, max(1 - (v.embedding <=> %(q)s::halfvec(1024))) AS cos
             FROM b JOIN passage p ON p.source = 'act_title' AND p.uri = b.uri
-            JOIN passage_vector v ON v.hash = p.hash AND v.model = %(m)s
+            JOIN act_vector v ON v.hash = p.hash AND v.model = %(m)s
             GROUP BY b.uri, b.number, b.commissioni ORDER BY cos DESC LIMIT %(k)s""",
             {"r": ramo, "leg": LEGISLATURA, "q": vettore, "m": modello.MODELLO_VETTORI, "k": quanti}).fetchall()
 

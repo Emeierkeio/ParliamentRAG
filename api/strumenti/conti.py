@@ -601,8 +601,9 @@ def conta_atti(c: psycopg.Connection, chamber: str | None = None, kind: str | No
                q: str | None = None, subject: str | None = None, signer: str | None = None, first_signer: bool = False,
                group: str | None = None, became_law: bool | None = None, start: dt.date | None = None, end: dt.date | None = None,
                laws: bool = False, group_by: list[str] | None = None, sum_chambers: bool = False,
-               limit: int = 100, offset: int = 0) -> dict:
+               limit: int = 100, offset: int = 0, addressee: str | None = None) -> dict:
     """Atti contati per ramo, tipo, iniziativa, gruppo del primo firmatario, primo firmatario, anno, mese, legge; con
+    `addressee` solo quelli rivolti a un ministero (parte del nome: «interno», «salute»); con
     `laws`, le leggi approvate contate una volta sola anche se l'atto è in tutti e due i rami."""
     cat = catalogo_gruppi(c)
     gruppi = gruppi_chiesti(cat, group, chamber) if group else None
@@ -613,7 +614,7 @@ def conta_atti(c: psycopg.Connection, chamber: str | None = None, kind: str | No
     p = {"leg": LEGISLATURA, "ramo": chamber, "tipo": kind, "q": q, "dal": start, "al": end, "legge": became_law,
          "ini": ini if ini in INIZIATIVE else None, "ini_testo": None if ini in INIZIATIVE else initiative,
          "firm": stessa_persona(c, signer) if signer else None, "primo": first_signer, "gruppi": gruppi,
-         "temi": [t["uri"] for t in temi] if temi else None}
+         "temi": [t["uri"] for t in temi] if temi else None, "min": addressee}
     filtro = f"""a.legislature = %(leg)s AND (%(ramo)s::text IS NULL OR a.chamber = %(ramo)s) AND (%(tipo)s::text IS NULL OR a.kind = %(tipo)s)
         AND (%(dal)s::date IS NULL OR a.date >= %(dal)s) AND (%(al)s::date IS NULL OR a.date <= %(al)s)
         AND (%(legge)s::boolean IS NULL OR (a.law_number IS NOT NULL) = %(legge)s)
@@ -622,10 +623,12 @@ def conta_atti(c: psycopg.Connection, chamber: str | None = None, kind: str | No
         AND (%(q)s::text IS NULL OR to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s))
         AND (%(firm)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_sponsor s WHERE s.act = a.uri AND s.person = ANY(%(firm)s)
                                                   AND (s.first OR NOT %(primo)s)))
-        AND (%(temi)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_subject x WHERE x.act = a.uri AND x.concept = ANY(%(temi)s)))"""
+        AND (%(temi)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_subject x WHERE x.act = a.uri AND x.concept = ANY(%(temi)s)))
+        AND (%(min)s::text IS NULL OR EXISTS (SELECT 1 FROM act_addressee d JOIN ministry m ON m.uri = d.ministry
+                                               WHERE d.act = a.uri AND m.name ILIKE '%%' || %(min)s || '%%'))"""
     if gruppi:
         filtro += f" AND {SQL_GRUPPO_PRIMO} = ANY(%(gruppi)s)"
-    descr = _filtri(tipo=kind, iniziativa=initiative, parole_del_titolo=q, firmatario=signer,
+    descr = _filtri(tipo=kind, iniziativa=initiative, parole_del_titolo=q, firmatario=signer, rivolti_al_ministero=addressee,
                     gruppo_del_primo_firmatario=group, diventati_legge={True: "sì", False: "no"}.get(became_law))
     if temi:
         nomi = sorted({t["label"] for t in temi})

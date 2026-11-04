@@ -26,12 +26,20 @@ def verifica(c: psycopg.Connection, testo: str) -> dict:
             esiti.append({"quote": q, "found": False, "reason": "troppo corta per verificarla"})
             continue
         # prima l'indice di ricerca sul pezzo più lungo, poi il confronto esatto di tutti i pezzi, nell'ordine
+        # tutte le parole del pezzo, senza la posizione: l'indice risponde da solo, mentre la frase esatta costringe a
+        # ricalcolare il testo di ogni candidato (oltre 8 s con parole comuni, 4/11); l'ordine lo controlla il confronto
         lungo = max(pezzi, key=len)
-        righe = c.execute("""
-            SELECT s.uri, s.person, s.kind, s.speaker_label, st.uri AS sitting, st.chamber, st.date, s.text
-            FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting
-            WHERE to_tsvector('italian', s.text) @@ phraseto_tsquery('italian', %s)
-            ORDER BY s.kind = 'summary', st.date DESC LIMIT 50""", (lungo,)).fetchall()
+        try:
+            with c.transaction():
+                c.execute("SET LOCAL statement_timeout = '6s'")
+                righe = c.execute("""
+                    SELECT s.uri, s.person, s.kind, s.speaker_label, st.uri AS sitting, st.chamber, st.date, s.text
+                    FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting
+                    WHERE to_tsvector('italian', s.text) @@ plainto_tsquery('italian', %s)
+                    ORDER BY s.kind = 'summary', st.date DESC LIMIT 200""", (lungo,)).fetchall()
+        except psycopg.errors.QueryCanceled:
+            esiti.append({"quote": q, "found": False, "unchecked": True, "reason": "controllo non finito in tempo"})
+            continue
         trovato = None
         for r in righe:
             t, da = _norm(r["text"]), 0

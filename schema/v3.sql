@@ -685,6 +685,15 @@ CREATE TABLE IF NOT EXISTS speech_vector (
   PRIMARY KEY (hash, model)
 );
 
+-- lo stesso per gli atti (testo e titolo): con i due indici piccoli la classifica dell'autorevolezza non legge
+-- quello di tutti i brani, che non sta in memoria insieme agli altri
+CREATE TABLE IF NOT EXISTS act_vector (
+  hash text NOT NULL,
+  model text NOT NULL,
+  embedding halfvec(1024) NOT NULL,
+  PRIMARY KEY (hash, model)
+);
+
 CREATE TABLE IF NOT EXISTS vector_batch (           -- i lavori della Batch API di OpenAI
   id text PRIMARY KEY,                             -- batch_…
   model text NOT NULL,

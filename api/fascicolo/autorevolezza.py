@@ -418,7 +418,7 @@ SQL_GRUPPO_ALLA_DATA = "SELECT x.p, x.d, group_at(x.p, x.d) AS grp FROM unnest(%
 SQL_ATTI = """
 SELECT x.item, x.date, x.score, sp.person, sp.first FROM (
   SELECT a.uri AS item, a.date, 1 - (v.embedding <=> %(q)s::halfvec(1024)) AS score
-  FROM passage p JOIN passage_vector v ON v.hash = p.hash AND v.model = %(m)s JOIN act a ON a.uri = p.uri
+  FROM passage p JOIN act_vector v ON v.hash = p.hash AND v.model = %(m)s JOIN act a ON a.uri = p.uri
   WHERE p.source = %(fonte)s AND a.chamber = ANY(%(rami)s) AND a.legislature = %(leg)s
     AND (%(da)s::date IS NULL OR a.date >= %(da)s) AND (%(a)s::date IS NULL OR a.date <= %(a)s)
   ORDER BY v.embedding <=> %(q)s::halfvec(1024) LIMIT %(k)s) x

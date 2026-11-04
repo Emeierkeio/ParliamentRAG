@@ -299,12 +299,14 @@ def stato() -> dict:
             "spesa_dollari": round(int(token) / 1e6 * 0.065, 2)}   # 0,13 $ per milione di token, metà con la Batch API
 
 
-# i vettori degli interventi anche in speech_vector (schema/v3.sql); anche quelli arrivati prima del brano
-SQL_INTERVENTI = """INSERT INTO speech_vector SELECT v.hash, v.model, v.embedding FROM passage_vector v
-WHERE EXISTS (SELECT 1 FROM passage p WHERE p.hash = v.hash AND p.source = 'speech')
-  AND NOT EXISTS (SELECT 1 FROM speech_vector s WHERE s.hash = v.hash AND s.model = v.model) ON CONFLICT DO NOTHING;
-"""
-INDICI = {"passage_vector_hnsw": "passage_vector", "speech_vector_hnsw": "speech_vector"}
+# i vettori degli interventi in speech_vector e degli atti in act_vector (schema/v3.sql), anche quelli arrivati prima
+# del brano
+SOTTOINSIEMI = {"speech_vector": "'speech'", "act_vector": "'act', 'act_title'"}
+SQL_INTERVENTI = "".join(f"""INSERT INTO {t} SELECT v.hash, v.model, v.embedding FROM passage_vector v
+WHERE EXISTS (SELECT 1 FROM passage p WHERE p.hash = v.hash AND p.source IN ({fonti}))
+  AND NOT EXISTS (SELECT 1 FROM {t} s WHERE s.hash = v.hash AND s.model = v.model) ON CONFLICT DO NOTHING;
+""" for t, fonti in SOTTOINSIEMI.items())
+INDICI = {"passage_vector_hnsw": "passage_vector", **{f"{t}_hnsw": t for t in SOTTOINSIEMI}}
 
 
 def indice() -> dict:

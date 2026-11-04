@@ -16,6 +16,7 @@ services:
       -c work_mem=${PG_WORK_MEM:-32MB} -c maintenance_work_mem=${PG_MAINTENANCE_WORK_MEM:-1GB}
       -c shared_preload_libraries=pg_prewarm -c pg_prewarm.autoprewarm=on
     shm_size: ${PG_SHM:-1g}
+    stop_grace_period: 120s                        # con 4 GB di memoria la chiusura pulita richiede più dei 10 s di Docker
     ports:
       - "${PG_PORTA:-5440}:5432"
     volumes:

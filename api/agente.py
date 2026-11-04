@@ -14,6 +14,7 @@ import datetime as dt
 import hashlib
 import hmac
 import json
+import logging
 import re
 import secrets
 import sqlite3
@@ -28,6 +29,8 @@ from pipeline.ambiente import QUI, env
 
 from . import registro
 from .db import connessione, connessione_sito
+
+log = logging.getLogger("parliamentrag.agente")
 
 OPENAI = "https://api.openai.com/v1/responses"
 PASSI_MAX = 8
@@ -52,7 +55,8 @@ Regole
 - Gruppo Misto: indica la componente, non «Misto».
 - Niente fatti personali, familiari o di salute di parlamentari o dei loro familiari (malattie, disabilità, figli, lutti, fede, orientamento), anche se li hanno raccontati in un intervento: non riferirli e non usarli per scegliere o elencare persone. Se la domanda li chiede, rifiuta quella parte in una frase e offri quello che è pubblico: interventi, firme e voti sul tema.
 - Se il dato non c'è, dillo in una frase e indica la fonte ufficiale. I dati si aggiornano ogni notte: per oggi o gli ultimi giorni dì fino a quando arrivano.
-- Link solo a indirizzi presenti nei dati letti, come link Markdown [testo](url).
+- Ogni fatto con la sua fonte: per ogni votazione, atto, seduta, intervento o scheda che usi metti il link ufficiale che trovi nei dati (source_url, card_url, url), come link Markdown [testo](url) vicino al fatto. Link solo a indirizzi presenti nei dati letti.
+- Fiducia: alla Camera una questione di fiducia su un testo con più articoli dà una votazione per articolo; le questioni poste si contano per atto e data, non per votazione. Le mozioni di sfiducia a un ministro non sono questioni di fiducia.
 - Rispondi in {lingua}; le citazioni restano in italiano. Risposta diretta in alto, poi i dettagli. Frasi semplici, niente titoli. Non nominare gli strumenti.
 - Alla fine, su una riga a parte, scrivi SEGUITI: e tre domande successive utili separate da « | »."""
 
@@ -64,7 +68,7 @@ ULTIMO_PASSO = ("Non puoi più consultare i dati. Rispondi ora con quello che ha
 ETICHETTE = {"cerca_persone": "Cerco i parlamentari", "scheda_persona": "Leggo la scheda del parlamentare",
              "composizione": "Conto i parlamentari per gruppo", "elenco_sedute": "Cerco nelle sedute", "seduta": "Leggo la seduta",
              "elenco_votazioni": "Cerco le votazioni", "votazione": "Leggo la votazione", "cerca_atti": "Cerco negli atti",
-             "atto": "Leggo l'atto", "emendamenti": "Leggo gli emendamenti", "cerca_interventi": "Cerco negli interventi",
+             "atto": "Leggo l'atto", "articolo": "Leggo l'articolo", "emendamenti": "Leggo gli emendamenti", "cerca_interventi": "Cerco negli interventi",
              "cerca_per_significato": "Cerco per significato", "verifica_citazioni": "Controllo le citazioni",
              "organo": "Leggo le cariche dell'organo", "conta_votazioni": "Conto le votazioni", "voto_gruppi": "Conto i voti dei gruppi",
              "presenze": "Conto presenze e assenze", "conta_interventi": "Conto gli interventi", "conta_reazioni": "Conto le reazioni in Aula",
@@ -286,8 +290,12 @@ def _chiudi(c, uscita: list, voci: list, visti: set[str], domanda: str) -> Itera
         yield {"type": "status", "text": f"{tolti} link non verificati tolti"}
     # una risposta con citazioni passa sempre dal controllo, anche se il modello non l'ha chiesto
     if "«" in testo:
-        ris = registro.esegui(c, "verifica_citazioni", {"text": testo})
-        yield {"type": "dati", "name": "verifica_citazioni", "args": {}, "result": ris}
+        try:
+            ris = registro.esegui(c, "verifica_citazioni", {"text": testo})
+            yield {"type": "dati", "name": "verifica_citazioni", "args": {}, "result": ris}
+        except Exception:                            # noqa: BLE001 — la risposta arriva anche se il controllo non riesce
+            log.exception("controllo delle citazioni non riuscito")
+            yield {"type": "status", "text": "citazioni non controllate"}
     yield {"type": "delta", "text": testo}
     if seguiti:
         yield {"type": "suggestions", "questions": seguiti}
