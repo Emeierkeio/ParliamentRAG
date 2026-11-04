@@ -87,6 +87,7 @@ class ElencoVotazioni(Parametri):
     act: str | None = Field(None, description="uri dell'atto votato")
     kind: str | None = Field(None, description="final, article, amendment, agenda_order, motion, resolution, confidence…")
     final: bool | None = Field(None, description="solo le votazioni finali")
+    confidence: bool | None = Field(None, description="vero: solo le questioni di fiducia (alla Camera si votano sugli articoli)")
     start: dt.date | None = None
     end: dt.date | None = None
     limit: int = Field(20, ge=1, le=100)
@@ -323,7 +324,7 @@ STRUMENTI: list[Strumento] = [
     Strumento("organo", "Commissioni, giunte e altri organi per nome, con presidente, vicepresidenti, segretari alla data (e il loro "
               "gruppo) e il numero dei membri.", Organo, lambda c, p: persone.organo(c, p.q, p.chamber, p.date, p.titles)),
     Strumento("elenco_votazioni", "Votazioni elettroniche, dalla più recente, per ramo, atto, tipo e date.", ElencoVotazioni,
-              lambda c, p: voti.elenco_votazioni(c, p.chamber, p.act, p.kind, p.start, p.end, p.final, p.limit, p.offset)),
+              lambda c, p: voti.elenco_votazioni(c, p.chamber, p.act, p.kind, p.start, p.end, p.final, p.limit, p.offset, p.confidence)),
     Strumento("votazione", "Una votazione: totali, esito, atto, voto di ogni gruppo (il Misto per componente) e, se chiesto, di ogni parlamentare.",
               Votazione, lambda c, p: voti.votazione(c, p.uri, p.with_ballots)),
     Strumento("cerca_atti", "Progetti di legge, interrogazioni, mozioni e altri atti per parole del titolo, numero, tipo, firmatario o "

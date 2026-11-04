@@ -151,6 +151,8 @@ class VoteBrief(BaseModel):
     abstain: int | None = None
     approved: bool | None = None
     secret: bool | None = None
+    confidence: bool | None = None
+    act_title: str | None = None
     source_url: str | None = None
 
 
