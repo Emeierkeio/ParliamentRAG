@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--fondo:#f6f7f9;--sup:#fff;--sup2:#f1f2f5;--bordo:#e4e6eb;--t:#14161d;--t2:#3b3f4b;--t3:#666b79;--acc:#2a4bd7;--acc2:#9aabf0;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--fondo:#070b22;--sup:#0d1333;--sup2:#141c42;--bordo:rgba(157,184,255,.14);--t:#eceffa;--t2:#c4c9e2;--t3:#959cbf;--acc:#8aa2ff;--acc2:#3c4f9e;color-scheme:dark}}
+:root{--fondo:#f6f7f9;--sup:#fff;--sup2:#f1f2f5;--bordo:#e4e6eb;--t:#14161d;--t2:#3b3f4b;--t3:#666b79;--acc:#2a4bd7;--acc2:#9aabf0;--acc3:#d9822b;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--fondo:#070b22;--sup:#0d1333;--sup2:#141c42;--bordo:rgba(157,184,255,.14);--t:#eceffa;--t2:#c4c9e2;--t3:#959cbf;--acc:#8aa2ff;--acc2:#3c4f9e;--acc3:#e8a25a;color-scheme:dark}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--fondo);color:var(--t);font:15px/1.5 "Schibsted Grotesk",system-ui,sans-serif}
 .dentro{max-width:1120px;margin:0 auto;padding:24px 16px 64px}
@@ -22,10 +22,11 @@ h1{font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
 .periodo{display:flex;border:1px solid var(--bordo);border-radius:999px;background:var(--sup);overflow:hidden}
 .periodo button{border:0;background:none;font:inherit;color:var(--t2);padding:7px 14px;cursor:pointer}
 .periodo button[aria-pressed=true]{background:var(--t);color:var(--fondo)}
-.cifre{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.cifre{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:16px}
 .cifra{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:14px 16px}
 .cifra small{color:var(--t3);font-size:13px}
 .cifra b{display:block;font-size:28px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.cifra--ora small::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#1f9d55;margin-right:6px;vertical-align:0}
 .blocco{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:16px}
 .blocco h2{font-size:16px;margin:0 0 12px}
 .griglia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
@@ -40,7 +41,10 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;color:var(--t2);width:72
 .voce span{position:absolute;inset:3px auto 3px 0;background:var(--sup2);border-radius:4px;z-index:0}
 .voce em{position:relative;font-style:normal;z-index:1}
 .vuoto{color:var(--t3);font-size:14px}
-@media (max-width:760px){.cifre{grid-template-columns:repeat(2,minmax(0,1fr))}.griglia{grid-template-columns:1fr}h1{font-size:24px}}
+.blocco p.nota{color:var(--t3);font-size:13px;margin:-6px 0 10px}
+.fonte{color:var(--t3);font-size:12.5px;margin:8px 0 0}
+.fonte a{color:inherit}
+@media (max-width:760px){.cifre{grid-template-columns:repeat(2,minmax(0,1fr))}.cifra--ora{grid-column:1/-1}.griglia{grid-template-columns:1fr}h1{font-size:24px}}
 </style>
 </head>
 <body>
@@ -54,13 +58,22 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;color:var(--t2);width:72
  <div class="cifre" id="cifre"></div>
  <section class="blocco"><h2>Andamento</h2><svg class="andamento" id="andamento" role="img" aria-label="Visitatori e domande per giorno"></svg>
   <div class="legenda"><span><i style="background:var(--acc)"></i>Visitatori</span><span><i style="background:var(--acc2)"></i>Domande alla chat e fascicoli</span></div></section>
+ <section class="blocco"><h2>Ultime 24 ore</h2><svg class="andamento" id="orario" role="img" aria-label="Visitatori e domande per ora"></svg>
+  <div class="legenda"><span><i style="background:var(--acc)"></i>Visitatori</span><span><i style="background:var(--acc3)"></i>di cui con il browser non in italiano</span><span><i style="background:var(--acc2)"></i>Domande alla chat e fascicoli</span></div></section>
  <div class="griglia">
   <section class="blocco"><h2>Pagine più viste</h2><div id="pagine"></div></section>
   <section class="blocco"><h2>Da dove arrivano</h2><div id="provenienze"></div></section>
   <section class="blocco"><h2>Dispositivi</h2><div id="dispositivi"></div></section>
   <section class="blocco"><h2>Browser</h2><div id="browser"></div></section>
   <section class="blocco"><h2>Lingua del browser</h2><div id="lingue"></div></section>
+  <section class="blocco"><h2>Paesi</h2><div id="paesi"></div></section>
+  <section class="blocco"><h2>Regioni italiane</h2><p class="nota">Dall'indirizzo IP: da rete mobile l'operatore spesso risulta a Milano o a Roma.</p><div id="regioni"></div></section>
+  <section class="blocco"><h2>Da quale pagina fanno domande alla chat</h2><p class="nota">L'ultima pagina vista prima di ogni domanda.</p><div id="arrivi_chat"></div></section>
+  <section class="blocco"><h2>Pagine di uscita</h2><p class="nota">L'ultima pagina vista da ogni visitatore nel giorno.</p><div id="uscite"></div></section>
+  <section class="blocco"><h2>Strumenti usati dalla chat</h2><p class="nota">Solo le chat dal sito.</p><div id="strumenti"></div></section>
+  <section class="blocco"><h2>Cosa cerca la chat</h2><p class="nota">Le parole che la chat passa agli strumenti di ricerca, non le domande.</p><div id="ricerche"></div></section>
  </div>
+ <p class="fonte">Paesi e regioni: <a href="https://db-ip.com" target="_blank" rel="noopener">IP Geolocation by DB-IP</a> (CC BY 4.0).</p>
 </div>
 <script>
 const $ = (s) => document.querySelector(s);
@@ -68,30 +81,59 @@ const num = (n) => Number(n || 0).toLocaleString("it-IT");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const data = (d) => new Date(d + "T12:00:00").toLocaleDateString("it-IT", { day: "numeric", month: "short" });
 
-function tabella(el, righe) {
-  if (!righe.length) { el.innerHTML = '<p class="vuoto">Ancora nessun dato.</p>'; return; }
-  const max = Math.max(...righe.map((r) => r.visitatori)) || 1;
-  el.innerHTML = `<table><tr><td></td><td class="n"><small>Visitatori</small></td><td class="n"><small>Pagine</small></td></tr>${righe.map((r) =>
-    `<tr><td class="voce"><span style="width:${(100 * r.visitatori / max).toFixed(1)}%"></span><em>${esc(r.voce)}</em></td><td class="n">${num(r.visitatori)}</td><td class="n">${num(r.pagine)}</td></tr>`).join("")}</table>`;
+// regioni in italiano: il file DB-IP le dà in inglese
+const REGIONI = { Abruzzo: "Abruzzo", "Aosta Valley": "Valle d'Aosta", Apulia: "Puglia", Basilicate: "Basilicata", Calabria: "Calabria",
+  Campania: "Campania", "Emilia-Romagna": "Emilia-Romagna", "Friuli Venezia Giulia": "Friuli-Venezia Giulia", Lazio: "Lazio",
+  Liguria: "Liguria", Lombardy: "Lombardia", "The Marches": "Marche", Molise: "Molise", Piedmont: "Piemonte", Sardinia: "Sardegna",
+  Sicily: "Sicilia", "Trentino-Alto Adige": "Trentino-Alto Adige", Tuscany: "Toscana", Umbria: "Umbria", Veneto: "Veneto" };
+const PAESI = (() => { try { return new Intl.DisplayNames(["it"], { type: "region" }); } catch { return null; } })();
+const NOMI = { paesi: (v) => (PAESI && /^[A-Z]{2}$/.test(v) ? PAESI.of(v) : v), regioni: (v) => REGIONI[v] || v };
+// colonne di ogni tabella: la prima fa la barra
+const COLONNE = { arrivi_chat: [["domande", "Domande"], ["visitatori", "Visitatori"]], uscite: [["visitatori", "Visitatori"]],
+  strumenti: [["chiamate", "Chiamate"]], ricerche: [["chiamate", "Volte"]] };
+
+function tabella(el, righe, colonne = [["visitatori", "Visitatori"], ["pagine", "Pagine"]], nome = (v) => v) {
+  if (!righe || !righe.length) { el.innerHTML = '<p class="vuoto">Ancora nessun dato.</p>'; return; }
+  const max = Math.max(...righe.map((r) => r[colonne[0][0]])) || 1;
+  el.innerHTML = `<table><tr><td></td>${colonne.map(([, t]) => `<td class="n"><small>${t}</small></td>`).join("")}</tr>${righe.map((r) =>
+    `<tr><td class="voce"><span style="width:${(100 * r[colonne[0][0]] / max).toFixed(1)}%"></span><em>${esc(nome(r.voce))}</em></td>${colonne.map(([k]) => `<td class="n">${num(r[k])}</td>`).join("")}</tr>`).join("")}</table>`;
+}
+
+function grafico(el, colonne, righe, chiave) {
+  const W = el.clientWidth || 900, H = 220, P = { l: 36, r: 8, t: 10, b: 24 };
+  const per = Object.fromEntries(righe.map((g) => [g[chiave], g]));
+  const q = (g) => (g.domande || 0) + (g.fascicoli || 0);
+  const max = Math.max(1, ...colonne.map((c) => Math.max((per[c.k] || {}).visitatori || 0, q(per[c.k] || {}))));
+  const x = (i) => P.l + (i + .5) * (W - P.l - P.r) / colonne.length, y = (v) => H - P.b - v * (H - P.t - P.b) / max;
+  const bw = Math.max(2, (W - P.l - P.r) / colonne.length * .62);
+  let s = `<line x1="${P.l}" x2="${W - P.r}" y1="${H - P.b}" y2="${H - P.b}" stroke="var(--bordo)"/>`;
+  [...new Set([0, .5, 1].map((f) => Math.round(max * f)))].forEach((v) => { s += `<text x="${P.l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--t3)">${num(v)}</text>`; });
+  colonne.forEach((c, i) => {
+    const g = per[c.k] || {}, v = g.visitatori || 0, d = q(g);
+    const e = g.altre_lingue || 0;
+    s += `<g><title>${c.titolo}: ${num(v)} visitatori${"altre_lingue" in g ? ` (${num(e)} con il browser non in italiano)` : ""}, ${num(g.pagine)} pagine, ${num(d)} domande</title><rect x="${x(i) - bw / 2}" y="${P.t}" width="${bw}" height="${H - P.t - P.b}" fill="transparent"/>`
+      + `<rect x="${x(i) - bw / 2}" y="${y(v)}" width="${bw}" height="${H - P.b - y(v)}" rx="2" fill="var(--acc)"/>`
+      + (e ? `<rect x="${x(i) - bw / 2}" y="${y(e)}" width="${bw}" height="${H - P.b - y(e)}" rx="2" fill="var(--acc3)"/>` : "")
+      + (d ? `<circle cx="${x(i)}" cy="${y(d)}" r="3" fill="var(--acc2)" stroke="var(--sup)"/>` : "") + "</g>";
+  });
+  const passo = Math.ceil(colonne.length / Math.max(2, Math.floor((W - P.l) / 70)));
+  colonne.forEach((c, i) => { if (i % passo === 0) s += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--t3)">${c.etichetta}</text>`; });
+  el.setAttribute("viewBox", `0 0 ${W} ${H}`); el.innerHTML = s;
 }
 
 function andamento(giorni, dal, al) {
-  const el = $("#andamento"), W = el.clientWidth || 900, H = 220, P = { l: 36, r: 8, t: 10, b: 24 };
-  const per = Object.fromEntries(giorni.map((g) => [g.giorno, g]));
-  const tutti = []; for (let d = new Date(dal + "T12:00:00"); d <= new Date(al + "T12:00:00"); d.setDate(d.getDate() + 1)) tutti.push(d.toISOString().slice(0, 10));
-  const max = Math.max(1, ...tutti.map((d) => Math.max((per[d] || {}).visitatori || 0, ((per[d] || {}).domande || 0) + ((per[d] || {}).fascicoli || 0))));
-  const x = (i) => P.l + (i + .5) * (W - P.l - P.r) / tutti.length, y = (v) => H - P.b - v * (H - P.t - P.b) / max;
-  const bw = Math.max(2, (W - P.l - P.r) / tutti.length * .62);
-  let s = `<line x1="${P.l}" x2="${W - P.r}" y1="${H - P.b}" y2="${H - P.b}" stroke="var(--bordo)"/>`;
-  [0, .5, 1].forEach((f) => { const v = Math.round(max * f); s += `<text x="${P.l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--t3)">${num(v)}</text>`; });
-  tutti.forEach((d, i) => {
-    const g = per[d] || {}, v = g.visitatori || 0, q = (g.domande || 0) + (g.fascicoli || 0);
-    s += `<rect x="${x(i) - bw / 2}" y="${y(v)}" width="${bw}" height="${H - P.b - y(v)}" rx="2" fill="var(--acc)"><title>${data(d)}: ${num(v)} visitatori, ${num(g.pagine)} pagine, ${num(q)} domande</title></rect>`;
-    if (q) s += `<circle cx="${x(i)}" cy="${y(q)}" r="3" fill="var(--acc2)" stroke="var(--sup)"/>`;
-  });
-  const passo = Math.ceil(tutti.length / Math.max(2, Math.floor((W - P.l) / 70)));
-  tutti.forEach((d, i) => { if (i % passo === 0) s += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--t3)">${data(d)}</text>`; });
-  el.setAttribute("viewBox", `0 0 ${W} ${H}`); el.innerHTML = s;
+  const c = []; for (let d = new Date(dal + "T12:00:00"); d <= new Date(al + "T12:00:00"); d.setDate(d.getDate() + 1)) { const k = d.toISOString().slice(0, 10); c.push({ k, etichetta: data(k), titolo: data(k) }); }
+  grafico($("#andamento"), c, giorni, "giorno");
+}
+
+function orario(ore, adesso) {
+  // 24 colonne fino all'ora in corso, con le ore di Roma che manda il servizio ("2026-11-04T21")
+  const fine = Date.UTC(+adesso.slice(0, 4), +adesso.slice(5, 7) - 1, +adesso.slice(8, 10), +adesso.slice(11, 13)), c = [];
+  for (let i = 23; i >= 0; i--) {
+    const k = new Date(fine - i * 3600e3).toISOString().slice(0, 13), h = k.slice(11, 13);
+    c.push({ k, etichetta: `${h}:00`, titolo: `${data(k.slice(0, 10))}, ${h}:00–${h}:59` });
+  }
+  grafico($("#orario"), c, ore, "ora");
 }
 
 async function carica(g) {
@@ -100,13 +142,18 @@ async function carica(g) {
   if (!r.ok) { $("#sotto").textContent = "Non riesco a leggere le statistiche."; return; }
   const d = await r.json(), t = d.totali;
   $("#sotto").textContent = `Dal ${data(d.dal)} al ${data(d.al)}. Senza cookie e senza IP: un visitatore è contato una volta al giorno.`;
-  $("#cifre").innerHTML = [["Visitatori", t.visitatori], ["Pagine viste", t.pagine], ["Domande alla chat", t.domande], ["Fascicoli", t.fascicoli]]
+  $("#cifre").innerHTML = `<div class="cifra cifra--ora" title="Pagine del sito aperte e in primo piano negli ultimi 2 minuti"><small>Attivi ora</small><b>${num(d.attivi)}</b></div>`
+    + [["Visitatori", t.visitatori], ["Pagine viste", t.pagine], ["Domande alla chat", t.domande], ["Fascicoli", t.fascicoli]]
     .map(([n, v]) => `<div class="cifra"><small>${n}</small><b>${num(v)}</b></div>`).join("");
   andamento(d.per_giorno, d.dal, d.al);
-  for (const k of ["pagine", "provenienze", "dispositivi", "browser", "lingue"]) tabella($("#" + k), d[k]);
+  orario(d.per_ora || [], d.adesso);
+  for (const k of ["pagine", "provenienze", "dispositivi", "browser", "lingue", "paesi", "regioni", "arrivi_chat", "uscite", "strumenti", "ricerche"])
+    tabella($("#" + k), d[k], COLONNE[k], NOMI[k]);
 }
-document.querySelectorAll(".periodo button").forEach((b) => b.addEventListener("click", () => carica(b.dataset.g)));
-carica(30);
+let periodo = 30;
+document.querySelectorAll(".periodo button").forEach((b) => b.addEventListener("click", () => carica(periodo = b.dataset.g)));
+carica(periodo);
+setInterval(() => { if (!document.hidden) carica(periodo); }, 60000);   // gli attivi e le ultime ore si aggiornano da soli
 </script>
 </body>
 </html>

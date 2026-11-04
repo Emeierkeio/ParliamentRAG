@@ -4,6 +4,10 @@ La pagina manda a POST /api/visita il percorso, la provenienza, la larghezza del
 aggiunge le domande alla chat e i fascicoli (registra). Il visitatore è un'impronta di IP, browser e giorno con la
 chiave LIMITE_SALE: conta i visitatori unici del giorno e non si ricollega ai giorni dopo. Il pannello /statistiche e i
 suoi dati (/api/statistiche) stanno dietro un login (STATISTICHE_UTENTE, STATISTICHE_PASSWORD); senza, non esistono.
+
+Paese e regione vengono dall'IP con il file DB-IP «IP to City Lite» (CC BY 4.0, dati/geo, aggiornato ogni mese da
+deploy/vps/geoip.sh): la ricerca è in locale e l'IP non si salva. Gli attivi ora vengono da /api/presenza, che ogni
+pagina aperta e in primo piano chiama una volta al minuto: le impronte restano in memoria, non nel database.
 """
 
 from __future__ import annotations
@@ -16,6 +20,8 @@ import logging
 import random
 import re
 import secrets
+import threading
+import time
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -36,6 +42,11 @@ PAGINA = Path(__file__).parent / "statistiche.html"
 NOSTRI = ("parliamentrag.it", "www.parliamentrag.it", "mcp.parliamentrag.it")
 ROBOT = re.compile(r"bot|crawl|spider|slurp|headless|preview|monitor|curl|wget|python|httpx|go-http|scrapy", re.I)
 GIORNI_TENUTI = 400
+GEO = Path(env("GEOIP_FILE", "dati/geo/dbip-city-lite.mmdb"))
+PRESENZA_S = 120                                    # attivo: un segnale negli ultimi 2 minuti (la pagina ne manda uno al minuto)
+_presenze: dict[str, float] = {}
+_geo: dict = {"lettore": None, "mtime": 0.0, "visto": 0.0}
+_geo_lock = threading.Lock()
 
 
 class Visita(BaseModel):
@@ -68,6 +79,31 @@ def browser(ua: str) -> str:
     return "altro"
 
 
+def luogo(indirizzo: str) -> tuple[str | None, str | None]:
+    """Paese (codice ISO) e regione dall'IP, con il file DB-IP in locale; (None, None) se il file manca o l'IP non c'è.
+    Il file si riapre quando cambia (aggiornamento mensile), controllato al massimo una volta all'ora."""
+    with _geo_lock:
+        adesso = time.monotonic()
+        if adesso - _geo["visto"] > 3600 or (_geo["lettore"] is None and adesso - _geo["visto"] > 60):
+            _geo["visto"] = adesso
+            try:
+                m = GEO.stat().st_mtime
+                if m != _geo["mtime"]:
+                    import maxminddb                # solo qui: senza il file il servizio non lo carica
+                    _geo["lettore"], _geo["mtime"] = maxminddb.open_database(str(GEO)), m
+            except (OSError, ValueError) as e:
+                log.warning("file dei paesi non letto: %s", type(e).__name__)
+        lettore = _geo["lettore"]
+    if lettore is None:
+        return None, None
+    try:
+        d = lettore.get(indirizzo) or {}
+    except ValueError:                              # indirizzo non valido
+        return None, None
+    sotto = d.get("subdivisions") or [{}]
+    return (d.get("country") or {}).get("iso_code"), (sotto[0].get("names") or {}).get("en")
+
+
 def _visitatore(indirizzo: str, ua: str, giorno: dt.date) -> str:
     return hmac.new(agente._sale(), f"{giorno.isoformat()}|{indirizzo}|{ua}".encode(), hashlib.sha256).hexdigest()[:20]
 
@@ -81,10 +117,12 @@ def _scrivi(req: Request, evento: str, p: str | None = None, r: str | None = Non
     with connessione_sito() as c:
         if c is None:
             return
-        c.execute("""INSERT INTO sito.visita (giorno, evento, percorso, provenienza, dispositivo, browser, lingua, visitatore)
-                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+        indirizzo = ip(req)
+        paese, regione = luogo(indirizzo)
+        c.execute("""INSERT INTO sito.visita (giorno, evento, percorso, provenienza, dispositivo, browser, lingua, visitatore, paese, regione)
+                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                   (oggi, evento, p, provenienza(r), dispositivo(w), browser(ua), (lingua or "")[:2].lower() or None,
-                   _visitatore(ip(req), ua, oggi)))
+                   _visitatore(indirizzo, ua, oggi), paese, regione))
         if random.random() < 0.002:                  # ogni tanto, via le righe più vecchie di 400 giorni
             c.execute("DELETE FROM sito.visita WHERE giorno < %s", (oggi - dt.timedelta(days=GIORNI_TENUTI),))
 
@@ -104,6 +142,23 @@ def visita(req: Request, v: Visita) -> Response:
     except psycopg.Error as e:
         log.warning("visita non scritta: %s", type(e).__name__)
     return Response(status_code=204)
+
+
+@router.post("/api/presenza", status_code=204)
+def presenza(req: Request) -> Response:
+    """Una pagina aperta e in primo piano: l'impronta del giorno e l'ora, solo in memoria, per gli attivi ora."""
+    ua = req.headers.get("user-agent", "")
+    if not ROBOT.search(ua):
+        adesso = time.monotonic()
+        _presenze[_visitatore(ip(req), ua, dt.date.today())] = adesso
+        for k in [k for k, t in _presenze.items() if adesso - t > PRESENZA_S]:
+            _presenze.pop(k, None)
+    return Response(status_code=204)
+
+
+def attivi_ora() -> int:
+    adesso = time.monotonic()
+    return sum(1 for t in list(_presenze.values()) if adesso - t <= PRESENZA_S)
 
 
 def _login(req: Request) -> None:
@@ -138,18 +193,53 @@ def dati(req: Request, giorni: int = 30) -> dict:
                    count(*) FILTER (WHERE evento = 'pagina') AS pagine,
                    count(*) FILTER (WHERE evento = 'domanda') AS domande, count(*) FILTER (WHERE evento = 'fascicolo') AS fascicoli
             FROM sito.visita WHERE giorno >= %s GROUP BY 1 ORDER BY 1""", (dal,)).fetchall()
+        per_ora = c.execute("""
+            SELECT to_char(date_trunc('hour', ts AT TIME ZONE 'Europe/Rome'), 'YYYY-MM-DD"T"HH24') AS ora,
+                   count(DISTINCT visitatore) FILTER (WHERE evento = 'pagina') AS visitatori,
+                   count(*) FILTER (WHERE evento = 'pagina') AS pagine,
+                   count(*) FILTER (WHERE evento = 'domanda') AS domande, count(*) FILTER (WHERE evento = 'fascicolo') AS fascicoli,
+                   count(DISTINCT visitatore) FILTER (WHERE evento = 'pagina' AND lingua IS DISTINCT FROM 'it') AS altre_lingue
+            FROM sito.visita WHERE ts >= now() - interval '24 hours' GROUP BY 1 ORDER BY 1""").fetchall()
+        adesso = c.execute("SELECT to_char(now() AT TIME ZONE 'Europe/Rome', 'YYYY-MM-DD\"T\"HH24') AS adesso").fetchone()["adesso"]
         totali = c.execute("""
             SELECT count(DISTINCT (giorno, visitatore)) FILTER (WHERE evento = 'pagina') AS visitatori,
                    count(*) FILTER (WHERE evento = 'pagina') AS pagine,
                    count(*) FILTER (WHERE evento = 'domanda') AS domande, count(*) FILTER (WHERE evento = 'fascicolo') AS fascicoli
             FROM sito.visita WHERE giorno >= %s""", (dal,)).fetchone()
 
-        def classifica(colonna: str, n: int = 12) -> list[dict]:
+        def classifica(colonna: str, n: int = 12, filtro: str = "true") -> list[dict]:
             return [dict(r) for r in c.execute(f"""
                 SELECT coalesce({colonna}, 'non indicato') AS voce, count(DISTINCT (giorno, visitatore)) AS visitatori,
                        count(*) AS pagine
-                FROM sito.visita WHERE giorno >= %s AND evento = 'pagina' GROUP BY 1 ORDER BY 2 DESC, 3 DESC LIMIT {n}""", (dal,))]
+                FROM sito.visita WHERE giorno >= %s AND evento = 'pagina' AND {filtro}
+                GROUP BY 1 ORDER BY 2 DESC, 3 DESC LIMIT {n}""", (dal,))]
+
+        # percorsi: la pagina vista per ultima prima di ogni domanda alla chat, e l'ultima pagina del giorno di ogni visitatore
+        arrivi_chat = [dict(r) for r in c.execute("""
+            SELECT coalesce(p.percorso, 'nessuna pagina prima') AS voce, count(DISTINCT (d.giorno, d.visitatore)) AS visitatori,
+                   count(*) AS domande
+            FROM sito.visita d LEFT JOIN LATERAL (
+              SELECT percorso FROM sito.visita p WHERE p.visitatore = d.visitatore AND p.giorno = d.giorno AND p.evento = 'pagina'
+                AND p.ts <= d.ts ORDER BY p.ts DESC LIMIT 1) p ON true
+            WHERE d.giorno >= %s AND d.evento = 'domanda' GROUP BY 1 ORDER BY 3 DESC LIMIT 10""", (dal,))]
+        uscite = [dict(r) for r in c.execute("""
+            SELECT coalesce(percorso, 'non indicato') AS voce, count(*) AS visitatori FROM (
+              SELECT DISTINCT ON (giorno, visitatore) percorso FROM sito.visita WHERE giorno >= %s AND evento = 'pagina'
+              ORDER BY giorno, visitatore, ts DESC) u
+            GROUP BY 1 ORDER BY 2 DESC LIMIT 10""", (dal,))]
+        # strumenti e ricerche della chat: la vista registro.uso_strumenti (schema/sito.sql), senza domande né risposte
+        strumenti, ricerche = [], []
+        if c.execute("SELECT to_regclass('registro.uso_strumenti') IS NOT NULL AS c").fetchone()["c"]:
+            strumenti = [dict(r) for r in c.execute("""
+                SELECT strumento AS voce, count(*) AS chiamate FROM registro.uso_strumenti
+                WHERE creata >= %s GROUP BY 1 ORDER BY 2 DESC LIMIT 15""", (dal,))]
+            ricerche = [dict(r) for r in c.execute("""
+                SELECT lower(ricerca) AS voce, count(*) AS chiamate FROM registro.uso_strumenti
+                WHERE creata >= %s AND ricerca IS NOT NULL AND ricerca <> '' GROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 20""", (dal,))]
         return {"dal": dal, "al": dt.date.today(), "giorni": giorni, "totali": dict(totali),
-                "per_giorno": [dict(r) for r in per_giorno], "pagine": classifica("percorso", 15),
+                "per_giorno": [dict(r) for r in per_giorno],
+                "per_ora": [dict(r) for r in per_ora], "adesso": adesso, "attivi": attivi_ora(), "pagine": classifica("percorso", 15),
                 "provenienze": classifica("provenienza"), "dispositivi": classifica("dispositivo"),
-                "browser": classifica("browser"), "lingue": classifica("lingua")}
+                "browser": classifica("browser"), "lingue": classifica("lingua"),
+                "paesi": classifica("paese"), "regioni": classifica("regione", 20, "paese = 'IT'"),
+                "arrivi_chat": arrivi_chat, "uscite": uscite, "strumenti": strumenti, "ricerche": ricerche}

@@ -28,7 +28,7 @@ PG_SHM=2g
 
 ## Statistiche di visita
 
-Le conta il servizio stesso (`api/statistiche.py`, tabella `sito.visita` in `schema/sito.sql`): la pagina manda a `/api/visita` percorso, provenienza, larghezza della finestra e lingua, solo su www.parliamentrag.it (in locale con `?stat=1`); domande alla chat e fascicoli li conta il servizio. Niente cookie né IP: il visitatore è un'impronta di IP, browser e giorno con `LIMITE_SALE`. Il pannello è `https://www.parliamentrag.it/statistiche`, dietro login. Dopo il ripristino va rilanciato `schema/sito.sql` (crea la tabella e il permesso).
+Le conta il servizio stesso (`api/statistiche.py`, tabella `sito.visita` in `schema/sito.sql`): la pagina manda a `/api/visita` percorso, provenienza, larghezza della finestra e lingua, solo su www.parliamentrag.it (in locale con `?stat=1`); domande alla chat e fascicoli li conta il servizio. Niente cookie né IP: il visitatore è un'impronta di IP, browser e giorno con `LIMITE_SALE`. Paese e regione vengono dall'IP con il file DB-IP «IP to City Lite» (CC BY 4.0) in `dati/geo/`, montato in sola lettura nel container web: lo scarica `deploy/vps/geoip.sh` una volta al mese, chiamato da `pipeline/notte.sh`; senza il file paese e regione restano vuoti. Gli attivi ora vengono da `/api/presenza`, che ogni pagina in primo piano chiama una volta al minuto: restano in memoria per due minuti. Il pannello è `https://www.parliamentrag.it/statistiche`, dietro login, e mostra anche da quale pagina partono le domande, le pagine di uscita e gli strumenti usati dalla chat (vista `registro.uso_strumenti`, senza domande né risposte). Dopo il ripristino va rilanciato `schema/sito.sql` (crea la tabella, la vista e i permessi), dopo `schema/registro.sql`.
 
 ## Concorrenza
 

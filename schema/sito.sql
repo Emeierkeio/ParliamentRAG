@@ -41,6 +41,9 @@ CREATE TABLE IF NOT EXISTS sito.visita (
   visitatore text NOT NULL
 );
 CREATE INDEX IF NOT EXISTS visita_giorno ON sito.visita (giorno);
+-- paese (codice ISO) e regione, dall'IP con il file DB-IP in locale al momento della visita; l'IP non si salva
+ALTER TABLE sito.visita ADD COLUMN IF NOT EXISTS paese text, ADD COLUMN IF NOT EXISTS regione text;
+CREATE INDEX IF NOT EXISTS visita_ts ON sito.visita (ts);
 
 SELECT format('CREATE ROLE sito LOGIN PASSWORD %L', :'password') WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'sito') \gexec
 SELECT format('ALTER ROLE sito PASSWORD %L', :'password') \gexec
@@ -52,3 +55,17 @@ GRANT SELECT, INSERT, DELETE ON sito.visita TO sito;
 REVOKE ALL ON SCHEMA sito FROM lettura;
 ALTER ROLE sito SET statement_timeout = '5s';
 ALTER ROLE sito CONNECTION LIMIT 10;
+
+-- per il pannello delle statistiche: quali strumenti usa la chat e cosa cerca, senza domande né risposte, solo dalle chat
+-- del sito (le prove dell'API non hanno conversazione). Solo se lo schema del registro c'è (schema/registro.sql).
+DO $$ BEGIN
+  IF to_regclass('registro.chat') IS NOT NULL THEN
+    CREATE OR REPLACE VIEW registro.uso_strumenti AS
+      SELECT c.creata, s->>'nome' AS strumento,
+             left(coalesce(s->'argomenti'->>'q', s->'argomenti'->>'testo'), 200) AS ricerca
+      FROM registro.chat c, jsonb_array_elements(coalesce(c.strumenti, '[]'::jsonb)) s
+      WHERE c.conversazione IS NOT NULL;
+    GRANT USAGE ON SCHEMA registro TO sito;
+    GRANT SELECT ON registro.uso_strumenti TO sito;
+  END IF;
+END $$;

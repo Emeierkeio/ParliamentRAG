@@ -3,6 +3,7 @@
 #   - un giro alla volta: flock sul file notte.lock; se un giro è ancora in corso, questo non parte;
 #   - un log per giro, con la data: $LOG_DIR/giro-AAAAMMGG-HHMMSS.log (predefinito dati/log), tenuti 60 giorni;
 #   - «python -m pipeline giro» rifiuta il giro se uno completo è riuscito nelle ultime 20 ore (--forza per lanciarlo);
+#   - prima del giro, il file DB-IP dei paesi del mese (deploy/vps/geoip.sh), per le statistiche di visita;
 #   - a fine giro, se l'esito non è ok, una mail a segnalazioni@parliamentrag.it (python -m pipeline avvisa, BREVO_API_KEY).
 #
 #   pipeline/notte.sh [--forza]
@@ -24,7 +25,10 @@ LOG="$LOG_DIR/giro-$(date -u +%Y%m%d-%H%M%S).log"
 DAL="$(date +%s)"
 echo "$(date -u '+%F %T') UTC: inizio, log in $LOG" >> "$LOG_DIR/notte.log"
 
-"$PY" -m pipeline giro "$@" > "$LOG" 2>&1
+# paesi e regioni delle statistiche: il file DB-IP del mese, se manca (non ferma il giro)
+"$QUI/deploy/vps/geoip.sh" >> "$LOG" 2>&1 || echo "file DB-IP non aggiornato" >> "$LOG"
+
+"$PY" -m pipeline giro "$@" >> "$LOG" 2>&1
 USCITA=$?
 
 "$PY" -m pipeline avvisa --dal "$DAL" --uscita "$USCITA" --log "$LOG" >> "$LOG" 2>&1

@@ -12,6 +12,8 @@ services:
       API_PROXY: "1"                                # l'IP del visitatore arriva da Caddy in X-Forwarded-For
       PORT: "8000"
     depends_on: [testi]
+    volumes:
+      - ./dati/geo:/app/dati/geo:ro                 # paesi e regioni delle statistiche (deploy/vps/geoip.sh)
     mem_limit: 1g
     expose: ["8000"]
 

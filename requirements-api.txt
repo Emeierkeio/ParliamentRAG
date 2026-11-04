@@ -7,6 +7,7 @@ pydantic_core==2.50.1
 uvicorn==0.54.0
 psycopg[binary]==3.3.6
 psycopg-binary==3.3.6
+maxminddb==3.2.0                                     # paese e regione dei visitatori dal file DB-IP (api/statistiche.py)
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.15.1
