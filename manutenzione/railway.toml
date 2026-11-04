@@ -2,8 +2,12 @@
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
+# vale sopra i percorsi osservati del servizio (stenografo osserva solo il suo monorepo e salterebbe il rilascio)
+watchPatterns = ["**"]
 
 [deploy]
+# vale sopra il comando di avvio del servizio (stenografo ne ha uno suo, del sito vecchio)
+startCommand = "python server.py"
 healthcheckPath = "/salute"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"

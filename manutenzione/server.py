@@ -19,7 +19,8 @@ class Manutenzione(BaseHTTPRequestHandler):
 
     def _rispondi(self, corpo: bool) -> None:
         percorso = self.path.split("?", 1)[0]
-        if percorso in SALUTE:
+        # il controllo di Railway usa il percorso impostato nel servizio (spesso «/»): si riconosce dallo User-Agent
+        if percorso in SALUTE or self.headers.get("User-Agent", "").startswith("RailwayHealthCheck"):
             stato, dati, tipo = 200, b"ok\n", "text/plain; charset=utf-8"
         else:
             stato, dati, tipo = 503, PAGINA, "text/html; charset=utf-8"
