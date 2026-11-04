@@ -1,0 +1,16 @@
+# Servizio web su Railway: build dal Dockerfile, avvio dal CMD dell'immagine.
+# Il database è un servizio a parte nello stesso progetto (docs/produzione.md).
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+# un commit che tocca solo la pipeline, i test o i documenti non rifà il servizio web
+watchPatterns = ["api/**", "sito/**", "schema/**", "pipeline/ambiente.py", "requirements-api.txt", "Dockerfile", "railway.toml"]
+
+[deploy]
+healthcheckPath = "/v1/salute"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
+# la versione vecchia resta su finché la nuova non passa il controllo, poi ha 30 secondi per chiudere le risposte in corso
+drainingSeconds = 30

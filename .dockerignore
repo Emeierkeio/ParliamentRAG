@@ -1,0 +1,16 @@
+# Nell'immagine web entrano solo api/, sito/, schema/ e pipeline/ambiente.py (vedi Dockerfile).
+# Tutto il resto resta fuori: segreti, dati, ambienti locali, mappe del codice.
+.env
+.env.*
+.git
+.gitignore
+.gitattributes
+.venv
+dati
+graphify-out
+benchmark
+tests
+docs
+**/__pycache__
+**/*.pyc
+*.md
