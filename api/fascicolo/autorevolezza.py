@@ -404,7 +404,7 @@ def nome_gruppo(grp: str | None, pr: Profili) -> str:
 
 SQL_INTERVENTI = """
 SELECT s.person, s.uri AS item, st.date, st.chamber, s.as_office, 1 - (v.embedding <=> %(q)s::halfvec(1024)) AS score
-FROM passage p JOIN passage_vector v ON v.hash = p.hash AND v.model = %(m)s
+FROM passage p JOIN speech_vector v ON v.hash = p.hash AND v.model = %(m)s
 JOIN speech s ON s.uri = p.uri JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting
 WHERE p.source = 'speech' AND st.kind = 'assembly_verbatim' AND st.chamber = ANY(%(rami)s) AND s.person IS NOT NULL
   AND (%(da)s::date IS NULL OR st.date >= %(da)s) AND (%(a)s::date IS NULL OR st.date <= %(a)s)
@@ -449,7 +449,7 @@ def _prepara(c: psycopg.Connection, indice: bool) -> None:
     che con più memoria per l'hash riempiono la memoria condivisa del container."""
     c.execute(f"SET statement_timeout = '{TEMPO_MASSIMO}'")
     if indice:
-        c.execute("SET hnsw.ef_search = 1000")
+        c.execute("SET hnsw.ef_search = 400")      # 1000 costa 5 volte tanto e cambia lo 0,2% dei brani (4/11)
         c.execute("SET hnsw.iterative_scan = 'relaxed_order'")
         c.execute("SET hnsw.max_scan_tuples = 200000")
     else:

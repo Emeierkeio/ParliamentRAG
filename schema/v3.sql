@@ -676,6 +676,15 @@ DO $$ BEGIN                                        -- la prima versione (3/11) e
   END IF;
 END $$;
 
+-- i vettori dei brani degli interventi, con un indice HNSW loro: nell'indice di tutti i brani gli interventi sono un
+-- terzo, e una domanda vicina agli atti costringeva la ricerca a scorrerne decine di migliaia (18 s, 4/11/2026)
+CREATE TABLE IF NOT EXISTS speech_vector (
+  hash text NOT NULL,
+  model text NOT NULL,
+  embedding halfvec(1024) NOT NULL,
+  PRIMARY KEY (hash, model)
+);
+
 CREATE TABLE IF NOT EXISTS vector_batch (           -- i lavori della Batch API di OpenAI
   id text PRIMARY KEY,                             -- batch_…
   model text NOT NULL,

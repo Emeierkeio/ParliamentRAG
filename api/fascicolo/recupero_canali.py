@@ -85,7 +85,7 @@ def vicini(c: psycopg.Connection, vettore: list[float] | str, fonti: list[str], 
     sql = f"""
         WITH x AS MATERIALIZED (
           SELECT p.source, p.uri, p.ord, p.start_char, p.end_char, p.hash, v.embedding <=> %(q)s::halfvec(1024) AS d
-          FROM passage_vector v JOIN passage p ON p.hash = v.hash {unisci}
+          FROM {"speech_vector" if interventi else "passage_vector"} v JOIN passage p ON p.hash = v.hash {unisci}
           WHERE {' AND '.join(dove)}
           ORDER BY v.embedding <=> %(q)s::halfvec(1024)
           LIMIT %(k)s)

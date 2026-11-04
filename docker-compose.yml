@@ -14,6 +14,7 @@ services:
     command: >-
       postgres -c shared_buffers=${PG_SHARED_BUFFERS:-1GB} -c effective_cache_size=${PG_CACHE:-4GB}
       -c work_mem=${PG_WORK_MEM:-32MB} -c maintenance_work_mem=${PG_MAINTENANCE_WORK_MEM:-1GB}
+      -c shared_preload_libraries=pg_prewarm -c pg_prewarm.autoprewarm=on
     shm_size: ${PG_SHM:-1g}
     ports:
       - "${PG_PORTA:-5440}:5432"

@@ -279,6 +279,7 @@ def raccogli() -> dict:
         psql("BEGIN;\nCREATE TEMP TABLE v (LIKE passage_vector) ON COMMIT DROP;\n"
              f"COPY v FROM STDIN WITH (FORMAT csv);\n{_csv(righe)}\\.\n"
              "INSERT INTO passage_vector SELECT * FROM v ON CONFLICT DO NOTHING;\n"
+             f"{SQL_INTERVENTI.replace('passage_vector v', 'v')}"
              f"UPDATE vector_batch SET status = {_letterale(s['status'])}, collected_at = now(), tokens = {token}, "
              f"error = {_letterale(errore) if errore else 'NULL'} WHERE id = {_letterale(bid)};\nCOMMIT;\n")
         scritti += len(righe)
@@ -298,21 +299,32 @@ def stato() -> dict:
             "spesa_dollari": round(int(token) / 1e6 * 0.065, 2)}   # 0,13 $ per milione di token, metà con la Batch API
 
 
+# i vettori degli interventi anche in speech_vector (schema/v3.sql); anche quelli arrivati prima del brano
+SQL_INTERVENTI = """INSERT INTO speech_vector SELECT v.hash, v.model, v.embedding FROM passage_vector v
+WHERE EXISTS (SELECT 1 FROM passage p WHERE p.hash = v.hash AND p.source = 'speech')
+  AND NOT EXISTS (SELECT 1 FROM speech_vector s WHERE s.hash = v.hash AND s.model = v.model) ON CONFLICT DO NOTHING;
+"""
+INDICI = {"passage_vector_hnsw": "passage_vector", "speech_vector_hnsw": "speech_vector"}
+
+
 def indice() -> dict:
     # senza processi paralleli: in Docker la memoria condivisa (/dev/shm) è di 64 MB e la costruzione parallela non ci sta
-    psql("SET maintenance_work_mem = '2GB';\nSET max_parallel_maintenance_workers = 0;\n"
-         "CREATE INDEX IF NOT EXISTS passage_vector_hnsw ON passage_vector USING hnsw (embedding halfvec_cosine_ops);\n", timeout=6 * 3600)
-    return {"indice": "passage_vector_hnsw"}
+    psql("SET maintenance_work_mem = '2GB';\nSET max_parallel_maintenance_workers = 0;\n" + SQL_INTERVENTI
+         + "".join(f"CREATE INDEX IF NOT EXISTS {i} ON {t} USING hnsw (embedding halfvec_cosine_ops);\n" for i, t in INDICI.items()),
+         timeout=6 * 3600)
+    return {"indici": list(INDICI)}
 
 
 def controlla_indice() -> dict:
     """L'indice HNSW c'è ed è valido? Senza, la ricerca per significato legge tutti i vettori (secondi per domanda)."""
-    r = _leggi("""SELECT i.indisvalid FROM pg_class c JOIN pg_index i ON i.indexrelid = c.oid WHERE c.relname = 'passage_vector_hnsw'""")
-    if not r:
-        raise RuntimeError("manca l'indice passage_vector_hnsw: python -m pipeline.vettori indice")
-    if r[0][0] != "t":
-        raise RuntimeError("l'indice passage_vector_hnsw non è valido (costruzione interrotta?): va rifatto")
-    return {"indice": "passage_vector_hnsw", "valido": True}
+    psql(SQL_INTERVENTI)                             # gli interventi caricati dopo il loro vettore
+    for nome in INDICI:
+        r = _leggi(f"""SELECT i.indisvalid FROM pg_class c JOIN pg_index i ON i.indexrelid = c.oid WHERE c.relname = '{nome}'""")
+        if not r:
+            raise RuntimeError(f"manca l'indice {nome}: python -m pipeline.vettori indice")
+        if r[0][0] != "t":
+            raise RuntimeError(f"l'indice {nome} non è valido (costruzione interrotta?): va rifatto")
+    return {"indici": list(INDICI), "validi": True}
 
 
 # passi del giro notturno (passi.py): si raccolgono i batch della notte prima, si tagliano i testi caricati, si inviano i brani nuovi

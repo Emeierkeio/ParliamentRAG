@@ -127,13 +127,21 @@ VOCI: list[Voce] = [
     Voce("SCN", "Sud chiama Nord (Misto)", "component", "SUD CHIAMA NORD", [], ["Sud chiama Nord", "South Calls North"]),
     # Misto del Senato (le sue componenti AVS e Azione contano per quei gruppi)
     Voce("PSI", "Avanti PSI (Misto)", "component", "AVANTI PSI", ["PSI"], ["Avanti PSI", "Partito Socialista"], chamber="senato"),
+    Voce("PRC", "Rifondazione Comunista (Misto)", "component", "RIFONDAZIONE COMUNISTA", ["PRC"],
+         ["Rifondazione Comunista", "Rifondazione", "Open Sinistra"], chamber="senato"),
+    Voce("ID-MR", "Italia Domani - Marco Rizzo (Misto)", "component", "ITALIA DOMANI", ["ID-MR"], ["Italia Domani"],
+         chamber="senato"),
     Voce("Autonomie", "Per le Autonomie (SVP-PATT, Campobase)", "group", "PER LE AUTONOMIE", [],
          ["Per le Autonomie", "Autonomie", "Campobase", "SVP-PATT"], chamber="senato"),
+    # chi sta nel Misto senza una componente (alla Camera i non iscritti, al Senato anche i senatori a vita)
+    Voce("Misto NI", "Misto, non iscritti", "component", "", [], ["non iscritti", "non iscritto", "non iscritta",
+         "senatori a vita", "senatore a vita", "senatrice a vita"]),
     Voce("Governo", "Governo", "government", "", [],
          ["Governo", "Esecutivo", "ministro", "ministra", "sottosegretario", "sottosegretaria", "Government", "minister",
           "undersecretary"]),
 ]
 GOVERNO_VOCE = next(v for v in VOCI if v.kind == "government")
+MISTO_NI = next(v for v in VOCI if v.key == "Misto NI")
 
 
 def _maiuscolo(nome: str | None) -> str:
@@ -148,8 +156,10 @@ def voce_del_gruppo(gruppo: str | None, componente: str | None, al_governo: bool
     if componente:
         for tipo in ("component", "group"):
             for v in VOCI:
-                if v.kind == tipo and v.match in _maiuscolo(componente):
+                if v.kind == tipo and v.match and v.match in _maiuscolo(componente):
                     return v
+    if gruppo and _maiuscolo(gruppo).strip() == "MISTO":
+        return MISTO_NI
     if gruppo:
         for v in VOCI:
             if v.kind == "group" and v.match in _maiuscolo(gruppo):
@@ -229,11 +239,24 @@ FROM membership m JOIN grp g ON g.uri = m.grp LEFT JOIN grp pg ON pg.uri = g.par
 WHERE m.end_date IS NULL AND g.legislature = %s AND g.chamber = ANY(%s)"""
 
 
+# membri del Misto in carica senza una componente in carica
+SQL_MISTO_NI = """
+SELECT 1 FROM membership m JOIN grp g ON g.uri = m.grp
+WHERE m.end_date IS NULL AND g.legislature = %s AND g.chamber = ANY(%s) AND g.kind <> 'misto_component' AND upper(g.name) = 'MISTO'
+  AND NOT EXISTS (SELECT 1 FROM membership m2 JOIN grp c ON c.uri = m2.grp
+                  WHERE m2.person = m.person AND m2.end_date IS NULL AND c.kind = 'misto_component' AND c.part_of = g.uri)
+LIMIT 1"""
+
+
 def voci_in_carica(c: psycopg.Connection, rami: list[str]) -> list[Voce]:
     """Le voci da cercare: i gruppi in carica nei rami, le componenti del Misto con membri, il Governo."""
     def calcola() -> list[Voce]:
         chiavi = set()
+        if c.execute(SQL_MISTO_NI, (LEGISLATURA, rami)).fetchone():
+            chiavi.add(MISTO_NI.key)
         for r in c.execute(SQL_IN_CARICA, (LEGISLATURA, rami)):
+            if r["kind"] != "misto_component" and _maiuscolo(r["name"]).strip() == "MISTO":
+                continue                             # il Misto conta per componente, e per i non iscritti qui sopra
             comp = r["kind"] == "misto_component"
             v = voce_del_gruppo(None if comp else r["name"], r["name"] if comp else None, False)
             if v:
@@ -487,7 +510,7 @@ SQL_PERIMETRO = """
 SELECT x.*, group_at(x.person, x.date) AS grp FROM (
   SELECT s.person, s.uri AS item, st.date, st.chamber, s.as_office, 1 - (v.embedding <=> %(q)s::halfvec(1024)) AS score
   FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting
-  JOIN passage p ON p.source = 'speech' AND p.uri = s.uri JOIN passage_vector v ON v.hash = p.hash AND v.model = %(m)s
+  JOIN passage p ON p.source = 'speech' AND p.uri = s.uri JOIN speech_vector v ON v.hash = p.hash AND v.model = %(m)s
   WHERE s.person IN (SELECT person FROM membership WHERE grp = ANY(%(grp)s)) AND st.kind = 'assembly_verbatim'
     AND st.chamber = ANY(%(rami)s) AND group_at(s.person, st.date) = ANY(%(grp)s)
   ORDER BY v.embedding <=> %(q)s::halfvec(1024) LIMIT %(k)s) x

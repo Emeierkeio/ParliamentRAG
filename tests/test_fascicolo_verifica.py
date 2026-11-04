@@ -175,7 +175,8 @@ class TestSulDatabase(unittest.TestCase):
 
     def test_gruppo_mancante(self):
         r = self.verifica(RISPOSTA_GRUPPI)
-        mancanti = [g["key"] for g in r["groups"]["items"] if g["status"] == "missing"]
+        # i non iscritti del Misto mancano o sono muti secondo chi ha parlato del tema del vettore di prova
+        mancanti = [g["key"] for g in r["groups"]["items"] if g["status"] == "missing" and g["key"] != "Misto NI"]
         self.assertEqual(mancanti, ["Lega"])
         self.assertEqual(r["summary"]["groups"], "fail")
         self.assertEqual(r["summary"]["authority"], "na")                      # nessuna persona citata o nominata
@@ -187,7 +188,7 @@ class TestSulDatabase(unittest.TestCase):
                                                                 chamber="camera"))
         self.assertTrue(r["verdict"][0].startswith("❌ All groups:"))
         self.assertIn("missing: Lega", r["verdict"][0])
-        self.assertEqual(r["groups"]["missing"], ["Lega - Salvini Premier"])
+        self.assertEqual([g for g in r["groups"]["missing"] if g != "Misto, non iscritti"], ["Lega - Salvini Premier"])
         self.assertTrue(r["authority"]["available"])
 
 
