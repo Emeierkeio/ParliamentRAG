@@ -8,6 +8,8 @@ prima=$(git rev-parse --short HEAD)
 git pull --ff-only
 dopo=$(git rev-parse --short HEAD)
 "${COMPOSE[@]}" up -d --build web caddy
+# il Caddyfile è montato come file: git pull lo sostituisce e Caddy vedrebbe ancora quello vecchio
+if ! git diff --quiet "$prima" "$dopo" -- deploy/vps/Caddyfile; then "${COMPOSE[@]}" restart caddy; fi
 for i in $(seq 1 30); do
 	if "${COMPOSE[@]}" exec -T web python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/v1/salute', timeout=4)" 2>/dev/null; then
 		echo "aggiornato $prima -> $dopo, il servizio risponde"
