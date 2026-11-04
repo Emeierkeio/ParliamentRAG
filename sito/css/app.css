@@ -1874,6 +1874,7 @@ details.come .passi:not(.tutti) li::before{display:none!important}
 details.come .passi:not(.tutti) .p{width:30px;height:30px;background:var(--ok);color:var(--su-btn);box-shadow:0 0 0 3px var(--fondo);animation:spunta .25s ease both}
 details.come .passi:not(.tutti) li.corre .p{background:var(--fondo);box-shadow:0 0 0 3px var(--fondo),inset 0 0 0 2.5px var(--acc)}
 details.come .passi:not(.tutti) .p svg{width:15px;height:15px}
+details.come .passi:not(.tutti) li:not(:last-child) .p svg{visibility:hidden}
 details.come .passi:not(.tutti) li>span:not(.p){display:none}
 details.come .passi:not(.tutti) li:last-child>span:nth-child(2){display:block;margin-left:14px;font-size:15px;font-weight:500;color:var(--t)}
 details.come .passi:not(.tutti) li:last-child .call{display:none}
