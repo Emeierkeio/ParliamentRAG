@@ -1,0 +1,35 @@
+{
+ "id": "COM-031",
+ "domanda": "Il Bollettino delle commissioni del 30 ottobre 2026 è definitivo o ancora provvisorio?",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Giusto: il Bollettino del 30/10/2026 non è nel database e non si può dire. Non aggiunge che l'ultimo è del 29/10 e non provvisorio.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782378.724024,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "elenco_sedute",
+  "elenco_sedute"
+ ],
+ "tempo_s": 9.4,
+ "risposta_sistema": "Nei dati non risulta alcun Bollettino o seduta di commissione del **30 ottobre 2026**, né alla Camera né al Senato. Perciò non posso stabilire se fosse definitivo o provvisorio: va verificato sul bollettino pubblicato dall’amministrazione del ramo interessato.\n\nI dati disponibili arrivano fino al 3 novembre 2026.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il Bollettino delle commissioni del 30/10/2026 non è nel database: l'ultimo caricato è il n. 756 del 29/10/2026 (11 sedute). I Bollettini dal 26 al 29/10/2026 (n. 753-756) risultano tutti non provvisori. Gli unici resoconti provvisori della settimana sono 4 stenografici di commissione del 27/10/2026, che non fanno parte del Bollettino.",
+  "stato": "non_calcolabile",
+  "limiti": "Il Bollettino del 30/10/2026 manca (non si sa dai dati se sia uscito). Il flag sitting.provisional riguarda di fatto i resoconti stenografici di commissione (committee_verbatim, 352 provvisori); per il Bollettino (committee_summary) vale sempre false, quindi non distingue un Bollettino provvisorio da uno definitivo."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": null,
+  "trappola": null,
+  "tempo_s": 9.4
+ },
+ "causa_probabile": null
+}

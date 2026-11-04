@@ -1,0 +1,179 @@
+{
+ "id": "COM-038",
+ "domanda": "Progetti di atti dell'Unione europea esaminati dalla XIV Commissione nel 2026.",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782652.3969269,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "organo",
+   "args": {
+    "q": "XIV Commissione",
+    "chamber": "camera",
+    "date": "2026-11-04",
+    "titles": null
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 1, \"items\": [{\"uri\": \"it:camera:19:body:o19_3514\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"XIV Commissione\", \"members\": 29, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Alessandro Giglio Vigna\", \"uri\": \"it:person:camera:307502\", \"group\": \"LEGA\"}, {\"title\": \"VICEPRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Maria Anna Madia\", \"uri\": \"it:person:camera:302789\", \"group\": \"IV-CR\"}, {\"title\": \"VICEPRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Gianfranco Rotondi\", \"uri\": \"it:person:camera:38560\", \"group\": \"FDI\"}, {\"title\": \"SEGRETARIO\", \"since\": \"2025-06-10\", \"person\": \"Calogero Pisano\", \"uri\": \"it:person:camera:308761\", \"group\": \"FDI\"}, {\"title\": \"SEGRETARIO\", \"since\": \"2025-07-23\", \"person\": \"Raffaele Bruno\", \"uri\": \"it:person:camera:307193\", \"group\": \"M5S\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Lucrezia Maria Benedetta Mantovani\", \"uri\": \"it:person:camera:308101\", \"group\": \"FDI\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Piero De Luca\", \"uri\": \"it:person:camera:307561\", \"group\": \"PD-IDP\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2024-05-13\", \"person\": \"Lorenzo Cesa\", \"uri\": \"it:person:camera:301439\", \"group\": \"MISTO\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2025-06-10\", \"person\": \"Stefano Candiani\", \"uri\": \"it:person:camera:306349\", \"group\": \"LEGA\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2025-06-12\", \"person\": \"Filippo Scerra\", \"uri\": \"it:person:camera:307418\", \"group\": \"M5S\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2025-06-30\", \"person\": \"Cristina Rossello\", \"uri\": \"it:person:camera:307678\", \"group\": \"FI-PPE\"}]}]}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "it:camera:19:body:o19_3514",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 185, \"items\": [{\"uri\": \"it:camera:19:bol20261028:c14:sede00080\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 80, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c14:sede00070\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 70, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c14:sede00060\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 60, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c14:sede00050\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 50, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c14:sede00040\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 40, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c14:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 30, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c14:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 20, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261028:c14:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 10, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c14:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 10, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261022:c14:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 30, \"date\": \"2026-10-22\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261022:c14:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 20, \"date\": \"2026-10-22\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261022:c14:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 10, \"date\": \"2026-10-22\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "COM/2026",
+    "chamber": "camera",
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "progetti di atti dell'Unione europea",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 86, \"items\": [{\"uri\": \"it:camera:19:sed0737:tit00130.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Esame e votazione delle questioni pregiudiziali riferite al disegno di legge: Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile (A.C. 3159) (ore 16,50). (ore 16,50) (ore 16,50)\", \"person\": {\"uri\": \"it:person:camera:308933\", \"name\": \"Federico Cafiero De Raho\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308933&legislatura=19\"}, \"speaker_label\": \"FEDERICO CAFIERO DE RAHO\", \"snippet\": \"proprio di questo Governo verso le esigenze di quanti non vedono alcun futuro nelle risposte del Governo. L'attuale [[progetto]] politico del Governo ha posto ai margini la scuola, fondamento di formazione democratica per le nuove generazioni. Le misure recate ... norma di questo tipo? Guardate, voi siete andati contro l'articolo 3 del Trattato sull'[[Unione]] [[europea]], che stabilisce espressamente che l'[[Unione]] [[europea]] promuove la tutela dei diritti del minore; siete andati contro l'articolo 31 della Costituzione\"}, {\"uri\": \"it:camera:19:bol20261027:c0109:sede00010:tit00010:p3\", \"sitting\": {\"uri\": \"it:camera:19:bol20261027:c0109:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:comm:0109\", \"body_name\": \"Commissioni Riunite (I e IX)\", \"number\": 10, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Schema di decreto legislativo recante disposizioni per l'adeguamento della normativa nazionale al regolamento (UE) 2024/2847 del Parlamento europeo e del Consiglio, del 23 ottobre 2024, relativo a requisiti orizzontali di cibersicurezza per i prodotti con elementi digitali e che modifica i regolamenti (UE) n. 168/2013 e (UE) 2019/1020 e la direttiva (UE) 2020/1828 (regolamento sulla ciberresilienza).\", \"person\": {\"uri\": \"it:person:camera:307132\", \"name\": \"Roberto Traversi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307132&legislatura=19\"}, \"speaker_label\": \"Roberto TRAVERSI\", \"kind\": \"summary\", \"snippet\": \"autorità di vigilanza del mercato sia le autorità incaricate del controllo dei prodotti che entrano nel mercato dell'[[Unione]] [[europea]], nonché gli altri soggetti individuati dalla normativa vigente, nel rispetto di quanto previsto dal decreto legislativo ... criteri di ammissibilità dei [[progetti]], i requisiti della domanda di partecipazione e la durata massima della sperimen"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"Proposta di regolamento del Parlamento europeo\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 9, \"items\": [{\"uri\": \"it:camera:19:bol20261022:c14:sede00030:tit00000:p2\", \"sitting\": {\"uri\": \"it:camera:19:bol20261022:c14:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 30, \"date\": \"2026-10-22\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"kind\": \"summary\", \"snippet\": \"Unione Inquilini, nell'ambito dell'esame, ai fini della verifica della conformità al principio di sussidiarietà, della [[proposta]] di [[regolamento]] del [[Parlamento]] [[europeo]] e del Consiglio che istituisce un quadro per misure negli Stati membri a salvaguardia della disponibilità\"}, {\"uri\": \"it:camera:19:bol20261021:c14:sede00020:tit00010:p2\", \"sitting\": {\"uri\": \"it:camera:19:bol20261021:c14:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 20, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"DL 157/2026: Disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche.\", \"person\": {\"uri\": \"it:person:camera:307502\", \"name\": \"Alessandro Giglio Vigna\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307502&legislatura=19\"}, \"speaker_label\": \"Alessandro GIGLIO VIGNA\", \"kind\": \"summary\", \"snippet\": \"Commissione ha approvato un parere motivato in sede di esame per i profili di sussidiarietà della [[proposta]] di [[regolamento]] del [[Parlamento]] [[europeo]] e del Consiglio che modifica il [[regolamento]] (UE) 2019/943 adeguando alle esigenze future le bollette dell'energia elettrica\"}, {\"uri\": \"it:camera:19:bol20261021:c14:sede00080:tit00000:p2\", \"sitting\": {\"uri\": \"it:camera:19:bol20261021:c14:sede00080\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 80, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"kind\": \"summary\", \"snippet\": \"[[Proposta]] di [[regolamento]] del [[Parlamento]] [[europeo]] e del Consiglio EU KIDS ACT – L'UE per spazi digitali responsabili e affidabili in internet (COM(2026) 681 final\"}, {\"uri\": \"it:camera:19:bol20260707:c09:sede00010:tit00010:p19\", \"sitting\": {\"uri\": \"it:camera:19:bol20260707:c09:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3509\", \"body_name\": \"Trasporti, poste e telecomunicazioni (IX)\", \"number\": 10, \"date\": \"2026-07-07\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Sulla programmazione dei lavori della Commissione.\", \"kind\": \"summary\", \"snippet\": \"Esame dell'atto dell'Unione [[europea]] (COM(2025)547 final) – «[[Proposta]] di [[regolamento]] del [[Parlamento]] [[europeo]] e del Consiglio che istit"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"atto dell'Unione europea\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 5, \"items\": [{\"uri\": \"it:camera:19:bol20261014:c14:sede00080:tit00010:p1\", \"sitting\": {\"uri\": \"it:camera:19:bol20261014:c14:sede00080\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 80, \"date\": \"2026-10-14\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:307502\", \"name\": \"Alessandro Giglio Vigna\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307502&legislatura=19\"}, \"speaker_label\": \"Alessandro GIGLIO VIGNA\", \"kind\": \"summary\", \"snippet\": \"procedere dapprima all'esame, in sede consultiva, della proposta di legge C. 2124 e, poi, all'esame dell'[[atto]] dell'[[Unione]] [[europea]] COM(2026) 600 final e successivamente all'audizione informale di Assarmatori\"}, {\"uri\": \"it:camera:19:bol20260707:c09:sede00010:tit00010:p19\", \"sitting\": {\"uri\": \"it:camera:19:bol20260707:c09:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3509\", \"body_name\": \"Trasporti, poste e telecomunicazioni (IX)\", \"number\": 10, \"date\": \"2026-07-07\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Sulla programmazione dei lavori della Commissione.\", \"kind\": \"summary\", \"snippet\": \"Esame dell'[[atto]] dell'[[Unione]] [[europea]] (COM(2025)547 final) – «Proposta di regolamento del Parlamento [[europeo]] e del Consiglio che istituisce il meccanismo per collegare l'Europa per il periodo 2028-2034, modifica il regolamento (UE) 2024/1679 e abroga\"}, {\"uri\": \"it:camera:19:bol20260707:c09:sede00010:tit00010:p5\", \"sitting\": {\"uri\": \"it:camera:19:bol20260707:c09:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3509\", \"body_name\": \"Trasporti, poste e telecomunicazioni (IX)\", \"number\": 10, \"date\": \"2026-07-07\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Sulla programmazione dei lavori della Commissione.\", \"kind\": \"summary\", \"snippet\": \"Seguito dell'esame dell'[[atto]] dell'[[Unione]] [[europea]] (COM(2025)837 final) – «Proposta di regolamento del Parlamento [[europeo]] e del Consiglio che modifica i regolamenti (UE) 2016/679, (UE) 2018/1724, (UE) 2018/1725 e (UE) 2023/2854 e le direttive 2002/58/CE, (UE) 2022/2555\"}, {\"uri\": \"it:camera:19:bol20260421:c09:sede00010:tit00010:p11\", \"sitting\": {\"uri\": \"it:camera:19:bol20260421:c09:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3509\", \"body_name\": \"Trasporti, poste e telecomunicazioni (IX)\", \"number\": 10, \"date\": \"2026-04-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Sulla programmazione dei lavori della Commissione.\", \"kind\": \"summary\", \"snippet\": \"Esame dell'[[atto]] dell'[[Unione]] [[europea]] (COM(2025)837 final) – «Proposta di regolamento del Parlamento [[europeo]] e del Consiglio che modifica i "
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261014:c14:sede00030",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261014:c14:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 30, \"date\": \"2026-10-14\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"ATTI DELL'UNIONE EUROPEA\", \"presided_by\": \"it:person:camera:307502\", \"start_time\": \"12:50\", \"end_time\": \"13:05\", \"items\": [{\"uri\": \"it:camera:19:bol20261014:c14:sede00030:tit00010\", \"order\": 1, \"title\": \"Proposta di direttiva del Consiglio che modifica le direttive 2003/49/CE, 2009/133/CE, 2011/96/UE, (UE) 2016/1164, (UE) 2017/1852, (UE) 2025/50 del Consiglio per quanto riguarda la semplificazione del quadro unionale per l'imposizione diretta e il sostegno alla crescita e alla competitività dell'UE.\", \"stage\": \"Seguito dell'esame congiunto e conclusione – Valutazione di conformità\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261014:c14:sede00030:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione prosegue l'esame congiunto dei provvedimenti, rinviato nella seduta del 23 settembre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261014:c14:sede00030:tit00010:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:306349\", \"name\": \"Stefano Candiani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306349&legislatura=19\"}, \"speaker_label\": \"Stefano CANDIANI\", \"as_group\": \"LEGA\", \"as_office\": \"relatore\", \"kind\": \"summary\", \"text\": \"Stefano CANDIANI (LEGA), relatore, formula una proposta di documento (vedi allegato 6), di cui illustra i contenuti.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261014:c14:sede00030:tit00010:p3\", \"order\": 3, \"kind\": \"summary\", \"text\": \"Nessun altro chiedendo di intervenire, la Commissione approva la proposta di documento formulata dal relatore.\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:bol20261014:c14:sede00030:tit00020\", \"order\": 2, \"title\": \"Proposta di regolamento del Parlamento europeo e del Consiglio che istituisce un quadro di misure per rafforzare l'ecosistema dell'innovazione dell'Unione e che abroga il regolamento (UE) 2017/1001 (Atto legislativo europeo a favore dell'innovazione).\", \"stage\": \"Esame e rinvio\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261014:c14:sede00030:tit00020:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione inizia l'esame del provvedimento.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261014:c14:sede00030:tit00020:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307502\", \"name\": \"Alessandro Giglio Vigna\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307502&legislatura=19\"}, \"speaker_label\": \"Alessandro GIGLIO VIGNA"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261021:c14:sede00080",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261021:c14:sede00080\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 80, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AVVERTENZA\", \"items\": [{\"uri\": \"it:camera:19:bol20261021:c14:sede00080:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261021:c14:sede00080:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Il seguente punto all'ordine del giorno non è stato trattato:\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261021:c14:sede00080:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"Proposta di regolamento del Parlamento europeo e del Consiglio EU KIDS ACT – L'UE per spazi digitali responsabili e affidabili in internet (COM(2026) …\", \"reactions\": []}]}], \"votes\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261022:c14:sede00030",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261022:c14:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 30, \"date\": \"2026-10-22\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AVVERTENZA\", \"items\": [{\"uri\": \"it:camera:19:bol20261022:c14:sede00030:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261022:c14:sede00030:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Il seguente punto all'ordine del giorno non è stato trattato:\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261022:c14:sede00030:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"Audizione informale, in videoconferenza, di rappresentanti dell'Unione Inquilini, nell'ambito dell'esame, ai fini della verifica della conformità al p…\", \"reactions\": []}]}], \"votes\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20260218:c14:sede00030",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20260218:c14:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 30, \"date\": \"2026-02-18\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AVVERTENZA\", \"items\": [{\"uri\": \"it:camera:19:bol20260218:c14:sede00030:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20260218:c14:sede00030:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Il seguente punto all'ordine del giorno non è stato trattato:\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20260218:c14:sede00030:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"AUDIZIONI INFORMALI\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20260218:c14:sede00030:tit00000:p3\", \"order\": 3, \"kind\": \"summary\", \"text\": \"Audizione informale, in videoconferenza, di rappresentanti di ANITA, nell'ambito dell'esame congiunto, ai fini della verifica della conformità al prin…\", \"reactions\": []}]}], \"votes\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20260211:c14:sede00070",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20260211:c14:sede00070\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 70, \"date\": \"2026-02-11\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AVVERTENZA\", \"items\": [{\"uri\": \"it:camera:19:bol20260211:c14:sede00070:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20260211:c14:sede00070:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Il seguente punto all'ordine del giorno non è stato trattato:\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20260211:c14:sede00070:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"AUDIZIONI INFORMALI\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20260211:c14:sede00070:tit00000:p3\", \"order\": 3, \"kind\": \"summary\", \"text\": \"Audizione informale, in videoconferenza, del professor Stefano Quintarelli, nell'ambito dell'esame, ai fini della verifica della conformità al princip…\", \"reactions\": []}]}], \"votes\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261027:c14:sede00010",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261027:c14:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 10, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"ATTI DELL'UNIONE EUROPEA\", \"presided_by\": \"it:person:camera:307502\", \"start_time\": \"19:35\", \"end_time\": \"19:40\", \"items\": [{\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010\", \"order\": 1, \"title\": \"Proposta di regolamento del Parlamento europeo e del Consiglio EU KIDS ACT – L'UE per spazi digitali responsabili e affidabili in internet.\", \"stage\": \"Esame e rinvio\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione inizia l'esame del provvedimento.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:308101\", \"name\": \"Lucrezia Maria Benedetta Mantovani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308101&legislatura=19\"}, \"speaker_label\": \"Lucrezia Maria Benedetta MANTOVANI\", \"as_group\": \"FDI\", \"as_office\": \"relatrice\", \"kind\": \"summary\", \"text\": \"Lucrezia Maria Benedetta MANTOVANI (FDI), relatrice, anche a nome dell'altro relatore, on. Candiani, osserva che la proposta in esame concerne un tema…\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010:p3\", \"order\": 3, \"kind\": \"summary\", \"text\": \"il divieto, salvo eccezioni limitate, per i fornitori di servizi di social network online e di piattaforme per la condivisione di video che presentano…\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010:p4\", \"order\": 4, \"kind\": \"summary\", \"text\": \"requisiti di sicurezza fin dalla progettazione e per impostazione predefinita, per la configurazione dei servizi di social network online, delle piatt…\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010:p5\", \"order\": 5, \"kind\": \"summary\", \"text\": \"misure specifiche per i compagni IA e i chatbot conversazionali generali volte a evitare relazioni simulate che creino dipendenza emotiva, per i gioch…\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010:p6\", \"order\": 6, \"kind\": \"summary\", \"text\": \"l'obbligo, per i fornitori di social network e piattaforme di condivisione video, di verificare entro sei mesi dall'entrata in applicazione del regola…\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010:p7\", \"order\": 7, \"kind\": \"summary\", \"text\": \"un contributo annuale di vigilanza a carico dei fornitori di piattaforme online di dimensioni molto grandi e degli altri fornitori di servizi o sistem…\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261027:c14:sede00010:tit00010:p8\", \"order\": 8, \"kind\": \"summa"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261014:c14:sede00080",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261014:c14:sede00080\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 80, \"date\": \"2026-10-14\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"SEDE CONSULTIVA\", \"presided_by\": \"it:person:camera:307502\", \"start_time\": \"14:45\", \"end_time\": \"14:50\", \"items\": [{\"uri\": \"it:camera:19:bol20261014:c14:sede00080:tit00010\", \"order\": 1, \"title\": \"Sull'ordine dei lavori.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261014:c14:sede00080:tit00010:p1\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307502\", \"name\": \"Alessandro Giglio Vigna\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307502&legislatura=19\"}, \"speaker_label\": \"Alessandro GIGLIO VIGNA\", \"as_office\": \"presidente\", \"kind\": \"summary\", \"text\": \"Alessandro GIGLIO VIGNA, presidente, propone, concorde la Commissione, di provvedere ad una inversione dei punti all'ordine del giorno della seduta od…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:bol20261014:c14:sede00080:tit00020\", \"order\": 2, \"title\": \"Modifiche alla legge 5 febbraio 1992, n. 91, in materia di acquisto e di revoca della cittadinanza.\", \"stage\": \"Esame e conclusione – Parere favorevole\", \"acts\": [{\"ref\": \"ac:2124\", \"uri\": \"it:camera:19:ac:2124\", \"title\": \"IEZZI ed altri: \\\"Modifiche alla legge 5 febbraio 1992, n. 91, in materia di acquisto e di revoca della cittadinanza\\\" (2124)\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261014:c14:sede00080:tit00020:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La Commissione inizia l'esame del provvedimento.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261014:c14:sede00080:tit00020:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307502\", \"name\": \"Alessandro Giglio Vigna\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307502&legislatura=19\"}, \"speaker_label\": \"Alessandro GIGLIO VIGNA\", \"as_office\": \"presidente\", \"kind\": \"summary\", \"text\": \"Alessandro GIGLIO VIGNA, presidente, in sostituzione della relatrice, on. Ambrosi, impossibilitata a partecipare alla seduta, osserva che la proposta …\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261014:c14:sede00080:tit00020:p3\", \"order\": 3, \"kind\": \"summary\", \"text\": \"Nessun altro chiedendo di intervenire, la Commissione approva la proposta di parere formulata.\", \"reactions\": []}]}], \"votes\": []}"
+  }
+ ],
+ "strumenti": [
+  "organo",
+  "elenco_sedute",
+  "cerca_atti",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta"
+ ],
+ "tempo_s": 44.2,
+ "risposta_sistema": "Ho trovato questi progetti di atti dell’Unione europea effettivamente avviati all’esame della XIV Commissione (Politiche dell’Unione europea) nel 2026, nei resoconti consultati:\n\n- **14 ottobre 2026** — proposta di direttiva del Consiglio di semplificazione del quadro UE per l’imposizione diretta e il sostegno a crescita e competitività; esame congiunto concluso con **valutazione di conformità**.\n- **14 ottobre 2026** — proposta di regolamento sull’**Atto legislativo europeo a favore dell’innovazione**; esame avviato e rinviato.\n- **14 ottobre 2026** — proposta di regolamento sulla digitalizzazione del coordinamento dei sistemi di sicurezza sociale e sulla tessera europea di sicurezza sociale (**ESSPASS**); esame avviato e rinviato.\n- **27 ottobre 2026** — proposta di regolamento **EU KIDS ACT**, per spazi digitali responsabili e affidabili in internet; esame avviato e rinviato. Nel resoconto dell’udienza precedente è indicata come **COM(2026) 681 final**.\n\nHo inoltre trovato traccia di altri esami o istruttorie nel 2026, ma i dati già letti non ne riportano integralmente titolo e codice:\n\n- una proposta relativa alla disponibilità degli alloggi negli Stati membri, oggetto di un’audizione programmata il **22 ottobre 2026**;\n- proposte in materia di veicoli pesanti, veicoli aziendali puliti e altri atti connessi, nell’ambito di un esame congiunto richiamato il **18 febbraio 2026**;\n- una proposta di modifica del regolamento (UE) 2021/1232, richiamata l’**11 febbraio 2026**;\n- l’atto **COM(2026) 600 final**, previsto nell’ordine dei lavori del **14 ottobre 2026**, senza che nei dati letti risultasse il relativo titolo.\n\nNon posso quindi affermare che l’elenco sia completo: ho consultato solo una parte delle 185 sedute della Commissione registrate tra il 1° gennaio e il 3 novembre 2026. Per l’elenco ufficiale completo occorre verificare i resoconti sommari della XIV Commissione nella sezione **“Atti dell’Unione europea”** del sito della Camera dei deputati, seduta per seduta.",
+ "eventi": {
+  "status": 1,
+  "tool": 26,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

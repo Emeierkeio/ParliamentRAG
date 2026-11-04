@@ -1,0 +1,42 @@
+{
+ "id": "PARL-042",
+ "domanda": "A quale componente del Misto appartiene oggi Bruno Tabacci, e come ha votato da quando ha lasciato il PD?",
+ "categoria": "gruppi",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793782788.728134,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "scheda_persona",
+  "composizione",
+  "cambi_gruppo",
+  "voto_gruppi",
+  "scheda_persona",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "presenze"
+ ],
+ "tempo_s": 68.2,
+ "risposta_sistema": "Bruno Tabacci è nel **Misto senza componente**: non risulta iscritto a una delle componenti costituite del gruppo. Ha lasciato il PD-IDP il **9 luglio 2026**.\n\nDa allora, alla Camera (dati fino al **3 novembre 2026**), ha partecipato a **1.268** delle 1.435 votazioni considerate: **1.014 favorevoli**, **104 contrari**, **111 astensioni** e **39 voti segreti**; è risultato assente in 167 casi.\n\nNelle **1.228 votazioni palesi** in cui ha votato, il suo voto ha coinciso soprattutto con:\n- **PD-IDP:** 1.216 volte su 1.228 (**99,0%**);\n- **+Europa–Stati Uniti d’Europa:** 976 su 996 (**98,0%**, solo voti con una posizione comparabile);\n- **AVS:** 1.162 su 1.228 (**94,6%**);\n- **M5S:** 1.144 su 1.228 (**93,2%**).\n\nIl confronto è calcolato rispetto alla posizione prevalente di ciascun gruppo, senza includere il voto di Tabacci stesso; esclude voti segreti, assenze, missioni e presenti non votanti. Il suo allineamento con i gruppi di maggioranza è stato molto più basso: **9,3%** con FdI, Lega e FI-PPE.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+  "stato": "note_della_domanda",
+  "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": "superata",
+  "tempo_s": 68.2
+ },
+ "causa_probabile": null,
+ "note": "Misto senza componente dal 9/7/2026, giusto. Voti dal 9/7 verificati sul DB: 1.014 sì, 104 no, 111 astenuti, 39 segreti, 167 assenze su 1.435. Allineamento col PD al 99%. Nessun link."
+}

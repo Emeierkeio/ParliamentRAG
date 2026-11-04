@@ -1,0 +1,37 @@
+{
+ "id": "CIT-034",
+ "domanda": "quante leggi ha fatto questo governo?",
+ "categoria": "statistiche",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note_domanda": "Contare le leggi una volta sola (lo stesso atto compare in due rami). Distinguere iniziativa del governo e parlamentare, e i decreti convertiti.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784227.217605,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "conta_atti"
+ ],
+ "tempo_s": 6.9,
+ "risposta_sistema": "Questo governo ha fatto approvare **274 leggi** di iniziativa governativa nella XIX legislatura: dalla prima pubblicata il **17 novembre 2022** all’ultima il **23 ottobre 2026**.\n\nIl conteggio considera ciascuna legge una sola volta, anche quando l’iter passa da Camera e Senato, ed esclude i testi già approvati ma non ancora pubblicati con numero di legge. Dati aggiornati al **4 novembre 2026**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Dall'insediamento del governo Meloni (22/10/2022) al 2/11/2026 sono state approvate e promulgate 366 leggi: 363 ordinarie e 3 costituzionali. Tutte cadono sotto il governo Meloni (la prima è del 17/11/2022). Di iniziativa del governo sono 274: 125 leggi di conversione di decreti-legge, 148 altri disegni di legge del governo e 1 legge costituzionale. Di iniziativa parlamentare 87 (86 ordinarie e 1 costituzionale); 3 hanno iniziativa mista, 1 popolare e 1 costituzionale è di iniziativa regionale.",
+  "stato": "calcolata",
+  "limiti": "Legge = coppia (law_number, anno di law_date) distinta, separando leggi ordinarie e costituzionali (constitutional); conta una volta la legge anche se compare in più atti o in tutti e due i rami. Esclusa la riga con law_date 2100-01-01. Iniziativa normalizzata dal testo grezzo del Senato; se gli atti di una legge hanno iniziative diverse è «Mista». Decreto convertito = titolo con «conversione in legge». Dati fino al 2/11/2026. «Questo governo» = I Governo Meloni (it:gov:202, dal 21-22/10/2022): tutte le leggi della XIX in archivio sono successive."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 6.9
+ },
+ "giro1": {
+  "correttezza": 1,
+  "fonti": 0
+ },
+ "causa_probabile": "ragionamento_o_prompt",
+ "note": "Uguale al primo giro: 274 leggi di iniziativa governativa, contate una volta, giusto. Manca il totale di 366 leggi (87 parlamentari) e i 125 decreti convertiti; nessun link."
+}

@@ -1,0 +1,92 @@
+{
+ "id": "APP-022",
+ "domanda": "è vero che il femminicidio è passato all'unanimità?",
+ "categoria": "voti",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Camera 25/11/2025: 237 sì, 0 no, 0 astenuti. Unanimità dei votanti, non dei 400 deputati. Il voto finale del Senato è del 23/7/2025 (S. 1433).",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784175.3990889,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "femminicidio",
+    "chamber": null,
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 17, \"items\": [{\"uri\": \"it:camera:19:ac:3092\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3092\", \"kind\": \"bill\", \"title\": \"CALDERONE: \\\"Istituzione della Giornata nazionale degli orfani a causa di femminicidio\\\" (3092)\", \"date\": \"2026-09-07\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3092\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2933\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2933\", \"kind\": \"bill\", \"title\": \"FARAONE: \\\"Introduzione dell’articolo 1-<em>bis</em> della legge 23 novembre 1998, n. 407, concernente l’estensione dei benefìci ai figli delle vittime del reato di femminicidio di cui all’articolo 577-<em>bis </em>del codice penale\\\" (2933)\", \"date\": \"2026-05-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2933\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2871\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2871\", \"kind\": \"bill\", \"title\": \"LANCELLOTTA ed altri: \\\"Disposizioni e delega al Governo per l’assistenza e la tutela degli orfani a causa di femminicidio e di crimini domestici\\\" (2871)\", \"date\": \"2026-04-10\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2871\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2603\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2603\", \"kind\": \"bill\", \"title\": \"ALMICI ed altri: \\\"Benefìci in favore dei familiari superstiti delle donne vittime di femminicidio\\\" (2603)\", \"date\": \"2025-09-17\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2603\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2528\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2528\", \"kind\": \"bill\", \"title\": \"S. 1433. - \\\"Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime\\\" <em>(approvato dal Senato)</em> (2528)\", \"date\": \"2025-07-23\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"181\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2528\", \"initiative\": \"Governo\"}, {\"uri\": \"it:camera:19:ac:2335\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2335\", \"kind\": \"bill\", \"title\": \"RAVETTO ed altri: \\\"Modifiche all’articolo 577 del codice penale in materia di circostanza aggravante nel caso di omicidio commesso contro la persona unita da una relazione affettiva, anche cessata, e di femminicidio\\\" (2335)\", \"date\": \"2025-03-31\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2335\", \"initiative\": \"Parlamenta"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2528"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2528\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2528\", \"kind\": \"bill\", \"title\": \"S. 1433. - \\\"Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime\\\" <em>(approvato dal Senato)</em> (2528)\", \"date\": \"2025-07-23\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"181\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2528\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"description\": \"Legge 181 del 2 dicembre 2025 pubblicata nella Gazzetta Ufficiale n. 280 del 2 dicembre 2025\", \"law_date\": \"2025-12-02\", \"status_date\": \"2025-12-02\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2528\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:308798\", \"name\": \"Carlo Nordio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308798&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro della Giustizia\"}, {\"person\": {\"uri\": \"it:person:camera:302748\", \"name\": \"Eugenia Maria Roccella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302748&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministra per la Famiglia\"}, {\"person\": {\"uri\": \"it:person:camera:200012\", \"name\": \"Maria Elisabetta Alberti\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministra per le Riforme istituzionali e la semplificazione normativa\"}, {\"person\": {\"uri\": \"it:person:camera:309042\", \"name\": \"Matteo Piantedosi\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro dell'Interno\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2025-07-23\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2025-07-25\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2025-10-01\"}, {\"order\": 4, \"title\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"date\": \"2025-11-18\"}, {\"order\": 5, \"title\": \"In discussione\", \"date\": \"2025-11-25\"}, {\"order\": 6, \"title\": \"Approvato definitivamente, non ancora pubblicato\", \"date\": \"2025-11-25\"}, {\"order\": 7, \"title\": \"Approvato definitivamente. Legge\", \"date\": \"2025-12-02\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.2528.19PDL0154530\", \"title\": \"Disegno di legge trasmesso dal Senato il 23 luglio 2025\", \"date\": \"2025-07-23\", \"articles\": 14, \"length\": 37713}], \"joined\": [], \"votes\": [{\"uri\": \"it:camera:19:sed0571:v001\", \"sitting\": \"it:camera:19:sed0571\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2025-11-25\", \"title\": \"Votazione Emendamento 1.1 DDL n. 2528\", \"kind\": \"amendment\", \"favor\": 95, \"against\": 132, \"abstain\": 5, "
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1433"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1433\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1433\", \"kind\": \"bill\", \"title\": \"Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime\", \"date\": \"2025-03-31\", \"status\": \"approvato\", \"law_number\": \"181\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54411.htm\", \"initiative\": \"Gov. Meloni-I: Ministro giustizia Nordio, Ministro interno Piantedosi ed altri\", \"kind_raw\": \"ordinaria\", \"description\": \"Ministro dell'interno Matteo Piantedosi (Gov. Meloni-I); Ministro della giustizia Carlo Nordio (Gov. Meloni-I); Ministro senza portafoglio per la famiglia, natalità e pari opportunità Eugenia Maria Roccella (Gov. Meloni-I); Ministro senza portafoglio per le riforme istituzionali e la semplificazione normativa Maria Elisabetta Alberti Casellati (Gov. Meloni-I)\", \"law_date\": \"2025-12-02\", \"source_uri\": \"http://dati.senato.it/ddl/59022\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01449726\", \"kind\": \"presented\", \"articles\": 8, \"length\": 20358}, {\"code\": \"senato.19.01455167\", \"kind\": \"presented\", \"articles\": 0, \"length\": 860}, {\"code\": \"senato.19.01466803\", \"kind\": \"committee\", \"articles\": 0, \"length\": 57545}, {\"code\": \"senato.19.01467305\", \"kind\": \"message\", \"articles\": 14, \"length\": 37280}], \"joined\": [], \"votes\": [{\"uri\": \"it:senato:19:sed0332:v001\", \"sitting\": \"it:senato:19:sed0332\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2025-07-23\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 161, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false}], \"amendments\": {\"total\": 196, \"by_outcome\": {\"Respinto\": 47, \"Ritirato\": 25, \"Approvato\": 7, \"Decaduto\": 3, \"Inammissibile\": 1, \"trasformato in odg\": 5, \"assorbito da approvazione 2.6\": 1, \"non indicato\": 7, \"V.testo 2\": 61, \"V. testo 2\": 13, \"Precluso\": 24, \"Improponibile\": 2}}}"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2528",
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": null,
+    "end": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0571:v045\", \"sitting\": \"it:camera:19:sed0571\", \"chamber\": \"camera\", \"number\": 45, \"date\": \"2025-11-25\", \"title\": \"Votazione finale DDL n. 2528\", \"kind\": \"final\", \"favor\": 237, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 1433. - \\\"Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime\\\" <em>(approvato dal Senato)</em\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=571_45&tipo=dettaglio\"}]}"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "senato",
+    "act": "it:senato:19:ddl:1433",
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": null,
+    "end": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:sed0332:v001\", \"sitting\": \"it:senato:19:sed0332\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2025-07-23\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 161, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "elenco_votazioni",
+  "elenco_votazioni"
+ ],
+ "tempo_s": 11.5,
+ "risposta_sistema": "Sì, **il testo finale è stato approvato senza voti contrari né astensioni in entrambi i rami**, quindi all’unanimità dei votanti:\n\n- **Senato**, 23 luglio 2025: **161 favorevoli, 0 contrari, 0 astenuti**. [Disegno di legge S. 1433](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54411.htm)\n- **Camera**, 25 novembre 2025: **237 favorevoli, 0 contrari, 0 astenuti**. [Votazione finale sul DDL C. 2528](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=571_45&tipo=dettaglio)\n\nNon vuol dire che abbiano votato tutti i componenti di Camera e Senato: i numeri indicano i presenti che hanno espresso il voto. Il provvedimento è diventato la **legge n. 181 del 2 dicembre 2025**, sull’introduzione del delitto di femminicidio e altre misure di contrasto alla violenza contro le donne. [Scheda della legge alla Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2528)",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

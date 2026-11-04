@@ -1,0 +1,37 @@
+{
+ "id": "COMU-027",
+ "domanda": "Il senatore Meloni ha detto il 9 settembre 2026 in Senato che il provvedimento era inutile: mi confermi che è la premier?",
+ "categoria": "persone",
+ "tipo_risposta": "fatto",
+ "ramo": "senato",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note_domanda": "Trappola di omonimia: è Marco Meloni (PD-IDP), non Giorgia Meloni. Il resoconto scrive solo «MELONI».",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793782777.2359989,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "cerca_interventi",
+  "seduta"
+ ],
+ "tempo_s": 11.5,
+ "risposta_sistema": "No. L’intervento del 9 settembre 2026 in Senato è del senatore **Marco Meloni**, del **Partito Democratico – Italia Democratica e Progressista (PD-IDP)**, non della premier Giorgia Meloni.\n\nEra nel dibattito sui disegni di legge in materia elettorale, incluso il DDL n. 1971. Marco Meloni ha criticato l’“inutilità” del provvedimento e della linea della legislatura.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Trappola di omonimia: è Marco Meloni (PD-IDP), non Giorgia Meloni. Il resoconto scrive solo «MELONI».",
+  "stato": "note_della_domanda",
+  "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": "superata",
+  "tempo_s": 11.5
+ },
+ "causa_probabile": null,
+ "note": "Riconosce l'omonimia: è Marco Meloni (PD-IDP) nel dibattito sulla legge elettorale (DDL 1971), non la premier. Nessun link al resoconto."
+}

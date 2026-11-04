@@ -1,0 +1,37 @@
+{
+ "id": "LOB-042",
+ "domanda": "Quando è convocata la prossima seduta della VIII Commissione sul DL 177/2026 (C. 3133) e cosa c'è all'ordine del giorno?",
+ "categoria": "calendario",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782753.90366,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "elenco_sedute",
+  "organo",
+  "elenco_sedute",
+  "atto"
+ ],
+ "tempo_s": 11.0,
+ "risposta_sistema": "Nei dati disponibili non risulta ancora una prossima seduta della VIII Commissione convocata sul DL 177/2026 (C. 3133), né un relativo ordine del giorno. I dati arrivano fino alle sedute del **3 novembre 2026**.\n\nIl C. 3133 è assegnato ed è **in corso di esame in Commissione** dal 14 ottobre 2026. [Scheda dell’atto](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133)",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nei dati non c'è la prossima convocazione della VIII Commissione sul C. 3133: l'unica seduta programmata nel database è l'Aula della Camera del 3/11/2026 (seduta 737), che non ha il C. 3133 all'ordine del giorno. L'ultima seduta registrata della VIII Commissione sul DL 177/2026 è del 27/10/2026, in sede referente alle 13:05, con «Seguito dell'esame e rinvio»; lo stesso giorno si sono svolte audizioni informali (fra gli altri Comieco, autorità di bacino distrettuali, Legambiente, ISS, ENEA, ANCI).",
+  "stato": "non_calcolabile",
+  "limiti": "Le convocazioni future delle commissioni non sono caricate: sitting ha una sola seduta in stato planned (Aula, 3/11/2026), non le 120 indicate nel benchmark. Il Bollettino delle commissioni arriva al 29/10/2026. Il risultato riporta solo l'ultima seduta svolta come contesto."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 11.0
+ },
+ "causa_probabile": null,
+ "note": "Dice correttamente che la prossima convocazione non è nei dati, come il riferimento (non calcolabile), e linka la scheda del C. 3133. Non ricorda l'ultima seduta del 27/10 con le audizioni."
+}

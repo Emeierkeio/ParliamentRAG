@@ -1,0 +1,137 @@
+{
+ "id": "COMU-027",
+ "domanda": "Il senatore Meloni ha detto il 9 settembre 2026 in Senato che il provvedimento era inutile: mi confermi che è la premier?",
+ "categoria": "persone",
+ "tipo_risposta": "fatto",
+ "ramo": "senato",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Trappola di omonimia: è Marco Meloni (PD-IDP), non Giorgia Meloni. Il resoconto scrive solo «MELONI».",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793784684.3105888,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Meloni",
+    "chamber": "senato",
+    "group": null,
+    "in_office": false,
+    "limit": 20
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\"}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "inutile",
+    "chamber": "senato",
+    "person": "it:person:senato:29490",
+    "start": "2026-09-09",
+    "end": "2026-09-09",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:sed0450:int00133\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\"}, \"speaker_label\": \"MELONI\", \"snippet\": \"condanna al tratto fondamentale di questa vostra legislatura, nella politica interna come in quella europea e internazionale: l'[[inutilità]], l'immobilismo, la palude.\\n\\nConcludo. Mi viene in mente, per concludere, proprio la frase di Giorgia Meloni, quando venne respinto\"}]}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:senato:19:sed0450",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:senato:19:sed0450:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0450:int00001\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032707.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"La seduta è aperta (ore 10,06).\\n\\nSi dia lettura del processo verbale.\\n\\nTERNULLO, segretario, dà lettura del processo verbale della seduta del 31 agost…\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0450:int00002\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032707.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Non essendovi osservazioni, il processo verbale è approvato.\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:sed0450:d-d1e40\", \"order\": 2, \"title\": \"Comunicazioni della Presidenza\", \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0450:int00003\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032707.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"L'elenco dei senatori in congedo e assenti per incarico ricevuto dal Senato, nonché ulteriori comunicazioni all'Assemblea saranno pubblicati nell'alle…\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:sed0450:d-d1e48\", \"order\": 3, \"title\": \"Discussione dei disegni di legge:\", \"acts\": [{\"ref\": \"ddl:1822\", \"uri\": \"it:senato:19:ddl:1822\", \"title\": \"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\"}, {\"ref\": \"ddl:1971\", \"uri\": \"it:senato:19:ddl:1971\", \"title\": \"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\"}, {\"ref\": \"ddl:61\", \"uri\": \"it:senato:19:ddl:61\", \"title\": \"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di soppressione dei col"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:29490"
+   },
+   "result": "{\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\", \"given_name\": \"Marco\", \"family_name\": \"Meloni\", \"gender\": \"M\", \"profession\": \"Avvocato\", \"source_uri\": \"http://dati.senato.it/senatore/29490\", \"same_as\": [\"it:person:camera:305727\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Sardegna\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:4-224\", \"target_name\": \"Commissione parlamentare per il contrasto degli svantaggi derivanti dall'insularità\", \"title\": \"member\", \"start_date\": \"2023-07-06\"}, {\"target\": \"it:senato:19:body:0-1\", \"target_name\": \"1ª Commissione permanente (Affari Costituzionali)\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [], \"counts\": {\"speeches\": 122, \"ballots\": 5035, \"ballots_cast\": 3492, \"ballots_mission\": 1241, \"bills_first_signer\": 10, \"amendments_signed\": 11181}}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 0, \"results\": [{\"quote\": \"inutilità\", \"found\": false, \"reason\": \"troppo corta per verificarla\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cerca_interventi",
+  "seduta",
+  "scheda_persona"
+ ],
+ "tempo_s": 17.1,
+ "risposta_sistema": "No. Il senatore intervenuto il 9 settembre 2026 era **Marco Meloni**, del **PD-IDP**, non Giorgia Meloni. È senatore della XIX legislatura dal 13 ottobre 2022. [Scheda del Senato](http://dati.senato.it/senatore/29490)\n\nNella seduta del 9 settembre, sul disegno di legge elettorale, il riferimento trovato riguarda l’«inutilità» della legislatura e non attribuisce quella frase alla presidente del Consiglio. La premier **Giorgia Meloni non è una senatrice**.",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "PD"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "Avanti PSI (Misto)",
+     "Per le Autonomie (SVP-PATT, Campobase)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Rifondazione Comunista (Misto)",
+     "Italia Domani - Marco Rizzo (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "inutilità",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "Il senatore Meloni ha detto il 9 settembre 2026 in Senato che il provvedimento era inutile: mi confermi che è la premier?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Marco Meloni",
+      "group": "Partito Democratico",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Senato della Repubblica, XIX legislatura"
+  }
+ }
+}

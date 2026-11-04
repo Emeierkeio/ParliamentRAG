@@ -1,0 +1,96 @@
+{
+ "id": "GIO-009",
+ "domanda": "Quante sedute d'Aula ha fatto la Camera nel 2026 e quante ore in totale? Confronto con il Senato.",
+ "categoria": "confronto",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782431.186423,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 147, \"items\": [{\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0736\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 736, \"date\": \"2026-10-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0734\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 734, \"date\": \"2026-10-27\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0733\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 733, \"date\": \"2026-10-26\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0732\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 732, \"date\": \"2026-10-23\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 731, \"date\": \"2026-10-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 730, \"date\": \"2026-10-21\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0729\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 729, \"date\": \"2026-10-20\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0728\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 728, \"date\": \"2026-10-19\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0726\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 726, \"date\": \"2026-10-13\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0725\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 725, \"date\": \"2026-10-12\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0724\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 724, \"date\": \"2026-10-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 723, \"date\": \"2026-10-08\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0722\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 722, \"date\": \"2026-10-07\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0721\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 721, \"date\": \"2026-10-06\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0720\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 720, \"date\": \"2026-10-05\", \"kind\": \"assembly"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 93, \"items\": [{\"uri\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 469, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0468\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 468, \"date\": \"2026-10-27\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0467\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 467, \"date\": \"2026-10-15\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0465\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 465, \"date\": \"2026-10-13\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0464\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 464, \"date\": \"2026-10-08\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0463\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 463, \"date\": \"2026-10-07\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0462\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 462, \"date\": \"2026-10-06\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0461\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 461, \"date\": \"2026-10-01\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0460\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 460, \"date\": \"2026-09-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0459\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 459, \"date\": \"2026-09-29\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0458\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 458, \"date\": \"2026-09-23\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0457\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 457, \"date\": \"2026-09-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0456\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 456, \"date\": \"2026-09-17\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0455\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 455, \"date\": \"2026-09-16\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0454\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 454, \"date\": \"2026-09-15\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0453\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 453, \"date\": \"2026-09-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:sed0452\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 452, \"date\": \"2026-09-11\", \"kind\": \"assembly_"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0737",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:camera:19:sed0737:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0737:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 96, c…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0737:tit00020\", \"order\": 2, \"title\": \"Annunzio di petizioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0737:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che sono pervenute alla Presidenza petizioni, il sunto e l'assegnazione delle quali, ai sensi della deliberazione della Giunta per il Regolam…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0737:tit00030\", \"order\": 3, \"title\": \"Annuncio della nomina di giudice della Corte costituzionale.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0737:tit00030.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico altresì che, in data 26 ottobre 2026, il Primo Presidente della Corte suprema di cassazione ha inviato al Presidente della Camera la seguente…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0737:tit00040\", \"order\": 4, \"title\": \"Svolgimento di una interrogazione.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0737:tit00040.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/d"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "La seduta è tolta",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 35, \"items\": [{\"uri\": \"it:camera:19:sed0732:tit00030.sub00050.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0732\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 732, \"date\": \"2026-10-23\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interpellanze urgenti.\", \"person\": {\"uri\": \"it:person:camera:308844\", \"name\": \"Dario Carotenuto\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308844&legislatura=19\"}, \"speaker_label\": \"DARIO CAROTENUTO\", \"snippet\": \"guardare. Dentro quegli hub, poi, che cosa c'è? Niente spogliatoi, niente docce, niente bagni dedicati. Questa è la [[sede]], la qualità del lavoro di queste persone. Nel 2026, in un capannone che muove migliaia di pacchi al giorno ... differenza è una sola: la catena non si vede, si chiama appalto. E a quest'uomo, voi cosa avete [[tolto]]? L'unica cosa che gli permetteva di dire di no: il reddito di cittadinanza non era un regalo\"}, {\"uri\": \"it:camera:19:sed0727:tit00130.sub00040.int00380\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 15 e 16 ottobre 2026.\", \"person\": {\"uri\": \"it:person:camera:308930\", \"name\": \"Elena Ethel Schlein\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308930&legislatura=19\"}, \"speaker_label\": \"ELLY SCHLEIN\", \"snippet\": \"detto che cosa bisognava fare sull'amianto e sulle polveri sottili. Non ci avete messo un euro, anzi avete [[tolto]] gli unici fondi pubblici che erano disponibili per i forni elettrici. Traduco: avete fatto passare il tempo per poi scaricare ... Palestina, sull'Ucraina e lo abbiamo visto perfino con la scelta dell'assenza alle Nazioni Unite. Voi delegittimate le [[sedi]] multilaterali e stamattina, in un'ora di discorso, non ha trovato cinque secondi per condannare le inaccettabili sanzioni di Trump\"}, {\"uri\": \"it:camera:19:sed0727:tit00200.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"TESTI DEGLI INTERVENTI DI CUI È STATA AUTORIZZATA LA PUBBLICAZIONE IN CALCE AL RESOCONTO STENOGRAFICO DELLA SEDUTA ODIERNA: COMUNICAZIONI DEL PRESIDENTE DEL CONSIGLIO DEI MINISTRI IN VISTA DELLA RIUNIONE DEL CONSIGLIO EUROPEO DEL 15 E 16 OTTOBRE 2026\", \"person\": {\"uri\": \"it:person:camera:302103\", \""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "La seduta è tolta",
+    "chamber": "senato",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 113, \"items\": [{\"uri\": \"it:senato:19:sed0469:int00141\", \"sitting\": {\"uri\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 469, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ordine del giorno per la seduta di giovedì 29 ottobre 2026\", \"person\": {\"uri\": \"it:person:senato:32600\", \"name\": \"Maria Domenica Castellone\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032600.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"snippet\": \"domani, giovedì 29 ottobre, alle ore 10, con il seguente ordine del giorno:\\n\\n( Vedi ordine del giorno )\\n\\nLa [[seduta]] è [[tolta]]\"}, {\"uri\": \"it:senato:19:sed0468:int00119\", \"sitting\": {\"uri\": \"it:senato:19:sed0468\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 468, \"date\": \"2026-10-27\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ordine del giorno per la seduta di mercoledì 28 ottobre 2026\", \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032707.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"snippet\": \"domani, mercoledì 28 ottobre, alle ore 10, con il seguente ordine del giorno:\\n\\n( Vedi ordine del giorno )\\n\\nLa [[seduta]] è [[tolta]]\"}, {\"uri\": \"it:senato:19:sed0467:int00347\", \"sitting\": {\"uri\": \"it:senato:19:sed0467\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 467, \"date\": \"2026-10-15\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ordine del giorno per la seduta di martedì 27 ottobre 2026\", \"person\": {\"uri\": \"it:person:senato:32600\", \"name\": \"Maria Domenica Castellone\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032600.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"snippet\": \"martedì 27 ottobre, alle ore 16,30, con il seguente ordine del giorno:\\n\\n( Vedi ordine del giorno )\\n\\nLa [[seduta]] è [[tolta]]\"}, {\"uri\": \"it:senato:19:sed0466:int00005\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://d"
+  }
+ ],
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 16.4,
+ "risposta_sistema": "Nel 2026, fino al **3 novembre** (ultima seduta disponibile nei dati):\n\n- **Camera:** **147 sedute d’Aula**\n- **Senato:** **93 sedute d’Aula**\n\nLa Camera ne ha quindi svolte **54 in più**, cioè circa **il 58,1% in più** rispetto al Senato.\n\nIl totale delle **ore di seduta** non è disponibile come dato strutturato nei resoconti consultabili: per ottenerlo occorrerebbe ricostruire manualmente orari di apertura, sospensioni e chiusura di ciascuna seduta. Il dato ufficiale qui disponibile consente quindi il confronto certo sul numero delle sedute, non sulle ore complessive.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

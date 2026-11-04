@@ -1,0 +1,353 @@
+{
+ "id": "COMU-038",
+ "domanda": "Mi fai un confronto tra quanto parla in Aula la maggioranza e quanto l'opposizione, per mese, nel 2026? Per una infografica.",
+ "categoria": "statistiche",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Misto per componente: alcune componenti non sono né maggioranza né opposizione in modo stabile.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782687.404584,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese",
+     "gruppo"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 10050, \"parole\": 4361209}, \"rows_total\": 134, \"offset\": 0, \"rows\": [{\"mese\": \"2026-04\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 534, \"parole\": 197281, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-07\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 335, \"parole\": 110350, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"mese\": \"2026-07\", \"gruppo\": \"Movimento 5 Stelle (M5S)\", \"interventi\": 319, \"parole\": 114124, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"mese\": \"2026-10\", \"gruppo\": \"Movimento 5 Stelle (M5S)\", \"interventi\": 303, \"parole\": 128225, \"dal\": \"2026-10-01\", \"al\": \"2026-10-30\"}, {\"mese\": \"2026-04\", \"gruppo\": \"Movimento 5 Stelle (M5S)\", \"interventi\": 292, \"parole\": 130182, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-10\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 240, \"parole\": 119508, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"mese\": \"2026-06\", \"gruppo\": \"Movimento 5 Stelle (M5S)\", \"interventi\": 237, \"parole\": 101490, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"mese\": \"2026-02\", \"gruppo\": \"Movimento 5 Stelle (M5S)\", \"interventi\": 224, \"parole\": 91536, \"dal\": \"2026-02-02\", \"al\": \"2026-02-27\"}, {\"mese\": \"2026-01\", \"gruppo\": \"Movimento 5 Stelle (M5S)\", \"interventi\": 212, \"parole\": 73234, \"dal\": \"2026-01-13\", \"al\": \"2026-01-30\"}, {\"mese\": \"2026-06\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 203, \"parole\": 99440, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"mese\": \"2026-05\", \"gruppo\": \"Movimento 5 Stelle (M5S)\", \"interventi\": 185, \"parole\": 95540, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"mese\": \"2026-04\", \"gruppo\": \"Alleanza Verdi e Sinistra (AVS)\", \"interventi\": 182, \"parole\": 76837, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-07\", \"gruppo\": \"Alleanza Verdi e Sinistra (AVS)\", \"interventi\": 178, \"parole\": 59070, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"mese\": \"2026-02\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 172, \"parole\": 89047, \"dal\": \"2026-02-02\", \"al\": \"2026-02-27\"}, {\"mese\": \"2026-05\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 171, \"parole\": 88366, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"mese\": \"2026-07\", \"gruppo\": \"Fratelli d'Ital"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese",
+     "gruppo"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 6707, \"parole\": 1967803}, \"rows_total\": 105, \"offset\": 0, \"rows\": [{\"mese\": \"2026-04\", \"gruppo\": \"MoVimento 5 Stelle (M5S)\", \"interventi\": 433, \"parole\": 67222, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-04\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 362, \"parole\": 69209, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-09\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 326, \"parole\": 102184, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"mese\": \"2026-06\", \"gruppo\": \"MoVimento 5 Stelle (M5S)\", \"interventi\": 284, \"parole\": 56726, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"mese\": \"2026-09\", \"gruppo\": \"MoVimento 5 Stelle (M5S)\", \"interventi\": 265, \"parole\": 60170, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"mese\": \"2026-06\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 241, \"parole\": 56004, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"mese\": \"2026-10\", \"gruppo\": \"MoVimento 5 Stelle (M5S)\", \"interventi\": 179, \"parole\": 32714, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"mese\": \"2026-10\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 176, \"parole\": 45835, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"mese\": \"2026-07\", \"gruppo\": \"MoVimento 5 Stelle (M5S)\", \"interventi\": 167, \"parole\": 48009, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"mese\": \"2026-07\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 147, \"parole\": 53987, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"mese\": \"2026-04\", \"gruppo\": \"Italia Viva - Casa Riformista (IV-CR)\", \"interventi\": 142, \"parole\": 44764, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-04\", \"gruppo\": \"Fratelli d'Italia (FdI)\", \"interventi\": 124, \"parole\": 40710, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-04\", \"gruppo\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"interventi\": 118, \"parole\": 24676, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-03\", \"gruppo\": \"MoVimento 5 Stelle (M5S)\", \"interventi\": 114, \"parole\": 29994, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"mese\": \"2026-06\", \"gruppo\": \"Fratelli d'Italia (FdI)\", \"interventi\": 109, \"parole\": 34840, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"mese\": \"2026-03\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progres"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Fratelli d'Italia",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "ramo",
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Fratelli d'Italia, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 1944, \"parole\": 744050}, \"rows_total\": 21, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"mese\": \"2026-07\", \"interventi\": 167, \"parole\": 51986, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-08\", \"interventi\": 146, \"parole\": 38566, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"ramo\": \"camera\", \"mese\": \"2026-04\", \"interventi\": 140, \"parole\": 64089, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-03\", \"interventi\": 134, \"parole\": 53308, \"dal\": \"2026-03-02\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-04\", \"interventi\": 124, \"parole\": 40710, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-06\", \"interventi\": 115, \"parole\": 50999, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-10\", \"interventi\": 112, \"parole\": 56514, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"senato\", \"mese\": \"2026-06\", \"interventi\": 109, \"parole\": 34840, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-01\", \"interventi\": 99, \"parole\": 29341, \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\"}, {\"ramo\": \"camera\", \"mese\": \"2026-02\", \"interventi\": 98, \"parole\": 46641, \"dal\": \"2026-02-02\", \"al\": \"2026-02-25\"}, {\"ramo\": \"senato\", \"mese\": \"2026-03\", \"interventi\": 97, \"parole\": 30438, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-09\", \"interventi\": 90, \"parole\": 26274, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-07\", \"interventi\": 87, \"parole\": 36170, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-01\", \"interventi\": 84, \"parole\": 36949, \"dal\": \"2026-01-13\", \"al\": \"2026-01-29\"}, {\"ramo\": \"senato\", \"mese\": \"2026-10\", \"interventi\": 82, \"parole\": 27617, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-05\", \"interventi\": 81, \"parole\": 46447, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-09\", \"interventi\": 73, \"parole\": 34858, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-02\", \"interventi\": 50, \"parole\": 12828, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"ramo\": \"senato\", \"mese\": \"2026-05\", \"interventi\": 24, \"parole\": 9725, \"dal\": \"2026-05-12\", \"al\": \"2026-05-19\"}, {\"ramo\": \"senato\", \"mese\": \"2026-08\", \"interventi\": 19, \"parole\": 9230, \"dal\": \"2026-08-03\", \"al\": \"2026-08-05\"}, {\"ramo\": "
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Lega",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "ramo",
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Lega, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 560, \"parole\": 293078}, \"rows_total\": 11, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"mese\": \"2026-02\", \"interventi\": 87, \"parole\": 26470, \"dal\": \"2026-02-03\", \"al\": \"2026-02-25\"}, {\"ramo\": \"camera\", \"mese\": \"2026-07\", \"interventi\": 86, \"parole\": 45086, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-05\", \"interventi\": 71, \"parole\": 34518, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-10\", \"interventi\": 59, \"parole\": 36322, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-03\", \"interventi\": 56, \"parole\": 22524, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"camera\", \"mese\": \"2026-04\", \"interventi\": 50, \"parole\": 46646, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-01\", \"interventi\": 46, \"parole\": 24386, \"dal\": \"2026-01-13\", \"al\": \"2026-01-29\"}, {\"ramo\": \"camera\", \"mese\": \"2026-06\", \"interventi\": 38, \"parole\": 24445, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-09\", \"interventi\": 34, \"parole\": 16054, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-08\", \"interventi\": 31, \"parole\": 15960, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"ramo\": \"camera\", \"mese\": \"2026-11\", \"interventi\": 2, \"parole\": 667, \"dal\": \"2026-11-03\", \"al\": \"2026-11-03\"}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Forza Italia",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "ramo",
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Forza Italia, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 936, \"parole\": 437892}, \"rows_total\": 21, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"mese\": \"2026-04\", \"interventi\": 66, \"parole\": 28110, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-01\", \"interventi\": 65, \"parole\": 18879, \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\"}, {\"ramo\": \"camera\", \"mese\": \"2026-01\", \"interventi\": 60, \"parole\": 37334, \"dal\": \"2026-01-13\", \"al\": \"2026-01-29\"}, {\"ramo\": \"camera\", \"mese\": \"2026-02\", \"interventi\": 60, \"parole\": 32439, \"dal\": \"2026-02-02\", \"al\": \"2026-02-25\"}, {\"ramo\": \"camera\", \"mese\": \"2026-07\", \"interventi\": 60, \"parole\": 32304, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-03\", \"interventi\": 57, \"parole\": 18951, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-04\", \"interventi\": 57, \"parole\": 19647, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-10\", \"interventi\": 55, \"parole\": 34484, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-05\", \"interventi\": 52, \"parole\": 30606, \"dal\": \"2026-05-06\", \"al\": \"2026-05-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-03\", \"interventi\": 49, \"parole\": 23009, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-07\", \"interventi\": 48, \"parole\": 13429, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-06\", \"interventi\": 45, \"parole\": 28375, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-09\", \"interventi\": 42, \"parole\": 14449, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-10\", \"interventi\": 42, \"parole\": 13689, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-08\", \"interventi\": 38, \"parole\": 21395, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"ramo\": \"senato\", \"mese\": \"2026-06\", \"interventi\": 38, \"parole\": 13968, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-09\", \"interventi\": 37, \"parole\": 34080, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-02\", \"interventi\": 28, \"parole\": 9736, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"ramo\": \"senato\", \"mese\": \"2026-05\", \"interventi\": 22, \"parole\": 5799, \"dal\": \"2026-05-13\", \"al\": \"2026-05-19\"}, {\"ramo\": \"senato\", \"mese\": \"2026-08\", \"interventi\": 14, \"parole\": 6614, \"dal\": \"2026-08-03\", \"al\": \"2026-08-05\"}, {\"ramo\": \"camera\", \"mese"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Noi Moderati",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Noi Moderati, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 310, \"parole\": 166750}, \"rows_total\": 10, \"offset\": 0, \"rows\": [{\"mese\": \"2026-02\", \"interventi\": 42, \"parole\": 18948, \"dal\": \"2026-02-03\", \"al\": \"2026-02-25\"}, {\"mese\": \"2026-01\", \"interventi\": 39, \"parole\": 17561, \"dal\": \"2026-01-13\", \"al\": \"2026-01-29\"}, {\"mese\": \"2026-10\", \"interventi\": 39, \"parole\": 21405, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"mese\": \"2026-07\", \"interventi\": 37, \"parole\": 24502, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"mese\": \"2026-03\", \"interventi\": 30, \"parole\": 16558, \"dal\": \"2026-03-04\", \"al\": \"2026-03-31\"}, {\"mese\": \"2026-04\", \"interventi\": 28, \"parole\": 15260, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-06\", \"interventi\": 27, \"parole\": 16566, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"mese\": \"2026-05\", \"interventi\": 26, \"parole\": 14070, \"dal\": \"2026-05-06\", \"al\": \"2026-05-28\"}, {\"mese\": \"2026-08\", \"interventi\": 25, \"parole\": 13882, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"mese\": \"2026-09\", \"interventi\": 17, \"parole\": 7998, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Civici d'Italia",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Civici d'Italia, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 189, \"parole\": 80127}, \"rows_total\": 10, \"offset\": 0, \"rows\": [{\"mese\": \"2026-04\", \"interventi\": 30, \"parole\": 14073, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-01\", \"interventi\": 23, \"parole\": 10190, \"dal\": \"2026-01-08\", \"al\": \"2026-01-29\"}, {\"mese\": \"2026-10\", \"interventi\": 23, \"parole\": 7570, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"mese\": \"2026-03\", \"interventi\": 21, \"parole\": 9182, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"mese\": \"2026-06\", \"interventi\": 21, \"parole\": 10393, \"dal\": \"2026-06-03\", \"al\": \"2026-06-24\"}, {\"mese\": \"2026-02\", \"interventi\": 18, \"parole\": 6670, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"mese\": \"2026-09\", \"interventi\": 17, \"parole\": 5668, \"dal\": \"2026-09-10\", \"al\": \"2026-09-29\"}, {\"mese\": \"2026-07\", \"interventi\": 14, \"parole\": 7647, \"dal\": \"2026-07-01\", \"al\": \"2026-07-29\"}, {\"mese\": \"2026-05\", \"interventi\": 12, \"parole\": 4056, \"dal\": \"2026-05-13\", \"al\": \"2026-05-19\"}, {\"mese\": \"2026-08\", \"interventi\": 10, \"parole\": 4678, \"dal\": \"2026-08-03\", \"al\": \"2026-08-05\"}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Partito Democratico",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "ramo",
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Partito Democratico, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 3762, \"parole\": 1421430}, \"rows_total\": 21, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"mese\": \"2026-04\", \"interventi\": 534, \"parole\": 197281, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-04\", \"interventi\": 362, \"parole\": 69209, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-07\", \"interventi\": 335, \"parole\": 110350, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-09\", \"interventi\": 326, \"parole\": 102184, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-06\", \"interventi\": 241, \"parole\": 56004, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-10\", \"interventi\": 240, \"parole\": 119508, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-06\", \"interventi\": 203, \"parole\": 99440, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-10\", \"interventi\": 176, \"parole\": 45835, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-02\", \"interventi\": 172, \"parole\": 89047, \"dal\": \"2026-02-02\", \"al\": \"2026-02-27\"}, {\"ramo\": \"camera\", \"mese\": \"2026-05\", \"interventi\": 171, \"parole\": 88366, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-01\", \"interventi\": 161, \"parole\": 77170, \"dal\": \"2026-01-13\", \"al\": \"2026-01-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-07\", \"interventi\": 147, \"parole\": 53987, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-03\", \"interventi\": 130, \"parole\": 64941, \"dal\": \"2026-03-02\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-03\", \"interventi\": 107, \"parole\": 39794, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"camera\", \"mese\": \"2026-08\", \"interventi\": 102, \"parole\": 45526, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"ramo\": \"senato\", \"mese\": \"2026-01\", \"interventi\": 102, \"parole\": 34626, \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\"}, {\"ramo\": \"camera\", \"mese\": \"2026-09\", \"interventi\": 87, \"parole\": 57704, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-02\", \"interventi\": 67, \"parole\": 24379, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"ramo\": \"camera\", \"mese\": \"2026-11\", \"interventi\": 34, \"parole\": 15968, \"dal\": \"2026-11-03\", \"al\": \"2026-11-03\"}, {\"ramo\": \"senato\", \"mese\": \"2026-05\", \"interventi\": 33, \"parole\": 14753, \"dal\": \"2026-05-13\", \"al\": \"2026-0"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Movimento 5 Stelle",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "ramo",
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Movimento 5 Stelle, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 3885, \"parole\": 1288240}, \"rows_total\": 21, \"offset\": 0, \"rows\": [{\"ramo\": \"senato\", \"mese\": \"2026-04\", \"interventi\": 433, \"parole\": 67222, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-07\", \"interventi\": 319, \"parole\": 114124, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-10\", \"interventi\": 303, \"parole\": 128225, \"dal\": \"2026-10-01\", \"al\": \"2026-10-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-04\", \"interventi\": 292, \"parole\": 130182, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-06\", \"interventi\": 284, \"parole\": 56726, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-09\", \"interventi\": 265, \"parole\": 60170, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-06\", \"interventi\": 237, \"parole\": 101490, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-02\", \"interventi\": 224, \"parole\": 91536, \"dal\": \"2026-02-02\", \"al\": \"2026-02-27\"}, {\"ramo\": \"camera\", \"mese\": \"2026-01\", \"interventi\": 212, \"parole\": 73234, \"dal\": \"2026-01-13\", \"al\": \"2026-01-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-05\", \"interventi\": 185, \"parole\": 95540, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"ramo\": \"senato\", \"mese\": \"2026-10\", \"interventi\": 179, \"parole\": 32714, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"senato\", \"mese\": \"2026-07\", \"interventi\": 167, \"parole\": 48009, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-03\", \"interventi\": 156, \"parole\": 64054, \"dal\": \"2026-03-02\", \"al\": \"2026-03-31\"}, {\"ramo\": \"camera\", \"mese\": \"2026-08\", \"interventi\": 145, \"parole\": 49459, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"ramo\": \"camera\", \"mese\": \"2026-09\", \"interventi\": 116, \"parole\": 58703, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-03\", \"interventi\": 114, \"parole\": 29994, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-01\", \"interventi\": 101, \"parole\": 30081, \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\"}, {\"ramo\": \"senato\", \"mese\": \"2026-02\", \"interventi\": 60, \"parole\": 16706, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"ramo\": \"senato\", \"mese\": \"2026-05\", \"interventi\": 37, \"parole\": 15615, \"dal\": \"2026-05-12\", \"al\": \"2026-05-19\"}, {\"ramo\": \"camera\", \"mese\": \"2026-11\", \"interventi\": 28, \"parole\": 12281, \"dal\": \"2026-11-03\", \"al\": \"2026-1"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Alleanza Verdi e Sinistra",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "ramo",
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Alleanza Verdi e Sinistra, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 1644, \"parole\": 647116}, \"rows_total\": 21, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"mese\": \"2026-04\", \"interventi\": 182, \"parole\": 76837, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-07\", \"interventi\": 178, \"parole\": 59070, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-06\", \"interventi\": 134, \"parole\": 65296, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-10\", \"interventi\": 119, \"parole\": 58989, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"senato\", \"mese\": \"2026-04\", \"interventi\": 118, \"parole\": 24676, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-02\", \"interventi\": 106, \"parole\": 50452, \"dal\": \"2026-02-03\", \"al\": \"2026-02-27\"}, {\"ramo\": \"camera\", \"mese\": \"2026-03\", \"interventi\": 85, \"parole\": 39974, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"camera\", \"mese\": \"2026-05\", \"interventi\": 83, \"parole\": 45864, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-01\", \"interventi\": 75, \"parole\": 37573, \"dal\": \"2026-01-13\", \"al\": \"2026-01-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-06\", \"interventi\": 75, \"parole\": 21103, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-09\", \"interventi\": 75, \"parole\": 22121, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-09\", \"interventi\": 64, \"parole\": 32862, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-07\", \"interventi\": 64, \"parole\": 16168, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-03\", \"interventi\": 60, \"parole\": 12794, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"camera\", \"mese\": \"2026-08\", \"interventi\": 59, \"parole\": 30096, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"ramo\": \"senato\", \"mese\": \"2026-01\", \"interventi\": 52, \"parole\": 16060, \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\"}, {\"ramo\": \"senato\", \"mese\": \"2026-10\", \"interventi\": 41, \"parole\": 9829, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"senato\", \"mese\": \"2026-02\", \"interventi\": 36, \"parole\": 10230, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"ramo\": \"senato\", \"mese\": \"2026-08\", \"interventi\": 15, \"parole\": 6148, \"dal\": \"2026-08-03\", \"al\": \"2026-08-05\"}, {\"ramo\": \"senato\", \"mese\": \"2026-05\", \"interventi\": 14, \"parole\": 6360, \"dal\": \"2026-05-13\", \"al\": \"2026-05-19\"}, {\"ra"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Italia Viva",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "ramo",
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Italia Viva, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 1373, \"parole\": 499014}, \"rows_total\": 21, \"offset\": 0, \"rows\": [{\"ramo\": \"senato\", \"mese\": \"2026-04\", \"interventi\": 142, \"parole\": 44764, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-07\", \"interventi\": 136, \"parole\": 34397, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-04\", \"interventi\": 105, \"parole\": 34595, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-09\", \"interventi\": 105, \"parole\": 32486, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-06\", \"interventi\": 101, \"parole\": 32728, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-03\", \"interventi\": 86, \"parole\": 28496, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-07\", \"interventi\": 73, \"parole\": 32624, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-01\", \"interventi\": 70, \"parole\": 22632, \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\"}, {\"ramo\": \"senato\", \"mese\": \"2026-10\", \"interventi\": 69, \"parole\": 26070, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-02\", \"interventi\": 64, \"parole\": 26499, \"dal\": \"2026-02-03\", \"al\": \"2026-02-25\"}, {\"ramo\": \"camera\", \"mese\": \"2026-06\", \"interventi\": 55, \"parole\": 23614, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-01\", \"interventi\": 52, \"parole\": 23147, \"dal\": \"2026-01-13\", \"al\": \"2026-01-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-08\", \"interventi\": 50, \"parole\": 20565, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"ramo\": \"camera\", \"mese\": \"2026-10\", \"interventi\": 49, \"parole\": 24394, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-03\", \"interventi\": 48, \"parole\": 19944, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-02\", \"interventi\": 38, \"parole\": 16090, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"ramo\": \"camera\", \"mese\": \"2026-05\", \"interventi\": 36, \"parole\": 17946, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"ramo\": \"senato\", \"mese\": \"2026-05\", \"interventi\": 33, \"parole\": 11052, \"dal\": \"2026-05-12\", \"al\": \"2026-05-19\"}, {\"ramo\": \"senato\", \"mese\": \"2026-08\", \"interventi\": 30, \"parole\": 13610, \"dal\": \"2026-08-03\", \"al\": \"2026-08-05\"}, {\"ramo\": \"camera\", \"mese\": \"2026-09\", \"interventi\": 29, \"parole\": 11669, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "Azione",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "ramo",
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo Azione, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 1114, \"parole\": 465231}, \"rows_total\": 21, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"mese\": \"2026-07\", \"interventi\": 96, \"parole\": 38208, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-03\", \"interventi\": 89, \"parole\": 27304, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"senato\", \"mese\": \"2026-04\", \"interventi\": 87, \"parole\": 29623, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-07\", \"interventi\": 82, \"parole\": 32543, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-01\", \"interventi\": 75, \"parole\": 24599, \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\"}, {\"ramo\": \"senato\", \"mese\": \"2026-10\", \"interventi\": 64, \"parole\": 25978, \"dal\": \"2026-10-06\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-02\", \"interventi\": 61, \"parole\": 28452, \"dal\": \"2026-02-03\", \"al\": \"2026-02-27\"}, {\"ramo\": \"camera\", \"mese\": \"2026-04\", \"interventi\": 60, \"parole\": 28969, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-06\", \"interventi\": 56, \"parole\": 22876, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-10\", \"interventi\": 55, \"parole\": 27792, \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-01\", \"interventi\": 53, \"parole\": 24221, \"dal\": \"2026-01-13\", \"al\": \"2026-01-29\"}, {\"ramo\": \"senato\", \"mese\": \"2026-09\", \"interventi\": 52, \"parole\": 15558, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera\", \"mese\": \"2026-03\", \"interventi\": 43, \"parole\": 20748, \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\"}, {\"ramo\": \"camera\", \"mese\": \"2026-05\", \"interventi\": 41, \"parole\": 23430, \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\"}, {\"ramo\": \"camera\", \"mese\": \"2026-06\", \"interventi\": 40, \"parole\": 23547, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-02\", \"interventi\": 38, \"parole\": 15391, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"ramo\": \"camera\", \"mese\": \"2026-08\", \"interventi\": 35, \"parole\": 17868, \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\"}, {\"ramo\": \"camera\", \"mese\": \"2026-09\", \"interventi\": 34, \"parole\": 14825, \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"mese\": \"2026-05\", \"interventi\": 28, \"parole\": 10023, \"dal\": \"2026-05-13\", \"al\": \"2026-05-19\"}, {\"ramo\": \"senato\", \"mese\": \"2026-08\", \"interventi\": 23, \"parole\": 12304, \"dal\": \"2026-08-03\", \"al\": \"2026-08-05\"}, {\"ramo\": \"camera\", \"mese\":"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": "LSP-PSd'Az",
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Senato, sedute d'Aula, dal 01/01/2026 al 03/11/2026; filtri: gruppo LSP-PSd'Az, ruolo parlamentare. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 502, \"parole\": 184075}, \"rows_total\": 10, \"offset\": 0, \"rows\": [{\"mese\": \"2026-04\", \"interventi\": 77, \"parole\": 25784, \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\"}, {\"mese\": \"2026-07\", \"interventi\": 75, \"parole\": 28884, \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\"}, {\"mese\": \"2026-03\", \"interventi\": 69, \"parole\": 22138, \"dal\": \"2026-03-04\", \"al\": \"2026-03-31\"}, {\"mese\": \"2026-01\", \"interventi\": 63, \"parole\": 20639, \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\"}, {\"mese\": \"2026-10\", \"interventi\": 57, \"parole\": 22977, \"dal\": \"2026-10-06\", \"al\": \"2026-10-28\"}, {\"mese\": \"2026-06\", \"interventi\": 52, \"parole\": 20975, \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\"}, {\"mese\": \"2026-09\", \"interventi\": 41, \"parole\": 11330, \"dal\": \"2026-09-10\", \"al\": \"2026-09-30\"}, {\"mese\": \"2026-02\", \"interventi\": 29, \"parole\": 12525, \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\"}, {\"mese\": \"2026-05\", \"interventi\": 20, \"parole\": 8260, \"dal\": \"2026-05-13\", \"al\": \"2026-05-19\"}, {\"mese\": \"2026-08\", \"interventi\": 19, \"parole\": 10563, \"dal\": \"2026-08-03\", \"al\": \"2026-08-05\"}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi"
+ ],
+ "tempo_s": 63.2,
+ "risposta_sistema": "Per l’infografica userei gli **interventi in Aula** (turni di parola), non le parole: sono confrontabili mese per mese e non includono Governo, Presidenza o relatori.\n\n| Mese 2026 | Maggioranza | Opposizione | Rapporto opposizione/maggioranza |\n|---|---:|---:|---:|\n| Gennaio | 479 | 953 | 2,0× |\n| Febbraio | 412 | 866 | 2,1× |\n| Marzo | 513 | 918 | 1,8× |\n| Aprile | 572 | 2.315 | 4,0× |\n| Maggio | 308 | 661 | 2,1× |\n| Giugno | 445 | 1.426 | 3,2× |\n| Luglio | 574 | 1.597 | 2,8× |\n| Agosto | 302 | 519 | 1,7× |\n| Settembre | 351 | 1.153 | 3,3× |\n| Ottobre | 469 | 1.295 | 2,8× |\n| Novembre* | 16 | 75 | 4,7× |\n\n**Messaggio chiave:** in ogni mese disponibile del 2026 l’opposizione ha avuto più turni di parola della maggioranza; il divario più ampio è ad **aprile** (2.315 contro 572).\n\nLa classificazione include:\n- **Maggioranza:** Fratelli d’Italia, Lega/Lega–PSd’Az, Forza Italia, Noi Moderati alla Camera e Civici d’Italia–UDC–Noi Moderati–MAIE–Centro Popolare al Senato.\n- **Opposizione:** PD-IDP, Movimento 5 Stelle, AVS, Italia Viva–Casa Riformista e Azione/Renew.\n\nI dati aggregano Camera e Senato; un intervento è un turno di parola nel resoconto stenografico. Restano fuori da questo confronto le altre componenti del Misto e i gruppi non collocati nelle due aggregazioni.  \n\\* Novembre è aggiornato alla sola seduta del **3 novembre 2026**; i dati disponibili arrivano fino a quella data.",
+ "eventi": {
+  "status": 1,
+  "tool": 26,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,39 @@
+{
+ "id": "GIO-049",
+ "domanda": "Quanti emendamenti ha presentato ogni gruppo sulla legge elettorale alla Camera, in prima lettura?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note_domanda": "AC 2822: Misto per componente.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782696.606824,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_per_significato",
+  "conta_emendamenti",
+  "atto"
+ ],
+ "tempo_s": 35.3,
+ "risposta_sistema": "Sulla proposta di legge elettorale **C. 2822**, approvata dalla Camera in prima lettura il 16 luglio 2026, gli emendamenti presentati per gruppo sono:\n\n- Alleanza Verdi e Sinistra (AVS): **744**\n- Misto – +Europa – Stati Uniti d’Europa: **562**\n- Partito Democratico – Italia Democratica e Progressista (PD-IDP): **534**\n- Italia Viva – Casa Riformista (IV-CR): **464**\n- Movimento 5 Stelle (M5S): **459**\n- Noi Moderati – MAIE – Centro Popolare: **23**\n- Azione – Popolari Europeisti Riformatori – Renew Europe: **20**\n- Forza Italia – Berlusconi Presidente – PPE: **16**\n- Fratelli d’Italia: **16**\n- Lega – Salvini Premier: **15**\n- Misto – Futuro Nazionale Vannacci – Free: **15**\n- Misto – Minoranze Linguistiche: **6**\n- **Misto: 22** (il dato disponibile non attribuisce queste firme a una componente specifica).\n\nIl conteggio riguarda le proposte emendative sull’atto **C. 2822**: una proposta è contata una sola volta per numero e sede, anche in caso di riformulazione. Lo stesso emendamento può comparire per più gruppi se ha cofirmatari di gruppi diversi: perciò questi numeri **non sono sommabili**. In totale, la scheda dell’atto registra **1.096 emendamenti**. La fonte segnala che la completezza dei fascicoli emendativi caricati non è verificata. Scheda dell’atto: [Camera, C. 2822](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822).",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Prima lettura della legge elettorale alla Camera (AC 2822), per gruppo del primo firmatario alla data. In I Commissione (fascicolo del 15/6/2026) 731 proposte: AVS 386, PD-IDP 153, M5S 99, Misto-+Europa 53, Misto senza componente 15, Azione 8, Misto-Futuro Nazionale Vannacci 7, FdI 4, Noi Moderati 3, Misto-Minoranze linguistiche 2, IV-CR 1; nessuna di Lega e FI-PPE. In Aula (14-15/7/2026) l'archivio ha 299 proposte: PD-IDP 102, M5S 66, Misto-+Europa 53, AVS 14, Azione 12, FdI 12, Misto-FNV 8, IV-CR 7, Misto senza componente 6, Noi Moderati 4, Misto-Minoranze linguistiche 4, FI-PPE 2, Lega 1, più 8 della Commissione o del relatore.",
+  "stato": "parziale",
+  "limiti": "Per l'Aula il database ha solo i fascicoli delle proposte segnalate per il voto e di quelle non segnalate pubblicate nel resoconto (299), non tutte le proposte presentate: la numerazione arriva a 1.1072 e i desegnalati citati nel Bollettino mostrano che erano molte di più. Il dato della Commissione è completo per il fascicolo del 15/6/2026. Conteggio per primo firmatario (amendment_signer.first), gruppo con group_at alla data della seduta, Misto per componente; ogni numero di emendamento conta una volta per sede."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 35.3
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "Conta le proposte con almeno un firmatario del gruppo (AVS 744, Lega 15), non per primo firmatario come il riferimento (AVS 400, Lega 1), e non separa Commissione (731) e Aula (299). Chiama «Misto non attribuito» le 22 del Misto senza componente; non segnala che l'archivio dell'Aula è incompleto."
+}

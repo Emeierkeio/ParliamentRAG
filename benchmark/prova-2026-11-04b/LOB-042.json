@@ -1,0 +1,43 @@
+{
+ "id": "LOB-042",
+ "domanda": "Quando è convocata la prossima seduta della VIII Commissione sul DL 177/2026 (C. 3133) e cosa c'è all'ordine del giorno?",
+ "categoria": "calendario",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784651.3892019,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "organo",
+  "elenco_sedute",
+  "elenco_sedute",
+  "atto",
+  "seduta"
+ ],
+ "tempo_s": 14.9,
+ "risposta_sistema": "Nei dati disponibili non risulta ancora una **prossima seduta convocata** della VIII Commissione dedicata al DL 177/2026, **C. 3133**. L’atto risulta comunque **in corso di esame in Commissione** dal 14 ottobre 2026: [scheda ufficiale C. 3133](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133).\n\nL’ultima seduta della VIII Commissione presente nei dati è del **28 ottobre 2026**, ma era un ufficio di presidenza integrato dai rappresentanti dei gruppi e non riportava il C. 3133 né un ordine del giorno legislativo: resoconto della seduta.\n\nQuindi non posso indicare né data/ora né l’ordine del giorno della prossima riunione sul provvedimento. I dati sono aggiornati fino al **3 novembre 2026**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nei dati non c'è la prossima convocazione della VIII Commissione sul C. 3133: l'unica seduta programmata nel database è l'Aula della Camera del 3/11/2026 (seduta 737), che non ha il C. 3133 all'ordine del giorno. L'ultima seduta registrata della VIII Commissione sul DL 177/2026 è del 27/10/2026, in sede referente alle 13:05, con «Seguito dell'esame e rinvio»; lo stesso giorno si sono svolte audizioni informali (fra gli altri Comieco, autorità di bacino distrettuali, Legambiente, ISS, ENEA, ANCI).",
+  "stato": "non_calcolabile",
+  "limiti": "Le convocazioni future delle commissioni non sono caricate: sitting ha una sola seduta in stato planned (Aula, 3/11/2026), non le 120 indicate nel benchmark. Il Bollettino delle commissioni arriva al 29/10/2026. Il risultato riporta solo l'ultima seduta svolta come contesto."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 14.9
+ },
+ "giro1": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null
+ },
+ "causa_probabile": null,
+ "note": "Dice correttamente che la prossima convocazione non è nei dati e linka la scheda del C. 3133. Cita l'ufficio di presidenza del 28/10 come ultima seduta della VIII, ma non la seduta del 27/10 sul DL con le audizioni."
+}

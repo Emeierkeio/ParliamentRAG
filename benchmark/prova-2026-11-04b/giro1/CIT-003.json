@@ -1,0 +1,388 @@
+{
+ "id": "CIT-003",
+ "domanda": "chi ha votato contro il salario minimo?",
+ "categoria": "voti",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note_domanda": "Trappola. Il 6/12/2023 la Camera approvò la PDL 1275 (153 sì, 118 no, 3 astenuti), ma con l'emendamento della maggioranza che la trasformò in delega al governo: i firmatari (Conte ed altri) ritirarono la firma e le opposizioni votarono no. È diventata la legge 144/2025. Il sistema deve spiegarlo prima di elencare chi ha votato no.",
+ "trappola": true,
+ "endpoint": "fascicolo",
+ "inizio": 1793783463.365982,
+ "endpoint_usato": "/api/fascicolo",
+ "tempo_fascicolo_s": 183.4,
+ "tempo_s": 183.4,
+ "risposta_sistema": "## Introduzione\n\nIl dibattito parlamentare ha riguardato l’introduzione di un salario minimo garantito, con particolare attenzione agli effetti sulla contrattazione collettiva, la sostenibilità economica per le imprese e le modalità di tutela dei lavoratori sottopagati. Sono stati analizzati 72 interventi di 48 parlamentari tra Camera e Senato, nel periodo dal 29/11/2022 al 24/06/2026.\n\n## Posizione del Governo\n\nNel dibattito parlamentare sull'introduzione di un salario minimo garantito, l'esecutivo ha espresso riserve sull'efficacia di questo strumento come soluzione ai problemi salariali in Italia. **Claudio Durigon** dichiara: [«il parere alla mozione in discussione è quindi contrario, ma garantiamo che il nostro Governo sta pensando a come interagire per dare risposte a questi lavoratori»](b5). La posizione espressa evidenzia la volontà del Governo di individuare alternative per sostenere i lavoratori, pur non ritenendo il salario minimo la risposta adeguata alla questione dei bassi salari.\n\n---\n\n## Posizioni della Maggioranza\n\nPer Forza Italia - Berlusconi Presidente - PPE, nel dibattito parlamentare sul salario minimo, alcune voci del gruppo hanno posto l’accento sulle responsabilità dei precedenti governi e sulle dinamiche politiche che hanno ostacolato l’introduzione della misura in passato. **Chiara Tenerini** osserva, [«una risposta potrebbe essere che nel Conte 1 - qualcuno l'ha data in Commissione - l'alleato di Governo era la Lega, che, quindi, non era d'accordo. E qui ci sta»](b76). Le posizioni espresse nei diversi interventi mostrano un approccio articolato e talvolta critico verso le proposte delle opposizioni, ma il voto finale del gruppo alla Camera è stato favorevole all’istituzione del salario minimo.\n\nPer Fratelli d'Italia, sul tema del salario minimo, il gruppo ha espresso posizioni fortemente critiche sia al Senato che alla Camera. Al Senato, **Gianni Berrino** ha dichiarato: [«ritirate questa mozione, altrimenti il nostro voto sarà negativo, perché la mozione non serve a niente, non dice dove trovare i soldi, né come trovarli, se non, come qualcuno ha detto - questo è veramente incredibile - togliendo una parte del profitto a quelle poche aziende che ce l'hanno, per trasmetterlo ai lavoratori»](b17). Alla Camera, **Lorenzo Malagola** ha sostenuto: [«insomma, la sinistra - diciamocelo - non ha fiducia nelle persone, non ha fiducia nelle imprese, diffida di chi vuole costruire per tutti. Allora non mi stupisce che questa cultura produca come unica proposta, che ci viene ripetuta come un disco rotto, il salario minimo per legge»](b26). In entrambe le Aule, il gruppo ha motivato la propria contrarietà sottolineando i rischi di indebolimento della contrattazione collettiva e l’inefficacia della misura rispetto agli obiettivi dichiarati.\n\nPer Lega - Salvini Premier, sul tema del salario minimo, il gruppo ha espresso riserve sulla sua introduzione per legge, sottolineando i potenziali effetti negativi per i lavoratori e la preferenza per la contrattazione collettiva. Alla Camera, **Tiziana Nisini** avverte: [«i rischi che potrebbe provocare un salario minimo, per legge, sono tanti e andrebbero a danneggiare gli stessi lavoratori»](b22). Al Senato, **Elena Murelli** ribadisce: [«lo abbiamo ribadito in Commissione: il salario minimo per legge non è lo strumento adatto al nostro Paese. L'Italia ha una tradizione consolidata di contrattazione collettiva, che già oggi copre oltre il 95 per cento dei lavoratori, creata dagli stessi sindacati da cui alcuni colleghi provengono e che oggi chiedono un salario minimo»](b11). In entrambe le Aule emerge una posizione critica verso il salario minimo legale, con l'accento posto sulla tutela dei lavoratori attraverso strumenti diversi dalla fissazione di una soglia per legge.\n\nPer Noi Moderati - MAIE - Centro Popolare, nel dibattito parlamentare sulla proposta di introdurre il salario minimo, il gruppo ha sottolineato la centralità del confronto tra maggioranza e opposizione, ma ha rivendicato il ruolo della maggioranza nell'attuazione delle proprie scelte programmatiche. **Maurizio Enzo Lupi** afferma, [«l'opposizione pone le questioni in un dibattito parlamentare e si arriva a una sintesi, ma è compito della maggioranza attuare quel programma e quello strumento per cui si è stati eletti e oggi si governa questo Paese»](b4). Dalle evidenze disponibili emerge che il gruppo considera il salario minimo non la soluzione più efficace contro il lavoro povero, preferendo strumenti alternativi come il rafforzamento della contrattazione collettiva.\n\n---\n\n## Posizioni dell'Opposizione\n\nPer Alleanza Verdi e Sinistra, la componente Alleanza Verdi e Sinistra si è espressa con forza a favore dell’introduzione di un salario minimo legale, sottolineando la necessità di tutelare i lavoratori sottopagati e di contrastare la precarietà. Al Senato, **Tino Magni** ha affermato: [«questa è la cosa che bisogna fare. E se voi siete contro questa misura, state dando un messaggio chiaro, perché l'aumento del salario non lo si fa utilizzando il cuneo fiscale, ovvero la fiscalità generale dello Stato»](b56). Alla Camera, **Francesco Mari** ha ribadito: [«è per loro che continuiamo a dire salario minimo subito ! Quello che voi negate, che ha negato per prima la Premier, la Presidente del Consiglio, in quest'Aula, a più riprese»](b69). In entrambe le Aule emerge una posizione netta e coerente a sostegno del salario minimo, confermata anche dal voto contrario del gruppo alle misure che ne ostacolavano l’introduzione.\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, nel dibattito parlamentare sul salario minimo, il gruppo ha sottolineato la distanza tra le posizioni della maggioranza e quelle delle opposizioni, rimarcando la legittimità del dissenso ma anche la necessità di assumersi responsabilità politiche chiare. **Matteo Richetti** osserva, [«tra maggioranza e opposizione, infatti, ci si può anche dire che sul salario minimo voi non siete d'accordo, ed è assolutamente legittimo: “noi non vogliamo il salario minimo”»](b41). Dalle evidenze disponibili emerge che il gruppo si è impegnato nella costruzione di una proposta condivisa tra le opposizioni e ha sostenuto l’introduzione di uno strumento di contrasto al lavoro sottopagato, criticando la mancanza di iniziativa della maggioranza sul tema.\n\nPer Italia Viva - Casa Riformista, sul tema del salario minimo, il gruppo ha espresso posizioni articolate e condizionate dalle modalità di finanziamento e dagli effetti sui contratti collettivi. Alla Camera, **Davide Faraone** precisa: [«per cui tutte le proposte che prevederanno l'introduzione del salario minimo, senza che la fiscalità generale venga fatta pagare innanzitutto agli imprenditori, vedranno il nostro sostegno. Quindi ci asterremo per questo»](b10). Al Senato, **Silvia Fregolent** avverte: [«il rischio è che quei nove euro lordi»](b105). Il gruppo ha quindi manifestato riserve sia sulla sostenibilità economica per le imprese sia sul rischio di peggiorare le condizioni di chi già beneficia di contratti collettivi più favorevoli, e alla Camera ha votato contro il provvedimento.\n\nPer Movimento 5 Stelle, nei passaggi trovati nessuna delle voci più autorevoli del gruppo sul tema dice una frase che si possa citare alla lettera. Al voto finale del 06/12/2023 alla Camera (Disposizioni per l’istituzione del salario minimo) il gruppo ha votato contro: 35 contrari, 17 assenti.\n\nPer Partito Democratico - Italia Democratica e Progressista, nel dibattito parlamentare sul salario minimo, il gruppo ha espresso una posizione fortemente critica verso la scelta di non introdurre una soglia legale per le retribuzioni, sottolineando le ricadute negative soprattutto per le fasce più deboli del mercato del lavoro. **Susanna Lina Giulia Camusso** afferma, [«allo stesso modo, negare il salario minimo è negare un'informazione minima necessaria ai lavoratori e alle lavoratrici»](b90). Le evidenze raccolte mostrano che il gruppo ha sostenuto l’istituzione del salario minimo come strumento di tutela e trasparenza per lavoratori e lavoratrici, e al voto finale alla Camera si è opposto al provvedimento che non ne prevedeva l’introduzione.\n\nPer il gruppo Per le Autonomie (SVP-PATT, Campobase), nel dibattito sul salario minimo, il gruppo ha sottolineato la gravità della povertà lavorativa in Italia e la necessità di un intervento strutturale per garantire una retribuzione dignitosa. **Julia Unterberger** afferma, [«il nostro Gruppo esprimerà un voto favorevole alla mozione in esame. Sono quasi 3 milioni i lavoratori e le lavoratrici che in Italia vivono sotto la soglia di povertà»](b7). La posizione espressa è di chiaro sostegno all’introduzione di un salario minimo legale, considerato uno strumento essenziale per contrastare lo sfruttamento e ridurre le disuguaglianze nel mercato del lavoro.\n\n---\n\n## Gruppo Misto\n\nPer i parlamentari del Misto senza componente, nel dibattito alla Camera sul salario minimo, sono emerse posizioni differenziate tra i parlamentari non iscritti ad alcuna componente del gruppo Misto. **Luigi Marattin** annuncia, [«intervengo per dire che schiaccerò il tasto rosso, ma non per questo mi sento né ignobile né meno patriota»](b1). In questa fase, la sua scelta di voto contrario si accompagna a una motivazione legata alla natura del salario come prezzo di mercato e non come variabile indipendente. Altri interventi nello stesso gruppo, come quelli di Aboubakar Soumahoro, hanno invece espresso sostegno all’introduzione di un salario minimo legale, segnalando l’assenza di una posizione unitaria tra i deputati del Misto.\n\nPer +Europa - Stati Uniti d'Europa, nel dibattito parlamentare sulla proposta di salario minimo, la componente +Europa - Stati Uniti d'Europa del gruppo Misto ha espresso una forte critica verso la gestione della maggioranza, accusata di aver bloccato il confronto sul tema. **Riccardo Magi** denuncia: [«oggi il Paese avrà chiaramente contezza del fatto che avete affossato la discussione su questo tema, vi siete assunti questa responsabilità»](b9). Gli interventi dei rappresentanti della componente sottolineano la necessità di affrontare il fenomeno del lavoro povero e ribadiscono la disponibilità al dialogo sulle misure per introdurre un salario minimo, evidenziando la delusione per l’atteggiamento dilatorio della maggioranza. Nonostante questa posizione favorevole all’istituzione del salario minimo, la componente ha votato contro il testo finale, segnalando una distanza rispetto alle modalità e ai contenuti della proposta approvata.\n\nPer Futuro Nazionale Vannacci - Free, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Minoranze Linguistiche, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Sud Chiama Nord, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Avanti PSI - Progetto Civico Italia, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Italia Domani - Marco Rizzo, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Partito della Rifondazione Comunista - Sinistra Europea - Open Sinistra, nel corpus analizzato non risultano interventi rilevanti su questo tema.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "warn",
+    "authority": "pass",
+    "quotes": "pass"
+   },
+   "groups": {
+    "present": [
+     "FdI",
+     "PD",
+     "Lega",
+     "M5S",
+     "FI",
+     "AVS",
+     "Azione",
+     "IV",
+     "NM",
+     "+Europa",
+     "FN",
+     "Min. ling.",
+     "Autonomie",
+     "Misto NI",
+     "Governo"
+    ],
+    "missing": [],
+    "silent": [
+     "Sud chiama Nord (Misto)",
+     "Avanti PSI (Misto)",
+     "Rifondazione Comunista (Misto)",
+     "Italia Domani - Marco Rizzo (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "il parere alla mozione in discussione è quindi contrario, ma garantiamo che il nostro Governo sta pensando a come interagire per dare risposte a questi lavoratori",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "una risposta potrebbe essere che nel Conte 1 - qualcuno l'ha data in Commissione - l'alleato di Governo era la Lega, che, quindi, non era d'accordo. E qui ci sta",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0148&tipo=stenografico#sed0148.stenografico.tit00020.sub00010.int00060"
+    },
+    {
+     "quote": "ritirate questa mozione, altrimenti il nostro voto sarà negativo, perché la mozione non serve a niente, non dice dove trovare i soldi, né come trovarli, se non, come qualcuno ha detto - questo è…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "insomma, la sinistra - diciamocelo - non ha fiducia nelle persone, non ha fiducia nelle imprese, diffida di chi vuole costruire per tutti. Allora non mi stupisce che questa cultura produca come unica…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0512&tipo=stenografico#sed0512.stenografico.tit00150.sub00010.int00220"
+    },
+    {
+     "quote": "i rischi che potrebbe provocare un salario minimo, per legge, sono tanti e andrebbero a danneggiare gli stessi lavoratori",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0148&tipo=stenografico#sed0148.stenografico.tit00020.sub00010.int00020"
+    },
+    {
+     "quote": "lo abbiamo ribadito in Commissione: il salario minimo per legge non è lo strumento adatto al nostro Paese. L'Italia ha una tradizione consolidata di contrattazione collettiva, che già oggi copre…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1473780"
+    },
+    {
+     "quote": "l'opposizione pone le questioni in un dibattito parlamentare e si arriva a una sintesi, ma è compito della maggioranza attuare quel programma e quello strumento per cui si è stati eletti e oggi si…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0153&tipo=stenografico#sed0153.stenografico.tit00040.int00020"
+    },
+    {
+     "quote": "questa è la cosa che bisogna fare. E se voi siete contro questa misura, state dando un messaggio chiaro, perché l'aumento del salario non lo si fa utilizzando il cuneo fiscale, ovvero la fiscalità…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "è per loro che continuiamo a dire salario minimo subito ! Quello che voi negate, che ha negato per prima la Premier, la Presidente del Consiglio, in quest'Aula, a più riprese",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0148&tipo=stenografico#sed0148.stenografico.tit00020.sub00010.int00220"
+    },
+    {
+     "quote": "tra maggioranza e opposizione, infatti, ci si può anche dire che sul salario minimo voi non siete d'accordo, ed è assolutamente legittimo: “noi non vogliamo il salario minimo”",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0180&tipo=stenografico#sed0180.stenografico.tit00050.int00140"
+    },
+    {
+     "quote": "per cui tutte le proposte che prevederanno l'introduzione del salario minimo, senza che la fiscalità generale venga fatta pagare innanzitutto agli imprenditori, vedranno il nostro sostegno. Quindi ci…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0357&tipo=stenografico#sed0357.stenografico.tit00110.sub00010.int00140"
+    },
+    {
+     "quote": "il rischio è che quei nove euro lordi",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1408790"
+    },
+    {
+     "quote": "allo stesso modo, negare il salario minimo è negare un'informazione minima necessaria ai lavoratori e alle lavoratrici",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1408554"
+    },
+    {
+     "quote": "il nostro Gruppo esprimerà un voto favorevole alla mozione in esame. Sono quasi 3 milioni i lavoratori e le lavoratrici che in Italia vivono sotto la soglia di povertà",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "intervengo per dire che schiaccerò il tasto rosso, ma non per questo mi sento né ignobile né meno patriota",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0357&tipo=stenografico#sed0357.stenografico.tit00110.sub00010.int00480"
+    },
+    {
+     "quote": "oggi il Paese avrà chiaramente contezza del fatto che avete affossato la discussione su questo tema, vi siete assunti questa responsabilità",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0180&tipo=stenografico#sed0180.stenografico.tit00050.int00420"
+    }
+   ],
+   "authority": {
+    "topic": "chi ha votato contro il salario minimo?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Claudio Durigon",
+      "group": "Governo",
+      "role": "governo",
+      "rank": 3,
+      "pool_size": 4,
+      "group_size": 4,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Chiara Tenerini",
+      "group": "Forza Italia",
+      "role": null,
+      "rank": 1,
+      "pool_size": 2,
+      "group_size": 2,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Gianni Berrino",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "rank": 2,
+      "pool_size": 4,
+      "group_size": 4,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Lorenzo Malagola",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "rank": 2,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Tiziana Nisini",
+      "group": "Lega - Salvini Premier",
+      "role": null,
+      "rank": 1,
+      "pool_size": 3,
+      "group_size": 3,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Elena Murelli",
+      "group": "Lega - Salvini Premier",
+      "role": null,
+      "rank": 1,
+      "pool_size": 4,
+      "group_size": 4,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Maurizio Enzo Lupi",
+      "group": "Noi Moderati",
+      "role": null,
+      "rank": 1,
+      "pool_size": 4,
+      "group_size": 4,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Tino Magni",
+      "group": "Alleanza Verdi e Sinistra",
+      "role": null,
+      "rank": 1,
+      "pool_size": 1,
+      "group_size": 1,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Francesco Mari",
+      "group": "Alleanza Verdi e Sinistra",
+      "role": null,
+      "rank": 1,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Matteo Richetti",
+      "group": "Azione - PER",
+      "role": null,
+      "rank": 3,
+      "pool_size": 5,
+      "group_size": 5,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Davide Faraone",
+      "group": "Italia Viva - Casa Riformista",
+      "role": null,
+      "rank": 1,
+      "pool_size": 3,
+      "group_size": 3,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Silvia Fregolent",
+      "group": "Italia Viva - Casa Riformista",
+      "role": null,
+      "rank": 3,
+      "pool_size": 5,
+      "group_size": 5,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Susanna Lina Giulia Camusso",
+      "group": "Partito Democratico",
+      "role": null,
+      "rank": 1,
+      "pool_size": 3,
+      "group_size": 3,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Julia Unterberger",
+      "group": "Per le Autonomie (SVP-PATT, Campobase)",
+      "role": null,
+      "rank": 3,
+      "pool_size": 4,
+      "group_size": 4,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Luigi Marattin",
+      "group": "Misto, non iscritti",
+      "role": null,
+      "rank": 2,
+      "pool_size": 5,
+      "group_size": 5,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Riccardo Magi",
+      "group": "+Europa (Misto)",
+      "role": null,
+      "rank": 2,
+      "pool_size": 3,
+      "group_size": 3,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Aboubakar Soumahoro",
+      "group": "Misto, non iscritti",
+      "role": null,
+      "rank": 1,
+      "pool_size": 1,
+      "group_size": 1,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati e Senato della Repubblica, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Attenzione: il voto del 6/12/2023 alla Camera sulla PDL 1275 non fu un voto sul salario minimo. Il testo approvato era già stato trasformato in «Deleghe al Governo in materia di retribuzione dei lavoratori e di contrattazione collettiva» e i firmatari (Conte ed altri) avevano ritirato la firma; è poi diventato la legge 26 settembre 2025, n. 144. Il voto finale passò con 153 sì, 118 no e 3 astenuti. Votarono contro: PD-IDP 59, M5S 35, AVS 7, Azione 7, IV-CR 6, Misto-+Europa 2, Misto senza componente 2 (Francesco Gallo e Aboubakar Soumahoro). Votarono a favore FdI 86, Lega 36, FI-PPE 25, Noi Moderati 5 e 1 deputato delle Minoranze linguistiche; gli altri 3 delle Minoranze linguistiche si astennero.",
+  "stato": "calcolata",
+  "limiti": "Si risponde sul voto finale della Camera del 6/12/2023 (sed. 210, votazione 1), l'unico voto finale della Camera sul testo nato dalle proposte sul salario minimo; il gruppo è quello attribuito dalla Camera nel voto (ballot.grp, con grp_alias). Il voto finale del Senato del 23/9/2025 non è considerato."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "warn",
+   "authority": "pass",
+   "quotes": "pass",
+   "gruppi_mancanti": [],
+   "citazioni_verificate": 16,
+   "citazioni_esatte": 16,
+   "controllo_a_campione": [
+    {
+     "citazione": "una risposta potrebbe essere che nel Conte 1…",
+     "trovata": true,
+     "intervento": "it:camera:19:sed0148:tit00020.sub00010.int00060",
+     "data": "2023-07-27"
+    },
+    {
+     "citazione": "l'opposizione pone le questioni in un dibattito parlamentare…",
+     "trovata": true,
+     "intervento": "it:camera:19:sed0153:tit00040.int00020",
+     "data": "2023-08-03"
+    },
+    {
+     "citazione": "allo stesso modo, negare il salario minimo è negare un'informazione minima…",
+     "trovata": true,
+     "intervento": "it:senato:19:sed0157:int00211",
+     "data": "2024-02-13"
+    }
+   ]
+  },
+  "trappola": "caduta",
+  "tempo_s": 183.4
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "Trappola non spiegata: non dice che la PDL 1275 votata il 6/12/2023 (153 sì, 118 no) era già una delega al governo con le firme ritirate, e la chiama «istituzione del salario minimo». Scrive che FI votò a favore del salario minimo; dà solo M5S 35 contrari, senza PD 59, AVS 7, Azione 7, IV 6, +Europa 2."
+}

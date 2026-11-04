@@ -1,0 +1,42 @@
+{
+ "id": "DJ-026",
+ "domanda": "Quanti interventi ha fatto la presidente del Consiglio Giorgia Meloni in Parlamento, e quanti question time?",
+ "categoria": "governo",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "Al Senato i membri del governo hanno un id proprio legato con person_same_as. Il premier time si riconosce dall'argomento della seduta.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782764.884022,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "conta_interventi",
+  "cerca_interventi",
+  "cerca_per_significato",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 56.2,
+ "risposta_sistema": "Giorgia Meloni ha svolto **225 interventi in Aula** nella XIX legislatura come membro del Governo:\n\n- **Camera:** 157  \n- **Senato:** 68  \n\nHa partecipato a **5 question time** rivolti alla Presidente del Consiglio: **2 alla Camera** e **3 al Senato**.\n\nIl conteggio considera ogni turno di parola nei resoconti stenografici d’Aula; i dati disponibili arrivano al 3 novembre 2026 (l’ultimo suo intervento registrato è del 14 ottobre 2026).",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Giorgia Meloni (it:person:camera:302103; al Senato it:person:senato:23006) ha 159 interventi registrati alla Camera in 26 sedute (24 d'Aula e 2 audizioni in commissione) e 68 al Senato in 25 sedute d'Aula: 227 in tutto. Di questi, 16 alla Camera e 8 al Senato sono testi consegnati e non letti. Question time (premier time): 3 alla Camera (15/3/2023, 24/1/2024, 14/5/2025, 40 interventi) e 3 al Senato (23/11/2023, 7/5/2025, 13/5/2026, 30 interventi): 6 in tutto.",
+  "stato": "calcolata",
+  "limiti": "«Interventi» = righe di speech attribuite a lei, comprese repliche e testi consegnati per la pubblicazione (contati a parte). Question time = sedute in cui un suo intervento sta sotto un argomento «interrogazioni a risposta immediata». Esclusi Marco Meloni (senatore) e Giuseppe Meloni (assessore audito)."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 56.2
+ },
+ "causa_probabile": "strumento_mancante",
+ "note": "Interventi 157 Camera + 68 Senato (il riferimento ha 159, di cui 2 in audizione, e 68): giusto per l'Aula. Question time 5 (2 Camera, 3 Senato) contro 6: manca un premier time alla Camera, perché la ricerca testuale non trova gli argomenti «interrogazioni a risposta immediata». Nessun link."
+}

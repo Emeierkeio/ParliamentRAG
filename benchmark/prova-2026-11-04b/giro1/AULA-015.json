@@ -1,0 +1,291 @@
+{
+ "id": "AULA-015",
+ "domanda": "Chi è intervenuto a fine seduta il 28 ottobre 2026 alla Camera e su quali argomenti?",
+ "categoria": "interventi",
+ "tipo_risposta": "sintesi_con_citazioni",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note_domanda": "Seduta it:camera:19:sed0735, argomento «Interventi di fine seduta.» (fra gli altri Maria Stefania Marino). Il PRESIDENTE non è un intervento di fine seduta.",
+ "trappola": false,
+ "endpoint": "fascicolo",
+ "inizio": 1793783281.7790642,
+ "endpoint_usato": "/api/fascicolo",
+ "tempo_fascicolo_s": 180.0,
+ "tempo_s": 180.0,
+ "risposta_sistema": "## Introduzione\n\nLa discussione ha riguardato principalmente le misure economiche e fiscali, con particolare attenzione ai bonus edilizi, alle politiche per il lavoro, agli accordi internazionali con impatto su bilancio e PNRR, al sostegno agli enti locali e alle modalità di confronto parlamentare su specifici articoli normativi. Sono stati analizzati 61 interventi di 47 deputati nel periodo dal 09/11/2022 al 05/08/2026.\n\n## Posizione del Governo\n\nNel dibattito parlamentare sulle misure economiche e fiscali, il tema dei bonus edilizi e del superbonus ha suscitato numerosi interventi e richieste di chiarimento. **Giancarlo Giorgetti** puntualizza, [«terza questione che è stata richiamata più volte, in un senso o nell'altro è la vicenda dei bonus edilizi e del superbonus. Vorrei chiarire qui, in Aula, una volta tanto, e spero definitivamente, la vicenda: i bonus edilizi non sono un elemento nuovo nel nostro ordinamento, esistono almeno dal 1996»](b27). La posizione espressa evidenzia la volontà del Governo di distinguere tra le diverse forme di agevolazioni edilizie, sottolineando la storicità dello strumento ma anche la necessità di chiarire le responsabilità e gli effetti delle recenti modifiche normative. Nel complesso, il Governo appare impegnato a fornire spiegazioni puntuali sulle scelte adottate in materia di bonus edilizi, in risposta alle sollecitazioni provenienti dal Parlamento.\n\n---\n\n## Posizioni della Maggioranza\n\nPer Forza Italia - Berlusconi Presidente - PPE, nel dibattito sulle agevolazioni fiscali per il settore edilizio e l’efficienza energetica, il gruppo ha espresso valutazioni critiche sulla gestione delle misure adottate durante la crisi pandemica. **Erica Mazzetti** sottolinea, [«questa accelerazione, però, è stata sbagliata nei tempi, nei modi e nei calcoli da parte dell'allora Ministro Gualtieri, che aveva calcolato una cifra irrisoria rispetto a quella che, invece, era necessaria»](b18). In questa fase, la posizione espressa evidenzia la richiesta di maggiore attenzione nella programmazione e nell’attuazione degli interventi economici a sostegno del comparto edilizio. Non emergono, nel corpus analizzato, ulteriori elementi che indichino una posizione diversa o più articolata del gruppo sul tema in altri momenti.\n\nPer Fratelli d'Italia, nel corso della discussione parlamentare, il gruppo ha evidenziato attenzione verso la condivisione degli impegni proposti nelle mozioni e la loro concreta attuazione. **Carlo Maccari** sottolinea, [«innanzitutto, esprimo soddisfazione per il fatto che la stragrande parte degli impegni rappresentati nelle mozioni è stata accolta e che gli impegni verranno votati insieme»](b92). Questa posizione riflette un atteggiamento collaborativo e costruttivo del gruppo, orientato a valorizzare il lavoro parlamentare e il raggiungimento di risultati condivisi.\n\nPer Lega - Salvini Premier, nel corso dei dibattiti parlamentari, il gruppo ha più volte richiamato l’attenzione sulle difficoltà affrontate dagli enti locali e sulle ricadute concrete delle politiche economiche e di bilancio sulle famiglie e sulle amministrazioni territoriali. **Silvana Andreina Comaroli** sottolinea, [«prima di tutto sulla questione degli enti locali, perché le imprese e soprattutto le famiglie hanno avuto tanti problemi, ma anche gli enti locali: i nostri amministratori, che sono quelli che mettono la faccia di fronte ai cittadini, hanno fatto fatica a erogare i servizi necessari ai loro cittadini»](b30). La posizione espressa evidenzia la centralità, per il gruppo, del sostegno agli enti locali e la necessità di misure che facilitino l’erogazione dei servizi pubblici, con particolare attenzione alle esigenze di famiglie e imprese.\n\nPer Noi Moderati - MAIE - Centro Popolare, nel corso della seduta dedicata al seguito dell'audizione del Ministro per la pubblica amministrazione, il gruppo ha posto attenzione al confronto con il Governo sui temi della semplificazione amministrativa. **Francesco Saverio Romano** ha dichiarato: [«darei quindi la parola all'onorevole Casu per poter porre tale ulteriore quesito al Ministro, anche a beneficio degli altri colleghi»](b5). L'intervento riflette l'impegno del gruppo a favorire un dialogo costruttivo e approfondito tra Parlamento e Governo, valorizzando il contributo di tutti i deputati nella discussione sulle riforme amministrative. Nel corpus analizzato non emergono ulteriori elementi che indichino una posizione di merito più dettagliata del gruppo sugli argomenti trattati a fine seduta il 28 ottobre 2026.\n\n---\n\n## Posizioni dell'Opposizione\n\nPer Alleanza Verdi e Sinistra, nel dibattito parlamentare, il gruppo ha sottolineato l'importanza di garantire alle opposizioni la possibilità di discutere in modo ampio e approfondito i temi legati al lavoro, soprattutto in momenti di particolare rilevanza istituzionale. **Francesco Mari** denuncia: [«devo dire che quello che abbiamo scoperto stamattina, al di là del merito e degli aspetti regolamentari, però, ci dice una cosa gravissima: se c'è un diritto delle opposizioni, in un passaggio come questo, è quello di affrontare complessivamente i temi del lavoro, cogliere questa occasione per parlare al Paese di un'emergenza»](b39). Il gruppo pone quindi l'accento sulla necessità di un confronto parlamentare trasparente e inclusivo, ritenendo centrale il dibattito sulle questioni del lavoro e sulle emergenze sociali che interessano il Paese.\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Italia Viva - Casa Riformista, nel dibattito parlamentare, il gruppo ha posto l’attenzione sulle conseguenze concrete degli accordi internazionali in discussione, sottolineando la necessità di un confronto trasparente in Aula sulle ricadute economiche e sulle scelte di allocazione delle risorse. **Davide Faraone** evidenzia: [«per cui, non stiamo qui a ragionare sul nulla, ma stiamo parlando di accordi che avranno ricadute sulla legge di bilancio che faremo, sul Piano nazionale di ripresa e resilienza, visto che abbiamo sentito che si vogliono utilizzare risorse per compensare e ristorare le imprese»](b6). La posizione espressa richiama il ruolo centrale del Parlamento nel valutare l’impatto di tali decisioni, con particolare attenzione agli effetti su bilancio pubblico, PNRR e sostegno alle imprese. Non emergono nelle evidenze ulteriori elementi che indichino una posizione univoca e definitiva del gruppo sugli specifici accordi citati.\n\nPer Movimento 5 Stelle, nel corso della discussione parlamentare, il gruppo ha sollevato forti critiche sulle modalità con cui il Governo ha gestito la questione dell’articolo 30-bis, sottolineando la necessità di trasparenza e di un confronto parlamentare effettivo. **Valentina D'Orso** ha richiesto con fermezza, [«dobbiamo discutere quantomeno l'articolo 30-bis e deve essere certificata la posizione di ogni singola forza politica sull'articolo 30-bis votando, votando il nostro emendamento soppressivo. Andiamo in Commissione, anche solo per aprire sul 30-bis, e andiamo a votare il soppressivo»](b87). Il gruppo ha quindi insistito sulla necessità di un voto chiaro e pubblico sull’emendamento soppressivo, ribadendo la richiesta di un dibattito trasparente e di una presa di posizione netta da parte di tutte le forze politiche coinvolte.\n\nPer Partito Democratico - Italia Democratica e Progressista, nel corso della seduta, il gruppo ha espresso preoccupazione per la gestione delle misure sanitarie e la necessità di un maggiore coinvolgimento del Parlamento nelle decisioni relative all’emergenza COVID. **Matteo Orfini** sottolinea, [«noi, insieme ai colleghi del MoVimento 5 Stelle, abbiamo aperto questa sessione del nostro lavoro pomeridiano chiedendo un'informativa urgente da parte del Ministro della Salute per riferire sulle misure che si intendono assumere in una condizione che torna a essere allarmante»](b100). In questa fase, la posizione espressa dal gruppo si concentra sulla richiesta di trasparenza e tempestività nelle comunicazioni del Governo riguardo all’evoluzione della pandemia e alle strategie di risposta.\n\n---\n\n## Gruppo Misto\n\nPer +Europa - Stati Uniti d'Europa, nel dibattito parlamentare, la componente +Europa - Stati Uniti d'Europa del gruppo Misto ha posto l'accento sul ruolo centrale del Parlamento nei rapporti con il Governo, soprattutto in occasione della discussione sulle risoluzioni di maggioranza. **Benedetto Della Vedova** richiama con fermezza: [«prima, nella discussione, ho sentito una collega ringraziare il Ministro Fitto, perché ha partecipato e ha collaborato alla stesura della risoluzione di maggioranza. Signor Presidente, in questa sede, è il Parlamento che impegna il Governo con la risoluzione, non è il Governo che impegna il Parlamento»](b79). La componente ribadisce così la necessità di tutelare le prerogative parlamentari e di evitare che l'iniziativa politica venga subordinata alle scelte dell'esecutivo.\n\nPer Futuro Nazionale Vannacci - Free, nel dibattito sulle comunicazioni del Governo riguardo all'attivazione della clausola di salvaguardia nazionale, la componente Futuro Nazionale Vannacci - Free ha espresso dubbi sull'efficacia delle politiche economiche adottate negli ultimi anni, sottolineando la crescita del debito pubblico e la gestione delle risorse. **Gianangelo Bof** ironizza: [«se noi avessimo buttato quei soldi dalle finestre di Palazzo Chigi, dalle finestre di Montecitorio, dalle finestre di Palazzo Madama, probabilmente, il PIL sarebbe cresciuto comunque»](b1). Da questo intervento emerge una posizione critica della componente rispetto all'impatto reale delle misure economiche adottate dal Governo, con particolare attenzione all'utilizzo e agli effetti della spesa pubblica.\n\nPer Minoranze Linguistiche, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Sud Chiama Nord, nel corpus analizzato non risultano interventi rilevanti su questo tema.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "pass",
+    "quotes": "pass"
+   },
+   "groups": {
+    "present": [
+     "FdI",
+     "PD",
+     "Lega",
+     "M5S",
+     "FI",
+     "AVS",
+     "Azione",
+     "IV",
+     "NM",
+     "+Europa",
+     "FN",
+     "Min. ling.",
+     "Governo"
+    ],
+    "missing": [
+     "Misto, non iscritti"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "terza questione che è stata richiamata più volte, in un senso o nell'altro è la vicenda dei bonus edilizi e del superbonus. Vorrei chiarire qui, in Aula, una volta tanto, e spero definitivamente, la…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0284&tipo=stenografico#sed0284.stenografico.tit00020.sub00030.int00020"
+    },
+    {
+     "quote": "questa accelerazione, però, è stata sbagliata nei tempi, nei modi e nei calcoli da parte dell'allora Ministro Gualtieri, che aveva calcolato una cifra irrisoria rispetto a quella che, invece, era…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0069&tipo=stenografico#sed0069.stenografico.tit00110.sub00020.int00100"
+    },
+    {
+     "quote": "innanzitutto, esprimo soddisfazione per il fatto che la stragrande parte degli impegni rappresentati nelle mozioni è stata accolta e che gli impegni verranno votati insieme",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0065&tipo=stenografico#sed0065.stenografico.tit00120.sub00010.int00130"
+    },
+    {
+     "quote": "prima di tutto sulla questione degli enti locali, perché le imprese e soprattutto le famiglie hanno avuto tanti problemi, ma anche gli enti locali: i nostri amministratori, che sono quelli che…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0161&tipo=stenografico#sed0161.stenografico.tit00070.sub00020.int00140"
+    },
+    {
+     "quote": "darei quindi la parola all'onorevole Casu per poter porre tale ulteriore quesito al Ministro, anche a beneficio degli altri colleghi",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "devo dire che quello che abbiamo scoperto stamattina, al di là del merito e degli aspetti regolamentari, però, ci dice una cosa gravissima: se c'è un diritto delle opposizioni, in un passaggio come…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0355&tipo=stenografico#sed0355.stenografico.tit00060.sub00010.int00040"
+    },
+    {
+     "quote": "per cui, non stiamo qui a ragionare sul nulla, ma stiamo parlando di accordi che avranno ricadute sulla legge di bilancio che faremo, sul Piano nazionale di ripresa e resilienza, visto che abbiamo…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0519&tipo=stenografico#sed0519.stenografico.tit00100.int00160"
+    },
+    {
+     "quote": "dobbiamo discutere quantomeno l'articolo 30-bis e deve essere certificata la posizione di ogni singola forza politica sull'articolo 30-bis votando, votando il nostro emendamento soppressivo. Andiamo…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0647&tipo=stenografico#sed0647.stenografico.tit00080.int00180"
+    },
+    {
+     "quote": "noi, insieme ai colleghi del MoVimento 5 Stelle, abbiamo aperto questa sessione del nostro lavoro pomeridiano chiedendo un'informativa urgente da parte del Ministro della Salute per riferire sulle…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0029&tipo=stenografico#sed0029.stenografico.tit00060.sub00010.int00940"
+    },
+    {
+     "quote": "prima, nella discussione, ho sentito una collega ringraziare il Ministro Fitto, perché ha partecipato e ha collaborato alla stesura della risoluzione di maggioranza. Signor Presidente, in questa…",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0073&tipo=stenografico#sed0073.stenografico.tit00040.sub00010.int00040"
+    },
+    {
+     "quote": "se noi avessimo buttato quei soldi dalle finestre di Palazzo Chigi, dalle finestre di Montecitorio, dalle finestre di Palazzo Madama, probabilmente, il PIL sarebbe cresciuto comunque",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0704&tipo=stenografico#sed0704.stenografico.tit00020.sub00020.int00080"
+    }
+   ],
+   "authority": {
+    "topic": "Chi è intervenuto a fine seduta il 28 ottobre 2026 alla Camera e su quali argomenti?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Giancarlo Giorgetti",
+      "group": "Governo",
+      "role": "governo",
+      "rank": 2,
+      "pool_size": 5,
+      "group_size": 5,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Erica Mazzetti",
+      "group": "Forza Italia",
+      "role": null,
+      "rank": 2,
+      "pool_size": 2,
+      "group_size": 2,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Carlo Maccari",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "rank": 3,
+      "pool_size": 3,
+      "group_size": 3,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Silvana Andreina Comaroli",
+      "group": "Lega - Salvini Premier",
+      "role": null,
+      "rank": 1,
+      "pool_size": 5,
+      "group_size": 5,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Francesco Saverio Romano",
+      "group": "Noi Moderati",
+      "role": null,
+      "rank": 4,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Francesco Mari",
+      "group": "Alleanza Verdi e Sinistra",
+      "role": null,
+      "rank": 4,
+      "pool_size": 8,
+      "group_size": 8,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Davide Faraone",
+      "group": "Italia Viva - Casa Riformista",
+      "role": null,
+      "rank": 1,
+      "pool_size": 10,
+      "group_size": 10,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Valentina D'Orso",
+      "group": "Movimento 5 Stelle",
+      "role": null,
+      "rank": 2,
+      "pool_size": 2,
+      "group_size": 2,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Matteo Orfini",
+      "group": "Partito Democratico",
+      "role": null,
+      "rank": 1,
+      "pool_size": 2,
+      "group_size": 2,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Benedetto Della Vedova",
+      "group": "+Europa (Misto)",
+      "role": null,
+      "rank": 3,
+      "pool_size": 3,
+      "group_size": 3,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Gianangelo Bof",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "rank": 1,
+      "pool_size": 5,
+      "group_size": 5,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Nella seduta n. 735 della Camera del 28/10/2026, punto «Interventi di fine seduta», sono intervenuti quattro deputati: Maria Stefania Marino (PD-IDP), solidarietà agli agricoltori e agli autotrasportatori che manifestano per chiedere aiuti; Rachele Scarpa (PD-IDP), l'astensione dell'Italia all'Assemblea generale dell'ONU sul voto per la fine dell'embargo a Cuba; Stefania Ascari (M5S), sullo stesso voto su Cuba («Una sola parola: vergogna»); Arnaldo Lomuti (M5S), rapine e furti violenti nel Vulture-Melfese (Venosa e Lavello). Gli interventi di Marino e Scarpa sono spezzati in più frammenti dalle interruzioni della Presidenza.",
+  "stato": "calcolata",
+  "limiti": "Esclusi gli interventi del PRESIDENTE. Gli argomenti sono ricavati dall'inizio del testo di ciascun intervento."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "pass",
+   "quotes": "pass",
+   "gruppi_mancanti": [
+    "Misto, non iscritti"
+   ],
+   "citazioni_verificate": 11,
+   "citazioni_esatte": 11,
+   "controllo_a_campione": [
+    {
+     "citazione": "terza questione che è stata richiamata più volte…",
+     "trovata": true,
+     "intervento": "it:camera:19:sed0284:tit00020.sub00030.int00020",
+     "data": "2024-04-24"
+    },
+    {
+     "citazione": "prima di tutto sulla questione degli enti locali…",
+     "trovata": true,
+     "intervento": "it:camera:19:sed0161:tit00070.sub00020.int00140",
+     "data": "2023-09-13"
+    },
+    {
+     "citazione": "dobbiamo discutere quantomeno l'articolo 30-bis…",
+     "trovata": true,
+     "intervento": "it:camera:19:sed0647:tit00080.int00180",
+     "data": "2026-04-21"
+    }
+   ]
+  },
+  "trappola": null,
+  "tempo_s": 180.0
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "Il fascicolo ignora la seduta: sintesi per gruppo su bonus edilizi e bilancio, 61 interventi dal 9/11/2022 al 5/8/2026, nessuno del 28/10/2026. Non nomina nessuno dei quattro intervenuti a fine seduta (Marino, Scarpa, Ascari, Lomuti). Le 11 citazioni sono esatte ma tutte fuori tema."
+}

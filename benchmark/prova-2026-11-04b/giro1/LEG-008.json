@@ -1,0 +1,34 @@
+{
+ "id": "LEG-008",
+ "domanda": "La legge di conversione nata dall'AC 3131 è stata pubblicata? Numero, data e link al testo vigente.",
+ "categoria": "fonti",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782760.106752,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto"
+ ],
+ "tempo_s": 6.4,
+ "risposta_sistema": "Sì. L’AC 3131 è stato convertito nella **legge 23 ottobre 2026, n. 196**, pubblicata nella **Gazzetta Ufficiale n. 249 del 26 ottobre 2026**.\n\nIl testo vigente non è disponibile come link nei dati consultati; la scheda ufficiale dell’atto è [qui](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131).",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Sì: l'AC 3131 (S. 2023, conversione del decreto-legge 28 agosto 2026, n. 154, sulla continuità operativa di impianti di interesse strategico nazionale) è stato approvato definitivamente dalla Camera il 20/10/2026 ed è diventato la legge 23 ottobre 2026, n. 196 (stato «Approvato definitivamente. Legge» dal 23/10/2026). Scheda: http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131. Il database non ha la data di pubblicazione in Gazzetta Ufficiale né il link al testo vigente.",
+  "stato": "parziale",
+  "limiti": "Numero e data della legge ci sono (law_number, law_date); mancano data e numero della Gazzetta Ufficiale e il link al testo vigente su Normattiva (l'URN urn:nir:stato:legge:2026-10-23;196 si potrebbe costruire, ma non è nel database e non è verificato). «Pubblicata» si deduce solo dallo stato dell'iter «Approvato definitivamente. Legge», distinto da «non ancora pubblicato» del 20/10."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 6.4
+ },
+ "causa_probabile": null,
+ "note": "Legge 23 ottobre 2026 n. 196 giusta; la GU n. 249 del 26/10/2026 viene dalla descrizione dell'atto nel DB, che il riferimento non aveva visto. Dice in modo onesto che manca il link al testo vigente e linka la scheda Camera."
+}

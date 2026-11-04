@@ -1,0 +1,96 @@
+{
+ "id": "AULA-055",
+ "domanda": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Otto approvazioni del 2026, tutte vere, su 23 della legislatura (mancano anche AC 758 e 1858 del 2026); lo dichiara parziale. Nessuno strumento elenca le sedute in sede legislativa: l'agente va per ricerca testuale e si ferma.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782233.158398,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "cerca_per_significato",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 115.7,
+ "risposta_sistema": "Ho trovato **otto approvazioni in sede legislativa alla Camera nel 2026**, ma non posso confermare che siano l’elenco completo dell’intera XIX legislatura: le ricerche relative al 2022-2025 non hanno prodotto un risultato utilizzabile prima dell’interruzione.\n\nLe approvazioni che risultano dai resoconti della Camera sono:\n\n- **VII Commissione Cultura**, 11 febbraio 2026: proposta Amorese, dal titolo che nel resoconto disponibile inizia con *«Modifiche al decreto del Presidente della Repubblica…»*.\n- **XII Commissione Affari sociali**, 13 maggio 2026: **Disposizioni per la prevenzione e la diagnosi precoce del melanoma e istituzione della Giornata nazionale per la prevenzione del melanoma** (C. 813-B).\n- **Commissioni VII Cultura e XII Affari sociali**, 29 luglio 2026: **Disposizioni per l’istituzione di spazi adibiti all’allattamento…**\n- **I Commissione Affari costituzionali**, 4 agosto 2026: **Istituzione della Giornata nazionale per il diritto al divertimento in sicurezza**.\n- **VIII Commissione Ambiente**, 4 agosto 2026: **Istituzione dell’area marina protetta “Isola di Capri”…**\n- **XII Commissione Affari sociali**, 1° ottobre 2026: **Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti**.\n- **VII Commissione Cultura**, 7 ottobre 2026: **Dichiarazione di monumento nazionale di Palazzo Fortunato in Rionero in Vulture**.\n- **VIII Commissione Ambiente**, 14 ottobre 2026, con modificazioni: **Modifica all’articolo 7 del decreto legislativo 24 giugno 2003, n. 209, in materia di destinazione di veicoli fuori uso alle scuole di indirizzo tecnico e agli istituti tecnici superiori per l’utilizzazione a fini didattici** (C. 1786 e C. 2209 abb.).\n\nPer completare e verificare l’elenco dell’intera legislatura, occorre consultare le pagine della **Camera dei deputati** dedicate ai lavori delle commissioni in sede legislativa e le comunicazioni d’Aula intitolate “Approvazione in Commissione”, per il periodo dal 13 ottobre 2022 al 3 novembre 2026.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "warn"
+   },
+   "groups": {
+    "present": [
+     "FdI"
+    ],
+    "missing": [
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": []
+   },
+   "quotes": [
+    {
+     "quote": "Modifiche al decreto del Presidente della Repubblica…",
+     "status": "omissions",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+    "available": false,
+    "voices": [
+     {
+      "name": "Alessandro Amorese",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Dal Bollettino risultano 23 approvazioni in sede legislativa nelle commissioni della Camera, su 22 provvedimenti (il melanoma, AC 813, è approvato due volte: 11/6/2025 e, come AC 813-B, 13/5/2026). Per commissione: VII Cultura 12 (AC 1550, 1127-1289, 866-1764, 1763, 1956, 1980, 418-B, 1979, 758, 2159, 1858, 1738-2239), VIII Ambiente 4 (laguna di Orbetello AC 400 e abb., vittime dei crolli di infrastrutture AC 2145-2146, area marina di Capri AC 2057-2772, veicoli fuori uso alle scuole AC 1786-2209), XII Affari sociali 3 (AC 813, 813-B, 1886), IX Trasporti 1 (AC 1976), V Bilancio 1 (AC 2668), I Affari costituzionali 1 (AC 1296), VII e XII riunite 1 (AC 2637). Quindici sono già legge (fra cui L. 223/2023, 142/2024, 79/2024, 80/2024, 130/2024, 165/2024, 11/2025, 59/2025, 58/2025, 63/2025, 171/2025, 101/2026, 158/2026, 175/2026, 192/2026); le altre sono state trasmesse al Senato o sono in navetta.",
+  "stato": "parziale",
+  "limiti": "Il Bollettino delle commissioni c'è solo dal 15/5/2023: approvazioni in sede legislativa fra ottobre 2022 e maggio 2023 non si vedono. L'approvazione si legge da agenda_item.stage (contiene «approvazione» o «conclusione») nelle sedute con seat = 'SEDE LEGISLATIVA'; act_assignment non distingue la sede (solo 'referente'). Lo stato dell'atto è quello di act.status oggi."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 115.7
+ },
+ "causa_probabile": "strumento_mancante"
+}

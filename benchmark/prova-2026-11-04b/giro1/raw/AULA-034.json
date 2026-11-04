@@ -1,0 +1,193 @@
+{
+ "id": "AULA-034",
+ "domanda": "Ricostruisci la navetta della legge elettorale: C. 2822, S. 1971, C. 2822-B, con la data di ogni passaggio e l'esito di ogni lettura.",
+ "categoria": "iter",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Alla Camera la terza lettura ha un uri a parte (it:camera:19:ac:2822-B). Trasmissioni: 17/7/2026 al Senato, 15/9/2026 alla Camera.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782546.998288,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2822",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2822\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822\", \"kind\": \"bill\", \"title\": \"BIGNAMI ed altri: \\\"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\\\" (2822)\", \"date\": \"2026-02-26\", \"status\": \"Approvato, segue Navette\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1971",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1971\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1971\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\", \"date\": \"2026-07-17\", \"status\": \"appr. con modificaz\", \"law_number\": \"180\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55214.htm\", \"initiative\": \"Dep. Bignami Galeazzo ed altri\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2822-B",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2822-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822-B\", \"kind\": \"bill\", \"title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"date\": \"2026-09-15\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"180\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2822"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2822\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822\", \"kind\": \"bill\", \"title\": \"BIGNAMI ed altri: \\\"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\\\" (2822)\", \"date\": \"2026-02-26\", \"status\": \"Approvato, segue Navette\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2026-07-16\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2822\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:307456\", \"name\": \"Alessandro Battilocchio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307456&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307603\", \"name\": \"Alessandro Colucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307603&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307641\", \"name\": \"Igor Giancarlo Iezzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307641&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:300447\", \"name\": \"Maurizio Enzo Lupi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300447&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1971"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1971\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1971\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\", \"date\": \"2026-07-17\", \"status\": \"appr. con modificaz\", \"law_number\": \"180\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55214.htm\", \"initiative\": \"Dep. Bignami Galeazzo ed altri\", \"kind_raw\": \"ordinaria\", \"description\": \"On. Maurizio Lupi; On. Paolo Barelli; On. Galeazzo Bignami; On. Alessandro Battilocchio; On. Riccardo Molinari; On. Alessandro Colucci; On. Stefano Benigni; On. Igor Giancarlo Iezzi; On. Alessandro Urzi'; On. Paolo Emilio Russo\", \"law_date\": \"2026-10-09\", \"source_uri\": \"http://dati.senato.it/ddl/60317\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:307456\", \"name\": \"Alessandro Battilocchio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307456&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307603\", \"name\": \"Alessandro Colucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307603&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307641\", \"name\": \"Igor Giancarlo Iezzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307641&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:300447\", \"name\": \"Maurizio Enzo Lupi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300447&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:300497\","
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2822-B"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2822-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822-B\", \"kind\": \"bill\", \"title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"date\": \"2026-09-15\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"180\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"description\": \"Legge 180 del 9 ottobre 2026 pubblicata nella Gazzetta Ufficiale n. 235 del 9 ottobre 2026\", \"law_date\": \"2026-10-09\", \"status_date\": \"2026-10-09\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2822-B\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:307456\", \"name\": \"Alessandro Battilocchio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307456&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307603\", \"name\": \"Alessandro Colucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307603&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307641\", \"name\": \"Igor Giancarlo Iezzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307641&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:300447\", \"name\": \"Maurizio Enzo Lupi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300447&legi"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2822",
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": null,
+    "end": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "senato",
+    "act": "it:senato:19:ddl:1971",
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": null,
+    "end": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:sed0454:v002\", \"sitting\": \"it:senato:19:sed0454\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-09-15\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 113, \"against\": 71, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di soppressione de\"}]}"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2822-B",
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": null,
+    "end": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0723:v001\", \"sitting\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-08\", \"title\": \"Votazione finale PDL n. 2822-B\", \"kind\": \"final\", \"favor\": 227, \"against\": 164, \"abstain\": 0, \"approved\": true, \"secret\": true, \"confidence\": false, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio\"}]}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "start": "2026-07-16",
+    "end": "2026-07-16",
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0691\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 691, \"date\": \"2026-07-16\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}]}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0691",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0691\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 691, \"date\": \"2026-07-16\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:camera:19:sed0691:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0691:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 87, c…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0691:tit00020\", \"order\": 2, \"title\": \"Preavviso di votazioni elettroniche (ore 9,38). (ore 9,38) (ore 9,38)\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0691:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Poiché nel corso della seduta potranno aver luogo votazioni mediante procedimento elettronico, decorrono da questo momento i termini di preavviso di 5…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0691:tit00030\", \"order\": 3, \"title\": \"Seguito della discussione della proposta di legge: Bignami ed altri: “Disposizioni in materia di elezioni della Camera dei Deputati e del Senato della Repubblica” (A.C. 2822-A) e delle abbinate proposte di legge: Magi; Pavanelli ed altri (limitatamente all'articolo 5) (A.C. 157-2236) (ore 9,39). (ore 9,39) (ore 9,39)\", \"acts\": [{\"ref\": \"pdl:157\", \"uri\": \"it:camera:19:ac:157\", \"title\": \"MAGI: \\\"Modifica all’articolo 18-<em>bis</em> del testo unico delle leggi recanti norme per la elezione della Camera dei deputati, di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di raccolta digitale delle sottoscrizioni per la presentazione delle liste e delle candidature\\\" (157)\"}, {\"ref\": \"pdl:2236\", \"uri\": \"it:camera:19:ac:2236\", \"title\": \"PAVANELLI ed altri: \\\"Disposizioni per la semplificazione del procedimento elettorale, per la digitalizzazione delle liste elettorali nonché in materia di propaganda elettorale e di esercizio del diritto di voto da parte dei cittadini che, per motivi di studio, di lavoro o di cura, hanno temporaneo domicilio in un comune diverso da quello di residenza\\\" (2236)\"}, {\"ref\": \"pdl:2822-A\", \"uri\": \"it:camera:19:ac:2822\","
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "La Camera approva",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-07-16",
+    "end": "2026-07-16",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 4, \"items\": [{\"uri\": \"it:camera:19:sed0691:tit00030.sub00010.int00100\", \"sitting\": {\"uri\": \"it:camera:19:sed0691\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 691, \"date\": \"2026-07-16\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Bignami ed altri: “Disposizioni in materia di elezioni della Camera dei Deputati e del Senato della Repubblica” (A.C. 2822-A) e delle abbinate proposte di legge: Magi; Pavanelli ed altri (limitatamente all'articolo 5) (A.C. 157-2236) (ore 9,39). (ore 9,39) (ore 9,39)\", \"person\": {\"uri\": \"it:person:camera:306160\", \"name\": \"Maria Elena Boschi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306160&legislatura=19\"}, \"speaker_label\": \"MARIA ELENA BOSCHI\", \"snippet\": \"tornare ai collegi uninominali, alla legge Mattarella, di introdurre le preferenze, ma nessuna di queste proposte è stata [[approvata]]. Allora, voi avete deciso di tornare all'impianto dell'Italicum. Avete cambiato idea anche su questo. Dieci anni fa ci avete ... questa legge elettorale verrà cambiata al Senato, se verranno introdotte le preferenze al Senato, per poi tornare alla [[Camera]] ed essere bocciata definitivamente a scrutinio segreto. Noi vi aspettiamo qui, se avrete il coraggio di cambiare quello che va modificato\"}, {\"uri\": \"it:camera:19:sed0691:tit00030.sub00010.int00270\", \"sitting\": {\"uri\": \"it:camera:19:sed0691\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 691, \"date\": \"2026-07-16\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Bignami ed altri: “Disposizioni in materia di elezioni della Camera dei Deputati e del Senato della Repubblica” (A.C. 2822-A) e delle abbinate proposte di legge: Magi; Pavanelli ed altri (limitatamente all'articolo 5) (A.C. 157-2236) (ore 9,39). (ore 9,39) (ore 9,39)\", \"person\": {\"uri\": \"it:person:camera:308890\", \"name\": \"Andrea Barabotti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308890&legislatura=19\"}, \"speaker_label\": \"ANDREA BARABOTTI\", \"snippet\": \"Grazie, Presidente. Governo, onorevoli colleghi, mancano pochi minuti al voto finale della [[Camera]] sulla legge elettorale denominata Stabilicum e, oltre ad associarmi ai ringraziamenti che i relatori e il presidente Pagano hanno già fatto nei confronti del Governo, dei relatori ... visto le nostre istanze ignorate a Bruxelles.\\n\\nMa, oltre alla stabilità, esiste un'altra ragione ancora più importante per [[approvare]] questa legge e cioè quella di dare una risposta alle aspettative dei nostri cittadini.\\n\\nCi"
+  },
+  {
+   "name": "votazione",
+   "args": {
+    "uri": "it:camera:19:sed0691:v001",
+    "with_ballots": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0691:v001\", \"sitting\": \"it:camera:19:sed0691\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-07-16\", \"title\": \"Votazione finale \", \"kind\": \"final\", \"favor\": 217, \"against\": 152, \"abstain\": 2, \"approved\": true, \"secret\": true, \"confidence\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=691_1&tipo=dettaglio\", \"description\": \"PDL 2822-A E ABB - VOTO FINALE\", \"present\": 371, \"voting\": 369, \"majority\": 185, \"final\": true, \"acts\": [], \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 4, \"other\": 113}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 68}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 6, \"mission\": 4, \"other\": 46}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 2, \"mission\": 2, \"other\": 49}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 2, \"mission\": 1, \"other\": 45}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 10}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 1, \"mission\": 1, \"other\": 8}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 1, \"other\": 7}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 1, \"mission\": 0, \"other\": 7}, {\"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 7}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 2, \"mission\": 0, \"other\": 5}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4137\", \"name\": \""
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "atto",
+  "atto",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_sedute",
+  "seduta",
+  "cerca_interventi",
+  "votazione"
+ ],
+ "tempo_s": 25.0,
+ "risposta_sistema": "La navetta si è conclusa in tre letture, con approvazione definitiva della **legge n. 180 del 9 ottobre 2026**.\n\n- **Camera, C. 2822** — presentata il **26 febbraio 2026**; la Camera l’ha approvata il **16 luglio 2026** e trasmessa al Senato.  \n  Esito della votazione finale: **217 favorevoli, 152 contrari, 2 astenuti**; scrutinio segreto; presenti 371, votanti 369, maggioranza 185.  \n  Scheda ufficiale: [Camera, C. 2822](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822).\n\n- **Senato, S. 1971** — ricevuto dal Senato il **17 luglio 2026**; il Senato lo ha **approvato con modificazioni** il **15 settembre 2026**, rinviandolo alla Camera.  \n  Esito della votazione finale: **113 favorevoli, 71 contrari, 2 astenuti**; scrutinio palese.  \n  Scheda ufficiale: [Senato, S. 1971](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55214.htm).\n\n- **Camera, C. 2822-B** — testo modificato dal Senato, trasmesso alla Camera il **15 settembre 2026**; la Camera lo ha **approvato definitivamente** l’**8 ottobre 2026**.  \n  Esito della votazione finale: **227 favorevoli, 164 contrari, nessun astenuto**; scrutinio segreto. Il provvedimento è divenuto **legge n. 180 del 9 ottobre 2026**, pubblicata nella *Gazzetta Ufficiale* n. 235 del 9 ottobre.  \n  Scheda ufficiale: [Camera, C. 2822-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B).\n\nIn sintesi: **Camera approva → Senato modifica e approva → Camera approva senza ulteriori modifiche**. Non ho ricostruito qui le singole votazioni su articoli ed emendamenti: le schede ufficiali dei tre atti riportano l’iter e i relativi resoconti.",
+ "eventi": {
+  "status": 1,
+  "tool": 26,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

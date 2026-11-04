@@ -1,0 +1,32 @@
+{
+ "id": "CIT-034",
+ "domanda": "quante leggi ha fatto questo governo?",
+ "categoria": "statistiche",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "274 leggi di iniziativa del governo è il numero giusto, contato una volta. Manca il totale (366 leggi, 87 parlamentari) e la distinzione dei 125 decreti convertiti chiesta dalle note.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782252.221886,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "conta_atti"
+ ],
+ "tempo_s": 6.2,
+ "risposta_sistema": "Il Governo ha fatto approvare **274 leggi** nella XIX legislatura, contando una sola volta ciascuna legge anche quando il relativo disegno di legge è passato da entrambe le Camere.\n\nIl conteggio riguarda le leggi di iniziativa governativa pubblicate dal **17 novembre 2022** al **23 ottobre 2026**; esclude quindi i testi già approvati ma non ancora pubblicati come legge. I dati parlamentari arrivano fino al 3 novembre 2026.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Dall'insediamento del governo Meloni (22/10/2022) al 2/11/2026 sono state approvate e promulgate 366 leggi: 363 ordinarie e 3 costituzionali. Tutte cadono sotto il governo Meloni (la prima è del 17/11/2022). Di iniziativa del governo sono 274: 125 leggi di conversione di decreti-legge, 148 altri disegni di legge del governo e 1 legge costituzionale. Di iniziativa parlamentare 87 (86 ordinarie e 1 costituzionale); 3 hanno iniziativa mista, 1 popolare e 1 costituzionale è di iniziativa regionale.",
+  "stato": "calcolata",
+  "limiti": "Legge = coppia (law_number, anno di law_date) distinta, separando leggi ordinarie e costituzionali (constitutional); conta una volta la legge anche se compare in più atti o in tutti e due i rami. Esclusa la riga con law_date 2100-01-01. Iniziativa normalizzata dal testo grezzo del Senato; se gli atti di una legge hanno iniziative diverse è «Mista». Decreto convertito = titolo con «conversione in legge». Dati fino al 2/11/2026. «Questo governo» = I Governo Meloni (it:gov:202, dal 21-22/10/2022): tutte le leggi della XIX in archivio sono successive."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 6.2
+ },
+ "causa_probabile": "ragionamento_o_prompt"
+}

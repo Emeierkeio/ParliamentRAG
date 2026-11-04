@@ -1,0 +1,41 @@
+{
+ "id": "COM-031",
+ "domanda": "Il Bollettino delle commissioni del 30 ottobre 2026 è definitivo o ancora provvisorio?",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "sitting.provisional: 352 sedute provvisorie, tutte resoconti stenografici di commissione. Le risposte su sedute provvisorie vanno marcate.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784329.378359,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "elenco_sedute",
+  "cerca_per_significato",
+  "elenco_sedute"
+ ],
+ "tempo_s": 16.1,
+ "risposta_sistema": "Non risulta nei dati alcun Bollettino o seduta di commissione del **30 ottobre 2026**, né alla Camera né al Senato. Non posso quindi stabilire se quel Bollettino fosse definitivo o provvisorio dalla fonte disponibile.\n\nI dati delle sedute arrivano fino al 3 novembre 2026; l’ultima attività di commissione registrata prima di quella data è del 29 ottobre.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il Bollettino delle commissioni del 30/10/2026 non è nel database: l'ultimo caricato è il n. 756 del 29/10/2026 (11 sedute). I Bollettini dal 26 al 29/10/2026 (n. 753-756) risultano tutti non provvisori. Gli unici resoconti provvisori della settimana sono 4 stenografici di commissione del 27/10/2026, che non fanno parte del Bollettino.",
+  "stato": "non_calcolabile",
+  "limiti": "Il Bollettino del 30/10/2026 manca (non si sa dai dati se sia uscito). Il flag sitting.provisional riguarda di fatto i resoconti stenografici di commissione (committee_verbatim, 352 provvisori); per il Bollettino (committee_summary) vale sempre false, quindi non distingue un Bollettino provvisorio da uno definitivo."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": null,
+  "trappola": null,
+  "tempo_s": 16.1
+ },
+ "giro1": {
+  "correttezza": 2,
+  "fonti": null
+ },
+ "causa_probabile": null,
+ "note": "Il Bollettino del 30/10/2026 non è nei dati e non si può dire se sia provvisorio: giusto. Ora aggiunge che l'ultima attività di commissione è del 29/10."
+}

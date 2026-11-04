@@ -1,0 +1,52 @@
+{
+ "id": "COM-012",
+ "domanda": "Fascicolo degli emendamenti sul ddl caregiver in XII Commissione: quanti per articolo e quanti articoli aggiuntivi?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Dà 499 proposte (sono righe; le proposte distinte sono 418), nessun riparto per articolo e 48 articoli aggiuntivi (sono 23). conta_emendamenti chiamato con venue «committee» ha reso 0.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782258.3846989,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "atto",
+  "conta_emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti"
+ ],
+ "tempo_s": 33.9,
+ "risposta_sistema": "Ho individuato il fascicolo relativo alla pdl **C. 2789**, “Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari”, esaminata in sede referente dalla XII Commissione.\n\nNel fascicolo risultano **499 proposte emendative** complessive. Non posso però fornire un conteggio affidabile **articolo per articolo**: i dati letti riportano per ogni proposta l’articolo di riferimento, ma l’elenco completo non è stato disponibile in una forma aggregata per articolo.\n\nHo trovato **48 proposte** il cui testo contiene la formula “Dopo l’articolo …, aggiungere il seguente”; questo è un indicatore degli articoli aggiuntivi, ma non è un conteggio certo degli articoli aggiuntivi formalmente presentati, perché alcune proposte contengono più inserimenti conseguenziali. Tra quelle verificate compaiono, per esempio, articoli aggiuntivi dopo gli articoli 4, 5, 7, 8, 12 e 13.\n\nPer il riparto esatto, va consultato il **fascicolo degli emendamenti della XII Commissione sulla C. 2789** sul sito della Camera, nella pagina dell’atto e nei documenti dell’esame in sede referente; le proposte sono identificabili dai numeri, ad esempio `4.01`, `5.01`, `8.01`, `12.01`, `13.01`.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il ddl caregiver è l'AC 2789 del governo («Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari»), in sede referente in XII Commissione. Le proposte distinte sono 418: 389 emendamenti (387 nel fascicolo del 22/4/2026 più gli emendamenti 1.100 e 2.100 del relatore), 23 articoli aggiuntivi e 6 subemendamenti al 2.100. Per articolo: art. 1: 29; art. 2: 63 emendamenti e 6 subemendamenti; art. 3: 18; art. 4: 71 e 1 articolo aggiuntivo; art. 5: 21 e 3; art. 6: 14; art. 7: 50 e 1; art. 8: 33 e 2; art. 9: 9; art. 10: 1; art. 11: 3; art. 12: 33 e 2; art. 13: 32 e 14; art. 14: 4; art. 15: 8. Ne risultano approvate 46.",
+  "stato": "calcolata",
+  "limiti": "Proposta = numero distinto (con tipo e articolo): lo stesso numero ricompare fra le riformulazioni e fra le approvate e va contato una volta (499 righe, 418 proposte). Gli articoli aggiuntivi sono contati sotto l'articolo dopo cui si inseriscono. Il dato degli approvati viene dai gruppi «PROPOSTE EMENDATIVE APPROVATE» del Bollettino."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 33.9
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti"
+}

@@ -1,0 +1,36 @@
+{
+ "id": "GIO-009",
+ "domanda": "Quante sedute d'Aula ha fatto la Camera nel 2026 e quante ore in totale? Confronto con il Senato.",
+ "categoria": "confronto",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Sedute giuste: Camera 147 (con il 3/11, il riferimento ne conta 146 al 30/10), Senato 93. Dice le ore non disponibili, ma dai video della Camera sono circa 854; nessuno strumento le espone.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782431.186423,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 16.4,
+ "risposta_sistema": "Nel 2026, fino al **3 novembre** (ultima seduta disponibile nei dati):\n\n- **Camera:** **147 sedute d’Aula**\n- **Senato:** **93 sedute d’Aula**\n\nLa Camera ne ha quindi svolte **54 in più**, cioè circa **il 58,1% in più** rispetto al Senato.\n\nIl totale delle **ore di seduta** non è disponibile come dato strutturato nei resoconti consultabili: per ottenerlo occorrerebbe ricostruire manualmente orari di apertura, sospensioni e chiusura di ciascuna seduta. Il dato ufficiale qui disponibile consente quindi il confronto certo sul numero delle sedute, non sulle ore complessive.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nel 2026, fino al 30/10 per la Camera e al 28/10 per il Senato, la Camera ha tenuto 146 sedute d'Aula (dalla n. 591 alla n. 736) e il Senato 93 (dalla n. 377 alla n. 469). Alla Camera la durata dalle registrazioni della WebTV somma circa 854 ore, in media 5,85 ore per seduta (dalla più breve, 4 minuti e 50 secondi il 5/1/2026, alla seduta 648 del 22-24/4/2026 sul decreto sicurezza, con due video per circa 38 ore). Per il Senato le ore non sono calcolabili.",
+  "stato": "parziale",
+  "limiti": "Le ore si ricavano solo dai video della Camera (end_ts - start_ts, sospensioni comprese): sitting non ha orari di inizio e fine per le sedute d'Aula di nessuno dei due rami e per il Senato non ci sono video. Il confronto sulle ore con il Senato non è quindi possibile; il confronto sul numero di sedute sì."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 16.4
+ },
+ "causa_probabile": "strumento_mancante"
+}

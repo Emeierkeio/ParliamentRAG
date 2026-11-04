@@ -1,0 +1,211 @@
+{
+ "id": "COMU-016",
+ "domanda": "Da quando esiste la componente del Misto «Futuro Nazionale Vannacci - Free» e chi ne fa parte?",
+ "categoria": "gruppi",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Nove deputati: Pozzolo, Ravetto, Sasso e Ziello dal 27/5/2026; Bergamini, Bof, Furgiuele e Pierro dall'8/6/2026; Calderone dal 21/9/2026.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782389.422084,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "composizione",
+   "args": {
+    "chamber": "camera",
+    "date": null
+   },
+   "result": "{\"chamber\": \"camera\", \"date\": \"2026-11-04\", \"members\": 398, \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"members\": 117, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"members\": 68, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"members\": 54, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"members\": 52, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"members\": 48, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"members\": 24, \"components\": [{\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 9, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4137\", \"name\": \"Minoranze Linguistiche\", \"short_name\": \"MISTO-MIN.LING.\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 4, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 3, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4331\", \"name\": \"Sud Chiama Nord\", \"short_name\": \"MISTO-SCN\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 3, \"components\": []}]}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"members\": 8, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"members\": 7, \"components\": []}], \"not_in_group\": 0}"
+  },
+  {
+   "name": "cambi_gruppo",
+   "args": {
+    "chamber": "camera",
+    "start": null,
+    "end": null,
+    "person": null,
+    "group": "it:camera:19:group:cgm4271",
+    "components": true,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Passaggi di gruppo, Camera, tutta la XIX legislatura; filtri: gruppo it:camera:19:group:cgm4271. Conta anche l'ingresso o l'uscita da una componente del Misto. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio prima della costituzione dei gruppi). La nascita di un gruppo nuovo (es. IV-CR alla Camera) conta come cambio; un ritorno al gruppo di prima conta come un nuovo cambio. Data = inizio dell'appartenenza nuova. Fonte: appartenenze ai gruppi dell'anagrafica dei due rami.\", \"by_chamber\": {\"camera\": {\"persons\": 9, \"changes\": 9}}, \"rows_total\": 9, \"offset\": 0, \"rows\": [{\"persona\": \"Tommaso Antonino Calderone\", \"ramo\": \"camera\", \"date\": \"2026-09-21\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308766\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Domenico Furgiuele\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307718\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Attilio Pierro\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308791\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Gianangelo Bof\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308801\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Davide Bergamini\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308928\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Laura Ravetto\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:301459\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Edoardo Ziello\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307143\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Rossano Sasso\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307360\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Emanuele Pozzolo\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Fratelli d'Italia (FDI)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308822\", \"gruppo_oggi\": \"MISTO-FNV-F\"}]}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 1, \"results\": [{\"quote\": \"Futuro Nazionale Vannacci - Free\", \"found\": true, \"speech\": \"it:camera:19:sed0713:tit00020.int00010\", \"sitting\": \"it:camera:19:sed0713\", \"chamber\": \"camera\", \"date\": \"2026-09-22\", \"speaker\": \"Fabio Rampelli\", \"group\": \"FDI\"}]}"
+  }
+ ],
+ "strumenti": [
+  "composizione",
+  "cambi_gruppo"
+ ],
+ "tempo_s": 8.2,
+ "risposta_sistema": "La componente del Gruppo Misto **«Futuro Nazionale Vannacci - Free»** alla Camera risulta attiva dal **27 maggio 2026**. Oggi conta **9 deputati**:\n\n- Emanuele Pozzolo  \n- Laura Ravetto  \n- Rossano Sasso  \n- Edoardo Ziello  \n- Davide Bergamini  \n- Gianangelo Bof  \n- Attilio Pierro  \n- Domenico Furgiuele  \n- Tommaso Antonino Calderone  \n\nI primi quattro ingressi nella componente sono datati 27 maggio 2026; gli altri sono avvenuti tra giugno e settembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "warn"
+   },
+   "groups": {
+    "present": [
+     "FN"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "Futuro Nazionale Vannacci - Free",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0713&tipo=stenografico#sed0713.stenografico.tit00020.int00010"
+    }
+   ],
+   "authority": {
+    "topic": "Da quando esiste la componente del Misto «Futuro Nazionale Vannacci - Free» e chi ne fa parte?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Fabio Rampelli",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "rank": 4,
+      "pool_size": 8,
+      "group_size": 8,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     },
+     {
+      "name": "Laura Ravetto",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     },
+     {
+      "name": "Edoardo Ziello",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "rank": 1,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     },
+     {
+      "name": "Rossano Sasso",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "rank": 2,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     },
+     {
+      "name": "Domenico Furgiuele",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "rank": 5,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     },
+     {
+      "name": "Tommaso Antonino Calderone",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     },
+     {
+      "name": "Attilio Pierro",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "rank": 6,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": false,
+      "source": "named"
+     },
+     {
+      "name": "Gianangelo Bof",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "rank": 3,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     },
+     {
+      "name": "Emanuele Pozzolo",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "rank": 7,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": false,
+      "source": "named"
+     },
+     {
+      "name": "Davide Bergamini",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "rank": 4,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

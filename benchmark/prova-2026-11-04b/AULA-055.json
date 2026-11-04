@@ -1,0 +1,57 @@
+{
+ "id": "AULA-055",
+ "domanda": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784198.915859,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "cerca_per_significato",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "cerca_interventi"
+ ],
+ "tempo_s": 73.4,
+ "risposta_sistema": "Ho trovato **almeno 19 progetti di legge** approvati dalla Camera in sede legislativa in commissione nella XIX legislatura, fino ai dati disponibili del 3 novembre 2026. L’elenco sotto è completo per le comunicazioni d’Aula che sono riuscito a leggere, ma per alcuni titoli il resoconto consultato era troncato: li segnalo esplicitamente invece di ricostruirli.\n\n- **VII Commissione Cultura — 20 dicembre 2023**: istituzione di un contributo stabile all’Istituto della Enciclopedia Italiana Treccani.\n- **VII Commissione Cultura — 23 maggio 2024**: modifiche all’articolo 2 della legge 20 dicembre …, proposta Malpezzi e altri; il titolo completo non è visibile nel materiale letto.\n- **VII Commissione Cultura — 23 maggio 2024**: ulteriori proposte Latini e altri, approvate nella stessa data; il materiale letto non riporta integralmente titoli e numeri.\n- **VII Commissione Cultura — 7 agosto 2024**: *Disposizioni per la celebrazione del centenario della città di Latina 1932-2032* (**C. 1956**).\n- **VII Commissione Cultura — 17 ottobre 2024**: *Istituzione del Museo del Ricordo in Roma* (**C. 1980**).\n- **VIII Commissione Ambiente — 17 ottobre 2024**: *Istituzione del Parco ambientale per lo sviluppo sostenibile della laguna di Orbetello* (**C. 400-1080-1202-1286**, testo unificato).\n- **VII Commissione Cultura — 12 febbraio 2025**: *Introduzione dello sviluppo di competenze non cognitive e trasversali nei percorsi scolastici e nei percorsi di istruzione e formazione professionale*; il numero non è emerso dal brano letto.\n- **IX Commissione Trasporti — 5 marzo 2025**: nuovo testo della proposta Pella, Deidda, Pastorino e Tassinari, con titolo che nel materiale disponibile iniziava con “Modifiche …”; titolo e numero non leggibili integralmente.\n- **VIII Commissione Ambiente — 20 marzo 2025**: *Benefici in favore delle vittime di eventi dannosi derivanti da cedimenti totali o parziali di infrastrutture stradali o autostradali di rilievo nazionale* (**C. 2145**).\n- **V Commissione Bilancio — 12 novembre 2025**: *Disposizioni per il rilancio dell’economia nei territori delle regioni Marche e Umbria* (**C. 2668**).\n- **VII Commissione Cultura — 11 febbraio 2026**: proposta Amorese, *Modifiche al decreto del Presidente della Repubblica …*; titolo e numero non leggibili integralmente.\n- **XII Commissione Affari sociali — 13 maggio 2026**: proposta Ciocchetti e altri, *Disposizioni per la prevenzione e la diagnosi precoce …*; titolo e numero non leggibili integralmente.\n- **Commissioni VII Cultura e XII Affari sociali — 29 luglio 2026**: proposta Matteoni e altri, *Disposizioni per l’istituzione di spazi adibiti all’allattamento …*; titolo completo e numero non leggibili integralmente.\n- **I Commissione Affari costituzionali — 4 agosto 2026**: *Istituzione della Giornata nazionale per il diritto al divertimento in sicurezza*.\n- **VIII Commissione Ambiente — 4 agosto 2026**: *Istituzione dell’area marina protetta “Isola di Capri”*.\n- **XII Commissione Affari sociali — 1° ottobre 2026**: *Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti* (**C. 1886**).\n- **VII Commissione Cultura — 7 ottobre 2026**: *Dichiarazione di monumento nazionale di Palazzo Fortunato in Rionero in Vulture* (**C. 2239**; assorbita **C. 1738**).\n- **VIII Commissione Ambiente — 14 ottobre 2026**: *Modifica all’articolo 7 del decreto legislativo 24 giugno 2003, n. 209, in materia di destinazione di veicoli fuori uso alle scuole di indirizzo tecnico e agli istituti tecnici superiori per l’utilizzazione a fini didattici* (**C. 1786** e abbinata **C. 2209**).\n\nPer completare e verificare i titoli o numeri mancanti, la fonte ufficiale da consultare è il **resoconto stenografico dell’Aula della Camera**, nelle sezioni intitolate *“Approvazione in Commissione”*, nelle sedute del 20 dicembre 2023; 24 maggio, 7 agosto e 18 ottobre 2024; 12 febbraio, 5 e 21 marzo e 12 novembre 2025; 11 febbraio, 13 maggio, 29 luglio, 4 agosto, 2 e 8 ottobre 2026. Sono inoltre utili i resoconti delle rispettive commissioni in sede legislativa e le schede degli atti C.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Dal Bollettino risultano 23 approvazioni in sede legislativa nelle commissioni della Camera, su 22 provvedimenti (il melanoma, AC 813, è approvato due volte: 11/6/2025 e, come AC 813-B, 13/5/2026). Per commissione: VII Cultura 12 (AC 1550, 1127-1289, 866-1764, 1763, 1956, 1980, 418-B, 1979, 758, 2159, 1858, 1738-2239), VIII Ambiente 4 (laguna di Orbetello AC 400 e abb., vittime dei crolli di infrastrutture AC 2145-2146, area marina di Capri AC 2057-2772, veicoli fuori uso alle scuole AC 1786-2209), XII Affari sociali 3 (AC 813, 813-B, 1886), IX Trasporti 1 (AC 1976), V Bilancio 1 (AC 2668), I Affari costituzionali 1 (AC 1296), VII e XII riunite 1 (AC 2637). Quindici sono già legge (fra cui L. 223/2023, 142/2024, 79/2024, 80/2024, 130/2024, 165/2024, 11/2025, 59/2025, 58/2025, 63/2025, 171/2025, 101/2026, 158/2026, 175/2026, 192/2026); le altre sono state trasmesse al Senato o sono in navetta.",
+  "stato": "parziale",
+  "limiti": "Il Bollettino delle commissioni c'è solo dal 15/5/2023: approvazioni in sede legislativa fra ottobre 2022 e maggio 2023 non si vedono. L'approvazione si legge da agenda_item.stage (contiene «approvazione» o «conclusione») nelle sedute con seat = 'SEDE LEGISLATIVA'; act_assignment non distingue la sede (solo 'referente'). Lo stato dell'atto è quello di act.status oggi."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 73.4
+ },
+ "giro1": {
+  "correttezza": 1,
+  "fonti": 0
+ },
+ "causa_probabile": "strumento_mancante",
+ "note": "Elenca 18 approvazioni (dice «almeno 19») su 23 del riferimento, contro 8 al primo giro; mancano fra l'altro AC 1763, 418-B, 758, 1858 e la prima approvazione dell'AC 813, e diversi numeri d'atto sono lasciati in bianco. Ricostruisce dalle comunicazioni d'Aula senza link: manca ancora uno strumento sulle sedute in sede legislativa."
+}

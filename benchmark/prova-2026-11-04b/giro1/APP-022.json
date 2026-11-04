@@ -1,0 +1,35 @@
+{
+ "id": "APP-022",
+ "domanda": "è vero che il femminicidio è passato all'unanimità?",
+ "categoria": "voti",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Unanime fra i votanti in entrambi i rami: Senato 23/7/2025 161-0-0, Camera 25/11/2025 237-0-0, L. 181/2025, tutto giusto. Nessun link ufficiale.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782218.3700092,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "elenco_votazioni"
+ ],
+ "tempo_s": 14.8,
+ "risposta_sistema": "Sì, **il voto finale è stato unanime in entrambi i rami**, tra i presenti votanti.\n\n- **Senato**, 23 luglio 2025: 161 favorevoli, 0 contrari, 0 astenuti.\n- **Camera**, 25 novembre 2025: 237 favorevoli, 0 contrari, 0 astenuti.\n\nSi tratta della legge n. 181 del 2 dicembre 2025, che introduce il delitto di femminicidio e altre misure contro la violenza sulle donne. Non vuol dire però che ogni singola votazione durante l’esame sia stata unanime: alla Camera alcuni emendamenti e alcuni articoli hanno avuto voti contrari o astenuti.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Sì, all'unanimità dei votanti, non di tutti i parlamentari. La legge sul delitto di femminicidio (S. 1433, C. 2528, legge 181/2025) è passata al Senato il 23/7/2025 con 161 sì, 0 no e 0 astenuti (4 presenti non votanti: Zanettin, Delrio, Alfieri, Camusso; 30 in missione) e alla Camera, in via definitiva, il 25/11/2025 con 237 sì, 0 no e 0 astenuti (89 assenti, 72 in missione).",
+  "stato": "calcolata",
+  "limiti": "Al Senato i voti individuali non hanno righe per gli assenti, quindi gli assenti del Senato non si possono contare."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 14.8
+ },
+ "causa_probabile": null
+}

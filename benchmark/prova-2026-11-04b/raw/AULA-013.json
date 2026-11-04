@@ -1,0 +1,204 @@
+{
+ "id": "AULA-013",
+ "domanda": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+ "categoria": "regolamento",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Molti risultati della ricerca sono di commissioni e giunte (Bollettino): vanno separati dall'Aula.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784411.2351098,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 206, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00040.sub00020.int00180\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie (A.C. 2700-A) (ore 10,23). (ore 10,23) (ore 10,23)\", \"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"speaker_label\": \"MARIANNA RICCIARDI\", \"snippet\": \"più quelle specializzazioni, come medicina d'urgenza, come chirurgia generale, perché sono a più alto rischio di contenzioso medico [[legale]]. Questo è un problema enorme e questa riforma non lo affronta neanche di una virgola.\\n\\nVoi però lo sapete ... Stato che io immagino deve ridurre al minimo gli errori per tutelare i pazienti, deve evitare il maggior [[numero]] di errori e di danni ai pazienti. Allora, vorrei che si passasse da un meccanismo basato sulla colpa - dove per ogni\"}, {\"uri\": \"it:camera:19:sed0735:tit00080.sub00020.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interrogazioni a risposta immediata.\", \"person\": {\"uri\": \"it:person:camera:307774\", \"name\": \"Luca Ciriani\", \"in_office\": false}, \"speaker_label\": \"LUCA CIRIANI\", \"snippet\": \"organizzatore e il responsabile del sedicente “Movimento 17 ottobre”.\\n\\nL'Italia è un Paese accogliente per chi vi entra [[legalmente]], lavora onestamente e si adegua ai nostri principi sociali e alle nostre leggi, ma non siamo disponibili a subire ... rispetto ai periodi antecedenti al nostro insediamento: dall'inizio dell'anno ad oggi, è stato più che dimezzato il [[numero]] degli sbarchi rispetto allo stesso periodo dell'anno scorso. L'Italia è, inoltre, riuscita a far inserire la lotta contro\"}, {\"uri\": \"it:camera:19:sed0731:tit00040.sub00030.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 731, \"date\": \"2026-10-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Gribaudo ed altri: Modifica all'articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilità o decesso "
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"mancanza del numero legale\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"numero legale\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 9, \"items\": [{\"uri\": \"it:camera:19:sed0677:tit00040.sub00030.int00100\", \"sitting\": {\"uri\": \"it:camera:19:sed0677\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 677, \"date\": \"2026-06-17\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: S. 1891- Conversione in legge, con modificazioni, del decreto-legge 30 aprile 2026, n. 63, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della crisi dei mercati internazionali (Approvato dal Senato) (A.C. 2962).\", \"person\": {\"uri\": \"it:person:camera:308810\", \"name\": \"Marco Grimaldi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308810&legislatura=19\"}, \"speaker_label\": \"MARCO GRIMALDI\", \"snippet\": \"accise torna in quest'Aula dopo un passaggio molto travagliato al Senato, ma la maggioranza ha arrancato persino sul [[numero]] [[legale]].\\n\\nIntanto la sostanza del decreto non è molto cambiata: interventi temporanei, finestre simboliche di riduzione delle accise spacciate come\"}, {\"uri\": \"it:camera:19:sed0661:tit00050.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0661\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 661, \"date\": \"2026-05-15\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Interventi di fine seduta.\", \"person\": {\"uri\": \"it:person:camera:300480\", \"name\": \"Roberto Giachetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300480&legislatura=19\"}, \"speaker_label\": \"ROBERTO GIACHETTI\", \"snippet\": \"abbandonare questo luogo finché non ci sarà il pubblico impegno da parte della maggioranza di garantire il [[numero]] [[legale]] nella prossima convocazione della Commissione parlamentare di vigilanza. Di fronte al sequestro della Commissione di vigilanza, io mi autosequestro nella nostra\"}, {\"uri\": \"it:camera:19:sed0640:tit00020.int01950\", \"sitting\": {\"uri\": \"it:camera:19:sed0640\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 640, \"date\": \"2026-04-08\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Sull'ordine dei lavori e per richiami al Regolamento. . .\", \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"snippet\": \"Onorevole Mancini, non c'è manco il [[numero]] [[legale]]\"}, {\"uri\": \"it:camera:19:sed0613:tit00090.int"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"Camera non è in numero legale\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"mancanza\" \"legale\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 55, \"items\": [{\"uri\": \"it:camera:19:sed0737:tit00120.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Dichiarazione di urgenza della proposta di legge n. 2916 (ore 16,30). (ore 16,30) (ore 16,30)\", \"person\": {\"uri\": \"it:person:camera:308243\", \"name\": \"Giuseppe Luciano Calogero Provenzano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308243&legislatura=19\"}, \"speaker_label\": \"GIUSEPPE PROVENZANO\", \"snippet\": \"simbolo dell'ingiustizia del mondo e dell'impunità dei potenti.\\n\\nSu questo, la vostra [[mancanza]] di coraggio, la vostra [[mancanza]] di azioni è diventata, nel corso del tempo, qualcosa che somiglia a quella parola che non volete accettare: una complicità ... qualunque Governo. Ecco perché noi dobbiamo esserci anche in queste ore e farlo con una scelta che è di [[legalità]]. Basta alibi e basta ipocrisie: non si può sentire condannare i crimini delle violenze dei coloni come se fossero singoli\"}, {\"uri\": \"it:camera:19:sed0737:tit00130.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Esame e votazione delle questioni pregiudiziali riferite al disegno di legge: Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile (A.C. 3159) (ore 16,50). (ore 16,50) (ore 16,50)\", \"person\": {\"uri\": \"it:person:camera:308933\", \"name\": \"Federico Cafiero De Raho\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308933&legislatura=19\"}, \"speaker_label\": \"FEDERICO CAFIERO DE RAHO\", \"snippet\": \"giovani e i meno giovani, in quelle piazze, hanno manifestato sul carovita, sul carobenzina, contro la povertà, contro la [[mancanza]] di alloggi, contro la politica del Governo che non si cura di loro. Cosa hanno chiesto i giovani? Il diritto ... caratterizzano per indeterminatezza e che, quindi, consentono l'applicazione discrezionale del precetto in violazione del principio di [[legalità]].\\n\\nI giovani e i meno giovani che hanno partecipato ai cortei stavano dando voce alle disuguaglianze sociali e al disinteresse proprio\"}, {\"uri\": \"it:camera:19:sed0730:tit00060.sub00110.int00180\", \"sitting\": {\"uri\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 730, \"date\": \"2026-10-21\", \"kind\": \"assembly_verbatim\", \"status"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"mancato numero legale\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"verifica del numero legale\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 0, \"results\": [{\"quote\": \"manco il numero legale\", \"found\": false, \"reason\": \"non si trova, parola per parola, in nessun intervento\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 32.7,
+ "risposta_sistema": "Non ho trovato, nei risultati già consultati, una registrazione che attesti formalmente la mancanza del numero legale **in Aula alla Camera** nel 2026, né quindi una votazione specifica a cui associarla.\n\nHo trovato invece questi riferimenti, che **non documentano** una verifica d’Aula conclusa per mancanza del numero legale:\n\n- Seduta n. 640, 8 aprile 2026: durante un richiamo all’ordine dei lavori, il Presidente afferma che non c’era «manco il numero legale»; dal risultato letto non emerge però una votazione né un accertamento formale.\n- Seduta n. 677, 17 giugno 2026: Marco Grimaldi (AVS) parla del numero legale riferendosi al precedente passaggio del provvedimento al Senato, non a una votazione della Camera.\n- Le sedute del 3, 4, 5 e 11 febbraio e del 15 maggio contengono riferimenti alla mancanza del numero legale nella **Commissione parlamentare di vigilanza Rai**, non nell’Aula della Camera.\n\nPer una risposta completa occorrerebbe controllare i resoconti stenografici delle sedute d’Aula del 2026, in particolare le formule della Presidenza immediatamente successive alle richieste di verifica del numero legale, e l’eventuale ripetizione/rinvio della votazione. La fonte ufficiale è l’archivio dei resoconti dell’Assemblea della Camera.",
+ "eventi": {
+  "status": 2,
+  "tool": 14,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "AVS"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "manco il numero legale",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Marco Grimaldi",
+      "group": "Alleanza Verdi e Sinistra",
+      "role": null,
+      "rank": 7,
+      "pool_size": 11,
+      "group_size": 11,
+      "pool": "speakers_on_topic",
+      "authoritative": false,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

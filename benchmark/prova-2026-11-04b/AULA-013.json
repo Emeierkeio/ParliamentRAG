@@ -1,0 +1,101 @@
+{
+ "id": "AULA-013",
+ "domanda": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+ "categoria": "regolamento",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note_domanda": "Molti risultati della ricerca sono di commissioni e giunte (Bollettino): vanno separati dall'Aula.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784411.2351098,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 32.7,
+ "risposta_sistema": "Non ho trovato, nei risultati già consultati, una registrazione che attesti formalmente la mancanza del numero legale **in Aula alla Camera** nel 2026, né quindi una votazione specifica a cui associarla.\n\nHo trovato invece questi riferimenti, che **non documentano** una verifica d’Aula conclusa per mancanza del numero legale:\n\n- Seduta n. 640, 8 aprile 2026: durante un richiamo all’ordine dei lavori, il Presidente afferma che non c’era «manco il numero legale»; dal risultato letto non emerge però una votazione né un accertamento formale.\n- Seduta n. 677, 17 giugno 2026: Marco Grimaldi (AVS) parla del numero legale riferendosi al precedente passaggio del provvedimento al Senato, non a una votazione della Camera.\n- Le sedute del 3, 4, 5 e 11 febbraio e del 15 maggio contengono riferimenti alla mancanza del numero legale nella **Commissione parlamentare di vigilanza Rai**, non nell’Aula della Camera.\n\nPer una risposta completa occorrerebbe controllare i resoconti stenografici delle sedute d’Aula del 2026, in particolare le formule della Presidenza immediatamente successive alle richieste di verifica del numero legale, e l’eventuale ripetizione/rinvio della votazione. La fonte ufficiale è l’archivio dei resoconti dell’Assemblea della Camera.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "AVS"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "manco il numero legale",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Marco Grimaldi",
+      "group": "Alleanza Verdi e Sinistra",
+      "role": null,
+      "rank": 7,
+      "pool_size": 11,
+      "group_size": 11,
+      "pool": "speakers_on_topic",
+      "authoritative": false,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Nei resoconti d'Aula della Camera caricati per il 2026 non risulta alcuna seduta in cui il Presidente constati la mancanza del numero legale. In tutta la legislatura il Presidente nomina il numero legale solo 5 volte, per dire che è raggiunto (5/3/2024, 26/11/2025) o in battute (12/6/2024, 8/4/2026). Nessuna votazione della Camera porta l'indicazione del numero legale.",
+  "stato": "parziale",
+  "limiti": "Ricerca per testo nei resoconti stenografici d'Aula (sitting.kind = assembly_verbatim) con le formule «manca/mancanza del/mancando il/non è in numero legale»; nessun campo strutturato registra l'evento. Il risultato «nessuna» vale per i testi caricati: non si può escludere che la formula del Presidente sia scritta in altro modo o non sia nel testo canonico. Le sedute del Bollettino (commissioni) sono escluse."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 32.7
+ },
+ "giro1": {
+  "correttezza": 2,
+  "fonti": 0
+ },
+ "causa_probabile": null,
+ "note": "Nessuna mancanza del numero legale in Aula nel 2026, scartando Vigilanza Rai e la battuta dell'8/4: coincide col riferimento come al primo giro. Nessun link."
+}

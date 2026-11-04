@@ -1,0 +1,105 @@
+{
+ "id": "GIO-049",
+ "domanda": "Quanti emendamenti ha presentato ogni gruppo sulla legge elettorale alla Camera, in prima lettura?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "AC 2822: Misto per componente.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782696.606824,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"legge elettorale\"",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "elezione",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 44, \"items\": [{\"uri\": \"it:camera:19:ac:2822-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822-B\", \"kind\": \"bill\", \"title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"date\": \"2026-09-15\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"180\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2942\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2942\", \"kind\": \"bill\", \"title\": \"PROPOSTA DI LEGGE COSTITUZIONALE D'INIZIATIVA DEL CONSIGLIO REGIONALE DELLA SARDEGNA: \\\"Integrazione all’articolo 43 della legge costituzionale 26 febbraio 1948, n. 3, recante Statuto speciale per la Sardegna, in materia di elezione diretta degli organi di governo degli enti di area vasta\\\" (2942)\", \"date\": \"2026-05-25\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2942\", \"initiative\": \"Regioni\"}, {\"uri\": \"it:camera:19:ac:2822\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822\", \"kind\": \"bill\", \"title\": \"BIGNAMI ed altri: \\\"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\\\" (2822)\", \"date\": \"2026-02-26\", \"status\": \"Approvato, segue Navette\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2513\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2513\", \"kind\": \"bill\", \"title\": \"CONSIGLIO REGIONALE DELLA SARDEGNA: \\\"Modifiche all’articolo 1 della legge 7 aprile 2014, n. 56, in materia di elezione diretta del presidente della provincia, del consiglio provinciale, del sindaco e del consiglio metropolitani\\\" (2513)\", \"date\": \"2025-07-11\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2513\", \"initiative\": \"Regioni\"}, {\"uri\": \"it:camera:19:ac:2407\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2407\", \"kind\": \"bill\", \"title\": \"URZI' e AMICH: \\\"Modifiche agli articoli 12 e 22 della legge 24 gennaio 1979, n. 18, in materia di liste di minoranza linguistica collegate nelle elezioni dei membri del Parlamento europeo spettanti all’Italia\\\" (2407)\", \"date\": \"2025-05-15\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2407\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2394\", \"chamber\": "
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "riforma della legge elettorale sistema elettorale",
+    "fonti": [
+     "atti"
+    ],
+    "ramo": "camera",
+    "da": "2022-10-13",
+    "a": "2026-11-04",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"riforma della legge elettorale sistema elettorale\", \"fonti\": [\"atti\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:9-02822-A-012\", \"atto\": \"it:camera:19:aic:9-02822-A-012\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02822-A/012 presentata da BOSCHI MARIA ELENA (ITALIA VIVA-CASA RIFORMISTA) in data 15/07/2026\", \"testo\": \"Atto Camera Ordine del Giorno 9/02822-A/012 presentato da BOSCHI Maria Elena testo di Mercoledì 15 luglio 2026, seduta n. 690 La Camera, premesso che: il testo del provvedimento in esame riscrive i sistemi di elezione di entrambe le Camere su base proporzionale, con l'attribuzione dei seggi nei collegi plurinominali a liste di candidati presentate dai partiti e con un premio di governabilità riservato alla lista o coalizione più votata che consegua almeno il 42 per cento dei voti validi a livello nazionale; il provvedimento non contempla, in alcuna sua parte, la facoltà per l'elettore di esprimere un voto di preferenza: la composizione delle assemblee elettive resta così affidata all'ordine \", \"ramo\": \"camera\", \"data\": \"2026-07-15\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=9/02822-A/012\", \"similarita\": 0.821}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:9-02822-B-003\", \"atto\": \"it:camera:19:aic:9-02822-B-003\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02822-B/003 presentata da FRATOIANNI NICOLA (ALLEANZA VERDI E SINISTRA) in data 07/10/2026\", \"testo\": \"Si viene così a configurare, senza revisione costituzionale, una sorta di premierato senza riforma, creando un rapporto diretto tra il corpo elettorale e il leader , che si assume la responsabilità dell'indirizzo politico non più di fronte al Parlamento ma direttamente di fronte al corpo elettorale: la democrazia rappresentativa si trasforma in democrazia plebiscitaria dove la legge elettorale è solo lo strumento per realizzare un premierato di fatto in assenza di modifiche costituzionali; nel corso dell'esame presso l'altro ramo del Parlamento, e in particolare durante l'esame in Assemblea, le modifiche approvate hanno riguardato: l'articolo 1, recante modifiche al sistema di elezione della\", \"ramo\": \"camera\", \"data\": \"2026-10-07\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=9/02822-B/003\", \"similarita\": 0.817}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:9-02822-B-008\", \"atto\": \"it:camera:19:aic:9-02822-B-008\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02822-B/008 presentata da PICCOLOTTI ELISABETTA (ALLEANZA VERDI E SINISTRA) in data 07/10/2026\", \"testo\": \"Si viene così a configurare, senza revisione costituzionale, una sorta di premierato senza riforma, creando un rapporto diretto tra il corpo elettorale e il leader , che si assume la responsabilità dell'indirizzo politico non più di fronte al Parl"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2822",
+    "outcome": null,
+    "venue": null,
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "gruppo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:2822. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": null, \"rows_total\": 13, \"offset\": 0, \"rows\": [{\"gruppo_firmatario\": \"Alleanza Verdi e Sinistra (AVS)\", \"proposte\": 744}, {\"gruppo_firmatario\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"proposte\": 562}, {\"gruppo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"proposte\": 534}, {\"gruppo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"proposte\": 464}, {\"gruppo_firmatario\": \"Movimento 5 Stelle (M5S)\", \"proposte\": 459}, {\"gruppo_firmatario\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"proposte\": 23}, {\"gruppo_firmatario\": \"Misto (MISTO)\", \"proposte\": 22}, {\"gruppo_firmatario\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"proposte\": 20}, {\"gruppo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"proposte\": 16}, {\"gruppo_firmatario\": \"Fratelli d'Italia (FDI)\", \"proposte\": 16}, {\"gruppo_firmatario\": \"Lega - Salvini Premier (LEGA)\", \"proposte\": 15}, {\"gruppo_firmatario\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"proposte\": 15}, {\"gruppo_firmatario\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"proposte\": 6}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2822"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2822\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822\", \"kind\": \"bill\", \"title\": \"BIGNAMI ed altri: \\\"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\\\" (2822)\", \"date\": \"2026-02-26\", \"status\": \"Approvato, segue Navette\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2026-07-16\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2822\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:307456\", \"name\": \"Alessandro Battilocchio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307456&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307603\", \"name\": \"Alessandro Colucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307603&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307641\", \"name\": \"Igor Giancarlo Iezzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307641&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:300447\", \"name\": \"Maurizio Enzo Lupi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300447&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_per_significato",
+  "conta_emendamenti",
+  "atto"
+ ],
+ "tempo_s": 35.3,
+ "risposta_sistema": "Sulla proposta di legge elettorale **C. 2822**, approvata dalla Camera in prima lettura il 16 luglio 2026, gli emendamenti presentati per gruppo sono:\n\n- Alleanza Verdi e Sinistra (AVS): **744**\n- Misto – +Europa – Stati Uniti d’Europa: **562**\n- Partito Democratico – Italia Democratica e Progressista (PD-IDP): **534**\n- Italia Viva – Casa Riformista (IV-CR): **464**\n- Movimento 5 Stelle (M5S): **459**\n- Noi Moderati – MAIE – Centro Popolare: **23**\n- Azione – Popolari Europeisti Riformatori – Renew Europe: **20**\n- Forza Italia – Berlusconi Presidente – PPE: **16**\n- Fratelli d’Italia: **16**\n- Lega – Salvini Premier: **15**\n- Misto – Futuro Nazionale Vannacci – Free: **15**\n- Misto – Minoranze Linguistiche: **6**\n- **Misto: 22** (il dato disponibile non attribuisce queste firme a una componente specifica).\n\nIl conteggio riguarda le proposte emendative sull’atto **C. 2822**: una proposta è contata una sola volta per numero e sede, anche in caso di riformulazione. Lo stesso emendamento può comparire per più gruppi se ha cofirmatari di gruppi diversi: perciò questi numeri **non sono sommabili**. In totale, la scheda dell’atto registra **1.096 emendamenti**. La fonte segnala che la completezza dei fascicoli emendativi caricati non è verificata. Scheda dell’atto: [Camera, C. 2822](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822).",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

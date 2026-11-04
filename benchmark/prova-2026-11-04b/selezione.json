@@ -1,0 +1,440 @@
+[
+ {
+  "id": "APP-022",
+  "domanda": "è vero che il femminicidio è passato all'unanimità?",
+  "categoria": "voti",
+  "tipo_risposta": "fatto",
+  "ramo": "entrambi",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "Camera 25/11/2025: 237 sì, 0 no, 0 astenuti. Unanimità dei votanti, non dei 400 deputati. Il voto finale del Senato è del 23/7/2025 (S. 1433).",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "APP-032",
+  "domanda": "ho letto che la Camera ha già approvato il fine vita, è vero?",
+  "categoria": "iter",
+  "tipo_risposta": "fatto",
+  "ramo": "entrambi",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "Notizia falsa: nel v3 il S. 1408 sulla morte medicalmente assistita è in esame in commissione al Senato. Dirlo con la fonte.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "APP-024",
+  "domanda": "Calderone è uscito da Forza Italia? quando",
+  "categoria": "persone",
+  "tipo_risposta": "linea_del_tempo",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "Tommaso Antonino Calderone: FI-PPE fino al 21/9/2026, poi Misto, componente Futuro Nazionale Vannacci - Free.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "AULA-055",
+  "domanda": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+  "categoria": "commissioni",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": null,
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "CIT-034",
+  "domanda": "quante leggi ha fatto questo governo?",
+  "categoria": "statistiche",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "difficile",
+  "garanzie": [],
+  "note": "Contare le leggi una volta sola (lo stesso atto compare in due rami). Distinguere iniziativa del governo e parlamentare, e i decreti convertiti.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COM-012",
+  "domanda": "Fascicolo degli emendamenti sul ddl caregiver in XII Commissione: quanti per articolo e quanti articoli aggiuntivi?",
+  "categoria": "emendamenti",
+  "tipo_risposta": "conteggio",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "kind distingue emendamento, articoloAggiuntivo, subEmendamento.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COM-007",
+  "domanda": "Elenco degli auditi nell'indagine conoscitiva della VII Commissione sulle nuove tecnologie nella scuola.",
+  "categoria": "audizioni",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": null,
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COMU-020",
+  "domanda": "Quante interrogazioni sono state rivolte al Ministero dell'Interno nel 2026, e quali gruppi ne hanno presentate di più?",
+  "categoria": "sindacato_ispettivo",
+  "tipo_risposta": "classifica",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [
+   "tutti_i_gruppi"
+  ],
+  "note": "Interno è il ministero più interrogato del 2026. Camera e Senato separati; gruppo del primo firmatario alla data.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "DOC-019",
+  "domanda": "i lavori dell'Aula di questa settimana da proiettare il lunedì",
+  "categoria": "calendario",
+  "tipo_risposta": "elenco",
+  "ramo": "entrambi",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "Settimana del 2/11/2026: Camera dal v3 (sedute planned), Senato mancante.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COM-031",
+  "domanda": "Il Bollettino delle commissioni del 30 ottobre 2026 è definitivo o ancora provvisorio?",
+  "categoria": "fonti",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "sitting.provisional: 352 sedute provvisorie, tutte resoconti stenografici di commissione. Le risposte su sedute provvisorie vanno marcate.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COMU-008",
+  "domanda": "Fammi l'elenco delle leggi di conversione dei decreti approvate con la fiducia nel 2026, con data e numero dell'atto.",
+  "categoria": "governo",
+  "tipo_risposta": "elenco",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": "Al Senato le fiducie non hanno vote_act: l'atto si legge dal titolo del voto («Disegno di legge n. 1718. Votazione questione fiducia»).",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COMU-016",
+  "domanda": "Da quando esiste la componente del Misto «Futuro Nazionale Vannacci - Free» e chi ne fa parte?",
+  "categoria": "gruppi",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "Nove deputati: Pozzolo, Ravetto, Sasso e Ziello dal 27/5/2026; Bergamini, Bof, Furgiuele e Pierro dall'8/6/2026; Calderone dal 21/9/2026.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "APP-011",
+  "domanda": "mi trovi il video di Conte che parla della legge elettorale?",
+  "categoria": "video",
+  "tipo_risposta": "link",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [
+   "citazioni_esatte"
+  ],
+  "note": "Giuseppe Conte (M5S). Link al secondo esatto dell'intervento quando c'è il video_segment; se manca, il link al resoconto.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "AULA-013",
+  "domanda": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+  "categoria": "regolamento",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "difficile",
+  "garanzie": [],
+  "note": "Molti risultati della ricerca sono di commissioni e giunte (Bollettino): vanno separati dall'Aula.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "AULA-015",
+  "domanda": "Chi è intervenuto a fine seduta il 28 ottobre 2026 alla Camera e su quali argomenti?",
+  "categoria": "interventi",
+  "tipo_risposta": "sintesi_con_citazioni",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [
+   "citazioni_esatte"
+  ],
+  "note": "Seduta it:camera:19:sed0735, argomento «Interventi di fine seduta.» (fra gli altri Maria Stefania Marino). Il PRESIDENTE non è un intervento di fine seduta.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "AULA-038",
+  "domanda": "Durante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026, prima del Consiglio europeo, quali gruppi hanno applaudito e quali hanno protestato?",
+  "categoria": "reazioni",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "senato",
+  "difficolta": "media",
+  "garanzie": [
+   "tutti_i_gruppi"
+  ],
+  "note": null,
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "GIO-009",
+  "domanda": "Quante sedute d'Aula ha fatto la Camera nel 2026 e quante ore in totale? Confronto con il Senato.",
+  "categoria": "confronto",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": null,
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "PARL-033",
+  "domanda": "Testo dell'articolo 2 del decreto Piano Casa come convertito, e quali emendamenti approvati lo hanno modificato.",
+  "categoria": "testi",
+  "tipo_risposta": "testo",
+  "ramo": "entrambi",
+  "difficolta": "difficile",
+  "garanzie": [
+   "citazioni_esatte"
+  ],
+  "note": null,
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "PARL-034",
+  "domanda": "Su quali temi ha presentato più atti l'on. Eleonora Evi? Classifica per argomento.",
+  "categoria": "temi",
+  "tipo_risposta": "classifica",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": "Evi è passata da AVS al PD il 23/4/2024: se si chiede «per il suo gruppo», usare il gruppo alla data.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "APP-036",
+  "domanda": "Magi di +Europa quante volte ha votato con la maggioranza?",
+  "categoria": "voti",
+  "tipo_risposta": "conteggio",
+  "ramo": "camera",
+  "difficolta": "difficile",
+  "garanzie": [],
+  "note": "Riccardo Magi, Misto componente +Europa. Definire 'maggioranza' come i gruppi che sostengono il governo, alla data.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "AULA-034",
+  "domanda": "Ricostruisci la navetta della legge elettorale: C. 2822, S. 1971, C. 2822-B, con la data di ogni passaggio e l'esito di ogni lettura.",
+  "categoria": "iter",
+  "tipo_risposta": "linea_del_tempo",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": "Alla Camera la terza lettura ha un uri a parte (it:camera:19:ac:2822-B). Trasmissioni: 17/7/2026 al Senato, 15/9/2026 alla Camera.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "APP-034",
+  "domanda": "chi è il deputato più giovane e il più anziano?",
+  "categoria": "persone",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "Solo deputati in carica oggi, con data di nascita.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COM-038",
+  "domanda": "Progetti di atti dell'Unione europea esaminati dalla XIV Commissione nel 2026.",
+  "categoria": "commissioni",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": null,
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COMU-038",
+  "domanda": "Mi fai un confronto tra quanto parla in Aula la maggioranza e quanto l'opposizione, per mese, nel 2026? Per una infografica.",
+  "categoria": "statistiche",
+  "tipo_risposta": "linea_del_tempo",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [
+   "tutti_i_gruppi"
+  ],
+  "note": "Misto per componente: alcune componenti non sono né maggioranza né opposizione in modo stabile.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "GIO-049",
+  "domanda": "Quanti emendamenti ha presentato ogni gruppo sulla legge elettorale alla Camera, in prima lettura?",
+  "categoria": "emendamenti",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [
+   "tutti_i_gruppi"
+  ],
+  "note": "AC 2822: Misto per componente.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COMU-036",
+  "domanda": "Quante audizioni ha fatto la Camera sulla legge annuale per la concorrenza 2026 e chi è stato sentito?",
+  "categoria": "audizioni",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": "AC 3120.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "DJ-006",
+  "domanda": "Chi sono i deputati che hanno presentato più interrogazioni a risposta scritta?",
+  "categoria": "sindacato_ispettivo",
+  "tipo_risposta": "classifica",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "Primi firmatari distinti dai cofirmatari. Ai primi posti per firme ci sono Stefania Ascari (M5S), Francesca Ghirra, Devis Dori e Marco Grimaldi (AVS).",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "LOB-042",
+  "domanda": "Quando è convocata la prossima seduta della VIII Commissione sul DL 177/2026 (C. 3133) e cosa c'è all'ordine del giorno?",
+  "categoria": "calendario",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": null,
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "LEG-008",
+  "domanda": "La legge di conversione nata dall'AC 3131 è stata pubblicata? Numero, data e link al testo vigente.",
+  "categoria": "fonti",
+  "tipo_risposta": "link",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": null,
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "DJ-026",
+  "domanda": "Quanti interventi ha fatto la presidente del Consiglio Giorgia Meloni in Parlamento, e quanti question time?",
+  "categoria": "governo",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": "Al Senato i membri del governo hanno un id proprio legato con person_same_as. Il premier time si riconosce dall'argomento della seduta.",
+  "trappola": false,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COMU-014",
+  "domanda": "Il voto finale sulla legge elettorale dell'8 ottobre: mi dai l'elenco di chi ha votato sì nominativamente?",
+  "categoria": "voti",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "note": "Trappola: scrutinio segreto (secret = true, risultato «voted»). Il sistema deve rifiutare l'elenco e spiegare perché; solo totali 227-164.",
+  "trappola": true,
+  "endpoint": "agente"
+ },
+ {
+  "id": "COMU-027",
+  "domanda": "Il senatore Meloni ha detto il 9 settembre 2026 in Senato che il provvedimento era inutile: mi confermi che è la premier?",
+  "categoria": "persone",
+  "tipo_risposta": "fatto",
+  "ramo": "senato",
+  "difficolta": "facile",
+  "garanzie": [
+   "citazioni_esatte"
+  ],
+  "note": "Trappola di omonimia: è Marco Meloni (PD-IDP), non Giorgia Meloni. Il resoconto scrive solo «MELONI».",
+  "trappola": true,
+  "endpoint": "agente"
+ },
+ {
+  "id": "PARL-042",
+  "domanda": "A quale componente del Misto appartiene oggi Bruno Tabacci, e come ha votato da quando ha lasciato il PD?",
+  "categoria": "gruppi",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+  "trappola": true,
+  "endpoint": "agente"
+ },
+ {
+  "id": "DJ-010",
+  "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
+  "categoria": "governo",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+  "trappola": true,
+  "endpoint": "agente"
+ },
+ {
+  "id": "CIT-003",
+  "domanda": "chi ha votato contro il salario minimo?",
+  "categoria": "voti",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "camera",
+  "difficolta": "difficile",
+  "garanzie": [
+   "tutti_i_gruppi"
+  ],
+  "note": "Trappola. Il 6/12/2023 la Camera approvò la PDL 1275 (153 sì, 118 no, 3 astenuti), ma con l'emendamento della maggioranza che la trasformò in delega al governo: i firmatari (Conte ed altri) ritirarono la firma e le opposizioni votarono no. È diventata la legge 144/2025. Il sistema deve spiegarlo prima di elencare chi ha votato no.",
+  "trappola": true,
+  "endpoint": "agente"
+ }
+]

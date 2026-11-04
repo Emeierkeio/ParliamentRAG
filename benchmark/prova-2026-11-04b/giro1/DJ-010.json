@@ -1,0 +1,33 @@
+{
+ "id": "DJ-010",
+ "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
+ "categoria": "governo",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793782821.141257,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "conta_votazioni"
+ ],
+ "tempo_s": 6.9,
+ "risposta_sistema": "Il Governo Meloni ha posto la questione di fiducia **133 volte** finora: **75 alla Camera** e **58 al Senato**.\n\nSono state approvate 71 fiducie alla Camera e 58 al Senato; alla Camera 4 votazioni di fiducia sono state respinte. Il conteggio copre dal 22 ottobre 2022 al 4 novembre 2026; nei dati le votazioni arrivano fino al 3 novembre 2026.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+  "stato": "note_della_domanda",
+  "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 0,
+  "trappola": "caduta",
+  "tempo_s": 6.9
+ },
+ "causa_probabile": "ragionamento_o_prompt",
+ "note": "Conta 133 votazioni di fiducia, sommando i due rami, come se fossero «questioni poste» (le 3 fiducie sulla C. 2822-B contano come 3 e ci sono le fiducie iniziali del 2022). Le «4 fiducie respinte» alla Camera sono mozioni di sfiducia ai ministri (1_00249, 1_00164, 1_00392, 1_00396) segnate per errore come confidence nel DB."
+}

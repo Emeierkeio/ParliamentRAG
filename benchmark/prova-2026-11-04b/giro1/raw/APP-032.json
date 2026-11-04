@@ -1,0 +1,74 @@
+{
+ "id": "APP-032",
+ "domanda": "ho letto che la Camera ha già approvato il fine vita, è vero?",
+ "categoria": "iter",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Notizia falsa: nel v3 il S. 1408 sulla morte medicalmente assistita è in esame in commissione al Senato. Dirlo con la fonte.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782218.3707168,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "fine vita",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:1886\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1886\", \"kind\": \"bill\", \"title\": \"S. 737. - Senatori PIROVANO ed altri: \\\"Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti\\\" <em>(approvata dalla 1ª Commissione permanente del Senato) </em> (1886)\", \"date\": \"2024-05-20\", \"status\": \"In corso di esame in Commissione\", \"law_number\": \"175\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1886\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "disposizioni in materia di morte volontaria medicalmente assistita",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 4, \"items\": [{\"uri\": \"it:camera:19:ac:1559\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1559\", \"kind\": \"bill\", \"title\": \"SERRACCHIANI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (1559)\", \"date\": \"2023-11-20\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1559\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:949\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"949\", \"kind\": \"bill\", \"title\": \"ZANELLA ed altri: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (949)\", \"date\": \"2023-03-03\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;949\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:251\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"251\", \"kind\": \"bill\", \"title\": \"MAGI: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (251)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;251\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:87\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"87\", \"kind\": \"bill\", \"title\": \"ENRICO COSTA: \\\"Disposizioni in materia di morte volontaria medicalmente assistita\\\" (87)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;87\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "fine vita",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:737\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"737\", \"kind\": \"bill\", \"title\": \"Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti\", \"date\": \"2023-05-29\", \"status\": \"approvato\", \"law_number\": \"175\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52749.htm\", \"initiative\": \"Sen. Pirovano Daisy ed altri\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti"
+ ],
+ "tempo_s": 7.5,
+ "risposta_sistema": "No. Nei dati della XIX legislatura non risulta che la Camera abbia approvato una legge sul fine vita o sulla morte volontaria medicalmente assistita.\n\nAlla Camera risultano quattro proposte sul tema (A.C. 87, 251, 949 e 1559), tutte nello stato di **“Assegnato”**: quindi non sono ancora state approvate dall’Aula né iniziate formalmente in Commissione secondo questi dati. La proposta A.C. 1559 è di Debora Serracchiani; le altre sono di Enrico Costa, Riccardo Magi e Luana Zanella.\n\nIl dato è aggiornato alle sedute del **3 novembre 2026**.",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

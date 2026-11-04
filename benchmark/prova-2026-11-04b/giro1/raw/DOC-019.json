@@ -1,0 +1,64 @@
+{
+ "id": "DOC-019",
+ "domanda": "i lavori dell'Aula di questa settimana da proiettare il lunedì",
+ "categoria": "calendario",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Settimana del 2/11/2026: Camera dal v3 (sedute planned), Senato mancante.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782367.085311,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "start": "2026-11-02",
+    "end": "2026-11-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:sed0738\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 738, \"date\": \"2026-11-04\", \"kind\": \"assembly_agenda\", \"status\": \"planned\"}, {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}]}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "start": "2026-11-02",
+    "end": "2026-11-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0738",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0738\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 738, \"date\": \"2026-11-04\", \"kind\": \"assembly_agenda\", \"status\": \"planned\", \"start_time\": \"10:00\", \"items\": [{\"uri\": \"it:camera:19:sed0738:odg01\", \"order\": 1, \"title\": \"Seguito della discussione del disegno di legge\", \"acts\": [{\"ref\": \"ac:3148\", \"uri\": \"it:camera:19:ac:3148\", \"title\": \"S. 2029. - \\\"Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche\\\" <i>(approvato dal Senato)</i> (3148)\"}], \"speeches\": []}, {\"uri\": \"it:camera:19:sed0738:odg02\", \"order\": 2, \"title\": \"Seguito della discussione del disegno di legge\", \"acts\": [{\"ref\": \"ac:3106-A\", \"uri\": \"it:camera:19:ac:3106\", \"title\": \"\\\"Conversione in legge del decreto-legge 17 settembre 2026, n. 162, recante disposizioni urgenti per il sostegno economico e il contenimento degli effetti derivanti dal perdurante aumento del costo dei carburanti, nonché in materia fiscale\\\" (3106)\"}], \"speeches\": []}, {\"uri\": \"it:camera:19:sed0738:odg03\", \"order\": 3, \"title\": \"Seguito della discussione della proposta di legge\", \"acts\": [{\"ref\": \"ac:2376\", \"uri\": \"it:camera:19:ac:2376\", \"title\": \"MALAGUTI ed altri: \\\"Definizione della nozione di “antisemitismo” e disposizioni per il contrasto degli atti di antisemitismo\\\" (2376)\"}, {\"ref\": \"ac:2383\", \"uri\": \"it:camera:19:ac:2383\", \"title\": \"MOLINARI ed altri: \\\"Definizione della nozione di “antisemitismo” e disposizioni per il contrasto degli atti di antisemitismo\\\" (2383)\"}, {\"ref\": \"ac:2830\", \"uri\": \"it:camera:19:ac:2830\", \"title\": \"S. 1004. - Senatori ROMEO ed altri: \\\"Disposizioni per il contrasto all’antisemitismo e per l’adozione della definizione operativa di antisemitismo\\\" <em>(approvata dal Senato) </em>(2830)\"}], \"speeches\": []}, {\"uri\": \"it:camera:19:sed0738:odg04\", \"order\": 4, \"title\": \"Seguito della discussione delle mozioni Richetti ed altri n. 1-00582, Della Vedova ed altri n. 1-00585 e De Luca, Scerra, Grimaldi ed altri n. 1-00602 in materia di superamento del diritto di veto nelle decisioni delle istituzioni dell'Unione europea (vedi allegato).\", \"acts\": [{\"ref\": \"aic:1-00582\", \"uri\": \"it:camera:19:aic:1-00582\", \"title\": \"MOZIONE 1/00582 presentata da RICHETTI MATTEO (AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE) in data 10/06/2026\"}, {\"ref\": \"aic:1-00585\", \"uri\": \"it:camera:19:aic:1-00585\", \"title\": \"MOZIONE 1/00585 presentata da DELLA VEDOVA BENEDETTO (MISTO-+EUROPA) in data 16/06/2026\"}, {\"ref\": \"aic:1-00602\", \"uri\": \"it:camera:19:aic:1-00602\", \"title\": \"MOZIONE 1/00602 presentata da DE LUCA PIERO (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 15/09/2026\"}], \"speeches\": []}, {\"uri\": \"it:camera:19:sed0738:odg05\", \"order\": 5, \"title\": \"Seguito della discussione delle mozioni Boldrini, Della Vedova, Zanella, Francesco S"
+  }
+ ],
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "seduta"
+ ],
+ "tempo_s": 11.6,
+ "risposta_sistema": "Per questa settimana, nei dati disponibili risulta programmata una seduta dell’Aula della Camera **mercoledì 4 novembre, ore 10.00**. Non risultano al momento sedute d’Aula del Senato nel periodo 2–8 novembre.\n\nAll’ordine del giorno della Camera:\n- seguito del decreto-legge su prezzi petroliferi, infrastrutture e attività energetiche strategiche (A.C. 3148);\n- seguito del decreto-legge sul sostegno economico contro l’aumento dei carburanti e su misure fiscali (A.C. 3106-A);\n- seguito delle proposte di legge sul contrasto all’antisemitismo (A.C. 2376, 2383 e 2830);\n- mozioni sul superamento del diritto di veto nelle decisioni dell’Unione europea;\n- mozioni sulla tutela dell’operato della Corte penale internazionale e sui crimini internazionali;\n- interrogazioni a risposta immediata.\n\nPer la proiezione del lunedì: il calendario completo della settimana non è ancora presente nei dati; l’ultimo resoconto disponibile è del **3 novembre 2026** e l’unica agenda futura acquisita è quella del 4 novembre.",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

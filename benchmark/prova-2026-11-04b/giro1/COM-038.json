@@ -1,0 +1,45 @@
+{
+ "id": "COM-038",
+ "domanda": "Progetti di atti dell'Unione europea esaminati dalla XIV Commissione nel 2026.",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782652.3969269,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "organo",
+  "elenco_sedute",
+  "cerca_atti",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta"
+ ],
+ "tempo_s": 44.2,
+ "risposta_sistema": "Ho trovato questi progetti di atti dell’Unione europea effettivamente avviati all’esame della XIV Commissione (Politiche dell’Unione europea) nel 2026, nei resoconti consultati:\n\n- **14 ottobre 2026** — proposta di direttiva del Consiglio di semplificazione del quadro UE per l’imposizione diretta e il sostegno a crescita e competitività; esame congiunto concluso con **valutazione di conformità**.\n- **14 ottobre 2026** — proposta di regolamento sull’**Atto legislativo europeo a favore dell’innovazione**; esame avviato e rinviato.\n- **14 ottobre 2026** — proposta di regolamento sulla digitalizzazione del coordinamento dei sistemi di sicurezza sociale e sulla tessera europea di sicurezza sociale (**ESSPASS**); esame avviato e rinviato.\n- **27 ottobre 2026** — proposta di regolamento **EU KIDS ACT**, per spazi digitali responsabili e affidabili in internet; esame avviato e rinviato. Nel resoconto dell’udienza precedente è indicata come **COM(2026) 681 final**.\n\nHo inoltre trovato traccia di altri esami o istruttorie nel 2026, ma i dati già letti non ne riportano integralmente titolo e codice:\n\n- una proposta relativa alla disponibilità degli alloggi negli Stati membri, oggetto di un’audizione programmata il **22 ottobre 2026**;\n- proposte in materia di veicoli pesanti, veicoli aziendali puliti e altri atti connessi, nell’ambito di un esame congiunto richiamato il **18 febbraio 2026**;\n- una proposta di modifica del regolamento (UE) 2021/1232, richiamata l’**11 febbraio 2026**;\n- l’atto **COM(2026) 600 final**, previsto nell’ordine dei lavori del **14 ottobre 2026**, senza che nei dati letti risultasse il relativo titolo.\n\nNon posso quindi affermare che l’elenco sia completo: ho consultato solo una parte delle 185 sedute della Commissione registrate tra il 1° gennaio e il 3 novembre 2026. Per l’elenco ufficiale completo occorre verificare i resoconti sommari della XIV Commissione nella sezione **“Atti dell’Unione europea”** del sito della Camera dei deputati, seduta per seduta.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nel 2026 (al 2/11) la XIV Commissione (Politiche dell'Unione europea) ha esaminato 48 atti dell'Unione europea: 38 proposte di regolamento, 5 proposte di direttiva, 2 proposte di decisione, il Programma di lavoro della Commissione per il 2026, una comunicazione, la Relazione 2024 su sussidiarietà e proporzionalità e la decisione (UE, Euratom) 2026/1296 sull'elezione del Parlamento europeo. 45 sono stati conclusi (per lo più con valutazione di conformità; pareri motivati, fra gli altri, su servizi mobili via satellite, bollette elettriche e ETS); 3 sono ancora in esame: la comunicazione esaminata il 17/6, la proposta sull'idrogeno nei motori (dal 21/10) e l'EU Kids Act (dal 27/10). L'elenco completo è in «risultato».",
+  "stato": "parziale",
+  "limiti": "Atti UE ricavati dai titoli degli argomenti del Bollettino nelle sedute della XIV (body o19_3514) in sede «Atti dell'Unione europea» o «Esame di decisioni del Consiglio», dal 1/1 al 2/11/2026; un atto per titolo. Gli atti UE non sono in act e i titoli non riportano il codice COM, quindi non si possono unire con certezza: due righe della stessa proposta (regolamenti 2023/1542 e 2024/1244) differiscono per un refuso e sono contate una volta. Negli esami congiunti compare un solo titolo per argomento, quindi l'atto abbinato può mancare. Escluse le sedute delle commissioni riunite."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 44.2
+ },
+ "causa_probabile": "strumento_mancante",
+ "note": "Elenca 4 atti UE del 14 e del 27/10 (EU Kids Act giusto) e qualche traccia, contro i 48 atti esaminati nel 2026 secondo il riferimento; ammette di aver letto solo una parte delle 185 sedute. Nessun link."
+}

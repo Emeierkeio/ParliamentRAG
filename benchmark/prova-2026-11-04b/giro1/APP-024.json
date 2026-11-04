@@ -1,0 +1,35 @@
+{
+ "id": "APP-024",
+ "domanda": "Calderone è uscito da Forza Italia? quando",
+ "categoria": "persone",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Uscito da FI-PPE il 21/9/2026 per la componente Futuro Nazionale Vannacci - Free del Misto: giusto. Nessun link ufficiale.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782225.879978,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "scheda_persona",
+  "scheda_persona",
+  "cambi_gruppo"
+ ],
+ "tempo_s": 26.3,
+ "risposta_sistema": "Sì. Tommaso Antonino Calderone ha lasciato il gruppo **Forza Italia–Berlusconi Presidente–PPE** alla Camera il **21 settembre 2026**, passando alla componente del Misto **Futuro Nazionale Vannacci–Free**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Sì. Il deputato Tommaso Antonino Calderone è stato nel gruppo Forza Italia - Berlusconi Presidente - PPE dal 18/10/2022 al 21/9/2026. Dal 21/9/2026 è nel gruppo Misto, componente Futuro Nazionale Vannacci - Free, e lo è ancora al 2/11/2026. Da non confondere con Marina Elvira Calderone, ministra del Lavoro, che non è deputata.",
+  "stato": "calcolata",
+  "limiti": "Si legge membership alla Camera. La fine in FI-PPE e l'ingresso nel Misto hanno la stessa data (21/9/2026, ultimo giorno incluso), come per gli altri cambi di gruppo."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 26.3
+ },
+ "causa_probabile": null
+}

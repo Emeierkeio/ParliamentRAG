@@ -1,0 +1,278 @@
+{
+ "id": "AULA-055",
+ "domanda": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782233.158398,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"sede legislativa\"",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "progetto di legge approvato in sede legislativa dalla Commissione della Camera",
+    "fonti": [
+     "atti",
+     "documenti"
+    ],
+    "ramo": "camera",
+    "da": "2022-10-13",
+    "a": "2026-11-04",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"progetto di legge approvato in sede legislativa dalla Commissione della Camera\", \"fonti\": [\"atti\", \"documenti\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:9-01665-002\", \"atto\": \"it:camera:19:aic:9-01665-002\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/01665/002 presentata da GHIRRA FRANCESCA (ALLEANZA VERDI E SINISTRA) in data 18/06/2024\", \"testo\": \"Atto Camera Ordine del Giorno 9/01665/002 presentato da GHIRRA Francesca testo di Martedì 18 giugno 2024, seduta n. 309 La Camera, premesso che: pur con le modifiche apportate al testo governativo originario, il disegno di legge approvato dal Senato della Repubblica, senza nessuna modifica in sede referente dalla I Commissione affari costituzionali, mantiene pressoché inalterate tutte le gravi criticità più volte evidenziate dalla grandissima parte dei soggetti auditi; le modalità, i ristretti tempi di discussione in Commissione, la bocciatura di tutti gli emendamenti della minoranza, il mandato al relatore di riferire in aula nonostante trattasi, in questo caso, di un disegno di legge e qui\", \"ramo\": \"camera\", \"data\": \"2024-06-18\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=9/01665/002\", \"similarita\": 0.83}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:9-01665-030\", \"atto\": \"it:camera:19:aic:9-01665-030\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/01665/030 presentata da BRUNO RAFFAELE (MOVIMENTO 5 STELLE) in data 18/06/2024\", \"testo\": \"Atto Camera Ordine del Giorno 9/01665/030 presentato da BRUNO Raffaele testo di Martedì 18 giugno 2024, seduta n. 309 La Camera, premesso che: l'elemento che desta più inquietudine nel disegno di legge in esame è la sua indeterminatezza, tanto che ci si avvia – in modo azzardato – a dare attuazione ad un processo potenzialmente di amplissima portata senza certezza alcuna del quadro ordinamentale e procedurale che lo accompagnerà non soltanto nella cruciale fase negoziale ed istruttoria ma anche in quella strettamente applicativa.\", \"ramo\": \"camera\", \"data\": \"2024-06-18\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=9/01665/030\", \"similarita\": 0.828}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:9-01665-040\", \"atto\": \"it:camera:19:aic:9-01665-040\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/01665/040 presentata da CARAMIELLO ALESSANDRO (MOVIMENTO 5 STELLE) in data 18/06/2024\", \"testo\": \"Atto Camera Ordine del Giorno 9/01665/040 presentato da CARAMIELLO Alessandro testo di Martedì 18 giugno 2024, seduta n. 309 La Camera, premesso che: l'elemento che desta più inquietudine nel disegno di legge in esame è la sua indeterminatezza, tanto che ci si avvia, in modo azzardato, a dare attuazione ad un processo potenzialmente di amplissima portata senza certezza alcuna del quadro ordinamentale e procedur"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"sede legislativa\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"sede legislativa\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2023-12-31",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"sede legislativa\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2024-01-01",
+    "end": "2024-12-31",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"sede legislativa\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2025-01-01",
+    "end": "2025-12-31",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"sede legislativa\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 93, \"items\": [{\"uri\": \"it:camera:19:bol20261028:c07:sede00010:tit00010:p2\", \"sitting\": {\"uri\": \"it:camera:19:bol20261028:c07:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 10, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Dichiarazione di monumento nazionale del memoriale di Portella della Ginestra nonché disposizioni per il restauro, la tutela e la valorizzazione di esso.\", \"person\": {\"uri\": \"it:person:camera:307173\", \"name\": \"Giorgia Latini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307173&legislatura=19\"}, \"speaker_label\": \"Giorgia LATINI\", \"kind\": \"summary\", \"snippet\": \"nonché alla presentazione di proposte emendative e di avviare le procedure per il trasferimento della proposta di legge alla [[sede]] [[legislativa]]. Nessuno chiedendo di intervenire, avverte che il testo del provvedimento sarà dunque trasmesso alle Commissioni competenti in [[sede]] consultiva\"}, {\"uri\": \"it:camera:19:bol20261028:c12:sede00010:tit00010:p2\", \"sitting\": {\"uri\": \"it:camera:19:bol20261028:c12:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3512\", \"body_name\": \"Affari sociali (XII)\", \"number\": 10, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Istituzione del Premio «Dottor Geppino Micheletti».\", \"person\": {\"uri\": \"it:person:camera:307215\", \"name\": \"Ugo Cappellacci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307215&legislatura=19\"}, \"speaker_label\": \"Ugo CAPPELLACCI\", \"kind\": \"summary\", \"snippet\": \"espresso in [[sede]] consultiva dalla Commissione Bilancio. Ricorda, inoltre, che è stato attivato il procedimento per il trasferimento alla [[sede]] [[legislativa]] della proposta di legge in oggetto. Fa quindi presente che nella [[seduta]] odierna si procederà alla deliberazione sul conferimento ... mandato al relatore a riferire in Assemblea, in modo da poter poi seguire la via dell'esame in [[sede]] [[legislativa]] ovvero quella dell'esame in Assemblea\"}, {\"uri\": \"it:camera:19:bol20261014:c08:sede00030:tit00010:p1\", \"sitting\": {\"uri\": \"it:camera:19:bol20261014:c08:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 30, \"date\": \"2026-10-14\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Sulla pubblicità dei lavori.\", \"person\": {\"uri\": \"it:person:camera:307455\", \"name\": \"Mauro Rotelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"Approvazione in Commissione\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2024-12-31",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"Approvazione in Commissione\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2025-01-01",
+    "end": "2025-12-31",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"Approvazione in Commissione\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"sede legislativa\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 50
+   },
+   "result": "{\"total\": 93, \"items\": [{\"uri\": \"it:camera:19:bol20260617:c07:sede00010:tit00020:p5\", \"sitting\": {\"uri\": \"it:camera:19:bol20260617:c07:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 10, \"date\": \"2026-06-17\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Dichiarazione di monumento nazionale di Palazzo Fortunato in Rionero in Vulture.\", \"person\": {\"uri\": \"it:person:camera:307424\", \"name\": \"Federico Mollicone\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307424&legislatura=19\"}, \"speaker_label\": \"Federico MOLLICONE\", \"kind\": \"summary\", \"snippet\": \"consultiva per l'espressione del prescritto parere. Ricorda altresì che sono state avviate le procedure per il trasferimento alla [[sede]] [[legislativa]]. Nessun chiedendo di intervenire, rinvia il seguito dell'esame ad altra [[seduta]]\"}, {\"uri\": \"it:camera:19:bol20260617:c12:sede00020:tit00010:p2\", \"sitting\": {\"uri\": \"it:camera:19:bol20260617:c12:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3512\", \"body_name\": \"Affari sociali (XII)\", \"number\": 20, \"date\": \"2026-06-17\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti.\", \"person\": {\"uri\": \"it:person:camera:307215\", \"name\": \"Ugo Cappellacci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307215&legislatura=19\"}, \"speaker_label\": \"Ugo CAPPELLACCI\", \"kind\": \"summary\", \"snippet\": \"stata rappresentata dalla relatrice la volontà di richiedere il trasferimento della proposta di legge in oggetto alla [[sede]] [[legislativa]]. Pertanto la presidenza procederà alla verifica dei presupposti di cui all'articolo 92, comma 6, del Regolamento della Camera dei deputati ... mandato alla relatrice a riferire in Assemblea, in modo da poter poi seguire la via dell'esame in [[sede]] [[legislativa]] ovvero quella dell'esame in Assemblea\"}, {\"uri\": \"it:camera:19:bol20260616:c08:sede00030:tit00010:p3\", \"sitting\": {\"uri\": \"it:camera:19:bol20260616:c08:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3508\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"number\": 30, \"date\": \"2026-06-16\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Modifica al decreto legislativo 3 aprile 2006, n. 152, in materia di consorzi di gestione e tutela del territorio e del"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"ha approvato, in sede legislativa\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 7, \"items\": [{\"uri\": \"it:camera:19:sed0723:tit00020.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 723, \"date\": \"2026-10-08\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Approvazione in Commissione.\", \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"snippet\": \"Comunico che, nella [[seduta]] di mercoledì 7 ottobre 2026, la VII Commissione permanente (Cultura, scienza e istruzione) ha [[approvato]], in [[sede]] [[legislativa]], la seguente proposta di legge d'iniziativa della senatrice D'Elia: “Dichiarazione di monumento nazionale di Palazzo Fortunato\"}, {\"uri\": \"it:camera:19:sed0719:tit00040.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0719\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 719, \"date\": \"2026-10-02\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Approvazione in Commissione.\", \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"snippet\": \"Comunico che, nella [[seduta]] di giovedì 1° ottobre 2026, la XII Commissione permanente (Affari sociali) ha [[approvato]], in [[sede]] [[legislativa]], la proposta di legge, [[approvata]] dalla 1ª Commissione permanente del Senato, recante “Istituzione della Giornata nazionale della meraviglia, al fine\"}, {\"uri\": \"it:camera:19:sed0703:tit00210.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0703\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 703, \"date\": \"2026-08-04\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Approvazione in Commissione.\", \"person\": {\"uri\": \"it:person:camera:305704\", \"name\": \"Anna Ascani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305704&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"snippet\": \"Comunico che nella [[seduta]] di oggi, martedì 4 agosto 2026, la I Commissione (Affari costituzionali) ha [[approvato]], in [[sede]] [[legislativa]], la seguente proposta di legge: Senatori Croatti ed altri: “Istituzione della Giornata nazionale per il diritto al divertimento in sicurezza\"}, {\"uri\": \"it:camera:19:sed0703:tit00220.int00010\", \"sitting\": {\"uri\": \"it:camera:19:se"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 1, \"results\": [{\"quote\": \"Modifiche al decreto del Presidente della Repubblica…\", \"found\": true, \"speech\": \"it:camera:19:stc:07:leg:20260211:0013:tit00030:int00010\", \"sitting\": \"it:camera:19:stc:07:leg:20260211:0013\", \"chamber\": \"camera\", \"date\": \"2026-02-11\", \"speaker\": \"Federico Mollicone\", \"group\": \"FDI\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_per_significato",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 115.7,
+ "risposta_sistema": "Ho trovato **otto approvazioni in sede legislativa alla Camera nel 2026**, ma non posso confermare che siano l’elenco completo dell’intera XIX legislatura: le ricerche relative al 2022-2025 non hanno prodotto un risultato utilizzabile prima dell’interruzione.\n\nLe approvazioni che risultano dai resoconti della Camera sono:\n\n- **VII Commissione Cultura**, 11 febbraio 2026: proposta Amorese, dal titolo che nel resoconto disponibile inizia con *«Modifiche al decreto del Presidente della Repubblica…»*.\n- **XII Commissione Affari sociali**, 13 maggio 2026: **Disposizioni per la prevenzione e la diagnosi precoce del melanoma e istituzione della Giornata nazionale per la prevenzione del melanoma** (C. 813-B).\n- **Commissioni VII Cultura e XII Affari sociali**, 29 luglio 2026: **Disposizioni per l’istituzione di spazi adibiti all’allattamento…**\n- **I Commissione Affari costituzionali**, 4 agosto 2026: **Istituzione della Giornata nazionale per il diritto al divertimento in sicurezza**.\n- **VIII Commissione Ambiente**, 4 agosto 2026: **Istituzione dell’area marina protetta “Isola di Capri”…**\n- **XII Commissione Affari sociali**, 1° ottobre 2026: **Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti**.\n- **VII Commissione Cultura**, 7 ottobre 2026: **Dichiarazione di monumento nazionale di Palazzo Fortunato in Rionero in Vulture**.\n- **VIII Commissione Ambiente**, 14 ottobre 2026, con modificazioni: **Modifica all’articolo 7 del decreto legislativo 24 giugno 2003, n. 209, in materia di destinazione di veicoli fuori uso alle scuole di indirizzo tecnico e agli istituti tecnici superiori per l’utilizzazione a fini didattici** (C. 1786 e C. 2209 abb.).\n\nPer completare e verificare l’elenco dell’intera legislatura, occorre consultare le pagine della **Camera dei deputati** dedicate ai lavori delle commissioni in sede legislativa e le comunicazioni d’Aula intitolate “Approvazione in Commissione”, per il periodo dal 13 ottobre 2022 al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 24,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "warn"
+   },
+   "groups": {
+    "present": [
+     "FdI"
+    ],
+    "missing": [
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": []
+   },
+   "quotes": [
+    {
+     "quote": "Modifiche al decreto del Presidente della Repubblica…",
+     "status": "omissions",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+    "available": false,
+    "voices": [
+     {
+      "name": "Alessandro Amorese",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

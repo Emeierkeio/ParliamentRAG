@@ -1,0 +1,105 @@
+{
+ "id": "AULA-013",
+ "domanda": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+ "categoria": "regolamento",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Nessuna seduta d'Aula del 2026 con mancanza del numero legale: coincide col riferimento, e scarta correttamente le menzioni di commissioni e Senato. Nessun link.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782429.3679302,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "elenco_votazioni",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 37.7,
+ "risposta_sistema": "Non ho trovato, nei dati già consultati, sedute d’Aula della Camera nel 2026 in cui sia registrata la mancanza del numero legale su una votazione.\n\nLa ricerca testuale ha restituito riferimenti al numero legale che non riguardano un accertamento in Aula alla Camera: per esempio, il 17 giugno Marco Grimaldi (AVS) ha parlato delle difficoltà della maggioranza «sul numero legale» nel precedente esame al Senato; l’11 febbraio Ouidad Bakkali (PD-IDP) ha menzionato sedute della Commissione di vigilanza Rai senza numero legale. Non sono quindi casi utilizzabili per rispondere alla domanda.\n\nPer una verifica completa occorre consultare i resoconti stenografici delle sedute dell’Assemblea della Camera del 2026, cercando le formule procedurali di accertamento del numero legale, e le schede delle relative votazioni elettroniche sul sito ufficiale della Camera. I dati disponibili arrivano fino al 3 novembre 2026.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "PD",
+     "AVS"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": []
+   },
+   "quotes": [
+    {
+     "quote": "sul numero legale",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+    "available": false,
+    "voices": [
+     {
+      "name": "Marco Grimaldi",
+      "group": "Alleanza Verdi e Sinistra",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Ouidad Bakkali",
+      "group": "Partito Democratico",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Nei resoconti d'Aula della Camera caricati per il 2026 non risulta alcuna seduta in cui il Presidente constati la mancanza del numero legale. In tutta la legislatura il Presidente nomina il numero legale solo 5 volte, per dire che è raggiunto (5/3/2024, 26/11/2025) o in battute (12/6/2024, 8/4/2026). Nessuna votazione della Camera porta l'indicazione del numero legale.",
+  "stato": "parziale",
+  "limiti": "Ricerca per testo nei resoconti stenografici d'Aula (sitting.kind = assembly_verbatim) con le formule «manca/mancanza del/mancando il/non è in numero legale»; nessun campo strutturato registra l'evento. Il risultato «nessuna» vale per i testi caricati: non si può escludere che la formula del Presidente sia scritta in altro modo o non sia nel testo canonico. Le sedute del Bollettino (commissioni) sono escluse."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 37.7
+ },
+ "causa_probabile": null
+}

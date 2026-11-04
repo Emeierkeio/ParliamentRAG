@@ -1,0 +1,187 @@
+{
+ "id": "DJ-010",
+ "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
+ "categoria": "governo",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793784710.930748,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_votazioni",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": true,
+    "act": null,
+    "q": null,
+    "start": "2022-10-22",
+    "end": "2026-11-03",
+    "chamber": "camera",
+    "secret": null,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni elettroniche, Camera, dal 22/10/2022 al 03/11/2026; filtri: fiducia sì. Fonte: le votazioni pubblicate dai due rami (tabella vote); i rami non sono sommati.\", \"total\": 71, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"votazioni\": 71, \"dal\": \"2022-10-25\", \"al\": \"2026-10-07\"}]}"
+  },
+  {
+   "name": "conta_votazioni",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": true,
+    "act": null,
+    "q": null,
+    "start": "2022-10-22",
+    "end": "2026-11-03",
+    "chamber": "senato",
+    "secret": null,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni elettroniche, Senato, dal 22/10/2022 al 03/11/2026; filtri: fiducia sì. Fonte: le votazioni pubblicate dai due rami (tabella vote); i rami non sono sommati.\", \"total\": 58, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"ramo\": \"senato\", \"votazioni\": 58, \"dal\": \"2022-10-26\", \"al\": \"2026-09-30\"}]}"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2022-10-22",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 71, \"items\": [{\"uri\": \"it:camera:19:sed0722:v034\", \"sitting\": \"it:camera:19:sed0722\", \"chamber\": \"camera\", \"number\": 34, \"date\": \"2026-10-07\", \"title\": \"Votazione Articolo 3 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 228, \"against\": 144, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=722_34&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0721:v002\", \"sitting\": \"it:camera:19:sed0721\", \"chamber\": \"camera\", \"number\": 2, \"date\": \"2026-10-06\", \"title\": \"Votazione Articolo 2 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 227, \"against\": 149, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_2&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0721:v001\", \"sitting\": \"it:camera:19:sed0721\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-06\", \"title\": \"Votazione Articolo 1 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 226, \"against\": 147, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_1&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0716:v056\", \"sitting\": \"it:camera:19:sed0716\", \"chamber\": \"camera\", \"number\": 56, \"date\": \"2026-09-28\", \"title\": \"Votazione Articolo unico DDL n. 3083\", \"kind\": \"article\", \"favor\": 167, \"against\": 93, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Conversione in legge del decreto-legge 7 agosto 2026, n. 144, recante disposizioni urgenti per la funzionalità della pubblica amministrazione e degli enti territoriali, nonché in materia di protezion\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=716_56&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0704:v045\", \"sitting\": \"it:camera:19:sed0704\", \"chamber\": \"camera\", \"number\": 45, \"date\": \"2026-08-05\", \"title\": \"Votazione \", \"kind\": \"other\", \"favor\": 191, \"against\": 112, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVota"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "senato",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2022-10-22",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 58, \"items\": [{\"uri\": \"it:senato:19:sed0460:v002\", \"sitting\": \"it:senato:19:sed0460\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-09-30\", \"title\": \"Disegno di Legge n.2047. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 95, \"against\": 53, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0447:v001\", \"sitting\": \"it:senato:19:sed0447\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-08-05\", \"title\": \"Disegno di legge n. 2001. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 104, \"against\": 62, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0444:v001\", \"sitting\": \"it:senato:19:sed0444\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-07-30\", \"title\": \"Disegno di legge n. 1939. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 92, \"against\": 63, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0434:v002\", \"sitting\": \"it:senato:19:sed0434\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-07-01\", \"title\": \"DDL  n. 1944. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 106, \"against\": 62, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0432:v003\", \"sitting\": \"it:senato:19:sed0432\", \"chamber\": \"senato\", \"number\": 3, \"date\": \"2026-06-24\", \"title\": \"Disegno di legge n.1933. Votazione questione di fiducia.\", \"kind\": \"confidence\", \"favor\": 94, \"against\": 61, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0420:v001\", \"sitting\": \"it:senato:19:sed0420\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-05-14\", \"title\": \"Disegno di legge n. 1852. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 99, \"against\": 56, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0416:v002\", \"sitting\": \"it:senato:19:sed0416\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-04-29\", \"title\": \"DDL n.1832. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 95, \"against\": 58, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0409:v001\", \"sitting\": \"it:senato:19:sed0409\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-04-15\", \"title\": \"Disegno di legge n. 1867. Votazione questione di fiducia.\", \"kind\": \"confidence\", \"favor\": 101, \"against\": 63, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0406:v001\", \"sitting\": \"it:senato:19:sed0406\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-04-08\", \"title\": \"Disegno di legge n. 1857. Votazione questione di fiducia.\", \"kind\": \"confidence\", \"favor\": 102, \"against\": 64, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true}, {\"uri\": \"it:senato:19:sed0393:v002\", \"sitting\": \"it:senato:19:sed0393\", \"chamber\": \"senato\", \"number\": 2, \"date\": \"2026-02-25\", \"title\": \"Disegn"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2022-10-22",
+    "end": "2022-12-31",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:sed0027:v119\", \"sitting\": \"it:camera:19:sed0027\", \"chamber\": \"camera\", \"number\": 119, \"date\": \"2022-12-23\", \"title\": \"Votazione Questione di fiducia DDL n. 0643-bis\", \"kind\": \"amendment\", \"favor\": 221, \"against\": 152, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Bilancio di previsione dello Stato per l’anno finanziario 2023 e bilancio pluriennale per il triennio 2023-2025\\\" <em>(Testo risultante dallo stralcio, disposto dal Presidente della Camera, ai sensi d\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=27_119&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0004:v001\", \"sitting\": \"it:camera:19:sed0004\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2022-10-25\", \"title\": \"Votazione Mozione 1_00002\", \"kind\": \"motion\", \"favor\": 235, \"against\": 154, \"abstain\": 5, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"MOZIONE DI FIDUCIA 1/00002 presentata da FOTI TOMMASO (FRATELLI D'ITALIA) in data 25/10/2022\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=4_1&tipo=dettaglio\"}]}"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2023-01-01",
+    "end": "2023-12-31",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 26, \"items\": [{\"uri\": \"it:camera:19:sed0213:v026\", \"sitting\": \"it:camera:19:sed0213\", \"chamber\": \"camera\", \"number\": 26, \"date\": \"2023-12-13\", \"title\": \"Votazione Articolo unico DDL n. 1601\", \"kind\": \"article\", \"favor\": 199, \"against\": 116, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 912. - \\\"Conversione in legge, con modificazioni, del decreto-legge 18 ottobre 2023, n. 145, recante misure urgenti in materia economica e fiscale, in favore degli enti territoriali, a tutela del la\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=213_26&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0203:v034\", \"sitting\": \"it:camera:19:sed0203\", \"chamber\": \"camera\", \"number\": 34, \"date\": \"2023-11-27\", \"title\": \"Votazione Articolo unico DDL n. 1458\", \"kind\": \"article\", \"favor\": 164, \"against\": 94, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Conversione in legge del decreto-legge 5 ottobre 2023, n. 133, recante disposizioni urgenti in materia di immigrazione e protezione internazionale, nonché per il supporto alle politiche di sicurezza \", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=203_34&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0200:v050\", \"sitting\": \"it:camera:19:sed0200\", \"chamber\": \"camera\", \"number\": 50, \"date\": \"2023-11-22\", \"title\": \"Votazione Articolo unico DDL n. 1551\", \"kind\": \"article\", \"favor\": 194, \"against\": 125, \"abstain\": 5, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 899. - \\\"Conversione in legge, con modificazioni, del decreto-legge 29 settembre 2023, n. 132, recante disposizioni urgenti in materia di proroga di termini normativi e versamenti fiscali\\\" <em>(appr\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=200_50&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0195:v001\", \"sitting\": \"it:camera:19:sed0195\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2023-11-14\", \"title\": \"Votazione Articolo unico DDL n. 1437\", \"kind\": \"article\", \"favor\": 193, \"against\": 130, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Conversione in legge del decreto-legge 29 settembre 2023, n. 131, recante misure urgenti in materia di energia, interventi per sostenere il potere di acquisto e a tutela del risparmio\\\" (1437)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=195_1&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0190:v019\", \"sitting\": \"it:camera:19:sed0190\", \"chamber\": \"camera\", \"number\": 19, \"date\": \"2023-11-07\", \"title\": \"Votazione Articolo unico DDL n. 1517\", \"kind\": \"article\", \"favor\": 193, \"against\": 121, \"abstain\": 5, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 878. - \\\"Conversione in legge, c"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2024-01-01",
+    "end": "2024-12-31",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 15, \"items\": [{\"uri\": \"it:camera:19:sed0402:v175\", \"sitting\": \"it:camera:19:sed0402\", \"chamber\": \"camera\", \"number\": 175, \"date\": \"2024-12-20\", \"title\": \"Votazione Questione di fiducia DDL n. 2112-bis\", \"kind\": \"amendment\", \"favor\": 211, \"against\": 117, \"abstain\": 5, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Bilancio di previsione dello Stato per l’anno finanziario 2025 e bilancio pluriennale per il triennio 2025-2027\\\" (<em>Testo risultante dallo stralcio, disposto dal Presidente della Camera, ai sensi d\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=402_175&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0392:v038\", \"sitting\": \"it:camera:19:sed0392\", \"chamber\": \"camera\", \"number\": 38, \"date\": \"2024-12-04\", \"title\": \"Votazione Articolo unico DDL n. 2150\", \"kind\": \"article\", \"favor\": 192, \"against\": 112, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1274. - \\\"Conversione in legge, con modificazioni, del decreto-legge 19 ottobre 2024, n. 155, recante misure urgenti in materia economica e fiscale e in favore degli enti territoriali\\\" <em>(approvat\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=392_38&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0387:v092\", \"sitting\": \"it:camera:19:sed0387\", \"chamber\": \"camera\", \"number\": 92, \"date\": \"2024-11-26\", \"title\": \"Votazione Articolo unico DDL n. 2088\", \"kind\": \"article\", \"favor\": 180, \"against\": 106, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Conversione in legge del decreto-legge 11 ottobre 2024, n. 145, recante disposizioni urgenti in materia di ingresso in Italia di lavoratori stranieri, di tutela e assistenza alle vittime di caporalat\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=387_92&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0374:v024\", \"sitting\": \"it:camera:19:sed0374\", \"chamber\": \"camera\", \"number\": 24, \"date\": \"2024-10-30\", \"title\": \"Votazione Articolo unico DDL n. 2038\", \"kind\": \"article\", \"favor\": 193, \"against\": 106, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Conversione in legge del decreto-legge 16 settembre 2024, n. 131, recante disposizioni urgenti per l’attuazione di obblighi derivanti da atti dell’Unione europea e da procedure di infrazione e pre-in\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=374_24&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0359:v045\", \"sitting\": \"it:camera:19:sed0359\", \"chamber\": \"camera\", \"number\": 45, \"date\": \"2024-10-03\", \"title\": \"Votazione Articolo unico DDL n. 2066\", \"kind\": \"article\", \"favor\": 158, \"against\": 112, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1222. -"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2025-01-01",
+    "end": "2025-12-31",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 13, \"items\": [{\"uri\": \"it:camera:19:sed0589:v119\", \"sitting\": \"it:camera:19:sed0589\", \"chamber\": \"camera\", \"number\": 119, \"date\": \"2025-12-29\", \"title\": \"Votazione Questione di fiducia DDL n. 2750\", \"kind\": \"amendment\", \"favor\": 219, \"against\": 125, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1689. - \\\"Bilancio di previsione dello Stato per l’anno finanziario 2026 e bilancio pluriennale per il triennio 2026-2028\\\" <em>(approvato dal Senato)</em> (2750)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=589_119&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0586:v046\", \"sitting\": \"it:camera:19:sed0586\", \"chamber\": \"camera\", \"number\": 46, \"date\": \"2025-12-17\", \"title\": \"Votazione Articolo unico DDL n. 2736\", \"kind\": \"article\", \"favor\": 194, \"against\": 104, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1706. - \\\"Conversione in legge, con modificazioni, del decreto-legge 31 ottobre 2025, n. 159, recante misure urgenti per la tutela della salute e della sicurezza sui luoghi di lavoro e in materia di\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=586_46&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0523:v019\", \"sitting\": \"it:camera:19:sed0523\", \"chamber\": \"camera\", \"number\": 19, \"date\": \"2025-08-05\", \"title\": \"Votazione Articolo unico DDL n. 2551\", \"kind\": \"article\", \"favor\": 200, \"against\": 117, \"abstain\": 5, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1565. - \\\"Conversione in legge, con modificazioni, del decreto-legge 30 giugno 2025, n. 95, recante disposizioni urgenti per il finanziamento di attività economiche e imprese, nonché interventi di c\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=523_19&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0521:v020\", \"sitting\": \"it:camera:19:sed0521\", \"chamber\": \"camera\", \"number\": 20, \"date\": \"2025-07-31\", \"title\": \"Votazione Articolo unico DDL n. 2527\", \"kind\": \"article\", \"favor\": 178, \"against\": 107, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1561. - \\\"Conversione in legge, con modificazioni, del decreto-legge 26 giugno 2025, n. 92, recante misure urgenti di sostegno ai comparti produttivi\\\" <em>(approvato dal Senato)</em> (2527)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=521_20&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0508:v061\", \"sitting\": \"it:camera:19:sed0508\", \"chamber\": \"camera\", \"number\": 61, \"date\": \"2025-07-10\", \"title\": \"Votazione Articolo unico DDL n. 2416\", \"kind\": \"article\", \"favor\": 191, \"against\": 102, \"abstain\": 2, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Conversione in legge del decreto-legge 21 maggio 2025, n. "
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 15, \"items\": [{\"uri\": \"it:camera:19:sed0722:v034\", \"sitting\": \"it:camera:19:sed0722\", \"chamber\": \"camera\", \"number\": 34, \"date\": \"2026-10-07\", \"title\": \"Votazione Articolo 3 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 228, \"against\": 144, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=722_34&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0721:v002\", \"sitting\": \"it:camera:19:sed0721\", \"chamber\": \"camera\", \"number\": 2, \"date\": \"2026-10-06\", \"title\": \"Votazione Articolo 2 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 227, \"against\": 149, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_2&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0721:v001\", \"sitting\": \"it:camera:19:sed0721\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-06\", \"title\": \"Votazione Articolo 1 PDL n. 2822-B\", \"kind\": \"article\", \"favor\": 226, \"against\": 147, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_1&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0716:v056\", \"sitting\": \"it:camera:19:sed0716\", \"chamber\": \"camera\", \"number\": 56, \"date\": \"2026-09-28\", \"title\": \"Votazione Articolo unico DDL n. 3083\", \"kind\": \"article\", \"favor\": 167, \"against\": 93, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": true, \"act_title\": \"\\\"Conversione in legge del decreto-legge 7 agosto 2026, n. 144, recante disposizioni urgenti per la funzionalità della pubblica amministrazione e degli enti territoriali, nonché in materia di protezion\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=716_56&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0704:v045\", \"sitting\": \"it:camera:19:sed0704\", \"chamber\": \"camera\", \"number\": 45, \"date\": \"2026-08-05\", \"title\": \"Votazione \", \"kind\": \"other\", \"favor\": 191, \"against\": 112, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": true, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVota"
+  }
+ ],
+ "strumenti": [
+  "conta_votazioni",
+  "conta_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni"
+ ],
+ "tempo_s": 25.1,
+ "risposta_sistema": "Il Governo Meloni ha posto la questione di fiducia **128 volte** finora: **70 alla Camera** e **58 al Senato**.\n\nIl dato conta le questioni poste per **atto e data**, non le singole votazioni elettroniche: alla Camera risultano infatti 71 votazioni di fiducia, perché sulla riforma elettorale (A.C. 2822-B) la fiducia è stata votata su più articoli il 6 e il 7 ottobre 2026 ([6 ottobre](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_1&tipo=dettaglio), [7 ottobre](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=722_34&tipo=dettaglio)). I dati arrivano fino al **3 novembre 2026**.",
+ "eventi": {
+  "status": 1,
+  "tool": 18,
+  "dati": 9,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

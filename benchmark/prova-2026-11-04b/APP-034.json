@@ -1,0 +1,43 @@
+{
+ "id": "APP-034",
+ "domanda": "chi è il deputato più giovane e il più anziano?",
+ "categoria": "persone",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "Solo deputati in carica oggi, con data di nascita.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784546.79613,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "cerca_per_significato",
+  "cerca_persone",
+  "cerca_persone",
+  "scheda_persona",
+  "scheda_persona"
+ ],
+ "tempo_s": 42.1,
+ "risposta_sistema": "Alla Camera, tra i deputati attualmente in carica:\n\n- la più giovane è **Rachele Scarpa** (PD-IDP), nata il **29 gennaio 1997**. [Scheda ufficiale](http://dati.camera.it/ocd/persona.rdf/p308803)\n- il più anziano è **Antonio Angelucci** (Lega), nato il **16 settembre 1944**. [Scheda ufficiale](http://dati.camera.it/ocd/persona.rdf/p302942)",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Fra i 398 deputati in carica al 2/11/2026 la più giovane è Rachele Scarpa (PD-IDP), nata il 29/1/1997, 29 anni; seguono Grazia Di Maggio (FdI, 11/11/1994) e Marianna Ricciardi (M5S, 13/1/1994). Il più anziano è Antonio Angelucci (Lega), nato il 16/9/1944, 82 anni; seguono Bruno Tabacci (Misto senza componente, 27/8/1946) e Carlo Nordio (FdI, 6/2/1947). Tutti i deputati in carica hanno la data di nascita.",
+  "stato": "calcolata",
+  "limiti": "Deputati in carica = mandato Camera XIX aperto al 2/11/2026. Età al 2/11/2026."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 42.1
+ },
+ "giro1": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null
+ },
+ "causa_probabile": null,
+ "note": "Ora afferma senza riserve che la più giovane è Rachele Scarpa (29/1/1997) e il più anziano Antonio Angelucci (16/9/1944), come il riferimento, e linka le due schede Camera. Sale da 1 a 2."
+}

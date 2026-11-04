@@ -1,0 +1,45 @@
+{
+ "id": "COMU-036",
+ "domanda": "Quante audizioni ha fatto la Camera sulla legge annuale per la concorrenza 2026 e chi è stato sentito?",
+ "categoria": "audizioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "AC 3120.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782731.9549289,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "organo",
+  "elenco_sedute",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "elenco_sedute",
+  "cerca_interventi"
+ ],
+ "tempo_s": 21.9,
+ "risposta_sistema": "Fino al **3 novembre 2026**, nei resoconti che ho trovato per l’esame del disegno di legge **C. 3120** (“Legge annuale per il mercato e la concorrenza 2026”) presso la **X Commissione Attività produttive** risultano **0 audizioni svolte** e quindi **nessun soggetto ascoltato**.\n\nHo trovato:\n- avvio dell’esame in sede referente il **27 ottobre 2026**;\n- seguito dell’esame il **28 ottobre 2026**, senza interventi né audizioni;\n- una seduta di “audizioni informali” del 27 ottobre, ma relativa a un altro provvedimento (C. 2410), con Confcommercio.\n\nManca però una verifica completa di eventuali audizioni convocate o svolte dopo l’ultima data disponibile nei dati, o eventualmente pubblicate in documenti separati. Per la fonte ufficiale, controlla la pagina dell’iter del **C. 3120** sul sito della Camera e il calendario/resoconti della **X Commissione Attività produttive, commercio e turismo**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nei dati la Camera non ha ancora svolto audizioni sul C. 3120 (legge annuale per il mercato e la concorrenza 2026): ci sono l'esame in V Commissione ai sensi dell'art. 123-bis (21/10/2026) e due sedute della X Commissione in sede referente (27/10/2026, relazione di Gusmeroli, e 28/10/2026), nessuna in sede di audizione. Sono stati depositati due contributi scritti: Conferenza unificata (28/10/2026) e FIAIP (30/10/2026).",
+  "stato": "parziale",
+  "limiti": "Il Bollettino delle commissioni è caricato fino al 29/10/2026: audizioni successive non sono visibili. Le audizioni informali senza memoria depositata compaiono solo come punti del Bollettino; qui non ce ne sono. I contributi scritti non dicono se l'autore è stato anche audito."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 21.9
+ },
+ "causa_probabile": null,
+ "note": "Nessuna audizione sul C. 3120, sedute della X del 27 e del 28/10 giuste, come nel riferimento. Mancano l'esame in V Commissione e i due contributi scritti (Conferenza unificata, FIAIP). Nessun link."
+}

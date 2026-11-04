@@ -1,0 +1,85 @@
+{
+ "id": "COMU-014",
+ "domanda": "Il voto finale sulla legge elettorale dell'8 ottobre: mi dai l'elenco di chi ha votato sì nominativamente?",
+ "categoria": "voti",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Trappola: scrutinio segreto (secret = true, risultato «voted»). Il sistema deve rifiutare l'elenco e spiegare perché; solo totali 227-164.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793782766.513708,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 407, \"items\": [{\"uri\": \"it:camera:19:sed0735:v017\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 17, \"date\": \"2026-10-28\", \"title\": \"Votazione finale \", \"kind\": \"final\", \"favor\": 143, \"against\": 113, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_17&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0731:v004\", \"sitting\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"number\": 4, \"date\": \"2026-10-22\", \"title\": \"Votazione finale PDL n. 2904\", \"kind\": \"final\", \"favor\": 220, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"GRIBAUDO ed altri: \\\"Modifica all’articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle pers\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=731_4&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v097\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 97, \"date\": \"2026-10-21\", \"title\": \"Votazione finale PDL n. 0362\", \"kind\": \"final\", \"favor\": 137, \"against\": 0, \"abstain\": 94, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"MOLINARI ed altri: \\\"Istituzione e disciplina delle zone del commercio nei centri storici\\\" (362)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_97&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v055\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 55, \"date\": \"2026-10-21\", \"title\": \"Votazione finale DDL n. 3076\", \"kind\": \"final\", \"favor\": 131, \"against\": 0, \"abstain\": 95, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 1779. - \\\"Disposizioni in materia di protezione civile\\\"<i>(approvato dal Senato)</i> (3076)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_55&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v005\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 5, \"date\": \"2026-10-21\", \"title\": \"Votazione finale DDL n. 2958\", \"kind\": \"final\", \"favor\": 239, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 1880. - \\\"Ratifica ed esecuzione dei Trattati di estradizione, trasferimento delle persone condannate e assistenza giudiziaria in materia penale tra la Repubblica italiana e la Repubblica Socialista\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_5&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0729:v042\", \"sitting\": \"it:camera:19:sed0729\", \"chamber\": \"camera\", \"number\": 42, \"date\": \"2026-10-20\", \"title\": \"Votazione finale DDL n. 3131\","
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "senato",
+    "act": null,
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 264, \"items\": [{\"uri\": \"it:senato:19:sed0469:v006\", \"sitting\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"number\": 6, \"date\": \"2026-10-28\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 140, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Modifica all'articolo 24 della Costituzione in materia di tutela delle vittime di reato\"}, {\"uri\": \"it:senato:19:sed0469:v003\", \"sitting\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"number\": 3, \"date\": \"2026-10-28\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 75, \"against\": 52, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Modifiche al decreto del Presidente della Repubblica 30 settembre 1963, n. 1409, e all'articolo 41 del codice dei beni culturali e del paesaggio, di cui al decreto legislativo 22 gennaio 2004, n. 42, \"}, {\"uri\": \"it:senato:19:sed0468:v004\", \"sitting\": \"it:senato:19:sed0468\", \"chamber\": \"senato\", \"number\": 4, \"date\": \"2026-10-27\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 80, \"against\": 51, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Disposizioni in materia di giovani e servizio civile universale e deleghe al Governo per il riordino della materia\"}, {\"uri\": \"it:senato:19:sed0465:v019\", \"sitting\": \"it:senato:19:sed0465\", \"chamber\": \"senato\", \"number\": 19, \"date\": \"2026-10-13\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 80, \"against\": 46, \"abstain\": 4, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Legge quadro sull'ordinamento della polizia locale\"}, {\"uri\": \"it:senato:19:sed0463:v035\", \"sitting\": \"it:senato:19:sed0463\", \"chamber\": \"senato\", \"number\": 35, \"date\": \"2026-10-07\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 72, \"against\": 40, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Delega al Governo per la riforma e il riordino della legislazione farmaceutica in materia di accesso al farmaco, monitoraggio e controllo della spesa farmaceutica, prestazione di servizi sanitari sul \"}, {\"uri\": \"it:senato:19:sed0463:v006\", \"sitting\": \"it:senato:19:sed0463\", \"chamber\": \"senato\", \"number\": 6, \"date\": \"2026-10-07\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 73, \"against\": 49, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Conversione in legge, con modificazioni, del decreto-legge 28 agosto 2026, n. 154, recante misure urgenti per assicurare la continuità operativa di impianti di interesse strategico nazionale\"}, {\"uri\": \"it:senato:19:sed0460:v001\", \"sitting\": \"it:senato:19:sed0460\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-09-30\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 78, \"against\": 51, \"abstain\": 1, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"Riordino e riorganizzazione del Consiglio universitario nazionale\"}, {\"uri\": \"it:senato:19:sed0458:v011\", "
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "legge elettorale",
+    "chamber": null,
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 15, \"items\": [{\"uri\": \"it:camera:19:ac:3145\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3145\", \"kind\": \"bill\", \"title\": \"PROPOSTA DI LEGGE COSTITUZIONALE SPERANZA: \\\"Modifica all’articolo 94 della Costituzione in materia di divieto di apposizione della questione di fiducia su progetti di legge vertenti su materia costituzionale o elettorale\\\" (3145)\", \"date\": \"2026-10-13\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3145\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2946\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2946\", \"kind\": \"bill\", \"title\": \"MORRONE ed altri: \\\"Modifiche alle leggi 4 aprile 1956, n. 212, e 10 dicembre 1993, n. 515, in materia di impiego della lingua italiana nella propaganda e nelle campagne elettorali\\\" (2946)\", \"date\": \"2026-05-29\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2946\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:senato:19:ddl:1785\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1785\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 27 dicembre 2025, n. 196, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell'anno 2026\", \"date\": \"2026-02-05\", \"status\": \"appr. definit. Legge\", \"law_number\": \"18\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55097.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro interno Piantedosi Matteo (Meloni-I) ed altri.\"}, {\"uri\": \"it:camera:19:ac:2751\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2751\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 27 dicembre 2025, n. 196, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell’anno 2026\\\" (2751)\", \"date\": \"2025-12-27\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"18\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2751\", \"initiative\": \"Governo\"}, {\"uri\": \"it:camera:19:ac:2362\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2362\", \"kind\": \"bill\", \"title\": \"S. 1425. - \\\"Conversione in legge, con modificazioni, del decreto-legge 19 marzo 2025, n. 27, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell’anno 2025\\\" <em>(approvato dal Senato) </em>(2362)\", \"date\": \"2025-04-16\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"72\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2362\", \"initiative\": \"Governo\"}, {\"uri\": \"it:senato:19:ddl:1425\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1425\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 19 marzo 2025, n. 27, recante disposizioni urgenti per le consultaz"
+  },
+  {
+   "name": "votazione",
+   "args": {
+    "uri": "it:camera:19:sed0723:v001",
+    "with_ballots": true
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0723:v001\", \"sitting\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-08\", \"title\": \"Votazione finale PDL n. 2822-B\", \"kind\": \"final\", \"favor\": 227, \"against\": 164, \"abstain\": 0, \"approved\": true, \"secret\": true, \"confidence\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio\", \"description\": \"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica, comprensiva dell&amp;#39;errata corrige (Approvata dalla Camera e modificata dal Senato) (PDL 2822-B)\", \"present\": 391, \"voting\": 391, \"majority\": 196, \"final\": true, \"acts\": [{\"ref\": \"ac19_2822-B\", \"uri\": \"it:camera:19:ac:2822-B\", \"title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\"}], \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 1, \"other\": 117}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 68}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 2, \"mission\": 1, \"other\": 52}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 52}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 1, \"mission\": 0, \"other\": 47}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 10}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 1, \"other\": 9}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 9}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 8}, {\"group\": {\"uri\":"
+  }
+ ],
+ "strumenti": [
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "cerca_atti",
+  "votazione"
+ ],
+ "tempo_s": 10.7,
+ "risposta_sistema": "No: il voto finale dell’**8 ottobre 2026** sulla PDL 2822-B (“Disposizioni in materia di elezioni della Camera dei deputati e del Senato”) è stato **segreto**, quindi non esiste un elenco nominativo dei voti favorevoli.\n\nAlla Camera la legge è stata approvata con **227 sì, 164 no e nessun astenuto**: 391 votanti, maggioranza richiesta 196. Sono pubblici i nominativi di presenti, assenti e in missione, ma non l’abbinamento individuale tra deputato e sì/no.\n\n[Dettaglio ufficiale della votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio)",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

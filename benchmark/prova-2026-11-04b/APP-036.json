@@ -1,0 +1,40 @@
+{
+ "id": "APP-036",
+ "domanda": "Magi di +Europa quante volte ha votato con la maggioranza?",
+ "categoria": "voti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note_domanda": "Riccardo Magi, Misto componente +Europa. Definire 'maggioranza' come i gruppi che sostengono il governo, alla data.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793784520.856359,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "voto_gruppi",
+  "scheda_persona"
+ ],
+ "tempo_s": 25.9,
+ "risposta_sistema": "Riccardo Magi ha votato come i gruppi della maggioranza di governo **1.363 volte**, su **7.956 votazioni palesi** a cui ha partecipato: **17,1%**.\n\nIl confronto è identico con **Fratelli d’Italia, Lega e Forza Italia**; per **Noi Moderati** risulta 1.347 volte su 7.799 (17,3%), perché il gruppo non ha una posizione registrata in tutte le stesse votazioni. Il dato copre la XIX legislatura dal 25 ottobre 2022 al 28 ottobre 2026; esclude voti segreti, assenze, missioni e presenti non votanti. Magi è deputato della componente **+Europa – Stati Uniti d’Europa** del gruppo Misto. [Scheda Camera](http://dati.camera.it/ocd/persona.rdf/p307436)",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nelle 20.257 votazioni della Camera presenti nel database con una scheda di Riccardo Magi (Misto, componente +Europa), Magi ha espresso un voto palese (favorevole, contrario o astenuto) in 7.959: in 1.364 (17,1%) ha votato come la maggioranza dei deputati dei gruppi di governo, in 6.593 diversamente (in 2 la maggioranza non aveva una posizione prevalente). Nelle altre votazioni risulta in missione 10.840 volte, assente 1.411 volte e ha partecipato a 47 votazioni segrete.",
+  "stato": "calcolata",
+  "limiti": "«Maggioranza» = gruppi che sostengono il governo Meloni (FdI, Lega, FI-PPE, Noi Moderati e la componente Misto Noi Moderati-MAIE dei primi giorni), letti dal gruppo che la Camera attribuisce nel voto (ballot.grp, con grp_alias). La posizione della maggioranza in una votazione è il voto più frequente fra i suoi deputati che hanno votato sì, no o astenuto. Il conto include ogni tipo di votazione (emendamenti, ordini del giorno, articoli, voti finali); le segrete sono escluse dal confronto. Le missioni numerose dipendono dal fatto che Magi presiede una componente (i presidenti di gruppo risultano in missione)."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 25.9
+ },
+ "giro1": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null
+ },
+ "causa_probabile": null,
+ "note": "Stesso dato del primo giro: 1.363 voti come la maggioranza su 7.956 palesi (17,1%), contro 1.364 su 7.959 del riferimento. Ora confronta con FdI, Lega, FI e NM e linka la scheda Camera (dati.camera.it): fonti passa a 1."
+}

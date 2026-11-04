@@ -1,0 +1,329 @@
+{
+ "id": "COM-012",
+ "domanda": "Fascicolo degli emendamenti sul ddl caregiver in XII Commissione: quanti per articolo e quanti articoli aggiuntivi?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "kind distingue emendamento, articoloAggiuntivo, subEmendamento.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782258.3846989,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "caregiver",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 14, \"items\": [{\"uri\": \"it:camera:19:ac:2776\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2776\", \"kind\": \"bill\", \"title\": \"BARZOTTI ed altri: \\\"Agevolazioni previdenziali e contributive in favore dei genitori lavoratori, dei <em>caregiver </em>familiari e delle persone che svolgono lavori di cura non retribuiti derivanti da responsabilità familiari\\\" (2776)\", \"date\": \"2026-01-29\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2776\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2683\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2683\", \"kind\": \"bill\", \"title\": \"AMBROSI: \\\"Istituzione della Giornata nazionale del <em>caregiver</em> familiare e delega al Governo per il riconoscimento e la tutela dell’attività di assistenza e cura da esso svolta\\\" (2683)\", \"date\": \"2025-11-03\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2683\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2007\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2007\", \"kind\": \"bill\", \"title\": \"ZANELLA ed altri: \\\"Disposizioni e delega al Governo per il riconoscimento e il sostegno dell’attività di cura e assistenza svolta dal <em>caregiver</em> familiare\\\" (2007)\", \"date\": \"2024-08-01\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2007\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:1690\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1690\", \"kind\": \"bill\", \"title\": \"CIOCCHETTI ed altri: \\\"Modifica del comma 255 dell’articolo 1 della legge 27 dicembre 2017, n. 205, e altre disposizioni nonché delega al Governo per il riconoscimento e la tutela della figura del <em>caregiver</em> familiare\\\" (1690)\", \"date\": \"2024-02-06\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1690\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:1682\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1682\", \"kind\": \"bill\", \"title\": \"GIORGIANNI ed altri: \\\"Disposizioni in favore degli studenti universitari che svolgono attività di <em>caregiver</em> familiare\\\" (1682)\", \"date\": \"2024-02-01\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1682\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:1507\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1507\", \"kind\": \"bill\", \"title\": \"STEFANI ed altri: \\\"Disposizioni per il riconoscimento e il sostegno dell’attività di cura e assistenza svolta dallo studente <em>caregiver</em> familiare\\\" (1507)\", \"date\": "
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:1690"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:1690\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1690\", \"kind\": \"bill\", \"title\": \"CIOCCHETTI ed altri: \\\"Modifica del comma 255 dell’articolo 1 della legge 27 dicembre 2017, n. 205, e altre disposizioni nonché delega al Governo per il riconoscimento e la tutela della figura del <em>caregiver</em> familiare\\\" (1690)\", \"date\": \"2024-02-06\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1690\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2026-10-14\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_1690\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:35980\", \"name\": \"Luciano Ciocchetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=35980&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308939\", \"name\": \"Aldo Mattia\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308939&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308839\", \"name\": \"Alessandro Palombi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308839&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308832\", \"name\": \"Alessia Ambrosi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308832&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308847\", \"name\": \"Andrea Volpi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308847&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308769\", \"name\": \"Barbara Polo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\":"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:159"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:159\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"159\", \"kind\": \"bill\", \"title\": \"SERRACCHIANI: \\\"Disposizioni per il riconoscimento e il sostegno dell’attività di cura e assistenza svolta dal <em>caregiver</em> familiare\\\" (159)\", \"date\": \"2022-10-13\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;159\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2026-10-14\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_159\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307374\", \"name\": \"Debora Serracchiani\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307374&legislatura=19\"}, \"first\": true}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2022-10-13\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2022-11-10\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2024-02-14\"}, {\"order\": 4, \"title\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"date\": \"2026-10-01\"}, {\"order\": 5, \"title\": \"In discussione\", \"date\": \"2026-10-02\"}, {\"order\": 6, \"title\": \"Assorbito dall'approvazione di pdl abbinato\", \"date\": \"2026-10-14\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.159.19PDL0006900\", \"title\": \"Disegno di Legge presentato il 13 ottobre 2022\", \"date\": \"2022-10-13\", \"articles\": 9, \"length\": 21595}, {\"code\": \"leg.19.pdl.camera.2789_A.19PDL0203840\", \"title\": \"Richiesta autorizzazione a riferire oralmente il 1° ottobre 2026\", \"date\": \"2026-10-01\", \"articles\": 18, \"length\": 75651}], \"joined\": [{\"ref\": \"it:camera:19:ac:2789\", \"uri\": \"it:camera:19:ac:2789\", \"title\": \"\\\"Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari\\\" (2789)\"}], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:344"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:344\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"344\", \"kind\": \"bill\", \"title\": \"CANDIANI ed altri: \\\"Norme in materia di <em>caregiver</em> familiare e deleghe al Governo per la piena integrazione della figura del <em>caregiver</em> familiare nell’ordinamento giuridico della Repubblica\\\" (344)\", \"date\": \"2022-10-14\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;344\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2026-10-14\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_344\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:306349\", \"name\": \"Stefano Candiani\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306349&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308770\", \"name\": \"Dario Giagoni\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308770&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307688\", \"name\": \"Dimitri Coin\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307688&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307616\", \"name\": \"Eugenio Zoffili\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307616&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307680\", \"name\": \"Fabrizio Cecchetti\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307680&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308801\", \"name\": \"Gianangelo Bof\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308801&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308873\", \"name\": \"Gianpiero Zinzi\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308873&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307686\", \"name\": \"Giorgia Andreuzza\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307686&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307632\", \"name\": \"Giulio Centemero\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307632&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307285\", \"name\": \"Laura Cavandoli\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307285&legislatura=19"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2789",
+    "outcome": null,
+    "venue": "committee",
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "atto"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:2789, sede committee. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": null,
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 499, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:10.1\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"10.1\", \"venue\": \"referente\", \"article\": \"10\", \"sitting_date\": \"2026-04-22\", \"text\": \"Sostituire le parole: al ruolo di assistenza familiare con le seguenti: al ruolo sociale di caregiver familiare.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308835\", \"name\": \"Paolo Ciani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308835&legislatura=19\"}, \"name_raw\": \"Paolo Ciani\", \"first\": true}]}, {\"uri\": \"it:camera:19:ac:2789:eme:com667:1.1\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"1.1\", \"venue\": \"referente\", \"article\": \"1\", \"sitting_date\": \"2026-04-22\", \"text\": \"Al comma 1, sostituire l'alinea con il seguente:\\n1. La presente legge tutela, riconosce e valorizza la figura del caregiver familiare di cui all'articolo 1, comma 255, della legge 27 dicembre 2017, n. 205, in quanto componente informale della rete di assistenza alla persona e risorsa del sistema integrato dei servizi sociali, socio-sanitari e sanitari, sostiene la conciliazione delle loro attività di cura con la loro vita lavorativa e sociale e ne riconosce il valore sociale ed economico connesso ai rilevanti vantaggi che dalla sua opera trae l'intera collettività attraverso misure volte a:.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308934\", \"name\": \"Ilenia Malavasi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308934&legislatura=19\"}, \"name_raw\": \"Ilenia Malavasi\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308892\", \"name\": \"Marco Furfaro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308892&legislatura=19\"}, \"name_raw\": \"Marco Furfaro\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308912\", \"name\": \"Gian Antonio Girelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308912&legislatura=19\"}, \"name_raw\": \"Gian Antonio Girelli\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:306395\", \"name\": \"Rosanna Filippin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressi"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 499, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:10.1\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"10.1\", \"venue\": \"referente\", \"article\": \"10\", \"sitting_date\": \"2026-04-22\", \"text\": \"Sostituire le parole: al ruolo di assistenza familiare con le seguenti: al ruolo sociale di caregiver familiare.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308835\", \"name\": \"Paolo Ciani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308835&legislatura=19\"}, \"name_raw\": \"Paolo Ciani\", \"first\": true}]}, {\"uri\": \"it:camera:19:ac:2789:eme:com667:1.1\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"1.1\", \"venue\": \"referente\", \"article\": \"1\", \"sitting_date\": \"2026-04-22\", \"text\": \"Al comma 1, sostituire l'alinea con il seguente:\\n1. La presente legge tutela, riconosce e valorizza la figura del caregiver familiare di cui all'articolo 1, comma 255, della legge 27 dicembre 2017, n. 205, in quanto componente informale della rete di assistenza alla persona e risorsa del sistema integrato dei servizi sociali, socio-sanitari e sanitari, sostiene la conciliazione delle loro attività di cura con la loro vita lavorativa e sociale e ne riconosce il valore sociale ed economico connesso ai rilevanti vantaggi che dalla sua opera trae l'intera collettività attraverso misure volte a:.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308934\", \"name\": \"Ilenia Malavasi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308934&legislatura=19\"}, \"name_raw\": \"Ilenia Malavasi\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308892\", \"name\": \"Marco Furfaro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308892&legislatura=19\"}, \"name_raw\": \"Marco Furfaro\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308912\", \"name\": \"Gian Antonio Girelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308912&legislatura=19\"}, \"name_raw\": \"Gian Antonio Girelli\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:306395\", \"name\": \"Rosanna Filippin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressi"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": null,
+    "limit": 100,
+    "offset": 100
+   },
+   "result": "{\"total\": 499, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:13.31\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"13.31\", \"venue\": \"referente\", \"article\": \"13\", \"sitting_date\": \"2026-04-22\", \"text\": \"Dopo il comma 5, aggiungere il seguente:\\n5-bis. Il riconoscimento dell'indennità mensile di cui al comma 1 comprende anche il riconoscimento di contributi previdenziali idonei al raggiungimento della pensione di anzianità. I contributi di cui al primo periodo e quelli eventualmente versati dal caregiver familiare per attività lavorative di qualsiasi natura sono cumulabili.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308835\", \"name\": \"Paolo Ciani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308835&legislatura=19\"}, \"name_raw\": \"Paolo Ciani\", \"first\": true}]}, {\"uri\": \"it:camera:19:ac:2789:eme:com667:13.33\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"13.33\", \"venue\": \"referente\", \"article\": \"13\", \"sitting_date\": \"2026-04-22\", \"text\": \"Dopo il comma 5, aggiungere il seguente:\\n5-bis. Resta fermo che il beneficio di cui al comma 1 è da intendersi quale aggiuntivo e non sostitutivo rispetto alle risorse già destinate alle prestazioni e ai servizi in favore dei caregiver familiari da parte delle regioni, nonché da parte delle autonomie locali, unitamente ad ulteriori ed eventuali misure ed agevolazioni.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:300469\", \"name\": \"Luana Zanella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300469&legislatura=19\"}, \"name_raw\": \"Luana Zanella\", \"first\": true}]}, {\"uri\": \"it:camera:19:ac:2789:eme:com667:13.34\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"13.34\", \"venue\": \"referente\", \"article\": \"13\", \"sitting_date\": \"2026-04-22\", \"text\": \"Dopo il comma 5, aggiungere il seguente:\\n5-bis. Resta fermo che il beneficio di cui al comma 1 è da intendersi quale aggiuntivo e non sostitutivo rispetto alle risorse già destinate alle prestazioni e ai servizi in favore dei caregiver familiari da parte delle regioni, nonché da parte delle autonomie locali, unitamente ad ulteriori ed eventuali misure ed agevolazioni.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308912\", \"name\": \"Gian Antonio Girelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308912&legislatura=19\"}, \"name_raw\": \"Gian Antonio Girelli\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308934\", \"name\": \"Ilenia Ma"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": null,
+    "limit": 100,
+    "offset": 200
+   },
+   "result": "{\"total\": 499, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:3.5\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"3.5\", \"venue\": \"referente\", \"article\": \"3\", \"sitting_date\": \"2026-04-22\", \"text\": \"Al comma 2, secondo periodo, aggiungere, in fine, le parole: e avendo come scopo la tutela della salute psicofisica e della vita della persona assistita, nel pieno rispetto della sua dignità.\\nConseguentemente al comma 3, secondo periodo, aggiungere, in fine, le seguenti parole: e avendo come scopo la tutela della salute psicofisica e della vita della persona assistita, nel pieno rispetto della sua dignità.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:307202\", \"name\": \"Gilda Sportiello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307202&legislatura=19\"}, \"name_raw\": \"Gilda Sportiello\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"name_raw\": \"Marianna Ricciardi\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307210\", \"name\": \"Carmela Di Lauro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307210&legislatura=19\"}, \"name_raw\": \"Carmen Di Lauro\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308896\", \"name\": \"Andrea Quartini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308896&legislatura=19\"}, \"name_raw\": \"Andrea Quartini\", \"first\": false}]}, {\"uri\": \"it:camera:19:ac:2789:eme:com667:3.6\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"3.6\", \"venue\": \"referente\", \"article\": \"3\", \"sitting_date\": \"2026-04-22\", \"text\": \"Al comma 2, quinto periodo, dopo le parole: è caregiver il tutore aggiungere le seguenti: qualora convivente.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308835\", \"name\": \"Paolo Ciani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308835&legislatura=19\"}, \"name_raw\": \"Paolo Ciani\", \"first\": true}]}, {\"uri\": \"it:camera:19:ac:2789:eme:com667:3.7\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"3.7\", \"venue\": \"referente\", \"article\": \"3\", \"sitting_date\": \"2026"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": null,
+    "limit": 100,
+    "offset": 300
+   },
+   "result": "{\"total\": 499, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:5.9\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"5.9\", \"venue\": \"referente\", \"article\": \"5\", \"sitting_date\": \"2026-04-22\", \"text\": \"Al comma 1, dopo la lettera b), aggiungere la seguente:\\nb-bis) alla redazione di ogni altro piano di intervento o progetto assistenziale previsto a legislazione vigente in favore della persona assistita, al fine di garantire l'integrazione dell'attività di cura e assistenza familiare con i servizi sanitari, sociosanitari e sociali.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308892\", \"name\": \"Marco Furfaro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308892&legislatura=19\"}, \"name_raw\": \"Marco Furfaro\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308934\", \"name\": \"Ilenia Malavasi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308934&legislatura=19\"}, \"name_raw\": \"Ilenia Malavasi\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308912\", \"name\": \"Gian Antonio Girelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308912&legislatura=19\"}, \"name_raw\": \"Gian Antonio Girelli\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:306395\", \"name\": \"Rosanna Filippin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306395&legislatura=19\"}, \"name_raw\": \"Rosanna Filippin\", \"first\": false}]}, {\"uri\": \"it:camera:19:ac:2789:eme:com667:6.1\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"6.1\", \"venue\": \"referente\", \"article\": \"6\", \"sitting_date\": \"2026-04-22\", \"text\": \"Sostituire il comma 1 con il seguente:\\n1. Si assicura il riconoscimento e la partecipazione delle organizzazioni maggiormente o comparativamente più rappresentative dei caregiver familiari in ogni ambito istituzionale in cui si trattino temi relativi alla presente legge. Per consentire ad ogni caregiver familiare iscritto alla piattaforma INPS, di cui all'articolo 4, comma 1, il diritto a partecipare agli ambiti di rappresentanza, in forma associata ma non associativa, viene istituita dalle diverse amministrazioni – ad ogni livello, locale e regionale – la Consulta dei caregiver familiari. È altre"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": null,
+    "limit": 100,
+    "offset": 400
+   },
+   "result": "{\"total\": 499, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:8.9\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"8.9\", \"venue\": \"referente\", \"article\": \"8\", \"sitting_date\": \"2026-04-22\", \"text\": \"Al comma 1, primo periodo, dopo le parole: in modalità di lavoro agile aggiungere le seguenti: e ad accomodamenti ragionevoli di cui all'articolo 17 del decreto legislativo 3 maggio 2024, n. 62,.\\nConseguentemente:\\nal medesimo comma 1, aggiungere, in fine, i seguenti periodi: Il caregiver familiare ha diritto al ripristino del rapporto di lavoro a tempo. Il datore di lavoro, pubblico o privato è tenuto a rispondere per iscritto e in forma motivata alle richieste di rimodulazione dell'orario o della modalità di svolgimento della prestazione lavorativa entro trenta giorni dalla domanda. Il diniego è ammesso per comprovate ragioni tecnico-organizzative non altrimenti superabili. È nullo ogni atto o patto, anche organizzativo, che determini un trattamento meno favorevole o ritorsivo in ragione della qualità di caregiver familiare. Si applicano, in quanto compatibili, le tutele previste dalla normativa antidiscriminatoria vigente.;\\nal comma 3, sostituire le parole: articolo 2, comma 5, lettere a), b) e c) con le seguenti: articolo 2, comma 5, lettere a), b), c) e d).\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:307210\", \"name\": \"Carmela Di Lauro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307210&legislatura=19\"}, \"name_raw\": \"Carmen Di Lauro\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308896\", \"name\": \"Andrea Quartini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308896&legislatura=19\"}, \"name_raw\": \"Andrea Quartini\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"name_raw\": \"Marianna Ricciardi\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307202\", \"name\": \"Gilda Sportiello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307202&legislatura=19\"}, \"name_raw\": \"Gilda Sportiello\", \"first\": false}]}, {\"uri\": \"it:camera:19:ac:2789:eme:com667:9.1\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"9.1\", \"venue\": \"referente\", \"article\": \"9\", \"sitting_date\": \"2026-04-22\", \"text\": \"Al comma 1, sostit"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo\"",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 48, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:12.01\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"12.01\", \"venue\": \"referente\", \"article\": \"12\", \"sitting_date\": \"2026-04-22\", \"text\": \"Dopo l'articolo 12, aggiungere il seguente:\\nArt. 12-bis. (Disposizioni in tema di rendicontazione al giudice tutelare per il caregiver convivente)\\n1. Qualora il caregiver familiare convivente rivesta il ruolo di tutore o amministratore di sostegno della persona assistita, il giudice tutelare nel decreto di nomina può disporre che la rendicontazione della gestione avvenga in forma semplificata, tenuto conto della natura prevalentemente assistenziale dell'attività svolta. 2. La rendicontazione in forma semplificata consiste in una relazione periodica, con cadenza stabilita dal giudice tutelare, contenente l'indicazione riepilogativa delle entrate percepite e delle spese sostenute nell'interesse del beneficiario, articolate per categorie essenziali. 3. Nel caso di rendicontazione in forma semplificata non è richiesta la produzione analitica e sistematica dei giustificativi di spesa. 4. Resta ferma la facoltà del giudice tutelare di richiedere in ogni momento chiarimenti in ordine alla gestione economica e documentazione aggiuntiva, nonché di modificare o revocare la modalità semplificata di rendicontazione, qualora lo richiedano le esigenze di protezione della persona assistita o del patrimonio del beneficiario. 5. Per i procedimenti di amministrazione di sostegno o di interdizione già aperti alla data dell'entrata in vigore della presente legge, il tutore o l'amministratore di sostegno che sia anche caregiver convivente della persona con disabilità può essere autorizzato dal giudice tutelare a predisporre il rendiconto annuale in forma semplificata previa istanza da depositare ai sensi dell'articolo 374 del codice civile.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:307376\", \"name\": \"Massimiliano Panizzut\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307376&legislatura=19\"}, \"name_raw\": \"Massimiliano Panizzut\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308911\", \"name\": \"Simona Loizzo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308911&legislatura=19\"}, \"name_raw\": \"Simona Loizzo\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308770\", \"name\": \"Dario Giagoni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308770&legislatura=19\"}, \"name_raw\": \"Dario Giagoni\", \"fi"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 1,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 2,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 3,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 4,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 3, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:2.25\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"2.25\", \"venue\": \"referente\", \"article\": \"2\", \"sitting_date\": \"2026-04-22\", \"text\": \"Dopo il comma 1, aggiungere i seguenti:\\n1-bis. Ai fini della presente legge, si definisce «Young caregiver» il minore di età compresa tra i 14 e i 17 anni che, con carattere di continuità, presta attività di assistenza e cura in favore di un familiare convivente non autosufficiente, a causa di malattia, infermità o disabilità, anche croniche o degenerative. Per tale categoria, lo Stato riconosce il primato del diritto all'istruzione, alla salute e allo sviluppo psicofisico, assicurando l'adozione di misure di sostegno e di sollievo finalizzate a prevenire situazioni di burn-out o sovraccarico assistenziale, disagio e abbandono scolastico. 1-ter. Si definisce «Young adult carer» lo studente di età compresa tra i 18 e i 24 anni, iscritto a percorsi universitari, di istruzione e formazione tecnica superiore (IFTS) o di alta formazione artistica, musicale e coreutica (AFAM), che presta attività di assistenza e cura in favore di un familiare non autosufficiente, a causa di malattia, infermità o disabilità, anche croniche o degenerative. Per tale categoria, la legge garantisce il diritto alla conciliazione tra attività di cura e percorso formativo, promuovendo pari opportunità nel conseguimento dei titoli di studio e nell'accesso al mondo del lavoro.\\nConseguentemente:\\ndopo l'articolo 4, aggiungere il seguente:\\nArt. 4-bis. (Procedura per il riconoscimento del Young Caregiver e Young Adult Carers)\\n1. Per gli Young Caregivers, di età compresa tra i 14 e i 17 anni, la procedura di riconoscimento è attivata presso i servizi sociali del comune di residenza ovvero tramite gli sportelli di ascolto istituiti presso le istituzioni scolastiche. 2. La valutazione è effettuata secondo un approccio multidimensionale e tiene conto, in particolare:\\na) dell'intensità e della continuità del carico assistenziale, anche in termini di ore settimanali;\\nb) dell'impatto sull'andamento e sulla partecipazione scolastica;\\nc) dello stato di benessere psicofisico del minore.\\n3. L'esito positivo della valutazione costituisce titolo per l'iscrizione d'ufficio al «Registro nazionale dei giovani caregiver», istituito presso l'INPS, senza ulteriori adempimenti a carico dell'interessato o del nucleo familiare. 4. Per gli Young Adult Carer, di età compresa tra i 18 e i 24 anni, il riconoscimento avviene tramite la piattaforma dell'INPS, previa presentazione dell'attestazione di iscrizione a percorsi universitari, di istruzione e formazione tecnica superiore (IFTS) o di alta formazione artistica, musicale e coreutica (AFAM), nonché di una dichiarazione sostitutiva ai sensi della normativa vigente che attesti lo svolgimento dell'attività di assistenza in favore di un familiare convivente o in condizione di prevalenza. 5. Le università e le istituzioni della formazione superiore acquisisc"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 5,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 3, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:5.01\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"5.01\", \"venue\": \"referente\", \"article\": \"5\", \"sitting_date\": \"2026-04-22\", \"text\": \"Dopo l'articolo 5, aggiungere il seguente:\\nArt. 5-bis. (Prestazioni essenziali di sostegno ai caregiver familiari)\\n1. Al fine di definire i livelli essenziali delle prestazioni sociali, volti a garantire, in condizioni di efficienza e appropriatezza, un'offerta omogenea dei servizi sull'intero territorio nazionale, attraverso criteri oggettivi per la quantificazione delle risorse necessarie al perseguimento degli obiettivi di equità sociale e territoriale, lo Stato assicura l'individuazione delle prestazioni sociali e sociosanitarie essenziali destinate ai caregiver familiari di cui alla presente legge, nel rispetto dell'articolo 117, secondo comma, lettera m), della Costituzione e dei vincoli di finanza pubblica. 2. Le prestazioni di cui al comma 1 sono finalizzate, in coerenza con i bisogni assistenziali della persona assistita e con la condizione socio-economica del nucleo familiare, a garantire in particolare:\\na) interventi di sollievo e supporto, anche temporanei, in caso di emergenza o impedimento del caregiver;\\nb) servizi di assistenza di base e di supporto domiciliare;\\nc) misure di informazione, orientamento e formazione sul ruolo e sui compiti del caregiver familiare;\\nd) forme di supporto psicologico e di prevenzione del disagio psicofisico;\\ne) strumenti di facilitazione nell'accesso ai servizi sanitari, sociosanitari e amministrativi;\\nf) iniziative di sostegno alla conciliazione tra attività di cura e lavoro;\\ng) iniziative di sostegno in favore degli studenti caregiver;\\nh) azioni volte a favorire reti di supporto sociale e solidale, anche attraverso il coinvolgimento degli enti territoriali;\\ni) percorsi di accompagnamento e reinserimento lavorativo del caregiver familiare al termine dell'attività di cura;\\nl) misure di tutela economica e sociale transitoria in caso di cessazione improvvisa dell'attività di cura per decesso o istituzionalizzazione della persona assistita;\\nm) riconoscimento e valorizzazione delle competenze maturate dal caregiver familiare nel periodo di assistenza, anche ai fini formativi e professionali.\\n3. Con decreto del Ministro del lavoro e delle politiche sociali, adottato previa intesa in sede di Conferenza permanente per i rapporti tra lo Stato, le regioni e le province autonome di Trento e di Bolzano, sono definite le modalità di attuazione delle prestazioni di cui al presente articolo e i criteri di riparto delle risorse finanziarie disponibili. 4. Le disposizioni del presente articolo si applicano alle regioni a statuto speciale e alle province autonome di Trento e di Bolzano nel rispetto dei rispettivi statuti e delle relative norme di attuazione.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:307210\", \"name\": \"Carmela Di Lauro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 6,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 7,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:2.25\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"2.25\", \"venue\": \"referente\", \"article\": \"2\", \"sitting_date\": \"2026-04-22\", \"text\": \"Dopo il comma 1, aggiungere i seguenti:\\n1-bis. Ai fini della presente legge, si definisce «Young caregiver» il minore di età compresa tra i 14 e i 17 anni che, con carattere di continuità, presta attività di assistenza e cura in favore di un familiare convivente non autosufficiente, a causa di malattia, infermità o disabilità, anche croniche o degenerative. Per tale categoria, lo Stato riconosce il primato del diritto all'istruzione, alla salute e allo sviluppo psicofisico, assicurando l'adozione di misure di sostegno e di sollievo finalizzate a prevenire situazioni di burn-out o sovraccarico assistenziale, disagio e abbandono scolastico. 1-ter. Si definisce «Young adult carer» lo studente di età compresa tra i 18 e i 24 anni, iscritto a percorsi universitari, di istruzione e formazione tecnica superiore (IFTS) o di alta formazione artistica, musicale e coreutica (AFAM), che presta attività di assistenza e cura in favore di un familiare non autosufficiente, a causa di malattia, infermità o disabilità, anche croniche o degenerative. Per tale categoria, la legge garantisce il diritto alla conciliazione tra attività di cura e percorso formativo, promuovendo pari opportunità nel conseguimento dei titoli di studio e nell'accesso al mondo del lavoro.\\nConseguentemente:\\ndopo l'articolo 4, aggiungere il seguente:\\nArt. 4-bis. (Procedura per il riconoscimento del Young Caregiver e Young Adult Carers)\\n1. Per gli Young Caregivers, di età compresa tra i 14 e i 17 anni, la procedura di riconoscimento è attivata presso i servizi sociali del comune di residenza ovvero tramite gli sportelli di ascolto istituiti presso le istituzioni scolastiche. 2. La valutazione è effettuata secondo un approccio multidimensionale e tiene conto, in particolare:\\na) dell'intensità e della continuità del carico assistenziale, anche in termini di ore settimanali;\\nb) dell'impatto sull'andamento e sulla partecipazione scolastica;\\nc) dello stato di benessere psicofisico del minore.\\n3. L'esito positivo della valutazione costituisce titolo per l'iscrizione d'ufficio al «Registro nazionale dei giovani caregiver», istituito presso l'INPS, senza ulteriori adempimenti a carico dell'interessato o del nucleo familiare. 4. Per gli Young Adult Carer, di età compresa tra i 18 e i 24 anni, il riconoscimento avviene tramite la piattaforma dell'INPS, previa presentazione dell'attestazione di iscrizione a percorsi universitari, di istruzione e formazione tecnica superiore (IFTS) o di alta formazione artistica, musicale e coreutica (AFAM), nonché di una dichiarazione sostitutiva ai sensi della normativa vigente che attesti lo svolgimento dell'attività di assistenza in favore di un familiare convivente o in condizione di prevalenza. 5. Le università e le istituzioni della formazione superiore acquisisc"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 8,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:ac:2789:eme:com667:8.01\", \"act\": \"it:camera:19:ac:2789\", \"number\": \"8.01\", \"venue\": \"referente\", \"article\": \"8\", \"sitting_date\": \"2026-04-22\", \"text\": \"Dopo l'articolo 8, aggiungere il seguente:\\nArt. 8-bis.(Osservatorio Nazionale per i caregiver)\\n1. Al fine di monitorare l'attuazione e gli effetti della presente legge, è istituito, presso il Dipartimento per le politiche in favore delle persone con disabilità, l'Osservatorio nazionale per i caregiver, di seguito denominato «Osservatorio». 2. L'Osservatorio svolge funzioni di monitoraggio degli effetti derivanti dall'applicazione della presente legge, mediante la raccolta, con cadenza annuale, di dati effettivi, aggregati e comparativi da parte delle regioni e province autonome. 3. L'Osservatorio trasmette al Parlamento, con cadenza annuale, una relazione sullo stato di attuazione della presente legge e sui risultati dell'attività di monitoraggio svolta. 4. All'attuazione del presente articolo si provvede nei limiti delle risorse finanziarie, umane e strumentali disponibili a legislazione vigente.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:309200\", \"name\": \"Antonio Maria Gabellone\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=309200&legislatura=19\"}, \"name_raw\": \"Antonio Maria Gabellone\", \"first\": true}]}], \"more\": \"elenco parziale: 1 di 2; i successivi con offset=1\"}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:2789",
+    "signer": null,
+    "group": null,
+    "outcome": null,
+    "venue": "referente",
+    "q": "\"Dopo l'articolo 9,\"",
+    "limit": 1,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "atto",
+  "conta_emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti"
+ ],
+ "tempo_s": 33.9,
+ "risposta_sistema": "Ho individuato il fascicolo relativo alla pdl **C. 2789**, “Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari”, esaminata in sede referente dalla XII Commissione.\n\nNel fascicolo risultano **499 proposte emendative** complessive. Non posso però fornire un conteggio affidabile **articolo per articolo**: i dati letti riportano per ogni proposta l’articolo di riferimento, ma l’elenco completo non è stato disponibile in una forma aggregata per articolo.\n\nHo trovato **48 proposte** il cui testo contiene la formula “Dopo l’articolo …, aggiungere il seguente”; questo è un indicatore degli articoli aggiuntivi, ma non è un conteggio certo degli articoli aggiuntivi formalmente presentati, perché alcune proposte contengono più inserimenti conseguenziali. Tra quelle verificate compaiono, per esempio, articoli aggiuntivi dopo gli articoli 4, 5, 7, 8, 12 e 13.\n\nPer il riparto esatto, va consultato il **fascicolo degli emendamenti della XII Commissione sulla C. 2789** sul sito della Camera, nella pagina dell’atto e nei documenti dell’esame in sede referente; le proposte sono identificabili dai numeri, ad esempio `4.01`, `5.01`, `8.01`, `12.01`, `13.01`.",
+ "eventi": {
+  "status": 1,
+  "tool": 42,
+  "dati": 21,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

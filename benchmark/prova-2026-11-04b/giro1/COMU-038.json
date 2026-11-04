@@ -1,0 +1,47 @@
+{
+ "id": "COMU-038",
+ "domanda": "Mi fai un confronto tra quanto parla in Aula la maggioranza e quanto l'opposizione, per mese, nel 2026? Per una infografica.",
+ "categoria": "statistiche",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note_domanda": "Misto per componente: alcune componenti non sono né maggioranza né opposizione in modo stabile.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782687.404584,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi"
+ ],
+ "tempo_s": 63.2,
+ "risposta_sistema": "Per l’infografica userei gli **interventi in Aula** (turni di parola), non le parole: sono confrontabili mese per mese e non includono Governo, Presidenza o relatori.\n\n| Mese 2026 | Maggioranza | Opposizione | Rapporto opposizione/maggioranza |\n|---|---:|---:|---:|\n| Gennaio | 479 | 953 | 2,0× |\n| Febbraio | 412 | 866 | 2,1× |\n| Marzo | 513 | 918 | 1,8× |\n| Aprile | 572 | 2.315 | 4,0× |\n| Maggio | 308 | 661 | 2,1× |\n| Giugno | 445 | 1.426 | 3,2× |\n| Luglio | 574 | 1.597 | 2,8× |\n| Agosto | 302 | 519 | 1,7× |\n| Settembre | 351 | 1.153 | 3,3× |\n| Ottobre | 469 | 1.295 | 2,8× |\n| Novembre* | 16 | 75 | 4,7× |\n\n**Messaggio chiave:** in ogni mese disponibile del 2026 l’opposizione ha avuto più turni di parola della maggioranza; il divario più ampio è ad **aprile** (2.315 contro 572).\n\nLa classificazione include:\n- **Maggioranza:** Fratelli d’Italia, Lega/Lega–PSd’Az, Forza Italia, Noi Moderati alla Camera e Civici d’Italia–UDC–Noi Moderati–MAIE–Centro Popolare al Senato.\n- **Opposizione:** PD-IDP, Movimento 5 Stelle, AVS, Italia Viva–Casa Riformista e Azione/Renew.\n\nI dati aggregano Camera e Senato; un intervento è un turno di parola nel resoconto stenografico. Restano fuori da questo confronto le altre componenti del Misto e i gruppi non collocati nelle due aggregazioni.  \n\\* Novembre è aggiornato alla sola seduta del **3 novembre 2026**; i dati disponibili arrivano fino a quella data.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Interventi in Aula nel 2026 (1/1–30/10 Camera, 1/1–28/10 Senato), esclusa la Presidenza e i membri del governo. Camera: maggioranza 2.173 interventi e 1.020.067 parole (25,0% delle parole), opposizione 6.757 interventi e 2.892.131 parole (70,8%), non classificati (Misto senza componente, Minoranze linguistiche, FNV-Free) 635 interventi. Senato: maggioranza 1.876 interventi e 652.853 parole (33,2%), opposizione 4.647 interventi e 1.263.159 parole (64,3%), non classificati (Misto, Per le Autonomie) 171. In ogni mese e in entrambi i rami l'opposizione parla più della maggioranza; il divario maggiore è ad aprile 2026 (Camera 1.212 contro 251 interventi; Senato 1.063 contro 287). I valori mese per mese sono nel risultato.",
+  "stato": "parziale",
+  "limiti": "Regola dichiarata (non è un dato del DB): maggioranza = FdI, Lega, FI, Noi Moderati (Camera) e Civici d'Italia-UDC-NM-MAIE-CP (Senato); opposizione = PD, M5S, AVS (anche Misto-AVS al Senato), Azione (anche Misto-Az-RE), IV, +Europa; non classificati = Misto senza componente, Minoranze linguistiche, Futuro Nazionale Vannacci-Free, Per le Autonomie. Il gruppo è l'etichetta del resoconto (speech.as_group). Esclusi: Presidente di turno, ministri e sottosegretari, relatori senza etichetta di gruppo (alla Camera hanno as_group vuoto), e le etichette non valide. Parole = token separati da spazi nel testo dell'intervento. Ottobre è parziale (dati fino al 30/10 Camera e 28/10 Senato). Dopo la correzione della sigla di Noi Moderati (2/11/2026) le parole della maggioranza alla Camera passano da 1.020.371 a 1.020.067: i 304 in meno sono il pezzo «M-CP).» che prima finiva in testa agli interventi."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 63.2
+ },
+ "causa_probabile": "ragionamento_o_prompt",
+ "note": "Tabella mensile coerente col riferimento (opposizione sempre sopra, picco ad aprile), ma somma Camera e Senato invece di separarli e lascia fuori +Europa, che il riferimento conta all'opposizione. Totali vicini (maggioranza 4.425 contro 4.049, opposizione 11.703 contro 11.404). Nessun link."
+}

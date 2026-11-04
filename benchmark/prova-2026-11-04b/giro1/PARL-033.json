@@ -1,0 +1,42 @@
+{
+ "id": "PARL-033",
+ "domanda": "Testo dell'articolo 2 del decreto Piano Casa come convertito, e quali emendamenti approvati lo hanno modificato.",
+ "categoria": "testi",
+ "tipo_risposta": "testo",
+ "ramo": "entrambi",
+ "difficolta": "difficile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793783619.567171,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "emendamenti",
+  "emendamenti",
+  "cerca_per_significato",
+  "cerca_per_significato"
+ ],
+ "tempo_s": 38.0,
+ "risposta_sistema": "Ho identificato il provvedimento: **decreto-legge 7 maggio 2026, n. 66, “Disposizioni urgenti per il Piano Casa”**, convertito con modificazioni dalla **legge 2 luglio 2026, n. 116** (pubblicata nella Gazzetta Ufficiale n. 152 del 3 luglio 2026).\n\nNon ho però nel materiale già letto il **testo integrale consolidato dell’articolo 2**: posso quindi indicare con certezza contenuto, modifiche e fonti, ma non trascriverlo integralmente senza rischiare di aggiungere parti non verificate.\n\nL’articolo 2 riguarda il **Programma straordinario nazionale di recupero e manutenzione del patrimonio di edilizia pubblica e sociale**. Dai documenti esaminati risulta che:\n- il comma 1 definisce le finalità del Programma;\n- il comma 2 disciplina contributi del Ministero delle infrastrutture e dei trasporti ai soggetti attuatori e la relativa convenzione con Invitalia;\n- il comma 3 riguarda l’attuazione del Programma e gli interventi finanziabili.\n\nL’unico emendamento approvato che modifica direttamente l’articolo 2 è il **2.107 dei relatori**, approvato in VIII Commissione della Camera il **18 giugno 2026**. Le modifiche sono:\n\n1. **Comma 2**\n   - soppresse le parole: *“enti costituiti o partecipati da”*;\n   - sostituito il riferimento a interventi *“in materia di edilizia pubblica e”* con: *“in materia di edilizia pubblica o a favore degli enti dai medesimi costituiti o partecipati”*.\n\n2. **Comma 3, alinea**\n   - eliminata, ovunque ricorra, la parola *“integrate”*.\n\n3. **Comma 3, lettera b)**\n   - sostituito il rinvio *“ai sensi dell’articolo 3, comma 3”* con: *“dai soggetti attuatori anche nell’ambito dell’elenco di cui all’articolo 3, comma 3”*.\n\n4. **Comma 3, lettera c)**\n   - aggiunta la precisazione che gli interventi sono *“definiti nel rispetto della normativa e della pianificazione territoriale di settore”*.\n\nL’emendamento 2.107 conteneva inoltre modifiche conseguenziali agli articoli 3 e 8 del decreto. È stato a sua volta corretto dall’emendamento **0.2.107.29**, presentato da Daniela Morfino e altri deputati del Movimento 5 Stelle e approvato il 18 giugno: esso eliminava, nella parte conseguenziale sull’articolo 8, il riferimento alle parole *“e all’articolo 5”*. Non modifica quindi il testo dell’articolo 2.\n\nPer il testo integrale vigente dell’articolo 2, la fonte da consultare è la **legge n. 116 del 2026**, in Gazzetta Ufficiale n. 152 del 3 luglio 2026. Per l’iter e gli emendamenti: [scheda Camera C. 2920](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2920) e [scheda Senato S. 1944](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55369.htm).",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il decreto Piano Casa è il DL 7 maggio 2026, n. 66 (C. 2920, S. 1944), convertito con modificazioni dalla legge 116 del 2/7/2026. Il DB ha il testo originario dell'articolo 2 («Programma straordinario nazionale di recupero e di manutenzione del patrimonio di edilizia pubblica e di edilizia sociale»), riportato in «risultato», e l'allegato «Modificazioni apportate in sede di conversione», che per l'articolo 2 cambia i commi 2, 3 (alinea e lettere b e c), 4, 5, 6 e 7: fra l'altro sostituisce «INVITALIA S.p.A.» con «il soggetto gestore» e aggiunge alla lettera c) «, definiti nel rispetto della normativa e della pianificazione territoriale di settore». Emendamenti approvati sull'articolo 2, tutti nella VIII Commissione della Camera il 18/6/2026: il 2.107 dei relatori e il subemendamento 0.2.107.29 di Morfino, Santillo, Fontana e L'Abbate (M5S). Il testo consolidato dell'articolo 2 come convertito non è nel DB.",
+  "stato": "parziale",
+  "limiti": "Il DB non ha il testo vigente coordinato (Normattiva): si danno il testo originario dell'art. 2 e le modificazioni della legge di conversione, che vanno lette insieme. Esiti degli emendamenti solo per la sede referente della Camera (VIII Commissione, 60 su 492 con esito); per la C. 2920 non ci sono emendamenti d'Aula nel DB, e i 771 emendamenti del Senato (399 in commissione, 372 in Aula) non hanno esito. Il legame emendamento-articolo è il campo amendment.article."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 38.0
+ },
+ "causa_probabile": "strumento_mancante",
+ "note": "Giusti DL 66/2026, legge 116/2026 e l'emendamento 2.107 dei relatori con le sue modifiche ai commi 2 e 3; corretta la lettura che lo 0.2.107.29 tocca l'art. 8. Manca il testo dell'art. 2 (originario in act_article più modificazioni della legge di conversione): nessuno strumento legge il testo degli articoli."
+}

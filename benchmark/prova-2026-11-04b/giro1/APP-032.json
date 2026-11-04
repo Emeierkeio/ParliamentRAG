@@ -1,0 +1,34 @@
+{
+ "id": "APP-032",
+ "domanda": "ho letto che la Camera ha già approvato il fine vita, è vero?",
+ "categoria": "iter",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Il «no» è giusto e le AC 87, 251, 949, 1559 «Assegnato» pure, ma conta quattro proposte (sono sette: mancano 313, 1659, 1656) perché cerca solo «morte volontaria» e solo alla Camera. Non dice che il testo (S. 1408 e connessi) è in commissione al Senato.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782218.3707168,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti"
+ ],
+ "tempo_s": 7.5,
+ "risposta_sistema": "No. Nei dati della XIX legislatura non risulta che la Camera abbia approvato una legge sul fine vita o sulla morte volontaria medicalmente assistita.\n\nAlla Camera risultano quattro proposte sul tema (A.C. 87, 251, 949 e 1559), tutte nello stato di **“Assegnato”**: quindi non sono ancora state approvate dall’Aula né iniziate formalmente in Commissione secondo questi dati. La proposta A.C. 1559 è di Debora Serracchiani; le altre sono di Enrico Costa, Riccardo Magi e Luana Zanella.\n\nIl dato è aggiornato alle sedute del **3 novembre 2026**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "No. Nei dati la Camera non ha approvato alcuna legge sul fine vita: le proposte della Camera (AC 87 Costa, 251 Magi, 313 Sportiello, 949 e 1659 Zanella, 1559 Serracchiani) risultano «Assegnato», la AC 1656 Zan «Da assegnare», e nessuna votazione della Camera è legata a questi atti. Il testo è all'esame del Senato: i ddl 1408 «Disposizioni in materia di morte medicalmente assistita» e connessi (104, 124, 570, 1597) sono «esame in comm.»; il 3/6/2026 l'Aula del Senato ha rinviato in Commissione il ddl 104, le Commissioni 2ª e 10ª riunite lo hanno esaminato in sede referente fino al 10/6/2026 e la 5ª Commissione in sede consultiva il 29/9/2026.",
+  "stato": "calcolata",
+  "limiti": "Per il Senato l'iter strutturato (act_step, act_assignment, status_date) è vuoto: lo stato viene da act.status e le fasi dalle sedute (agenda_item_act). Si considerano i progetti con «morte medicalmente assistita», «suicidio medicalmente assistito», «eutanasia», «aiuto medico alla morte» nel titolo; le proposte sulla prevenzione del suicidio non sono fine vita."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 7.5
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti"
+}

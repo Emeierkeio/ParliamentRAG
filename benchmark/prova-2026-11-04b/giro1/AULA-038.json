@@ -1,0 +1,109 @@
+{
+ "id": "AULA-038",
+ "domanda": "Durante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026, prima del Consiglio europeo, quali gruppi hanno applaudito e quali hanno protestato?",
+ "categoria": "reazioni",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "senato",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "fascicolo",
+ "inizio": 1793783281.779469,
+ "endpoint_usato": "/api/fascicolo",
+ "tempo_fascicolo_s": 317.0,
+ "tempo_s": 317.0,
+ "risposta_sistema": "## Introduzione\n\nDurante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026 in vista del Consiglio europeo, l’attenzione si è concentrata sulle reazioni d’Aula, con particolare rilievo alle proteste e ai dissensi emersi durante gli interventi. Sono stati analizzati 63 interventi di 37 senatori nel periodo dal 26/10/2022 al 14/10/2026.\n\n## Posizione del Governo\n\nNei passaggi trovati il Governo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Posizioni della Maggioranza\n\nPer Forza Italia - Berlusconi Presidente - PPE, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Fratelli d'Italia, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Lega - Salvini Premier, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Noi Moderati - MAIE - Centro Popolare, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Posizioni dell'Opposizione\n\nPer Alleanza Verdi e Sinistra, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Italia Viva - Casa Riformista, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Movimento 5 Stelle, durante le comunicazioni della presidente del Consiglio in vista del Consiglio europeo, il gruppo ha espresso insoddisfazione per il clima d'Aula e per l'atteggiamento della maggioranza. **Pietro Lorefice** ha domandato, [«signor Presidente, posso continuare il mio intervento senza il fastidio della maggioranza, che ha dimenticato di essere maggioranza»](b54). Da questo intervento emerge che il gruppo ha subito interruzioni e rumori di dissenso, segnalando una situazione di tensione e protesta piuttosto che di applauso nei confronti della presidente del Consiglio.\n\nPer Partito Democratico - Italia Democratica e Progressista, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer il gruppo Per le Autonomie (SVP-PATT, Campobase), nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Gruppo Misto\n\nPer i parlamentari del Misto senza componente, nei passaggi trovati chi è intervenuto non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Avanti PSI - Progetto Civico Italia, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Italia Domani - Marco Rizzo, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Partito della Rifondazione Comunista - Sinistra Europea - Open Sinistra, nel corpus analizzato non risultano interventi rilevanti su questo tema.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "pass",
+    "quotes": "pass"
+   },
+   "groups": {
+    "present": [
+     "FdI",
+     "PD",
+     "Lega",
+     "M5S",
+     "FI",
+     "AVS",
+     "Azione",
+     "IV",
+     "NM",
+     "Autonomie",
+     "Governo"
+    ],
+    "missing": [
+     "Misto, non iscritti"
+    ],
+    "silent": [
+     "Avanti PSI (Misto)",
+     "Rifondazione Comunista (Misto)",
+     "Italia Domani - Marco Rizzo (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "signor Presidente, posso continuare il mio intervento senza il fastidio della maggioranza, che ha dimenticato di essere maggioranza",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "Durante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026, prima del Consiglio europeo, quali gruppi hanno applaudito e quali hanno protestato?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Pietro Lorefice",
+      "group": "Movimento 5 Stelle",
+      "role": null,
+      "rank": 4,
+      "pool_size": 9,
+      "group_size": 9,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     }
+    ]
+   },
+   "scope": "Senato della Repubblica, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Non si può dire quali gruppi hanno applaudito o protestato. Nella seduta 466 del Senato (14/10/2026) la presidente del Consiglio Meloni parla due volte: nelle comunicazioni (it:senato:19:sed0466:int00005) il resoconto in archivio registra 33 applausi e 3 commenti, nella replica (int00055) 12 applausi e 5 commenti (fra cui «Vivaci commenti» e «Commenti del senatore Turco»). Proteste non ne risultano. Tranne il commento del senatore Turco, nessuna reazione dice da chi viene.",
+  "stato": "non_calcolabile",
+  "limiti": "Le reazioni del Senato vengono dal resoconto AKN e hanno solo il tipo («Applausi», «Commenti»), senza chi reagisce: reaction.from_raw è vuoto e reaction_from non ha righe per il Senato. Il gruppo di chi applaude o protesta non si ricava. Si contano solo le reazioni dentro gli interventi di Meloni; quelle durante gli interventi dei senatori nella stessa discussione sono escluse."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 0,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "pass",
+   "quotes": "pass",
+   "gruppi_mancanti": [
+    "Misto, non iscritti"
+   ],
+   "citazioni_verificate": 1,
+   "citazioni_esatte": 1,
+   "controllo_a_campione": [
+    {
+     "citazione": "signor Presidente, posso continuare il mio intervento senza il fastidio della maggioranza…",
+     "trovata": true,
+     "intervento": "it:senato:19:sed0136:int00025",
+     "data": "2023-12-13"
+    }
+   ]
+  },
+  "trappola": null,
+  "tempo_s": 317.0
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "Il riferimento è non calcolabile: al Senato le reazioni non dicono chi applaude (0 righe in reaction_from). Il fascicolo non lo dice e attribuisce al 14/10/2026 una protesta M5S con l'unica citazione, che è di Lorefice del 13/12/2023 (sed. 136); per gli altri 10 gruppi nessuna posizione."
+}

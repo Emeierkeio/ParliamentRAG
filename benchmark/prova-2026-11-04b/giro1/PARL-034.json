@@ -1,0 +1,52 @@
+{
+ "id": "PARL-034",
+ "domanda": "Su quali temi ha presentato più atti l'on. Eleonora Evi? Classifica per argomento.",
+ "categoria": "temi",
+ "tipo_risposta": "classifica",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "Evi è passata da AVS al PD il 23/4/2024: se si chiede «per il suo gruppo», usare il gruppo alla data.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782493.7024589,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "scheda_persona",
+  "cerca_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti"
+ ],
+ "tempo_s": 53.3,
+ "risposta_sistema": "L’on. **Eleonora Evi (PD-IDP)** ha presentato soprattutto atti su **ambiente** e **protezione degli animali**. Classifica per argomento (atti di cui è prima firmataria alla Camera, XIX legislatura):\n\n1. **Ambiente** — **90 atti**\n2. **Protezione degli animali** — **31**\n3. **Energia** — **22**\n4. **Inquinamento** — **17**\n5. **Politica dei trasporti e mobilità** — **11**\n6. **Cambiamento climatico** — **8**\n7. **Salute** — **8**\n\nI temi non sono mutuamente esclusivi: un medesimo atto può essere classificato, ad esempio, sia sotto “ambiente” sia sotto “energia” o “inquinamento”. Il conteggio comprende progetti di legge, interrogazioni, interpellanze, mozioni, risoluzioni e ordini del giorno, dall’inizio della legislatura fino agli atti disponibili al **21 ottobre 2026**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Per gli atti a prima firma di Eleonora Evi con temi EuroVoc, i temi più frequenti sono: protezione dell'ambiente (36 atti), benessere degli animali (35), protezione degli animali (31), allevamento (27), protezione del consumatore (18), protezione della fauna (17), fauna (16), sanità pubblica (15), impatto ambientale (15), diritto dell'UE (12). Contando anche gli atti che ha solo cofirmato, l'ordine in testa resta protezione dell'ambiente (63), poi benessere degli animali (43), sanità pubblica (42), cambiamento climatico (42), protezione del consumatore (41).",
+  "stato": "parziale",
+  "limiti": "I temi coprono solo atti di indirizzo e di sindacato ispettivo (interrogazioni, interpellanze, mozioni, risoluzioni, ordini del giorno): nessun progetto di legge ha righe in act_subject, quindi le 11 proposte di legge a prima firma di Evi (61 con le cofirme) restano fuori dalla classifica. Un atto conta in più temi; i temi sono i descrittori EuroVoc così come assegnati, senza raggruppamento per aree. Classifica per numero di atti a prima firma, poi per atti anche cofirmati; mostrati i primi 20."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 53.3
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "Ha indovinato temi larghi (ambiente 90, protezione degli animali 31, energia 22) con conta_atti per tema, senza classificare i descrittori EuroVoc: mancano benessere degli animali (35) e allevamento (27). Dice che il conteggio comprende i progetti di legge, ma i PDL non hanno temi. Nessun link."
+}

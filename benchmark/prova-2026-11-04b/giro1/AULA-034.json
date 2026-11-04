@@ -1,0 +1,45 @@
+{
+ "id": "AULA-034",
+ "domanda": "Ricostruisci la navetta della legge elettorale: C. 2822, S. 1971, C. 2822-B, con la data di ogni passaggio e l'esito di ogni lettura.",
+ "categoria": "iter",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": "Alla Camera la terza lettura ha un uri a parte (it:camera:19:ac:2822-B). Trasmissioni: 17/7/2026 al Senato, 15/9/2026 alla Camera.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782546.998288,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "atto",
+  "atto",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "elenco_sedute",
+  "seduta",
+  "cerca_interventi",
+  "votazione"
+ ],
+ "tempo_s": 25.0,
+ "risposta_sistema": "La navetta si è conclusa in tre letture, con approvazione definitiva della **legge n. 180 del 9 ottobre 2026**.\n\n- **Camera, C. 2822** — presentata il **26 febbraio 2026**; la Camera l’ha approvata il **16 luglio 2026** e trasmessa al Senato.  \n  Esito della votazione finale: **217 favorevoli, 152 contrari, 2 astenuti**; scrutinio segreto; presenti 371, votanti 369, maggioranza 185.  \n  Scheda ufficiale: [Camera, C. 2822](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822).\n\n- **Senato, S. 1971** — ricevuto dal Senato il **17 luglio 2026**; il Senato lo ha **approvato con modificazioni** il **15 settembre 2026**, rinviandolo alla Camera.  \n  Esito della votazione finale: **113 favorevoli, 71 contrari, 2 astenuti**; scrutinio palese.  \n  Scheda ufficiale: [Senato, S. 1971](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55214.htm).\n\n- **Camera, C. 2822-B** — testo modificato dal Senato, trasmesso alla Camera il **15 settembre 2026**; la Camera lo ha **approvato definitivamente** l’**8 ottobre 2026**.  \n  Esito della votazione finale: **227 favorevoli, 164 contrari, nessun astenuto**; scrutinio segreto. Il provvedimento è divenuto **legge n. 180 del 9 ottobre 2026**, pubblicata nella *Gazzetta Ufficiale* n. 235 del 9 ottobre.  \n  Scheda ufficiale: [Camera, C. 2822-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B).\n\nIn sintesi: **Camera approva → Senato modifica e approva → Camera approva senza ulteriori modifiche**. Non ho ricostruito qui le singole votazioni su articoli ed emendamenti: le schede ufficiali dei tre atti riportano l’iter e i relativi resoconti.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Prima lettura Camera (C. 2822, Bignami e altri): presentata il 26/2/2026, assegnata il 3/3, in commissione dal 31/3, in Aula dal 26/6; approvata il 16/7/2026 con voto finale segreto (presenti 371, votanti 369, 217 sì, 152 no, 2 astenuti). Trasmessa al Senato il 17/7/2026 (S. 1971). Senato: approvata con modificazioni il 15/9/2026 (113 sì, 71 no, 2 astenuti) e trasmessa alla Camera lo stesso giorno (C. 2822-B). Terza lettura Camera: assegnata il 16/9, esame in commissione concluso il 30/9; il 1/10 respinte le pregiudiziali (151 sì, 229 no); il 6 e 7/10 fiducia sugli articoli 1, 2 e 3 (226-147, 227-149, 228-144); l'8/10/2026 approvata definitivamente con voto finale segreto (presenti e votanti 391, 227 sì, 164 no). Legge n. 180 del 9/10/2026.",
+  "stato": "calcolata",
+  "limiti": "Il voto finale della prima lettura (it:camera:19:sed0691:v001, 16/7/2026) non è legato all'atto e ha titolo vuoto: è stato attribuito alla C. 2822 perché l'unico argomento con votazioni di quella seduta è il seguito della discussione della C. 2822-A ed è l'unica votazione finale della seduta. Il voto finale del Senato (15/9/2026) invece oggi è legato a S. 1971 in vote_act."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 25.0
+ },
+ "causa_probabile": null,
+ "note": "Date e voti finali giusti per le tre letture (16/7 217-152-2; Senato 15/9 113-71-2; 8/10 227-164) e legge 180 del 9/10/2026, con le schede di Camera e Senato. Non cita pregiudiziali e fiducie della terza lettura, ma la domanda chiedeva l'esito di ogni lettura."
+}

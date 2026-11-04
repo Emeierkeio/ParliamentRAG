@@ -1,0 +1,192 @@
+{
+ "id": "DJ-026",
+ "domanda": "Quanti interventi ha fatto la presidente del Consiglio Giorgia Meloni in Parlamento, e quanti question time?",
+ "categoria": "governo",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Al Senato i membri del governo hanno un id proprio legato con person_same_as. Il premier time si riconosce dall'argomento della seduta.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782764.884022,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Giorgia Meloni",
+    "chamber": null,
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": null,
+    "person": "it:person:camera:302103",
+    "group": null,
+    "role": "governo",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "ramo"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, tutta la XIX legislatura; filtri: persona it:person:camera:302103, ruolo governo. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 225}, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"interventi\": 157, \"dal\": \"2022-10-25\", \"al\": \"2026-10-14\"}, {\"ramo\": \"senato\", \"interventi\": 68, \"dal\": \"2022-10-25\", \"al\": \"2026-10-14\"}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "question time",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 4, \"items\": [{\"uri\": \"it:camera:19:sed0212:tit00090.sub00040.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0212\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 212, \"date\": \"2023-12-12\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 14 e 15 dicembre 2023.\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"politica estera che deve fare l'Italia. Dopodiché, guardi, sui comici russi ho già risposto, c'è stato un [[question]] [[time]] che è stato fatto dai suoi colleghi al Senato. Ribadisco qui di essere fiera di avere detto in quella ... quel lavoro silenzioso del quale non si sa niente, che però, poi, è fondamentale per mettere a terra le [[questioni]]. Mi fa piacere anche, collega Rosato, che lei abbia ringraziato il Primo Ministro albanese, Rama, per la disponibilità\"}, {\"uri\": \"it:senato:19:sed0129:int00013\", \"sitting\": {\"uri\": \"it:senato:19:sed0129\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 129, \"date\": \"2023-11-23\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento, al Presidente del Consiglio dei ministri\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"Signor Presidente, onorevoli senatori, ringrazio il senatore De Poli anche per aver ricordato, pur non essendo oggetto del [[question]] [[time]], il tema della violenza. Vorrei approfittare per ringraziare tutti i Gruppi parlamentari per il lavoro che hanno fatto in sede\"}, {\"uri\": \"it:senato:19:sed0129:int00063\", \"sitting\": {\"uri\": \"it:senato:19:sed0129\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 129, \"date\": \"2023-11-23\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"Signor Presidente, approfitto anch'io, in chiusura di questo Premier"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "intervento della Presidente del Consiglio Giorgia Meloni durante il question time",
+    "fonti": [
+     "interventi"
+    ],
+    "ramo": null,
+    "da": null,
+    "a": null,
+    "quanti": 30
+   },
+   "result": "{\"errore\": \"canceling statement due to statement timeout\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"interrogazioni a risposta immediata\"",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"Premier question time\"",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:sed0129:int00063\", \"sitting\": {\"uri\": \"it:senato:19:sed0129\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 129, \"date\": \"2023-11-23\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"Signor Presidente, approfitto anch'io, in chiusura di questo [[Premier]] [[question]] [[time]], perringraziare lei e tutti i Gruppi, ma non ci sarebbe neanche bisogno di ringraziamenti. Ho avuto una lunga carriera parlamentare - anche se non qui al Senato della Repubblica\"}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"questioni a risposta immediata\"",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "risposta",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 82, \"items\": [{\"uri\": \"it:camera:19:sed0727:tit00130.sub00030.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 15 e 16 ottobre 2026.\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"interesse italiano e sulla libertà di difendere posizioni nell'interesse italiano!\\n\\nCollega Bonelli, ho detto ad Assolombarda che servono [[risposte]] strutturali e non ho concluso lì il mio intervento. Allora, non so se lei è stato distratto quando sono arrivata ... rinnovabili comunque non abbiamo fatto abbastanza, temo che ci rimangano solamente le candele . Ma, insomma, noi vorremmo dare delle [[risposte]] un po' più efficaci.\\n\\nDopodiché (Il deputato Bonelli: “Non è seria, Presidente, non è seria!”)… No, io sono molto seria\"}, {\"uri\": \"it:camera:19:sed0727:tit00200.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"TESTI DEGLI INTERVENTI DI CUI È STATA AUTORIZZATA LA PUBBLICAZIONE IN CALCE AL RESOCONTO STENOGRAFICO DELLA SEDUTA ODIERNA: COMUNICAZIONI DEL PRESIDENTE DEL CONSIGLIO DEI MINISTRI IN VISTA DELLA RIUNIONE DEL CONSIGLIO EUROPEO DEL 15 E 16 OTTOBRE 2026\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"conti delle imprese.\\n\\nNessuno, di fronte a uno scenario del genere, può rispondere efficacemente da solo. Dunque, la [[risposta]] deve essere coordinata e rapida. Per questo abbiamo lavorato per raggiungere un accordo in ambito G7, che ha previsto il rilascio ... essere utilizzata anche per affrontare la crisi energetica, e nonostante in pochi ci credessero quella proposta è diventata una [[risposta]] a disposizione di tutti gli Stati membri.\\n\\nÈ quello che ci auguriamo accada anche con le nuove riflessioni che abbiamo\"}, {\"uri\": \"it:senato:19:sed0466:int00005\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "interrogazione",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 39, \"items\": [{\"uri\": \"it:senato:19:sed0427:int00295\", \"sitting\": {\"uri\": \"it:senato:19:sed0427\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 427, \"date\": \"2026-06-11\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 18 e 19 giugno 2026\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"senatore Monti e a tutti voi colleghi che sono apertissima. Penso che forse sia arrivato anche il momento di [[interrogarsi]] - al di là di certi schematismi che leggo e che sono inevitabili nei dibattiti che facciamo - in maniera\"}, {\"uri\": \"it:senato:19:sed0427:int00300\", \"sitting\": {\"uri\": \"it:senato:19:sed0427\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 427, \"date\": \"2026-06-11\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 18 e 19 giugno 2026\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"Forse qualche [[interrogazione]], senatore Turco, visto che vogliamo parlare di operazioni opache, si dovrebbe presentare sugli imprenditori che stanno dichiarando che c'erano professionisti che chiedevano il 10 per cento per importare mascherine farlocche in Italia durante gli anni della\"}, {\"uri\": \"it:senato:19:sed0419:int00060\", \"sitting\": {\"uri\": \"it:senato:19:sed0419\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 419, \"date\": \"2026-05-13\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento, al Presidente del Consiglio dei ministri\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"Signor Presidente, rivolgo un saluto agli onorevoli senatori e ringrazio il senatore Calenda, perché credo che nella sua [[interro"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "interrogazione",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 30
+   },
+   "result": "{\"total\": 39, \"items\": [{\"uri\": \"it:senato:19:sed0117:int00047\", \"sitting\": {\"uri\": \"it:senato:19:sed0117\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 117, \"date\": \"2023-10-25\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ripresa della discussione sulle comunicazioni del Presidente del Consiglio dei ministri\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"immaginiamo un'Unione europea partecipata da 32, 33, 34 Stati: più si amplia la partecipazione e più chiaramente dobbiamo [[interrogarci]] sul funzionamento dell'Unione. Io le dirò la mia opinione: non penso che questo problema si risolva banalmente modificando\"}, {\"uri\": \"it:camera:19:sed0069:tit00070.sub00010.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0069\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 69, \"date\": \"2023-03-15\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interrogazioni a risposta immediata.\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"Presidente del Consiglio dei ministri. Grazie, Presidente. Buon pomeriggio ai colleghi. Il tragico evento, al quale l'[[interrogante]] fa riferimento, riguarda il naufragio di una barca affondata, che, purtroppo, ha comportato la morte di 30 dei 47 migranti a bordo\"}, {\"uri\": \"it:camera:19:sed0069:tit00070.sub00030.int00060\", \"sitting\": {\"uri\": \"it:camera:19:sed0069\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 69, \"date\": \"2023-03-15\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interrogazioni a risposta immediata.\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"siano diversi miliardi che ogni Stato nazionale deposita nel Fondo? Io non so quanto non sia, piuttosto, sensato [[interrogarsi]] sull'efficacia di questo strumento. Allora, ho letto un'interessante dichiarazione del presidente di Confindustria, Carlo Bonomi, storicamente grande sostenitore dello\"}, {\"uri\": \"it:camera:19:sed0069:tit00070.sub00050.int00040\""
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "conta_interventi",
+  "cerca_interventi",
+  "cerca_per_significato",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 56.2,
+ "risposta_sistema": "Giorgia Meloni ha svolto **225 interventi in Aula** nella XIX legislatura come membro del Governo:\n\n- **Camera:** 157  \n- **Senato:** 68  \n\nHa partecipato a **5 question time** rivolti alla Presidente del Consiglio: **2 alla Camera** e **3 al Senato**.\n\nIl conteggio considera ogni turno di parola nei resoconti stenografici d’Aula; i dati disponibili arrivano al 3 novembre 2026 (l’ultimo suo intervento registrato è del 14 ottobre 2026).",
+ "eventi": {
+  "status": 1,
+  "tool": 20,
+  "dati": 10,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,34 @@
+{
+ "id": "DOC-019",
+ "domanda": "i lavori dell'Aula di questa settimana da proiettare il lunedì",
+ "categoria": "calendario",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Il DB ora ha la seduta del 4/11 (planned) e l'odg riportato è giusto, come la mancanza del Senato. Tralascia la seduta del 3/11, che era nei risultati; il riferimento è precedente e indica solo il 3/11.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782367.085311,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "seduta"
+ ],
+ "tempo_s": 11.6,
+ "risposta_sistema": "Per questa settimana, nei dati disponibili risulta programmata una seduta dell’Aula della Camera **mercoledì 4 novembre, ore 10.00**. Non risultano al momento sedute d’Aula del Senato nel periodo 2–8 novembre.\n\nAll’ordine del giorno della Camera:\n- seguito del decreto-legge su prezzi petroliferi, infrastrutture e attività energetiche strategiche (A.C. 3148);\n- seguito del decreto-legge sul sostegno economico contro l’aumento dei carburanti e su misure fiscali (A.C. 3106-A);\n- seguito delle proposte di legge sul contrasto all’antisemitismo (A.C. 2376, 2383 e 2830);\n- mozioni sul superamento del diritto di veto nelle decisioni dell’Unione europea;\n- mozioni sulla tutela dell’operato della Corte penale internazionale e sui crimini internazionali;\n- interrogazioni a risposta immediata.\n\nPer la proiezione del lunedì: il calendario completo della settimana non è ancora presente nei dati; l’ultimo resoconto disponibile è del **3 novembre 2026** e l’unica agenda futura acquisita è quella del 4 novembre.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Settimana dal 2 all'8/11/2026. Camera: nel DB c'è una sola seduta convocata, martedì 3/11/2026 alle 10. Ordine del giorno: alle 11.30 interrogazioni; alle 14 discussione generale del DL 157/2026 sui prezzi petroliferi (S. 2029, approvato dal Senato, C. 3148); deliberazioni sui termini dei collegati alla manovra (concorrenza 2026, C. 3120, e autonomia di Veneto, Liguria e altre regioni, C. 3161-3164); dichiarazione d'urgenza della PDL 2916; questioni pregiudiziali sul DL 190/2026 sicurezza (C. 3159); seguito del DL 157/2026; discussione generale del DL 162/2026 carburanti (C. 3106-A, relatrice Matera). Senato: nel DB non c'è il calendario (ultima seduta registrata il 28/10/2026).",
+  "stato": "parziale",
+  "limiti": "«Questa settimana» = da lunedì 2 a domenica 8/11/2026. Per la Camera c'è solo la seduta del 3/11 (status planned), non il calendario dell'intera settimana; per il Senato mancano sedute future e calendario."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 11.6
+ },
+ "causa_probabile": "ragionamento_o_prompt"
+}

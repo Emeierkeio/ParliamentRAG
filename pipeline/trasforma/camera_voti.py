@@ -14,6 +14,18 @@ from .camera_anagrafica import data, id_persona
 # dati.camera.it segna «fiducia» anche le mozioni di sfiducia a un ministro (art. 115, comma 3, del Regolamento):
 # non sono questioni di fiducia poste dal Governo
 SFIDUCIA = re.compile(r"articolo 115, comma 3|sfiducia", re.I)
+# «PDL 2822-A E ABB - VOTO FINALE», «DDL n. 3083», «Votazione Articolo 1 PDL n. 2822-B»: -A è il testo della commissione
+# dello stesso atto, -B (-C…) il numero dell'atto tornato dall'altro ramo
+NUMERO_ATTO = re.compile(r"\b(?:PDL|DDL)\s*(?:n\.\s*)?(\d{1,5})(?:-([A-Z]))?\b")
+
+
+def atti_dalla_descrizione(testo: str | None, leg: int) -> list[str]:
+    out = []
+    for n, lettera in NUMERO_ATTO.findall(testo or ""):
+        ref = f"ac{leg}_{n}" if lettera in ("", "A") else f"ac{leg}_{n}-{lettera}"
+        if ref not in out:
+            out.append(ref)
+    return out
 
 TIPI = {"Finale atto Camera": "final", "Articolo": "article", "Emendamento": "amendment", "Ordine del Giorno": "agenda_order",
         "Mozione": "motion", "Risoluzione": "resolution", "Pregiudiziali": "preliminary_question", "Sospensiva": "suspensive_question",
@@ -73,6 +85,9 @@ def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
                 ref = x.rstrip("/").rsplit("/", 1)[-1]
                 if ref not in v[chiave]:
                     v[chiave].append(ref)
+    for v in voti.values():
+        if not v["acts"]:                            # dati.camera.it non lega l'atto: il numero sta nella descrizione
+            v["acts"] = atti_dalla_descrizione(v["description"], leg)
     archi = []
     for r in d["voti"]:
         u = uri_votazione(r["votazione"], leg)

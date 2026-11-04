@@ -1,0 +1,76 @@
+{
+ "id": "COMU-014",
+ "domanda": "Il voto finale sulla legge elettorale dell'8 ottobre: mi dai l'elenco di chi ha votato sì nominativamente?",
+ "categoria": "voti",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Trappola: scrutinio segreto (secret = true, risultato «voted»). Il sistema deve rifiutare l'elenco e spiegare perché; solo totali 227-164.",
+ "trappola": true,
+ "endpoint": "agente",
+ "inizio": 1793784676.5753012,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": null,
+    "act": null,
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": "2026-10-08",
+    "end": "2026-10-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0723:v001\", \"sitting\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-08\", \"title\": \"Votazione finale PDL n. 2822-B\", \"kind\": \"final\", \"favor\": 227, \"against\": 164, \"abstain\": 0, \"approved\": true, \"secret\": true, \"confidence\": false, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "legge elettorale",
+    "chamber": null,
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 15, \"items\": [{\"uri\": \"it:camera:19:ac:3145\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3145\", \"kind\": \"bill\", \"title\": \"PROPOSTA DI LEGGE COSTITUZIONALE SPERANZA: \\\"Modifica all’articolo 94 della Costituzione in materia di divieto di apposizione della questione di fiducia su progetti di legge vertenti su materia costituzionale o elettorale\\\" (3145)\", \"date\": \"2026-10-13\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3145\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2946\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2946\", \"kind\": \"bill\", \"title\": \"MORRONE ed altri: \\\"Modifiche alle leggi 4 aprile 1956, n. 212, e 10 dicembre 1993, n. 515, in materia di impiego della lingua italiana nella propaganda e nelle campagne elettorali\\\" (2946)\", \"date\": \"2026-05-29\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2946\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:senato:19:ddl:1785\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1785\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 27 dicembre 2025, n. 196, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell'anno 2026\", \"date\": \"2026-02-05\", \"status\": \"appr. definit. Legge\", \"law_number\": \"18\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55097.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro interno Piantedosi Matteo (Meloni-I) ed altri.\"}, {\"uri\": \"it:camera:19:ac:2751\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2751\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 27 dicembre 2025, n. 196, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell’anno 2026\\\" (2751)\", \"date\": \"2025-12-27\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"18\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2751\", \"initiative\": \"Governo\"}, {\"uri\": \"it:camera:19:ac:2362\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2362\", \"kind\": \"bill\", \"title\": \"S. 1425. - \\\"Conversione in legge, con modificazioni, del decreto-legge 19 marzo 2025, n. 27, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell’anno 2025\\\" <em>(approvato dal Senato) </em>(2362)\", \"date\": \"2025-04-16\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"72\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2362\", \"initiative\": \"Governo\"}, {\"uri\": \"it:senato:19:ddl:1425\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1425\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 19 marzo 2025, n. 27, recante disposizioni urgenti per le consultaz"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": null,
+    "act": null,
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": "2025-10-08",
+    "end": "2025-10-08",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 7, \"items\": [{\"uri\": \"it:camera:19:sed0544:v028\", \"sitting\": \"it:camera:19:sed0544\", \"chamber\": \"camera\", \"number\": 28, \"date\": \"2025-10-08\", \"title\": \"Votazione finale DDL n. 1588\", \"kind\": \"final\", \"favor\": 224, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 861. - \\\"Ratifica ed esecuzione dell’Accordo di sede tra la Repubblica italiana e l’Ufficio europeo per il sostegno all’asilo relativo allo stabilimento di un ufficio operativo in Roma, fatto a Roma\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=544_28&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0544:v023\", \"sitting\": \"it:camera:19:sed0544\", \"chamber\": \"camera\", \"number\": 23, \"date\": \"2025-10-08\", \"title\": \"Votazione finale DDL n. 1587\", \"kind\": \"final\", \"favor\": 236, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 860. - \\\"Ratifica ed esecuzione dell’Accordo sul trasporto aereo tra l’Unione europea e i suoi Stati membri, da una parte, e lo Stato del Qatar, dall’altra, con allegati, fatto a Lussemburgo il 18 o\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=544_23&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0544:v018\", \"sitting\": \"it:camera:19:sed0544\", \"chamber\": \"camera\", \"number\": 18, \"date\": \"2025-10-08\", \"title\": \"Votazione finale DDL n. 2102\", \"kind\": \"final\", \"favor\": 242, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 1229. - \\\"Ratifica ed esecuzione dell’Accordo di partenariato economico interinale tra il Ghana, da una parte, e la Comunità europea e i suoi Stati membri, dall’altra, fatto a Bruxelles il 28 luglio\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=544_18&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0544:v013\", \"sitting\": \"it:camera:19:sed0544\", \"chamber\": \"camera\", \"number\": 13, \"date\": \"2025-10-08\", \"title\": \"Votazione finale DDL n. 2029\", \"kind\": \"final\", \"favor\": 242, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 1089. - \\\"Ratifica ed esecuzione della Convenzione tra il Governo della Repubblica italiana e la Repubblica del Kosovo per eliminare le doppie imposizioni in materia di imposte sul reddito e per pre\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=544_13&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0544:v008\", \"sitting\": \"it:camera:19:sed0544\", \"chamber\": \"camera\", \"number\": 8, \"date\": \"2025-10-08\", \"title\": \"Votazione finale DDL n. 2293\", \"kind\": \"final\", \"favor\": 237, \"against\": 1, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 1358. - \\\"Ratifica ed esecuzione dell’Accordo tra la Repubblica italiana e la Re"
+  }
+ ],
+ "strumenti": [
+  "elenco_votazioni",
+  "cerca_atti",
+  "elenco_votazioni"
+ ],
+ "tempo_s": 7.7,
+ "risposta_sistema": "Non è possibile dare un elenco nominativo: il voto finale dell’8 ottobre 2026 sulla riforma elettorale (PDL 2822-B) è stato **segreto**, quindi non sono disponibili i voti individuali. La Camera ha approvato con **227 sì, 164 no e nessun astenuto**. [Scheda ufficiale della votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio)",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,318 @@
+{
+ "id": "AULA-013",
+ "domanda": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+ "categoria": "regolamento",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Molti risultati della ricerca sono di commissioni e giunte (Bollettino): vanno separati dall'Aula.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793782429.3679302,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 206, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00040.sub00020.int00180\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie (A.C. 2700-A) (ore 10,23). (ore 10,23) (ore 10,23)\", \"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"speaker_label\": \"MARIANNA RICCIARDI\", \"snippet\": \"più quelle specializzazioni, come medicina d'urgenza, come chirurgia generale, perché sono a più alto rischio di contenzioso medico [[legale]]. Questo è un problema enorme e questa riforma non lo affronta neanche di una virgola.\\n\\nVoi però lo sapete ... Stato che io immagino deve ridurre al minimo gli errori per tutelare i pazienti, deve evitare il maggior [[numero]] di errori e di danni ai pazienti. Allora, vorrei che si passasse da un meccanismo basato sulla colpa - dove per ogni\"}, {\"uri\": \"it:camera:19:sed0735:tit00080.sub00020.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interrogazioni a risposta immediata.\", \"person\": {\"uri\": \"it:person:camera:307774\", \"name\": \"Luca Ciriani\", \"in_office\": false}, \"speaker_label\": \"LUCA CIRIANI\", \"snippet\": \"organizzatore e il responsabile del sedicente “Movimento 17 ottobre”.\\n\\nL'Italia è un Paese accogliente per chi vi entra [[legalmente]], lavora onestamente e si adegua ai nostri principi sociali e alle nostre leggi, ma non siamo disponibili a subire ... rispetto ai periodi antecedenti al nostro insediamento: dall'inizio dell'anno ad oggi, è stato più che dimezzato il [[numero]] degli sbarchi rispetto allo stesso periodo dell'anno scorso. L'Italia è, inoltre, riuscita a far inserire la lotta contro\"}, {\"uri\": \"it:camera:19:sed0731:tit00040.sub00030.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 731, \"date\": \"2026-10-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Gribaudo ed altri: Modifica all'articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilità o decesso "
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "mancanza del numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 23, \"items\": [{\"uri\": \"it:camera:19:stc:26:audiz2:audizione:20261008:0161:tit00020:int00020\", \"sitting\": {\"uri\": \"it:camera:19:stc:26:audiz2:audizione:20261008:0161\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3941\", \"body_name\": \"Commissione parlamentare di inchiesta sul femminicidio, nonché su ogni forma di violenza di genere\", \"number\": 161, \"date\": \"2026-10-08\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Audizione di Etelina Carri, vicepresidente di D.i.Re. – Donne in Rete contro la violenza, nell'ambito del filone d'inchiesta sulla vittimizzazione secondaria.\", \"speaker_label\": \"ETELINA CARRI\", \"kind\": \"verbatim\", \"snippet\": \"alcuni casi, spinge loro a ritornare più volte con l'autore di violenza prima di interrompere la relazione. La [[mancanza]] di una lettura corretta della violenza, spesso interpretata e ridotta a lite, a mero conflitto familiare, le deficienze di coordinamento ... genere per superare le convinzioni e gli stereotipi diffusi; garantire che la formazione non sia limitata a conoscenze tecniche, [[legali]] o psicologiche, ma includa anche i meccanismi della violenza maschile contro le donne e gli stereotipi e i pregiudizi\"}, {\"uri\": \"it:camera:19:sed0719:tit00050.sub00030.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0719\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 719, \"date\": \"2026-10-02\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interpellanze urgenti (ore 9,35). (ore 9,35) (ore 9,35)\", \"person\": {\"uri\": \"it:person:camera:308854\", \"name\": \"Alessandro Caramiello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308854&legislatura=19\"}, \"speaker_label\": \"ALESSANDRO CARAMIELLO\", \"snippet\": \"cento l'indennità giornaliera di malattia per il personale navigante. Sottosegretario, voglio spiegarle cosa significa questo [[numero]] nel mondo reale: un lavoratore marittimo vive e lavora su una nave, in ambienti confinati, sottoposto a sbalzi termici, a sforzi fisici immani ... generale della CISL - ci restituiscono una realtà agghiacciante a causa della [[mancanza]] di controlli digitali anti-manomissione, e gli orari effettivi a bordo superano costantemente ogni limite [[legale]] e umano.\\n\\nDurante l'alta stagione estiva, nel bacino del Mediterraneo\"}, {\"uri\": \"it:camera:19:sed0713:tit00030.sub00020.int00060\", \"sitting\": {\"uri\": \"it:camera:19:sed0713\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 713, \"date\": \"2026-09-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di una interpellanza e di interrogazioni.\", \"person\": {\"uri\": \"it:person:camera:307302\", \"name\": \"Stefania Ascari\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "mancato numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 57, \"items\": [{\"uri\": \"it:camera:19:sed0731:tit00040.sub00030.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 731, \"date\": \"2026-10-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Gribaudo ed altri: Modifica all'articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilità o decesso (A.C. 2904) (ore 10,41). (ore 10,41) (ore 10,41)\", \"person\": {\"uri\": \"it:person:camera:302789\", \"name\": \"Maria Anna Madia\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302789&legislatura=19\"}, \"speaker_label\": \"MARIA ANNA MADIA\", \"snippet\": \"denunce presentate alla Polizia, agli ispettori del lavoro, alla magistratura, ma noi sappiamo, purtroppo, che la strage quotidiana ha [[numeri]] decisamente più alti per il motivo banale, ma terribile, che in Italia ci sono qualcosa come 3 milioni di lavoratori ... impossibilità di permettersi una tutela [[legale]] è uno dei fattori che scoraggiano dal fare la denuncia i lavoratori che rimangono vittime di incidenti invalidanti o che cadono in malattia a causa del [[mancato]] rispetto delle norme di sicurezza\"}, {\"uri\": \"it:camera:19:sed0731:tit00040.sub00030.int00140\", \"sitting\": {\"uri\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 731, \"date\": \"2026-10-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Gribaudo ed altri: Modifica all'articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilità o decesso (A.C. 2904) (ore 10,41). (ore 10,41) (ore 10,41)\", \"person\": {\"uri\": \"it:person:camera:307466\", \"name\": \"Patrizia Marrocco\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307466&legislatura=19\"}, \"speaker_label\": \"PATRIZIA MARROCCO\", \"snippet\": \"concreto, perché la politica deve saper trasformare l'ascolto in risposte e le parole in fatti.\\n\\nColleghi, dietro i [[numeri]] inaccettabili delle morti e degli infortuni ci sono persone, ci sono nomi, ci sono volti, ci sono storie, ci sono ... madre che perd"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "numero legale non",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 206, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00040.sub00020.int00180\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie (A.C. 2700-A) (ore 10,23). (ore 10,23) (ore 10,23)\", \"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"speaker_label\": \"MARIANNA RICCIARDI\", \"snippet\": \"più quelle specializzazioni, come medicina d'urgenza, come chirurgia generale, perché sono a più alto rischio di contenzioso medico [[legale]]. Questo è un problema enorme e questa riforma non lo affronta neanche di una virgola.\\n\\nVoi però lo sapete ... Stato che io immagino deve ridurre al minimo gli errori per tutelare i pazienti, deve evitare il maggior [[numero]] di errori e di danni ai pazienti. Allora, vorrei che si passasse da un meccanismo basato sulla colpa - dove per ogni\"}, {\"uri\": \"it:camera:19:sed0735:tit00080.sub00020.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interrogazioni a risposta immediata.\", \"person\": {\"uri\": \"it:person:camera:307774\", \"name\": \"Luca Ciriani\", \"in_office\": false}, \"speaker_label\": \"LUCA CIRIANI\", \"snippet\": \"organizzatore e il responsabile del sedicente “Movimento 17 ottobre”.\\n\\nL'Italia è un Paese accogliente per chi vi entra [[legalmente]], lavora onestamente e si adegua ai nostri principi sociali e alle nostre leggi, ma non siamo disponibili a subire ... rispetto ai periodi antecedenti al nostro insediamento: dall'inizio dell'anno ad oggi, è stato più che dimezzato il [[numero]] degli sbarchi rispetto allo stesso periodo dell'anno scorso. L'Italia è, inoltre, riuscita a far inserire la lotta contro\"}, {\"uri\": \"it:camera:19:sed0731:tit00040.sub00030.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 731, \"date\": \"2026-10-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Gribaudo ed altri: Modifica all'articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilità o decesso "
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 4153, \"items\": [{\"uri\": \"it:camera:19:sed0735:v019\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 19, \"date\": \"2026-10-28\", \"title\": \"Votazione \", \"kind\": \"other\", \"favor\": 103, \"against\": 142, \"abstain\": 7, \"approved\": false, \"secret\": false, \"confidence\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_19&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v018\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 18, \"date\": \"2026-10-28\", \"title\": \"Votazione \", \"kind\": \"other\", \"favor\": 104, \"against\": 145, \"abstain\": 7, \"approved\": false, \"secret\": false, \"confidence\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_18&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v017\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 17, \"date\": \"2026-10-28\", \"title\": \"Votazione finale \", \"kind\": \"final\", \"favor\": 143, \"against\": 113, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_17&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v016\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 16, \"date\": \"2026-10-28\", \"title\": \"Votazione Ordine del giorno 9/2700-A/52 \", \"kind\": \"agenda_order\", \"favor\": 8, \"against\": 145, \"abstain\": 107, \"approved\": false, \"secret\": false, \"confidence\": false, \"act_title\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02700-A/052 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 27/10/2026\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_16&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v015\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 15, \"date\": \"2026-10-28\", \"title\": \"Votazione Ordine del giorno 9/2700-A/45 \", \"kind\": \"agenda_order\", \"favor\": 114, \"against\": 148, \"abstain\": 3, \"approved\": false, \"secret\": false, \"confidence\": false, \"act_title\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02700-A/045 presentata da IARIA ANTONINO (MOVIMENTO 5 STELLE) in data 27/10/2026\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_15&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0735:v014\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 14, \"date\": \"2026-10-28\", \"title\": \"Votazione Ordine del giorno 9/2700-A/42 \", \"kind\": \"agenda_order\", \"favor\": 112, \"against\": 149, \"abstain\": 4, \"approved\": false, \"secret\": false, \"confidence\": false, \"act_title\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02700-A/042 presentata da ALIFANO ENRICA (MOVIMENTO 5 STELLE) in data 27/10/2026\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&Rif"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Camera non è in numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 30, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00040.sub00020.int00180\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie (A.C. 2700-A) (ore 10,23). (ore 10,23) (ore 10,23)\", \"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"speaker_label\": \"MARIANNA RICCIARDI\", \"snippet\": \"credere che metterete a rischio l'approvazione del provvedimento entro il termine della legislatura con un terzo passaggio alla [[Camera]]? Ma questa è una cosa che non si verificherà mai .\\n\\nLa verità è che volete semplicemente fare un'operazione comunicativa ... contesti a più alto rischio medico [[legale]], come il pronto soccorso, come la chirurgia generale, dove i chirurghi non vogliono più scegliere quel tipo di specializzazione per l'elevato tasso di contenzioso medico [[legale]]. I giovani medici non scelgono più\"}, {\"uri\": \"it:camera:19:sed0731:tit00040.sub00030.int00140\", \"sitting\": {\"uri\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 731, \"date\": \"2026-10-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Gribaudo ed altri: Modifica all'articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilità o decesso (A.C. 2904) (ore 10,41). (ore 10,41) (ore 10,41)\", \"person\": {\"uri\": \"it:person:camera:307466\", \"name\": \"Patrizia Marrocco\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307466&legislatura=19\"}, \"speaker_label\": \"PATRIZIA MARROCCO\", \"snippet\": \"tutti i componenti della Commissione. Voglio rivolgere un ringraziamento particolare anche alle colleghe Varchi e Lucaselli, alla Presidenza della [[Camera]] dei deputati, agli uffici e a tutto il personale che ha contribuito a rendere possibile l'approdo di questo provvedimento ... concreto, perché la politica deve saper trasformare l'ascolto in risposte e le parole in fatti.\\n\\nColleghi, dietro i [[numeri]] inaccettabili delle morti e degli info"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-06-30",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 140, \"items\": [{\"uri\": \"it:camera:19:sed0683:tit00040.sub00010.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0683\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 683, \"date\": \"2026-06-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Ministro del Lavoro e delle politiche sociali sulla sicurezza sul lavoro, ai sensi dell'articolo 14-bis del decreto legislativo 9 aprile 2008, n. 81 (ore 10,16). (ore 10,16) (ore 10,16)\", \"person\": {\"uri\": \"it:person:camera:309044\", \"name\": \"Marina Elvira Calderone\", \"in_office\": false}, \"speaker_label\": \"MARINA ELVIRA CALDERONE\", \"snippet\": \"dipendenti. Certamente non è sufficiente, certamente l'obiettivo di tutti deve essere, invece, quello di ridurre il [[numero]] degli infortuni e, soprattutto, una visione zero.\\n\\nLa sicurezza sul lavoro richiede l'impegno continuo delle istituzioni, delle imprese, dei sindacati ... episodio di sfruttamento riduce le tutele e aumenta i rischi per la salute e la sicurezza. Dove arretra la [[legalità]], arretra anche la sicurezza.\\n\\nDietro ogni dato ci sono persone, famiglie, storie e comunità. Per questo i fatti di Amendolara\"}, {\"uri\": \"it:camera:19:sed0683:tit00040.sub00020.int00060\", \"sitting\": {\"uri\": \"it:camera:19:sed0683\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 683, \"date\": \"2026-06-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Ministro del Lavoro e delle politiche sociali sulla sicurezza sul lavoro, ai sensi dell'articolo 14-bis del decreto legislativo 9 aprile 2008, n. 81 (ore 10,16). (ore 10,16) (ore 10,16)\", \"person\": {\"uri\": \"it:person:camera:307466\", \"name\": \"Patrizia Marrocco\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307466&legislatura=19\"}, \"speaker_label\": \"PATRIZIA MARROCCO\", \"snippet\": \"impresa sana è un'alleata dello Stato, è un presidio di sviluppo, di occupazione e anche di sicurezza. I [[numeri]] confermano che la strada intrapresa è quella giusta, molto è stato fatto e molto si deve ancora fare ... competere con chi mette a rischio la vita dei lavoratori.\\n\\nIl terzo pilastro, invece, riguarda la tracciabilità e la [[legalità]]. Il badge di cantiere con codice univoco e interoperabilità digitale rende finalmente trasparente tutta la filiera perché non possiamo prevenire\"}, {\"uri\": \"it:camera:19:sed0683:tit00040.sub00020.int00220\", \"sitting\": {\"uri\": \"it:camera:19:sed0683\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 683, \"date\": \"2026-06-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Ministro del Lavoro e delle politiche sociali sulla sicurezza sul lavoro, ai sensi dell'articolo 14-bis del decreto legislativo 9 aprile 2008, n. 81 (ore 10,16). (ore 10,16) (ore 10,16)\", \""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "verifica del numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 27, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00040.sub00020.int00180\", \"sitting\": {\"uri\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 735, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie (A.C. 2700-A) (ore 10,23). (ore 10,23) (ore 10,23)\", \"person\": {\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308853&legislatura=19\"}, \"speaker_label\": \"MARIANNA RICCIARDI\", \"snippet\": \"più quelle specializzazioni, come medicina d'urgenza, come chirurgia generale, perché sono a più alto rischio di contenzioso medico [[legale]]. Questo è un problema enorme e questa riforma non lo affronta neanche di una virgola.\\n\\nVoi però lo sapete ... Stato che io immagino deve ridurre al minimo gli errori per tutelare i pazienti, deve evitare il maggior [[numero]] di errori e di danni ai pazienti. Allora, vorrei che si passasse da un meccanismo basato sulla colpa - dove per ogni\"}, {\"uri\": \"it:camera:19:stc:24:audiz2:audizione:20261020:0114:tit00020:int00020\", \"sitting\": {\"uri\": \"it:camera:19:stc:24:audiz2:audizione:20261020:0114\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3881\", \"body_name\": \"Commissione parlamentare di inchiesta sul fenomeno delle mafie e sulle altre associazioni criminali, anche straniere\", \"number\": 114, \"date\": \"2026-10-20\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito dell'audizione di Salvatore De Luca, procuratore della Repubblica presso il tribunale di Caltanissetta.\", \"speaker_label\": \"SALVATORE DE LUCA\", \"kind\": \"verbatim\", \"snippet\": \"componenti di codesta Commissione. Come ha già detto la presidente Colosimo, sono sopravvenuti, dopo la mia ultima audizione, [[numerosi]] fatti di particolare rilievo. Sicuramente il dato più rilevante è dato dai decreti di archiviazione redatti dal GIP Santi Bologna ... già consolidato sotto il profilo soggettivo. Al contrario, ha ritenuto che gli elementi acquisiti non consentissero ancora una compiuta [[verifica]] del concorso nel reato e ha pertanto indicato ulteriori accertamenti ritenuti necessari ai fini della completa ricostruzione del ruolo\"}, {\"uri\": \"it:camera:19:stc:26:audiz2:audizione:20261008:0161:tit00020:int00020\", \"sitting\": {\"uri\": \"it:camera:19:stc:26:audiz2:audizione:20261008:0161\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3941\", \"body_name\": \"Commissione parlamentare di inchiesta sul femminicidio, nonché su ogni forma di violenza di genere\", \"number\": 161, \"date\": \"2026-10-08\", \"kind\": \"committee_verbatim\", \"status\": \"he"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"La Camera non è in numero legale\"",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "mancanza numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-03-31",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 6, \"items\": [{\"uri\": \"it:camera:19:stc:09:indag:c09_tpl_non_di_linea:20260331:0012:tit00020:int00020\", \"sitting\": {\"uri\": \"it:camera:19:stc:09:indag:c09_tpl_non_di_linea:20260331:0012\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3509\", \"body_name\": \"IX Commissione\", \"number\": 12, \"date\": \"2026-03-31\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Audizione di esperti della materia: professor Mario Esposito, in videoconferenza, professor Andrea Giuricin e avvocato Marco Giustiniani.\", \"speaker_label\": \"ANDREA GIURICIN\", \"kind\": \"verbatim\", \"snippet\": \"milioni di abitanti, abbiamo 19 mila taxi e 40 mila NCC. Ripeto, io guardo i [[numeri]]. I [[numeri]] dicono che, ad esempio, in Lombardia c'è una carenza strutturale di offerta. Andiamo per punti. In primo luogo, sul tema della ... territoriali. Nella coalizione che rappresento ci sono tanti attori di realtà importanti che in questo momento soffrono per la [[mancanza]] di servizi di mobilità on demand. L'obiettivo della riforma non può essere meramente ordinamentale o formale, né tantomeno\"}, {\"uri\": \"it:camera:19:stc:03:indag:c03_discriminazioni:20260311:0045:tit00020:int00080\", \"sitting\": {\"uri\": \"it:camera:19:stc:03:indag:c03_discriminazioni:20260311:0045\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"COMITATO PERMANENTE SUI DIRITTI UMANI NEL MONDO\", \"number\": 45, \"date\": \"2026-03-11\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Audizione, in videoconferenza, di Maksym Maksymov, Responsabile dei Progetti per l'iniziativa Bring Kids Back UA.\", \"speaker_label\": \"MAKSYM MAKSYMOV\", \"kind\": \"verbatim\", \"snippet\": \"sono tornati centoventi bambini con la partecipazione russa, con la mediazione, ma è davvero un [[numero]] irrisorio rispetto al [[numero]] reale dei bambini coinvolti dal fenomeno, incluse le deportazioni e i trasferimenti forzati. Penso che nulla possa spiegare il loro ... dell'intero fenomeno e come i bambini deportati vengano trattati come ostaggi da scambiare con prigionieri, quindi vediamo la [[mancanza]] di buona fede e l'ostruzionismo da parte dei russi. Vorrei aggiungere un altro esempio: le autorità russe dichiarano\"}, {\"uri\": \"it:camera:19:stc:76:audiz2:audizione:20260217:0044:tit00020:int00430\", \"sitting\": {\"uri\": \"it:camera:19:stc:76:audiz2:audizione:20260217:0044\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4261\", \"body_name\": \"Commissione parlamentare di inchiesta sui fatti accaduti presso la comunità «Il Forteto»\", \"number\": 44, \"date\": \"2026-02-17\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Audizione di Leonardo Quagliotti, liquidatore della cooperativa Fortemugello.\", \"speaker_label\": \"LEONARDO QUAGLIOTTI\", \"kind\": \"verbatim\", \"snippet\": \"carica della cooperativa, che non aveva la revisione [[legale]] dei conti e che quindi non ha temi sulla [[mancanza]] del fondo appostato, almeno diretti, è stata ritenuta stralciabile, dovevano avere circa 20.000 euro a test"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "mancanza numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-04-01",
+    "end": "2026-06-30",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 9, \"items\": [{\"uri\": \"it:camera:19:sed0677:tit00040.sub00030.int00100\", \"sitting\": {\"uri\": \"it:camera:19:sed0677\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 677, \"date\": \"2026-06-17\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: S. 1891- Conversione in legge, con modificazioni, del decreto-legge 30 aprile 2026, n. 63, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della crisi dei mercati internazionali (Approvato dal Senato) (A.C. 2962).\", \"person\": {\"uri\": \"it:person:camera:308810\", \"name\": \"Marco Grimaldi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308810&legislatura=19\"}, \"speaker_label\": \"MARCO GRIMALDI\", \"snippet\": \"accise torna in quest'Aula dopo un passaggio molto travagliato al Senato, ma la maggioranza ha arrancato persino sul [[numero]] [[legale]].\\n\\nIntanto la sostanza del decreto non è molto cambiata: interventi temporanei, finestre simboliche di riduzione delle accise spacciate come ... continente sempre più vecchio come l'Unione europea.\\n\\nMa torniamo al decreto. Al Senato avete dovuto ritirare, per totale [[mancanza]] di coperture finanziarie, i vostri stessi emendamenti bandiera: lo stop al pignoramento dei conti correnti, le sanatorie sulle partite\"}, {\"uri\": \"it:camera:19:sed0676:tit00120.sub00010.int00080\", \"sitting\": {\"uri\": \"it:camera:19:sed0676\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 676, \"date\": \"2026-06-16\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione del disegno di legge: S. 1891- Conversione in legge, con modificazioni, del decreto-legge 30 aprile 2026, n. 63, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della crisi dei mercati internazionali (Approvato dal Senato) (A.C. 2962) (ore 18,13). (ore 18,13) (ore 18,13)\", \"person\": {\"uri\": \"it:person:camera:308941\", \"name\": \"Nicole Matteoni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308941&legislatura=19\"}, \"speaker_label\": \"NICOLE MATTEONI\", \"snippet\": \"Governo che sa fare scelte chiare e stabilire le giuste priorità.\\n\\nSul fronte dei controlli e della [[legalità]] l'articolo 1-octies ridefinisce l'ambito d'azione degli accertamenti della Guardia di finanza lungo la filiera dei carburanti, risalendo fino ... importanti al Codice di consumo, vietando le sollecitazioni telefoniche via messaggio non richieste e imponendo l'uso di un [[numero]] unico identificativo per le proposte commerciali di energia, gas e telecomunicazioni; una norma sacrosanta attesa da milioni di cittadini s"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "mancanza numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-07-01",
+    "end": "2026-09-30",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 6, \"items\": [{\"uri\": \"it:camera:19:sed0713:tit00030.sub00020.int00060\", \"sitting\": {\"uri\": \"it:camera:19:sed0713\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 713, \"date\": \"2026-09-22\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di una interpellanza e di interrogazioni.\", \"person\": {\"uri\": \"it:person:camera:307302\", \"name\": \"Stefania Ascari\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307302&legislatura=19\"}, \"speaker_label\": \"STEFANIA ASCARI\", \"snippet\": \"quali non contestano più, alla confisca di prevenzione, la violazione dell'articolo 7, cioè il principio di [[legalità]] delle pene, o quella dell'articolo 6, comma 2, cioè la presunzione di innocenza, ma quella dell'articolo 1, in materia ... [[numerosi]] testimoni di giustizia, Presidente, hanno rivolto una lettera alla Presidente Meloni per chiedere di essere ascoltati, per chiedere di avere vicino lo Stato e non sentirsi un peso, come è oggi. Per questo, in questa lettera, rappresentano la [[mancanza]]\"}, {\"uri\": \"it:camera:19:sed0703:tit00050.sub00030.int00180\", \"sitting\": {\"uri\": \"it:camera:19:sed0703\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 703, \"date\": \"2026-08-04\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Faraone ed altri: “Istituzione della Giornata nazionale «Enzo Tortora» in memoria delle vittime di errori giudiziari” (A.C. 441) e delle abbinate proposte di legge: Bisa ed altri; Pittalis ed altri (A.C. 1657-1694) (ore 10,50). (ore 10,50) (ore 10,50)\", \"person\": {\"uri\": \"it:person:camera:307223\", \"name\": \"Pietro Pittalis\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307223&legislatura=19\"}, \"speaker_label\": \"PIETRO PITTALIS\", \"snippet\": \"errori giudiziari, non hanno mai ricevuto indennizzi a causa di vari motivi come la [[mancanza]] di risorse per affrontare le spese [[legali]]. Colleghi, sono [[numeri]] drammaticamente impressionanti, soprattutto se si riflette che ad ogni [[numero]] corrisponde una vita spezzata\"}, {\"uri\": \"it:camera:19:sed0703:tit00130.sub00010.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0703\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 703, \"date\": \"2026-08-04\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione del disegno di legge: S. 1939. - Conversione in legge del decreto-legge 12 giugno 2026, n. 100, recante misure urgenti in materia di giustizia e per l'attuazione del Patto dell'Unione europea sulla migrazione e l'asilo del 14 maggio 2024 (Approvato dal Senato) (A.C. 30"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "mancanza numero legale",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:stc:26:audiz2:audizione:20261008:0161:tit00020:int00020\", \"sitting\": {\"uri\": \"it:camera:19:stc:26:audiz2:audizione:20261008:0161\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3941\", \"body_name\": \"Commissione parlamentare di inchiesta sul femminicidio, nonché su ogni forma di violenza di genere\", \"number\": 161, \"date\": \"2026-10-08\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Audizione di Etelina Carri, vicepresidente di D.i.Re. – Donne in Rete contro la violenza, nell'ambito del filone d'inchiesta sulla vittimizzazione secondaria.\", \"speaker_label\": \"ETELINA CARRI\", \"kind\": \"verbatim\", \"snippet\": \"alcuni casi, spinge loro a ritornare più volte con l'autore di violenza prima di interrompere la relazione. La [[mancanza]] di una lettura corretta della violenza, spesso interpretata e ridotta a lite, a mero conflitto familiare, le deficienze di coordinamento ... genere per superare le convinzioni e gli stereotipi diffusi; garantire che la formazione non sia limitata a conoscenze tecniche, [[legali]] o psicologiche, ma includa anche i meccanismi della violenza maschile contro le donne e gli stereotipi e i pregiudizi\"}, {\"uri\": \"it:camera:19:sed0719:tit00050.sub00030.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0719\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 719, \"date\": \"2026-10-02\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interpellanze urgenti (ore 9,35). (ore 9,35) (ore 9,35)\", \"person\": {\"uri\": \"it:person:camera:308854\", \"name\": \"Alessandro Caramiello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308854&legislatura=19\"}, \"speaker_label\": \"ALESSANDRO CARAMIELLO\", \"snippet\": \"cento l'indennità giornaliera di malattia per il personale navigante. Sottosegretario, voglio spiegarle cosa significa questo [[numero]] nel mondo reale: un lavoratore marittimo vive e lavora su una nave, in ambienti confinati, sottoposto a sbalzi termici, a sforzi fisici immani ... generale della CISL - ci restituiscono una realtà agghiacciante a causa della [[mancanza]] di controlli digitali anti-manomissione, e gli orari effettivi a bordo superano costantemente ogni limite [[legale]] e umano.\\n\\nDurante l'alta stagione estiva, nel bacino del Mediterraneo\"}]}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 0, \"results\": [{\"quote\": \"sul numero legale\", \"found\": false, \"reason\": \"non si trova, parola per parola, in nessun intervento\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "elenco_votazioni",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 37.7,
+ "risposta_sistema": "Non ho trovato, nei dati già consultati, sedute d’Aula della Camera nel 2026 in cui sia registrata la mancanza del numero legale su una votazione.\n\nLa ricerca testuale ha restituito riferimenti al numero legale che non riguardano un accertamento in Aula alla Camera: per esempio, il 17 giugno Marco Grimaldi (AVS) ha parlato delle difficoltà della maggioranza «sul numero legale» nel precedente esame al Senato; l’11 febbraio Ouidad Bakkali (PD-IDP) ha menzionato sedute della Commissione di vigilanza Rai senza numero legale. Non sono quindi casi utilizzabili per rispondere alla domanda.\n\nPer una verifica completa occorre consultare i resoconti stenografici delle sedute dell’Assemblea della Camera del 2026, cercando le formule procedurali di accertamento del numero legale, e le schede delle relative votazioni elettroniche sul sito ufficiale della Camera. I dati disponibili arrivano fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 28,
+  "dati": 15,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "PD",
+     "AVS"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": []
+   },
+   "quotes": [
+    {
+     "quote": "sul numero legale",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+    "available": false,
+    "voices": [
+     {
+      "name": "Marco Grimaldi",
+      "group": "Alleanza Verdi e Sinistra",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Ouidad Bakkali",
+      "group": "Partito Democratico",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

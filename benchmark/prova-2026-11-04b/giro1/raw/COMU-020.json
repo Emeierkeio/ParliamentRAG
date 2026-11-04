@@ -1,0 +1,128 @@
+{
+ "id": "COMU-020",
+ "domanda": "Quante interrogazioni sono state rivolte al Ministero dell'Interno nel 2026, e quali gruppi ne hanno presentate di più?",
+ "categoria": "sindacato_ispettivo",
+ "tipo_risposta": "classifica",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Interno è il ministero più interrogato del 2026. Camera e Senato separati; gruppo del primo firmatario alla data.",
+ "trappola": false,
+ "endpoint": "agente",
+ "inizio": 1793783598.965012,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Ministro dell'interno\"",
+    "chamber": "camera",
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Ministro dell'interno\"",
+    "chamber": "senato",
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "camera",
+    "kind": "written_question",
+    "initiative": null,
+    "q": "interno",
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "laws": false,
+    "group_by": [
+     "tipo",
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera, presentati dal 01/01/2026 al 31/12/2026; filtri: tipo written_question, parole_del_titolo interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": "written_question",
+    "initiative": null,
+    "q": "interno",
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "laws": false,
+    "group_by": [
+     "tipo",
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 31/12/2026; filtri: tipo written_question, parole_del_titolo interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "interrogazione rivolta al Ministro dell'interno",
+    "fonti": [
+     "atti"
+    ],
+    "ramo": null,
+    "da": "2026-01-01",
+    "a": "2026-11-04",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"interrogazione rivolta al Ministro dell'interno\", \"fonti\": [\"atti\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:3-02908\", \"atto\": \"it:camera:19:aic:3-02908\", \"titolo\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02908 presentata da ZIELLO EDOARDO (MISTO-FUTURO NAZIONALE VANNACCI - FREE) in data 30/09/2026\", \"testo\": \"Atto Camera Interrogazione a risposta immediata in Assemblea 3-02908 presentato da ZIELLO Edoardo testo di Mercoledì 30 settembre 2026, seduta n. 717 ZIELLO , DAVIDE BERGAMINI , SASSO , BOF , CALDERONE , FURGIUELE , PIERRO , POZZOLO e RAVETTO . — Al Ministro dell'interno . — Per sapere – premesso che: la tutela della sicurezza e dell'ordine pubblico costituisce un pilastro primario della sovranità statale e un diritto fondamentale inalienabile per garantire la convivenza civile e il libero esercizio delle libertà costituzionali all'interno della Repubblica; negli ultimi anni e, in particolare, negli ultimi mesi, si sta assistendo ad un' escalation di episodi violenti che destano profondo all\", \"ramo\": \"camera\", \"data\": \"2026-09-30\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02908\", \"similarita\": 0.854}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:3-02692\", \"atto\": \"it:camera:19:aic:3-02692\", \"titolo\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/02692 presentata da SALA FABRIZIO (FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE) in data 26/05/2026\", \"testo\": \"Atto Camera Interrogazione a risposta immediata in Assemblea 3-02692 presentato da SALA Fabrizio testo presentato Martedì 26 maggio 2026 modificato Mercoledì 27 maggio 2026, seduta n. 666 SALA . — Al Ministro dell'interno . — Per sapere – premesso che: nel secondo semestre del 2025 nel territorio della provincia di Monza-Brianza si sono registrate rilevanti criticità inerenti alle tempistiche relative alle procedure per il rilascio dei passaporti con attese che oscillavano tra i 2 e i 4 mesi; nei primi mesi del 2026 si è registrato un miglioramento nelle tempistiche precedenti delle procedure di rilascio, ma la questura di Monza deve affrontare un numero di richieste molto elevato che si agg\", \"ramo\": \"camera\", \"data\": \"2026-05-26\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/02692\", \"similarita\": 0.848}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:4-08737\", \"atto\": \"it:camera:19:aic:4-08737\", \"titolo\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/08737 presentata da GRIMALDI MARCO (ALLEANZA VERDI E SINISTRA) in data 05/08/2026\", \"testo\": \"Atto Camera Interrogazione a risposta scritta 4-08737 presentato da GRIMALDI Marco testo di Mercoledì 5 agosto 2026, seduta n. 704 GRIMALDI . — Al Ministro dell'interno . — Per sapere – premesso che: Silp Cgil ha denunciato in questi giorni "
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "conta_atti",
+  "conta_atti",
+  "cerca_per_significato"
+ ],
+ "tempo_s": 20.6,
+ "risposta_sistema": "Non posso fornire un totale affidabile né una classifica dei gruppi con i dati interrogati: il conteggio degli atti disponibile permette di filtrare per tipo, data, titolo e primo firmatario, ma non per amministrazione destinataria. La ricerca nei testi individua interrogazioni rivolte al Ministro dell’interno, ma restituisce solo un campione ordinato per pertinenza e non un elenco completo.\n\nAd esempio, tra quelle individuate nel 2026 ci sono atti di PD-IDP, M5S, Lega, Forza Italia, AVS, FdI, Azione e della componente Misto-+Europa; questo però non consente di stabilire quali gruppi ne abbiano presentate di più. I dati delle sedute arrivano fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}
