@@ -174,7 +174,8 @@ class GroupVote(BaseModel):
     absent: int = 0
     mission: int = 0
     other: int = 0
-    majority: str | None = None                # la scelta più frequente fra chi ha votato
+    majority: str | None = None                # la scelta di tutti quelli che hanno votato; None se il gruppo si è diviso
+    split: bool = False                        # chi ha votato non ha fatto la stessa scelta: va detto, con i numeri
 
 
 class Ballot(BaseModel):
@@ -284,5 +285,5 @@ class SpeechHit(BaseModel):
     kind: str | None = None
     snippet: str                               # con «[[» e «]]» intorno alle parole trovate
     url: str | None = None                     # il resoconto ufficiale
-    video: str | None = None                   # la WebTV della Camera, dal secondo video_start_s
+    video: str | None = None                   # la WebTV della Camera, che parte dall'inizio dell'intervento (secondo video_start_s)
     video_start_s: int | None = None

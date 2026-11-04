@@ -360,7 +360,8 @@ STRUMENTI: list[Strumento] = [
               "gruppo) e il numero dei membri.", Organo, lambda c, p: persone.organo(c, p.q, p.chamber, p.date, p.titles)),
     Strumento("elenco_votazioni", "Votazioni elettroniche, dalla più recente, per ramo, atto, tipo e date.", ElencoVotazioni,
               lambda c, p: voti.elenco_votazioni(c, p.chamber, p.act, p.kind, p.start, p.end, p.final, p.limit, p.offset, p.confidence)),
-    Strumento("votazione", "Una votazione: totali, esito, atto, voto di ogni gruppo (il Misto per componente) e, se chiesto, di ogni parlamentare.",
+    Strumento("votazione", "Una votazione: totali, esito, atto, voto di ogni gruppo (il Misto per componente) e, se chiesto, di ogni parlamentare. "
+              "Un gruppo con split vero si è diviso: dillo con i numeri di ogni scelta, mai una posizione unica.",
               Votazione, lambda c, p: voti.votazione(c, p.uri, p.with_ballots)),
     Strumento("cerca_atti", "Progetti di legge, interrogazioni, mozioni e altri atti per parole del titolo, numero, tipo, firmatario o "
               "iniziativa (governo, parlamentare, regione, CNEL, popolare, o il presentatore: «Regione Toscana»).",

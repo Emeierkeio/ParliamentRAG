@@ -66,8 +66,11 @@ def votazione(c: psycopg.Connection, uri: str, with_ballots: bool = True) -> Vot
         campo = b["result"] if b["result"] in ("favor", "against", "abstain", "absent", "mission") else "other"
         setattr(gv, campo, getattr(gv, campo) + 1)
     for gv in gruppi.values():
-        conti = {s: getattr(gv, s) for s in SCELTE}
-        gv.majority = max(conti, key=conti.get) if any(conti.values()) else None
+        # una scelta sola per il gruppo solo se l'hanno fatta tutti: con la più frequente, il modello scriveva «la
+        # componente si è astenuta» anche quando uno dei quattro aveva votato contro
+        scelte = [s for s in SCELTE if getattr(gv, s)]
+        gv.split = len(scelte) > 1
+        gv.majority = scelte[0] if len(scelte) == 1 else None
     persone = brevi(c, [b["person"] for b in schede], v["date"]) if with_ballots else {}
     voti = [Ballot(person=persone[b["person"]], result=b["result"]) for b in schede if b["person"] in persone]
     voti.sort(key=lambda x: (x.result, x.person.name))
