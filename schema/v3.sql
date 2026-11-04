@@ -438,8 +438,10 @@ CREATE TABLE IF NOT EXISTS video_segment (
   speech text,                                      -- uri dell'intervento del resoconto (si lega quando il resoconto c'è)
   anchor text, label text,
   start_s int, end_s int, clock timestamp,
+  webtv_id int,                                     -- id dell'intervento nella WebTV: /evento/<evento>/<webtv_id> parte da lì
   PRIMARY KEY (video, ord)
 );
+ALTER TABLE video_segment ADD COLUMN IF NOT EXISTS webtv_id int;
 CREATE INDEX IF NOT EXISTS video_segment_speech ON video_segment (speech);
 
 -- emendamenti (Amendment) e firmatari (SIGNS): una riga per proposta in ogni sede (commissione, Aula)

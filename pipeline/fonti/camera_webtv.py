@@ -83,11 +83,12 @@ def scarica(ctx) -> dict:
 
 
 def indice(pagina: bytes) -> list[dict]:
-    """Dalla pagina di un evento: gli interventi con ancora dello stenografico, secondi, ora, deputato."""
+    """Dalla pagina di un evento: gli interventi con id WebTV, ancora dello stenografico, secondi, ora, deputato."""
     t = gzip.decompress(pagina).decode("utf-8", errors="replace")
     out = []
-    for tag in re.findall(r'<a id="ora_resoc_\d+"[^>]*>', t):
+    for tag, ident in re.findall(r'(<a id="ora_resoc_(\d+)"[^>]*>)', t):
         a = dict(re.findall(r'data-(\w+)="([^"]*)"', tag))
-        out.append({"ancora": a.get("steno_map", ""), "inizio": a.get("tc_start"), "fine": a.get("tc_end"), "ora": a.get("dataora_c"),
+        # ident: l'id dell'intervento nella WebTV, che nel link /evento/<evento>/<ident> fa partire il video da lì
+        out.append({"id": int(ident), "ancora": a.get("steno_map", ""), "inizio": a.get("tc_start"), "fine": a.get("tc_end"), "ora": a.get("dataora_c"),
                     "persona": a.get("id_anagr"), "etichetta": a.get("etichetta"), "titolo": a.get("tit_id")})
     return out

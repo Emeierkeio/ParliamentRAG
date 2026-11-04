@@ -513,13 +513,14 @@ def script_video(righe: list[dict]) -> str:
     """Il video di una seduta con i tratti degli interventi, in una transazione."""
     amb = next(r for r in righe if r["tipo"] == "ambito")
     v = next(r for r in righe if r["tipo"] == "nodo" and r["label"] == "Video")
-    tratti = [[a["to"], a["order"], a.get("from"), a.get("anchor"), a.get("label"), a.get("start"), a.get("end"), a.get("clock")]
+    tratti = [[a["to"], a["order"], a.get("from"), a.get("anchor"), a.get("label"), a.get("start"), a.get("end"), a.get("clock"),
+               a.get("webtv_id")]
               for a in righe if a["tipo"] == "arco" and a["type"] == "HAS_VIDEO"]
     col_v = ["uri", "event_id", "sitting", "kind", "title", "url", "start_ts", "end_ts", "source", "source_key"]
     parti = ["BEGIN;", f"DELETE FROM video WHERE uri = {_lit(v['uri'])};",
              f"COPY video ({', '.join(col_v)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv([[{**v, 'source_key': amb['source_key']}.get(c) for c in col_v]])}\\."]
     if tratti:
-        parti.append(f"COPY video_segment (video, ord, speech, anchor, label, start_s, end_s, clock) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(tratti)}\\.")
+        parti.append(f"COPY video_segment (video, ord, speech, anchor, label, start_s, end_s, clock, webtv_id) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(tratti)}\\.")
     parti.append("COMMIT;")
     return "\n".join(parti) + "\n"
 

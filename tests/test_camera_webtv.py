@@ -25,6 +25,12 @@ class TestWebtv(unittest.TestCase):
         self.assertTrue(all("_" not in a["anchor"] for a in con_ancora))  # tit00020_int00010 -> tit00020.int00010
         self.assertTrue(all(a["start"] <= a["end"] for a in con_ancora if a["start"] is not None and a["end"] is not None))
 
+    def test_id_webtv_degli_interventi(self):
+        # /evento/32715/601280 apre il video dove comincia il primo intervento
+        self.assertEqual(self.tratti[0]["webtv_id"], 601280)
+        self.assertTrue(all(isinstance(a["webtv_id"], int) for a in self.tratti))
+        self.assertEqual(len({a["webtv_id"] for a in self.tratti}), len(self.tratti))
+
     def test_controlli(self):
         self.assertEqual(_regole_video(self.r["nodi"], self.tratti), [])
 

@@ -31,7 +31,7 @@ def cerca_interventi(c: psycopg.Connection, q: str, chamber: str | None = None, 
         {"q": q, "ramo": chamber, "pers": persone_ids, "dal": start, "al": end, "somm": include_summaries, "lim": limit, "off": offset}).fetchall()
     persone = brevi(c, [r["person"] for r in righe])
     link = url_interventi(c, [r["uri"] for r in righe])
-    video = {v["speech"]: v for v in c.execute("""SELECT DISTINCT ON (vs.speech) vs.speech, v.url, vs.start_s FROM video_segment vs
+    video = {v["speech"]: v for v in c.execute("""SELECT DISTINCT ON (vs.speech) vs.speech, v.url || coalesce('/' || vs.webtv_id, '') AS url, vs.start_s FROM video_segment vs
                                                     JOIN video v ON v.uri = vs.video WHERE vs.speech = ANY(%s) ORDER BY vs.speech, vs.start_s""",
                                                  ([r["uri"] for r in righe],))}
     return [SpeechHit(uri=r["uri"], item_title=r["item_title"], person=persone.get(r["person"]), speaker_label=r["speaker_label"],

@@ -30,6 +30,7 @@ def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
         ancora = (r.get("ancora") or "").replace("_", ".")
         archi.append({"type": "HAS_VIDEO", "from": f"{s_uri}:{ancora}" if ancora and s_uri else None, "to": v_uri, "order": i,
                       "anchor": ancora or None, "label": r.get("etichetta"), "start": int(r["inizio"]) if (r.get("inizio") or "").isdigit() else None,
-                      "end": int(r["fine"]) if (r.get("fine") or "").isdigit() else None, "clock": r.get("ora")})
+                      "end": int(r["fine"]) if (r.get("fine") or "").isdigit() else None, "clock": r.get("ora"),
+                      "webtv_id": r.get("id")})
     return {"nodi": [video], "archi": archi, "testi": [],
             "ambito": {"kind": "video", "chamber": "camera", "legislature": leg, "source": "camera_webtv", "source_key": fonte.get("chiave")}}
