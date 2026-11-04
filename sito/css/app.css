@@ -1842,3 +1842,7 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
 .sv-manifesto .sv-frase{margin:0 0 26px;font-size:clamp(30px,3.2vw,46px);line-height:1.14;font-weight:600;letter-spacing:-.03em;color:var(--t3);text-wrap:pretty}
 .sv-manifesto p:not(.sv-frase){margin:0 0 12px;max-width:58ch;font-size:16.5px;line-height:1.6;color:var(--t2)}
 @media (max-width:1000px){.sv{grid-template-columns:1fr;gap:36px}#home #indipendenza .dentro{min-height:0}}
+
+/* titolo della home in una frase; l'avviso della demo è una «i» accanto a «Chiedi» */
+@media (min-width:761px){.chat-eroe h1#t-eroe{font-size:clamp(28px,3.3vw,48px)!important;line-height:1.1;max-width:min(21em,calc(100vw - 48px))}}
+#f-eroe .info--demo{margin-left:auto;color:var(--t3)}#f-eroe .info--demo+.invia{margin-left:0}
