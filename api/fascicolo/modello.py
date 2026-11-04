@@ -19,7 +19,7 @@ VETTORI = "https://api.openai.com/v1/embeddings"
 MODELLO_VETTORI, DIMENSIONI = "text-embedding-3-large", 1024
 PREZZO_VETTORI = 0.13                      # dollari per milione di token, senza Batch API
 # prezzi per milione di token (input, input in cache, output), da tenere allineati al listino OpenAI; un modello che
-# non c'è si conta per eccesso. gpt-5.6-luna (scelta delle citazioni, traduzione) va aggiunto col prezzo del listino.
+# non c'è si conta per eccesso.
 PREZZI = dict(agente.PREZZI)
 PREZZI.update({"gpt-4.1": (2.0, 0.5, 8.0), "gpt-4.1-mini": (0.4, 0.1, 1.6)})
 # la spesa di un fascicolo, per il registro: chi la vuole contare mette qui una lista [0.0] (i thread la ereditano

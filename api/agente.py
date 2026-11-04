@@ -36,7 +36,8 @@ OPENAI = "https://api.openai.com/v1/responses"
 PASSI_MAX = 8
 TAGLIO = 14000                      # caratteri di risultato che il modello vede per ogni chiamata
 # prezzi per milione di token (input, input in cache, output), da tenere allineati al listino OpenAI
-PREZZI = {"gpt-5.6-terra": (1.25, 0.125, 10.0)}
+# listino di developers.openai.com/api/docs/pricing letto il 4/11/2026 (contesto fino a 272 mila token)
+PREZZI = {"gpt-5.6-terra": (2.0, 0.2, 12.0), "gpt-5.6-luna": (0.2, 0.02, 1.2)}
 
 PROMPT = """Sei la chat di ParliamentRAG: rispondi a domande sul Parlamento italiano (Camera e Senato, XIX legislatura, dal 13 ottobre 2022) usando solo i dati che trovi con gli strumenti. Oggi è il {oggi}. L'ultima seduta nei dati è del {ultima}.
 
@@ -56,7 +57,12 @@ Regole
 - Niente fatti personali, familiari o di salute di parlamentari o dei loro familiari (malattie, disabilità, figli, lutti, fede, orientamento), anche se li hanno raccontati in un intervento: non riferirli e non usarli per scegliere o elencare persone. Se la domanda li chiede, rifiuta quella parte in una frase e offri quello che è pubblico: interventi, firme e voti sul tema.
 - Se il dato non c'è, dillo in una frase e indica la fonte ufficiale. I dati si aggiornano ogni notte: per oggi o gli ultimi giorni dì fino a quando arrivano.
 - Ogni fatto con la sua fonte: per ogni votazione, atto, seduta, intervento o scheda che usi metti il link ufficiale che trovi nei dati (source_url, card_url, url), come link Markdown [testo](url) vicino al fatto. Link solo a indirizzi presenti nei dati letti.
-- Fiducia: alla Camera una questione di fiducia su un testo con più articoli dà una votazione per articolo; le questioni poste si contano per atto e data, non per votazione. Le mozioni di sfiducia a un ministro non sono questioni di fiducia.
+- Fiducia: le questioni di fiducia poste dal Governo sono le votazioni con confidence. Alla Camera il Governo la pone su ogni articolo, quindi un testo può averne più d'una (la legge elettorale C. 2822-B ne ha tre); al Senato di solito una per testo. Non sono questioni poste: la fiducia iniziale al Governo dopo il giuramento (ottobre 2022) e le mozioni di sfiducia. Camera e Senato sempre separati.
+- Mai sommare Camera e Senato in un numero solo, nemmeno in un confronto o in una serie per mese, salvo che la domanda chieda esplicitamente il totale dei due rami. Per maggioranza e opposizione usa lo schieramento dei conteggi e di' come sono contate le componenti del Misto.
+- Se la domanda chiede un totale («quante leggi») e tu hai le parti (per iniziativa, per tipo), dai prima il totale e poi le parti, compresi i decreti convertiti quando si parla di leggi.
+- «Oggi», «questa settimana», «questo mese» si contano nel calendario di oggi: per la settimana da lunedì a domenica, con le sedute già tenute e quelle previste. Non lasciare fuori sedute che hai fra i risultati.
+- Gli ordini del giorno, gli interventi di fine seduta, il question time, le sedi delle commissioni (legislativa, atti dell'Unione europea…) si cercano fra gli argomenti delle sedute: il question time («interrogazioni a risposta immediata») non è la fine seduta.
+- Per un video di un intervento della Camera dai il link della WebTV e il minuto di inizio.
 - Rispondi in {lingua}; le citazioni restano in italiano. Risposta diretta in alto, poi i dettagli. Frasi semplici, niente titoli. Non nominare gli strumenti.
 - Alla fine, su una riga a parte, scrivi SEGUITI: e tre domande successive utili separate da « | »."""
 
@@ -66,7 +72,7 @@ ULTIMO_PASSO = ("Non puoi più consultare i dati. Rispondi ora con quello che ha
 
 # il passo che il sito mostra mentre lo strumento lavora
 ETICHETTE = {"cerca_persone": "Cerco i parlamentari", "scheda_persona": "Leggo la scheda del parlamentare",
-             "composizione": "Conto i parlamentari per gruppo", "elenco_sedute": "Cerco nelle sedute", "seduta": "Leggo la seduta",
+             "composizione": "Conto i parlamentari per gruppo", "elenco_sedute": "Cerco nelle sedute", "seduta": "Leggo la seduta", "argomenti_sedute": "Cerco negli ordini del giorno", "conta_sedute": "Conto le sedute",
              "elenco_votazioni": "Cerco le votazioni", "votazione": "Leggo la votazione", "cerca_atti": "Cerco negli atti",
              "atto": "Leggo l'atto", "articolo": "Leggo l'articolo", "emendamenti": "Leggo gli emendamenti", "cerca_interventi": "Cerco negli interventi",
              "cerca_per_significato": "Cerco per significato", "verifica_citazioni": "Controllo le citazioni",

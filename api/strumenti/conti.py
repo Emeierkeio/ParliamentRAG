@@ -450,6 +450,22 @@ def _filtro_sedute(chamber, body, start, end, person_ids) -> str:
       AND (%(pers)s::text[] IS NULL OR s.person = ANY(%(pers)s))"""
 
 
+def _per_schieramento(c: psycopg.Connection, righe: list[dict], altre: list[str]) -> list[dict]:
+    """Righe per gruppo sommate per lato del gruppo all'ultima data della riga (maggioranza dai voti di fiducia, vedi
+    api/fascicolo/maggioranza.py); le componenti del Misto restano a parte, il ruolo «governo» o senza gruppo pure."""
+    from ..fascicolo import maggioranza
+    somme: dict[tuple, dict] = {}
+    for r in righe:
+        lato = maggioranza.lato(c, r["gruppo"], r["al"]) if r.get("gruppo") else "senza gruppo"
+        k = tuple(r.get(d) for d in altre) + (lato,)
+        x = somme.setdefault(k, {**{d: r.get(d) for d in altre}, "schieramento": lato, "dal": r["dal"], "al": r["al"]})
+        for m in ("interventi", "parole", "occorrenze"):
+            if m in r:
+                x[m] = x.get(m, 0) + (r[m] or 0)
+        x["dal"], x["al"] = min(x["dal"], r["dal"]), max(x["al"], r["al"])
+    return list(somme.values())
+
+
 def conta_interventi(c: psycopg.Connection, chamber: str | None = None, body: str | None = "aula", phrase: str | None = None,
                      person: str | None = None, group: str | None = None, role: str | None = None,
                      start: dt.date | None = None, end: dt.date | None = None, include_summaries: bool = True,
@@ -464,6 +480,10 @@ def conta_interventi(c: psycopg.Connection, chamber: str | None = None, body: st
     words = words or order_by == "parole"
     if order_by == "occorrenze" and not phrase:
         raise ValueError("occorrenze vuole phrase")
+    # schieramento: si conta per gruppo e poi si somma per lato (maggioranza, opposizione, componenti del Misto)
+    schier = "schieramento" in (group_by or [])
+    if schier:
+        group_by = [d for d in group_by if d != "schieramento"] + (["gruppo"] if "gruppo" not in group_by else [])
     dims = _dimensioni(group_by or [], DIM_INTERVENTI, chamber, sum_chambers)
     cat = catalogo_gruppi(c)
     gruppi = gruppi_chiesti(cat, group, chamber) if group else None
@@ -489,6 +509,8 @@ def conta_interventi(c: psycopg.Connection, chamber: str | None = None, body: st
                               FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting
                               WHERE {filtro} {gby}""", p).fetchall()
     righe = [r for r in righe if r["interventi"]]
+    if schier:
+        righe = _per_schieramento(c, righe, [d for d in dims if d != "gruppo"])
     totali = {m: sum(r.get(m) or 0 for r in righe) for m in ("interventi", "parole", "occorrenze") if m in (righe[0] if righe else {})}
     righe.sort(key=lambda r: -(r.get(order_by) or 0))
     pagina = _pagina(righe, limit, offset)
@@ -498,6 +520,8 @@ def conta_interventi(c: psycopg.Connection, chamber: str | None = None, body: st
     sede = {"aula": "sedute d'Aula", "commissioni": "sedute di commissione", None: "Aula e commissioni"}.get(body, f"organo {body}")
     return {"counted": f"Interventi, {_ramo(chamber)}, {sede}, {_periodo(start, end)}"
                        f"{_filtri(frase=repr(phrase) if phrase else None, persona=person, gruppo=group, ruolo=role)}. "
+                       + ("Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti "
+                          "del Misto sono contate a parte («misto»), da dire nella risposta. " if schier else "")
                        + (f"Con la frase: interventi che contengono «{phrase}» a parole intere, maiuscole indifferenti; occorrenze = "
                           "le volte che ricorre (un intervento conta una volta in «interventi»). " if phrase else "")
                        + ("Parole = parti del testo separate da spazi. " if words else "")
@@ -583,7 +607,7 @@ SQL_GRUPPO_PRIMO = """(SELECT coalesce(
 DIM_ATTI = {"ramo": "a.chamber", "tipo": "a.kind", "iniziativa": SQL_INIZIATIVA, "gruppo_primo_firmatario": SQL_GRUPPO_PRIMO,
             "primo_firmatario": "(SELECT min(sp.person) FROM act_sponsor sp WHERE sp.act = a.uri AND sp.first)",
             "anno": "extract(year FROM a.date)::int", "mese": "to_char(a.date, 'YYYY-MM')",
-            "legge": "CASE WHEN a.law_number IS NOT NULL THEN 'diventato legge' ELSE 'no' END"}
+            "legge": "CASE WHEN a.law_number IS NOT NULL THEN 'diventato legge' ELSE 'no' END", "tema": "k.label_it"}
 DIM_LEGGI = {"iniziativa": "l.iniziativa", "anno": "l.anno", "mese": "to_char(l.data, 'YYYY-MM')",
              "costituzionale": "l.costituzionale", "conversione_decreto": "l.decreto"}
 
@@ -658,8 +682,10 @@ def conta_atti(c: psycopg.Connection, chamber: str | None = None, kind: str | No
         dims = _dimensioni(group_by or [], DIM_ATTI, chamber, sum_chambers)
         sel = ", ".join(f"{DIM_ATTI[d]} AS {d}" for d in dims)
         gby = ("GROUP BY " + ", ".join(map(str, range(1, len(dims) + 1)))) if dims else ""
-        righe = c.execute(f"SELECT {sel + ', ' if sel else ''}count(*) AS atti, min(a.date) AS dal, max(a.date) AS al FROM act a WHERE {filtro} {gby}",
-                          p).fetchall()
+        # per tema un atto conta sotto ogni suo descrittore (EuroVoc o TESEO), una volta per descrittore
+        temi_j = "JOIN act_subject x2 ON x2.act = a.uri JOIN concept k ON k.uri = x2.concept" if "tema" in dims else ""
+        righe = c.execute(f"SELECT {sel + ', ' if sel else ''}count(DISTINCT a.uri) AS atti, min(a.date) AS dal, max(a.date) AS al "
+                          f"FROM act a {temi_j} WHERE {filtro} {gby}", p).fetchall()
     righe = [r for r in righe if r["atti"]]
     righe.sort(key=lambda r: -r["atti"])
     pagina = _pagina(righe, limit, offset)
@@ -677,6 +703,7 @@ def conta_atti(c: psycopg.Connection, chamber: str | None = None, kind: str | No
 # ---------- emendamenti ----------
 
 DIM_EMENDAMENTI = {"ramo": "p.ramo", "atto": "p.act", "sede": "p.venue", "esito": "p.esito", "anno": "p.anno",
+                   "articolo": "p.articolo", "tipo": "p.tipo", "gruppo_primo_firmatario": "p.gp",
                    "gruppo_firmatario": "g1", "coppia_gruppi": "g1, g2"}
 
 
@@ -706,25 +733,27 @@ def conta_emendamenti(c: psycopg.Connection, chamber: str | None = None, act: st
     with tempo_massimo(c):
         righe = c.execute(f"""
             WITH {CTE_APPARTENENZE},
-            e AS (SELECT e.uri, e.act, e.venue, e.number, e.outcome, split_part(e.uri, ':', 2) AS ramo,
+            e AS (SELECT e.uri, e.act, e.venue, e.number, e.outcome, e.article, e.kind, split_part(e.uri, ':', 2) AS ramo,
                          coalesce(e.sitting_date, e.presented) AS d FROM amendment e
                   WHERE (%(ramo)s::text IS NULL OR e.uri LIKE 'it:' || %(ramo)s || ':%%') AND (%(atto)s::text IS NULL OR e.act = %(atto)s)
                     AND (%(esito)s::text IS NULL OR e.outcome = %(esito)s) AND (%(sede)s::text IS NULL OR e.venue = %(sede)s)
                     AND (%(dal)s::date IS NULL OR coalesce(e.sitting_date, e.presented) >= %(dal)s)
                     AND (%(al)s::date IS NULL OR coalesce(e.sitting_date, e.presented) <= %(al)s)),
-            f AS (SELECT DISTINCT ON (s.amendment, s.ord) e.ramo, e.act, e.venue, e.number, gm.grp AS g
+            f AS (SELECT DISTINCT ON (s.amendment, s.ord) e.ramo, e.act, e.venue, e.number, gm.grp AS g, s.ord
                   FROM e JOIN amendment_signer s ON s.amendment = e.uri JOIN gm ON gm.person = s.person AND e.d BETWEEN gm.da AND gm.a
                   ORDER BY s.amendment, s.ord, gm.comp DESC),
-            pg AS (SELECT ramo, act, venue, number, array_agg(DISTINCT g) AS gs FROM f GROUP BY 1, 2, 3, 4),
-            p AS (SELECT e.ramo, e.act, e.venue, e.number, min(e.outcome) AS esito, extract(year FROM min(e.d))::int AS anno, pg.gs
-                  FROM e LEFT JOIN pg USING (ramo, act, venue, number) GROUP BY 1, 2, 3, 4, pg.gs)
+            pg AS (SELECT ramo, act, venue, number, array_agg(DISTINCT g) AS gs, (array_agg(g ORDER BY ord))[1] AS gp
+                   FROM f GROUP BY 1, 2, 3, 4),
+            p AS (SELECT e.ramo, e.act, e.venue, e.number, min(e.outcome) AS esito, extract(year FROM min(e.d))::int AS anno,
+                         min(e.article) AS articolo, min(e.kind) AS tipo, pg.gs, pg.gp
+                  FROM e LEFT JOIN pg USING (ramo, act, venue, number) GROUP BY 1, 2, 3, 4, pg.gs, pg.gp)
             SELECT {sel + ', ' if sel else ''}count(*) AS proposte FROM p {espansione}
             WHERE {dove} AND (NOT %(cross)s OR coalesce(cardinality(p.gs), 0) > 1) AND (%(gruppi)s::text[] IS NULL OR p.gs && %(gruppi)s) {gby}""",
             p | {"cross": cross_group}).fetchall()
     righe = [r for r in righe if r["proposte"]]
     righe.sort(key=lambda r: -r["proposte"])
     pagina = _pagina(righe, limit, offset)
-    _sostituisci_gruppi(pagina["rows"], cat, ("gruppo_firmatario", "g1", "g2"))
+    _sostituisci_gruppi(pagina["rows"], cat, ("gruppo_firmatario", "gruppo_primo_firmatario", "g1", "g2"))
     for r in pagina["rows"]:
         if "g1" in r and "g2" in r:
             r["coppia_gruppi"] = [r.pop("g1"), r.pop("g2")]
@@ -734,7 +763,8 @@ def conta_emendamenti(c: psycopg.Connection, chamber: str | None = None, act: st
                        f"{_filtri(atto=act, esito=outcome, sede=venue, gruppo=group, solo_cofirmate_da_più_gruppi='sì' if cross_group else None)}. "
                        "Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta "
                        "o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, "
-                       "relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per coppia: proposte con almeno un "
+                       "relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il "
+                       "gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un "
                        "firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in "
                        "ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.",
             "total": sum(r["proposte"] for r in righe) if "coppia_gruppi" not in dims and "gruppo_firmatario" not in dims else None} | pagina

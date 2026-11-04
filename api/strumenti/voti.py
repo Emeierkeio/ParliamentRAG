@@ -58,8 +58,10 @@ def votazione(c: psycopg.Connection, uri: str, with_ballots: bool = True) -> Vot
     for b in schede:
         gv = gruppi.get(b["grp"])
         if gv is None:
-            g = Group(uri=b["grp"], name=b["name"] or b["grp"], short_name=b["short_name"], kind=b["kind"] or "group",
-                      part_of=b["part_of"]) if b["grp"] else None
+            # nel Misto senza componente: i non iscritti, da dire così (il Misto si legge per componente)
+            ni = (b["name"] or "").strip().lower() == "misto" and b["kind"] != "misto_component"
+            g = Group(uri=b["grp"], name="Misto, non iscritti" if ni else b["name"] or b["grp"], short_name=b["short_name"],
+                      kind=b["kind"] or "group", part_of=b["part_of"]) if b["grp"] else None
             gv = gruppi[b["grp"]] = GroupVote(group=g)
         campo = b["result"] if b["result"] in ("favor", "against", "abstain", "absent", "mission") else "other"
         setattr(gv, campo, getattr(gv, campo) + 1)

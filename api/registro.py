@@ -82,6 +82,26 @@ class ElencoSedute(Parametri):
     offset: int = Field(0, ge=0)
 
 
+class Argomenti(Parametri):
+    chamber: Ramo | None = None
+    body: str | None = Field(None, description="organo: «aula», parte del nome («XIV Commissione», «Bilancio») o uri")
+    seat: str | None = Field(None, description="sede, parte del nome: «SEDE LEGISLATIVA», «ATTI DELL'UNIONE EUROPEA», «SEDE REFERENTE»")
+    stage: str | None = Field(None, description="fase del punto, parte del testo: «approvazione», «conclusione», «rinvio»")
+    q: str | None = Field(None, description="parole del titolo del punto: «fine seduta», «question time», un atto")
+    start: dt.date | None = None
+    end: dt.date | None = None
+    limit: int = Field(50, ge=1, le=100)
+    offset: int = Field(0, ge=0)
+
+
+class ContaSedute(Parametri):
+    chamber: Ramo | None = None
+    body: str | None = Field("aula", description="«aula» o l'uri di un organo")
+    start: dt.date | None = None
+    end: dt.date | None = None
+    by_month: bool = False
+
+
 class Seduta(Parametri):
     uri: str
     full_text: bool = Field(False, description="testo intero degli interventi; senza, i primi 150 caratteri (per il contenuto usa cerca_interventi)")
@@ -212,7 +232,7 @@ class ContaInterventi(Parametri):
     end: dt.date | None = None
     include_summaries: bool = Field(True, description="in commissione, anche i riassunti del resoconto sommario")
     words: bool = Field(False, description="conta anche le parole (più lento)")
-    group_by: list[Literal["ramo", "sede", "organo", "anno", "mese", "persona", "gruppo", "ruolo"]] = Field(default_factory=list)
+    group_by: list[Literal["ramo", "sede", "organo", "anno", "mese", "persona", "gruppo", "ruolo", "schieramento"]] = Field(default_factory=list)
     order_by: Literal["interventi", "parole", "occorrenze"] = "interventi"
     sum_chambers: bool = SommaRami
     limit: int = Field(50, ge=1, le=200)
@@ -255,7 +275,8 @@ class ContaAtti(Parametri):
     laws: bool = Field(False, description="vero: conta le leggi approvate una volta sola anche se l'atto è nei due rami "
                                           "(group_by: iniziativa, anno, mese, costituzionale, conversione_decreto)")
     group_by: list[Literal["ramo", "tipo", "iniziativa", "gruppo_primo_firmatario", "primo_firmatario", "anno", "mese", "legge",
-                           "costituzionale", "conversione_decreto"]] = Field(default_factory=list)
+                           "costituzionale", "conversione_decreto", "tema"]] = Field(
+        default_factory=list, description="tema: i descrittori dei thesauri di ogni atto (un atto conta sotto ognuno dei suoi)")
     sum_chambers: bool = SommaRami
     limit: int = Field(100, ge=1, le=200)
     offset: int = Field(0, ge=0)
@@ -265,12 +286,15 @@ class ContaEmendamenti(Parametri):
     chamber: Ramo | None = None
     act: str | None = Field(None, description="uri del progetto di legge")
     outcome: str | None = None
-    venue: str | None = Field(None, description="committee, assembly, referente…")
+    venue: str | None = Field(None, description="referente (commissione in sede referente, Camera), committee (commissione, Senato), "
+                                                "assembly (Aula), legislativa, consultiva")
     group: str | None = Field(None, description="proposte con almeno un firmatario del gruppo")
     start: dt.date | None = None
     end: dt.date | None = None
     cross_group: bool = Field(False, description="vero: solo le proposte firmate da deputati o senatori di almeno due gruppi")
-    group_by: list[Literal["ramo", "atto", "sede", "esito", "anno", "gruppo_firmatario", "coppia_gruppi"]] = Field(default_factory=list)
+    group_by: list[Literal["ramo", "atto", "sede", "esito", "anno", "articolo", "tipo", "gruppo_primo_firmatario", "gruppo_firmatario",
+                           "coppia_gruppi"]] = Field(default_factory=list, description="tipo: emendamento, articoloAggiuntivo, "
+                           "subEmendamento; gruppo_primo_firmatario conta ogni proposta una volta, gruppo_firmatario una volta per gruppo")
     sum_chambers: bool = SommaRami
     limit: int = Field(100, ge=1, le=200)
     offset: int = Field(0, ge=0)
@@ -325,6 +349,11 @@ STRUMENTI: list[Strumento] = [
               Composizione, lambda c, p: persone.composizione(c, p.chamber, p.date)),
     Strumento("elenco_sedute", "Sedute d'Aula e di commissione, dalla più recente.", ElencoSedute,
               lambda c, p: sedute.elenco_sedute(c, p.chamber, p.body, p.start, p.end, p.limit, p.offset)),
+    Strumento("argomenti_sedute", "I punti all'ordine del giorno di Aula e commissioni (Bollettino) per organo, sede, fase e parole del "
+              "titolo, con atti collegati (e leggi) e chi è intervenuto: «interventi di fine seduta», sede legislativa, atti UE.",
+              Argomenti, lambda c, p: sedute.argomenti(c, p.chamber, p.body, p.seat, p.stage, p.q, p.start, p.end, p.limit, p.offset)),
+    Strumento("conta_sedute", "CONTEGGIO. Quante sedute tenute e quante ore (dai video della Camera), per ramo e mese.",
+              ContaSedute, lambda c, p: sedute.conta_sedute(c, p.chamber, p.body, p.start, p.end, p.by_month)),
     Strumento("seduta", "Una seduta: argomenti, atti discussi, interventi con chi parla, il suo gruppo e le didascalie del resoconto "
               "(reactions: applausi, proteste, «si levano in piedi»), votazioni.", Seduta, _seduta),
     Strumento("organo", "Commissioni, giunte e altri organi per nome, con presidente, vicepresidenti, segretari alla data (e il loro "

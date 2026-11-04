@@ -7,7 +7,7 @@ import datetime as dt
 import psycopg
 
 from ..modelli import SittingBrief, SpeechHit
-from .comune import brevi, stessa_persona
+from .comune import brevi, stessa_persona, url_interventi
 
 
 def cerca_interventi(c: psycopg.Connection, q: str, chamber: str | None = None, person: str | None = None,
@@ -30,8 +30,13 @@ def cerca_interventi(c: psycopg.Connection, q: str, chamber: str | None = None, 
         ORDER BY st.date DESC, s.uri LIMIT %(lim)s OFFSET %(off)s""",
         {"q": q, "ramo": chamber, "pers": persone_ids, "dal": start, "al": end, "somm": include_summaries, "lim": limit, "off": offset}).fetchall()
     persone = brevi(c, [r["person"] for r in righe])
+    link = url_interventi(c, [r["uri"] for r in righe])
+    video = {v["speech"]: v for v in c.execute("""SELECT DISTINCT ON (vs.speech) vs.speech, v.url, vs.start_s FROM video_segment vs
+                                                    JOIN video v ON v.uri = vs.video WHERE vs.speech = ANY(%s) ORDER BY vs.speech, vs.start_s""",
+                                                 ([r["uri"] for r in righe],))}
     return [SpeechHit(uri=r["uri"], item_title=r["item_title"], person=persone.get(r["person"]), speaker_label=r["speaker_label"],
-                      kind=r["kind"], snippet=r["snippet"],
+                      kind=r["kind"], snippet=r["snippet"], url=link.get(r["uri"]),
+                      video=(video.get(r["uri"]) or {}).get("url"), video_start_s=(video.get(r["uri"]) or {}).get("start_s"),
                       sitting=SittingBrief(uri=r["st_uri"], chamber=r["chamber"], body=r["body"], body_name=r["body_name"],
                                            number=r["number"], date=r["date"], kind=r["st_kind"], status=r["status"]))
             for r in righe]

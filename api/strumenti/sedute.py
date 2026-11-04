@@ -53,3 +53,64 @@ def seduta(c: psycopg.Connection, uri: str) -> Sitting | None:
                    items=[AgendaItem(uri=p["uri"], order=p["ord"], title=p["title"], stage=p["stage"], acts=atti.get(p["uri"], []),
                                      speeches=per_punto.get(p["uri"], [])) for p in punti],
                    votes=voti)
+
+
+def argomenti(c: psycopg.Connection, chamber: str | None = None, body: str | None = None, seat: str | None = None,
+              stage: str | None = None, q: str | None = None, start: dt.date | None = None, end: dt.date | None = None,
+              limit: int = 50, offset: int = 0) -> dict:
+    """I punti all'ordine del giorno delle sedute (Aula e Bollettino delle commissioni), dal più recente, per organo (nome
+    o uri), sede («SEDE LEGISLATIVA», «ATTI DELL'UNIONE EUROPEA»), fase («approvazione», «conclusione») e parole del
+    titolo; con gli atti collegati e chi è intervenuto."""
+    filtro = """(%(ramo)s::text IS NULL OR s.chamber = %(ramo)s)
+        AND (%(org)s::text IS NULL OR s.body = %(org)s OR s.body_name ILIKE '%%' || %(org)s || '%%'
+             OR (%(org)s = 'aula' AND s.body LIKE '%%:aula')
+             OR s.body IN (SELECT o.uri FROM body o WHERE o.name ILIKE '%%' || %(org)s || '%%'))
+        AND (%(sede)s::text IS NULL OR s.seat ILIKE '%%' || %(sede)s || '%%')
+        AND (%(fase)s::text IS NULL OR i.stage ILIKE '%%' || %(fase)s || '%%')
+        AND (%(q)s::text IS NULL OR i.title ILIKE '%%' || %(q)s || '%%'
+             OR to_tsvector('italian', coalesce(i.title, '')) @@ websearch_to_tsquery('italian', %(q)s))
+        AND (%(dal)s::date IS NULL OR s.date >= %(dal)s) AND (%(al)s::date IS NULL OR s.date <= %(al)s)"""
+    p = {"ramo": chamber, "org": body, "sede": seat, "fase": stage, "q": q, "dal": start, "al": end, "lim": limit, "off": offset}
+    totale = c.execute(f"SELECT count(*) AS n FROM agenda_item i JOIN sitting s ON s.uri = i.sitting WHERE {filtro}", p).fetchone()["n"]
+    righe = c.execute(f"""SELECT i.uri, i.title, i.stage, s.uri AS sitting, s.date, s.chamber, s.body_name, s.seat, s.number
+                          FROM agenda_item i JOIN sitting s ON s.uri = i.sitting WHERE {filtro}
+                          ORDER BY s.date DESC, s.number DESC, i.ord LIMIT %(lim)s OFFSET %(off)s""", p).fetchall()
+    uris = [r["uri"] for r in righe]
+    atti: dict[str, list[dict]] = {}
+    for a in c.execute("""SELECT x.item, x.act_ref, x.act, a.title, a.status, a.law_number, a.law_date FROM agenda_item_act x
+                          LEFT JOIN act a ON a.uri = x.act WHERE x.item = ANY(%s) ORDER BY x.act_ref""", (uris,)):
+        atti.setdefault(a["item"], []).append({"ref": a["act_ref"], "uri": a["act"], "title": a["title"], "status": a["status"],
+                                               "law": f"{a['law_number']}/{a['law_date'].year}" if a["law_number"] and a["law_date"] else None})
+    oratori: dict[str, list[str]] = {}
+    for x in c.execute("""SELECT s.item, s.person, s.speaker_label, min(s.ord) AS o FROM speech s WHERE s.item = ANY(%s)
+                          AND s.as_office IS DISTINCT FROM 'PRESIDENTE' GROUP BY 1, 2, 3 ORDER BY 1, 4""", (uris,)):
+        oratori.setdefault(x["item"], []).append(x)
+    persone = brevi(c, [x["person"] for xs in oratori.values() for x in xs if x["person"]])
+    out = []
+    for r in righe:
+        chi = [persone[x["person"]].model_dump(include={"uri", "name"}) | {"group": (persone[x["person"]].group.short_name if persone[x["person"]].group else None)}
+               if x["person"] in persone else {"name": x["speaker_label"]} for x in oratori.get(r["uri"], [])]
+        out.append({**{k: r[k] for k in ("uri", "title", "stage", "sitting", "date", "chamber", "body_name", "seat", "number")},
+                    "acts": atti.get(r["uri"], []), "speakers": chi[:30], "speakers_total": len(chi)})
+    return {"total": totale, "items": out, "more": offset + len(out) < totale}
+
+
+def conta_sedute(c: psycopg.Connection, chamber: str | None = None, body: str | None = "aula", start: dt.date | None = None,
+                 end: dt.date | None = None, by_month: bool = False) -> dict:
+    """Quante sedute tenute e quante ore, per ramo (e mese). Le ore vengono dai video della WebTV (inizio e fine di ogni
+    video, sospensioni comprese): ci sono solo per la Camera."""
+    p = {"ramo": chamber, "org": body, "dal": start, "al": end}
+    mese = ", to_char(s.date, 'YYYY-MM') AS mese" if by_month else ""
+    righe = c.execute(f"""
+        WITH s AS (SELECT s.uri, s.chamber, s.date FROM sitting s
+                   WHERE s.status = 'held' AND s.kind <> 'committee_summary' AND (%(ramo)s::text IS NULL OR s.chamber = %(ramo)s)
+                     AND (%(org)s::text IS NULL OR (%(org)s = 'aula' AND s.body LIKE '%%:aula') OR s.body = %(org)s)
+                     AND (%(dal)s::date IS NULL OR s.date >= %(dal)s) AND (%(al)s::date IS NULL OR s.date <= %(al)s)),
+        v AS (SELECT sitting, sum(extract(epoch FROM end_ts - start_ts)) AS secondi FROM video
+              WHERE sitting IN (SELECT uri FROM s) AND end_ts > start_ts GROUP BY 1)
+        SELECT s.chamber AS ramo{mese}, count(*) AS sedute, count(v.sitting) AS sedute_con_video,
+               round(sum(v.secondi)::numeric / 3600, 1) AS ore_da_video
+        FROM s LEFT JOIN v ON v.sitting = s.uri GROUP BY 1{', 2' if by_month else ''} ORDER BY 1{', 2' if by_month else ''}""", p).fetchall()
+    return {"counted": "Sedute tenute (status held), Aula salvo body diverso; ore = somma della durata dei video della WebTV della "
+                       "Camera (sospensioni comprese). Il Senato non ha video nei dati: per il Senato le ore non ci sono.",
+            "rows": [dict(r) for r in righe]}

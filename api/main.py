@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import logging
 import threading
 import time
 import uuid
@@ -237,6 +238,14 @@ async def pagine_sempre_fresche(req: Request, chiama):
 def scalda_schede() -> None:
     """Indice dei deputati ed elenco dei senatori pronti prima del primo visitatore, e ricalcolati in tempo."""
     threading.Thread(target=sito_parlamentari.scalda, name="scalda-schede", daemon=True).start()
+
+    def leggi() -> None:                              # l'elenco delle leggi con gli emendamenti: 2-4 s a freddo
+        try:
+            with connessione() as c:
+                sito_emendamenti.elenco(c)
+        except Exception as e:                       # noqa: BLE001 — lo calcola il primo visitatore
+            logging.getLogger("parliamentrag.sito").warning("elenco delle leggi non preparato: %s", type(e).__name__)
+    threading.Thread(target=leggi, name="scalda-leggi", daemon=True).start()
 
 
 app.include_router(sito.router)

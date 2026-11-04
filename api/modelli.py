@@ -282,3 +282,6 @@ class SpeechHit(BaseModel):
     speaker_label: str | None = None
     kind: str | None = None
     snippet: str                               # con «[[» e «]]» intorno alle parole trovate
+    url: str | None = None                     # il resoconto ufficiale
+    video: str | None = None                   # la WebTV della Camera, dal secondo video_start_s
+    video_start_s: int | None = None

@@ -1,5 +1,5 @@
 
-dati/
+/dati/
 __pycache__/
 *.pyc
 .env

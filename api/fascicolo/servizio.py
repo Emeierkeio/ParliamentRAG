@@ -8,7 +8,7 @@ per gruppo (le prime AUTORITA_PRIME del gruppo fra chi ha parlato del tema; il M
 sezioni (generazione/), poi la verifica: ogni citazione si ricontrolla parola per parola sul testo dell'intervento in
 Postgres e quelle che non tornano si tolgono. Ogni citazione porta il link al resoconto.
 
-Pochi fascicoli alla volta (FASCICOLI_INSIEME, uno se non è detto): chi arriva dopo riceve `waiting` e aspetta il suo
+Pochi fascicoli alla volta (FASCICOLI_INSIEME, tre se non è detto): chi arriva dopo riceve `waiting` e aspetta il suo
 turno. Durante i passi lunghi partono righe di commento («: in corso») che il sito ignora e che tengono viva la
 connessione."""
 
@@ -44,7 +44,7 @@ log = logging.getLogger("parliamentrag.fascicolo")
 AUTORITA_PRIME = 5                 # una voce è autorevole fra le prime cinque del suo gruppo sul tema
 BATTITO = 15                       # secondi fra due righe di commento mentre si lavora
 PEZZO = 100                        # caratteri per evento chunk, come prima
-_posti = threading.BoundedSemaphore(int(env("FASCICOLI_INSIEME", "1")))
+_posti = threading.BoundedSemaphore(int(env("FASCICOLI_INSIEME", "3")))   # quasi tutto il tempo è attesa del modello (4/11)
 _LINK = re.compile(r"\[«([^»]*)»\]\((" + ID_BRANO + r")\)")
 
 MESSAGGI = {

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 import psycopg
 
 from ..modelli import Act, ActBrief, ActRef, Amendment, AmendmentCounts, Signer, Sponsor, Step, TextVersion
@@ -68,6 +70,12 @@ def articolo(c: psycopg.Connection, code: str, number: str | None = None) -> dic
     n = number.strip().lower().removeprefix("art.").removeprefix("articolo").strip()
     scelti = [r for r in righe if (r["number"] or "").strip().lower().removeprefix("art.").strip() == n]
     if not scelti:
+        # gli articoli di un decreto dentro la legge di conversione non hanno il numero: si cerca «Art. N.» nel testo
+        testo = c.execute("SELECT text FROM act_text WHERE code = %s", (code,)).fetchone()["text"]
+        m = re.search(rf"(?m)^\s*Art(?:icolo|\.)\s*{re.escape(n)}\.?\s*$(.*?)(?=^\s*Art(?:icolo|\.)\s*\d+[-\w]*\.?\s*$|\Z)",
+                      testo, re.S | re.I)
+        if m:
+            return {"code": code, "kind": t["kind"], "number": n, "text": f"Art. {n}.{m.group(1)}".strip()[:20000]}
         return {"code": code, "error": f"nessun articolo {number}: ci sono {', '.join(r['number'] or '?' for r in righe[:60])}"}
     return {"code": code, "kind": t["kind"], "number": scelti[0]["number"], "text": scelti[0]["text"]}
 
