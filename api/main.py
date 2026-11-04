@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import threading
 import time
 import uuid
 from collections import defaultdict, deque
@@ -230,6 +231,12 @@ async def pagine_sempre_fresche(req: Request, chiama):
     if not req.url.path.startswith(("/v1/", "/mcp", "/api/")):
         risposta.headers.setdefault("Cache-Control", "no-cache")
     return risposta
+
+
+@app.on_event("startup")
+def scalda_schede() -> None:
+    """Indice dei deputati ed elenco dei senatori pronti prima del primo visitatore, e ricalcolati in tempo."""
+    threading.Thread(target=sito_parlamentari.scalda, name="scalda-schede", daemon=True).start()
 
 
 app.include_router(sito.router)

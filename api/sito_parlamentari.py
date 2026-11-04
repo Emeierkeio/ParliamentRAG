@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import logging
 import re
 import threading
 import time
@@ -25,7 +26,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Resp
 
 from pipeline.ambiente import QUI, env
 
-from .db import per_richiesta
+from .db import connessione, per_richiesta
 from .strumenti.comune import LEGISLATURA, stessa_persona
 
 router = APIRouter(include_in_schema=False)
@@ -464,9 +465,31 @@ def _json(dati, codice: int = 200) -> JSONResponse:
     return JSONResponse(dati, status_code=codice, headers={"Cache-Control": "public, max-age=600"} if codice == 200 else None)
 
 
+LENTE = "SET statement_timeout = '30s'"     # gli aggregati sui voti di tutta la Camera superano gli 8 s del ruolo
+
+
+def scalda(ogni: float = DURATA / 2) -> None:
+    """Ricalcola indice dei deputati ed elenco dei senatori prima che scadano, così nessun visitatore aspetta gli
+    aggregati sui voti. Gira in un thread del servizio, dall'avvio; un errore aspetta il giro dopo."""
+    while True:
+        try:
+            with connessione() as c:
+                c.execute(LENTE)
+                for chiave, calcola in (("indice", indice_deputati), ("senatori", elenco_senatori)):
+                    v = calcola(c)
+                    with _blocco:
+                        _memo[chiave] = (time.monotonic(), v)
+        except psycopg.Error as e:
+            logging.getLogger("parliamentrag.sito").warning("schede non ricalcolate: %s", type(e).__name__)
+        time.sleep(ogni)
+
+
 @router.get("/dati/schede/indice.json")
 def r_indice(c: Db):
-    return _json(_ricordato("indice", lambda: indice_deputati(c)))
+    def calcola():
+        c.execute(LENTE)
+        return indice_deputati(c)
+    return _json(_ricordato("indice", calcola))
 
 
 @router.get("/dati/schede/{pid}.json")
