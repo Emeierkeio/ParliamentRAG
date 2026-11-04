@@ -26,6 +26,10 @@ PG_SHM=2g
 
 `pg_prewarm` (già nell'immagine) con `autoprewarm` ricarica dopo ogni riavvio le pagine che erano in memoria. Dopo il primo ripristino: `SELECT pg_prewarm('speech_vector_hnsw'), pg_prewarm('act_vector_hnsw');`. Il contenitore web ha un tetto di 1 GB. `stop_grace_period` di 120 s: con meno, Docker ferma Postgres prima che chiuda e al riavvio parte il ripristino automatico.
 
+## Statistiche di visita
+
+Le conta il servizio stesso (`api/statistiche.py`, tabella `sito.visita` in `schema/sito.sql`): la pagina manda a `/api/visita` percorso, provenienza, larghezza della finestra e lingua, solo su www.parliamentrag.it (in locale con `?stat=1`); domande alla chat e fascicoli li conta il servizio. Niente cookie né IP: il visitatore è un'impronta di IP, browser e giorno con `LIMITE_SALE`. Il pannello è `https://www.parliamentrag.it/statistiche`, dietro login. Dopo il ripristino va rilanciato `schema/sito.sql` (crea la tabella e il permesso).
+
 ## Concorrenza
 
 Un processo uvicorn; ogni risposta della chat occupa un thread per la sua durata (40 al massimo, il predefinito di Starlette) e una connessione a Postgres (100 al massimo). Prova del 4/11: 10 domande insieme, tutte servite, in 6-29 s, con 10 connessioni aperte. I fascicoli girano al più 3 alla volta (`FASCICOLI_INSIEME`); il quarto aspetta il suo turno con l'evento `waiting`. I limiti per visitatore: 10 domande l'ora (`AGENTE_DOMANDE_ORA`) e 120 richieste al minuto alle API; il tetto di spesa giornaliero (`AGENTE_DOLLARI_GIORNO`, 25 $) ferma chat e fascicolo per tutti quando è raggiunto.
@@ -56,7 +60,7 @@ Tutte quelle che il codice di `api/` legge con `env(...)`. I segreti stanno in `
 
 Il nome del database è fisso nel codice: `parliamentrag`.
 
-`.env.web` sulla VPS: `API_PG_PASSWORD`, `REGISTRO_PG_PASSWORD`, `SITO_PG_PASSWORD`, `OPENAI_API_KEY`, `BREVO_API_KEY`, `LIMITE_SALE`. Le altre del servizio le mette `docker-compose.vps.yml`.
+`.env.web` sulla VPS: `API_PG_PASSWORD`, `REGISTRO_PG_PASSWORD`, `SITO_PG_PASSWORD`, `OPENAI_API_KEY`, `BREVO_API_KEY`, `LIMITE_SALE`, `STATISTICHE_UTENTE` e `STATISTICHE_PASSWORD` (login del pannello `/statistiche`; senza, il pannello non esiste). Le altre del servizio le mette `docker-compose.vps.yml`.
 
 ## Foto dei senatori
 

@@ -24,7 +24,7 @@ from starlette.concurrency import run_in_threadpool
 
 from pipeline.ambiente import env
 
-from . import agente, conversazioni, pubblico
+from . import agente, conversazioni, pubblico, statistiche
 from .db import connessione, connessione_sito as _db_sito
 from .rete import ip
 
@@ -63,6 +63,7 @@ def uso(req: Request) -> dict:
 @router.post("/api/chat")
 def chat(req: Request, d: Domanda):
     """Le due rotte della chat del sito vanno allo stesso agente."""
+    statistiche.registra(req, "domanda")
     return risposta_ndjson(ip(req), d)
 
 
@@ -81,6 +82,7 @@ class Fascicolo(BaseModel):
 def fascicolo(req: Request, d: Fascicolo):
     """Il fascicolo di una domanda di tema in SSE (api/fascicolo/servizio.py). Conta come una domanda della chat."""
     from .fascicolo import servizio
+    statistiche.registra(req, "fascicolo")
     lingua = "en" if req.headers.get("accept-language", "it").strip()[:2].lower() == "en" else "it"
     pesi = {k: float(v) for k, v in d.authority_weights.items()} if d.authority_weights else None
     return StreamingResponse(servizio.stream(d.query, pesi, lingua, ip(req)), media_type="text/event-stream",

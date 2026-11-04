@@ -30,6 +30,8 @@
 </script>
 <style>.trad-attesa body{visibility:hidden}</style>
 <link rel="stylesheet" href="/css/grafo-v3.css">
+<!-- statistiche di visita fatte da noi (api/statistiche.py): niente cookie, niente IP; solo su www.parliamentrag.it o con ?stat=1 -->
+<script>(function(){if(location.hostname!=="www.parliamentrag.it"&&!/[?&]stat=1/.test(location.search))return;var u="";function v(){var p=location.pathname+location.hash;if(p===u)return;u=p;var b=JSON.stringify({p:p,r:document.referrer,w:innerWidth,l:navigator.language});if(navigator.sendBeacon)navigator.sendBeacon("/api/visita",new Blob([b],{type:"application/json"}));else fetch("/api/visita",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}v();addEventListener("hashchange",v)})()</script>
 </head>
 <body>
 <a class="salta" href="#principale">Vai al contenuto</a>

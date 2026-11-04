@@ -26,12 +26,29 @@ CREATE INDEX IF NOT EXISTS domanda_impronta ON sito.domanda (impronta, ts);
 CREATE TABLE IF NOT EXISTS sito.spesa (giorno date NOT NULL DEFAULT current_date, dollari numeric(12, 6) NOT NULL);
 CREATE INDEX IF NOT EXISTS spesa_giorno ON sito.spesa (giorno);
 
+-- statistiche di visita, fatte da noi: niente cookie e niente IP. `visitatore` è un'impronta di IP, browser e giorno con
+-- una chiave segreta (LIMITE_SALE): conta i visitatori unici di un giorno e il giorno dopo non si ricollega a niente.
+-- evento: pagina | domanda | fascicolo. Le righe si cancellano dopo 400 giorni.
+CREATE TABLE IF NOT EXISTS sito.visita (
+  ts timestamptz NOT NULL DEFAULT now(),
+  giorno date NOT NULL DEFAULT current_date,
+  evento text NOT NULL,
+  percorso text,
+  provenienza text,                                -- il dominio da cui si arriva, solo se esterno
+  dispositivo text,                                -- telefono | tablet | computer, dalla larghezza della finestra
+  browser text,
+  lingua text,
+  visitatore text NOT NULL
+);
+CREATE INDEX IF NOT EXISTS visita_giorno ON sito.visita (giorno);
+
 SELECT format('CREATE ROLE sito LOGIN PASSWORD %L', :'password') WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'sito') \gexec
 SELECT format('ALTER ROLE sito PASSWORD %L', :'password') \gexec
 GRANT CONNECT ON DATABASE parliamentrag TO sito;
 GRANT USAGE ON SCHEMA sito TO sito;
 GRANT SELECT, INSERT ON sito.condivisa, sito.traduzione, sito.spesa TO sito;
 GRANT SELECT, INSERT, DELETE ON sito.domanda TO sito;
+GRANT SELECT, INSERT, DELETE ON sito.visita TO sito;
 REVOKE ALL ON SCHEMA sito FROM lettura;
 ALTER ROLE sito SET statement_timeout = '5s';
 ALTER ROLE sito CONNECTION LIMIT 10;

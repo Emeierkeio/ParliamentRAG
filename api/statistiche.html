@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Statistiche · ParliamentRAG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--fondo:#f6f7f9;--sup:#fff;--sup2:#f1f2f5;--bordo:#e4e6eb;--t:#14161d;--t2:#3b3f4b;--t3:#666b79;--acc:#2a4bd7;--acc2:#9aabf0;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--fondo:#070b22;--sup:#0d1333;--sup2:#141c42;--bordo:rgba(157,184,255,.14);--t:#eceffa;--t2:#c4c9e2;--t3:#959cbf;--acc:#8aa2ff;--acc2:#3c4f9e;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--t);font:15px/1.5 "Schibsted Grotesk",system-ui,sans-serif}
+.dentro{max-width:1120px;margin:0 auto;padding:24px 16px 64px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.marchio{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.marchio svg{width:28px;height:22px}
+h1{font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
+.sotto{color:var(--t3);margin:0 0 20px}
+.periodo{display:flex;border:1px solid var(--bordo);border-radius:999px;background:var(--sup);overflow:hidden}
+.periodo button{border:0;background:none;font:inherit;color:var(--t2);padding:7px 14px;cursor:pointer}
+.periodo button[aria-pressed=true]{background:var(--t);color:var(--fondo)}
+.cifre{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.cifra{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:14px 16px}
+.cifra small{color:var(--t3);font-size:13px}
+.cifra b{display:block;font-size:28px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.blocco{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:16px}
+.blocco h2{font-size:16px;margin:0 0 12px}
+.griglia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.griglia .blocco{margin:0}
+svg.andamento{width:100%;height:220px;display:block}
+.legenda{display:flex;gap:16px;font-size:13px;color:var(--t3);margin-top:8px}
+.legenda i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:6px 0;border-top:1px solid var(--bordo);vertical-align:middle}
+td.n{text-align:right;font-variant-numeric:tabular-nums;color:var(--t2);width:72px}
+.voce{position:relative;padding-left:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0}
+.voce span{position:absolute;inset:3px auto 3px 0;background:var(--sup2);border-radius:4px;z-index:0}
+.voce em{position:relative;font-style:normal;z-index:1}
+.vuoto{color:var(--t3);font-size:14px}
+@media (max-width:760px){.cifre{grid-template-columns:repeat(2,minmax(0,1fr))}.griglia{grid-template-columns:1fr}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="dentro">
+ <header>
+  <div class="marchio"><svg viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="currentColor"/></svg>ParliamentRAG</div>
+  <div class="periodo" role="group" aria-label="Periodo"><button data-g="7">7 giorni</button><button data-g="30" aria-pressed="true">30 giorni</button><button data-g="90">90 giorni</button><button data-g="365">12 mesi</button></div>
+ </header>
+ <h1>Statistiche di visita</h1>
+ <p class="sotto" id="sotto">Senza cookie e senza IP: un visitatore è contato una volta al giorno.</p>
+ <div class="cifre" id="cifre"></div>
+ <section class="blocco"><h2>Andamento</h2><svg class="andamento" id="andamento" role="img" aria-label="Visitatori e domande per giorno"></svg>
+  <div class="legenda"><span><i style="background:var(--acc)"></i>Visitatori</span><span><i style="background:var(--acc2)"></i>Domande alla chat e fascicoli</span></div></section>
+ <div class="griglia">
+  <section class="blocco"><h2>Pagine più viste</h2><div id="pagine"></div></section>
+  <section class="blocco"><h2>Da dove arrivano</h2><div id="provenienze"></div></section>
+  <section class="blocco"><h2>Dispositivi</h2><div id="dispositivi"></div></section>
+  <section class="blocco"><h2>Browser</h2><div id="browser"></div></section>
+  <section class="blocco"><h2>Lingua del browser</h2><div id="lingue"></div></section>
+ </div>
+</div>
+<script>
+const $ = (s) => document.querySelector(s);
+const num = (n) => Number(n || 0).toLocaleString("it-IT");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const data = (d) => new Date(d + "T12:00:00").toLocaleDateString("it-IT", { day: "numeric", month: "short" });
+
+function tabella(el, righe) {
+  if (!righe.length) { el.innerHTML = '<p class="vuoto">Ancora nessun dato.</p>'; return; }
+  const max = Math.max(...righe.map((r) => r.visitatori)) || 1;
+  el.innerHTML = `<table><tr><td></td><td class="n"><small>Visitatori</small></td><td class="n"><small>Pagine</small></td></tr>${righe.map((r) =>
+    `<tr><td class="voce"><span style="width:${(100 * r.visitatori / max).toFixed(1)}%"></span><em>${esc(r.voce)}</em></td><td class="n">${num(r.visitatori)}</td><td class="n">${num(r.pagine)}</td></tr>`).join("")}</table>`;
+}
+
+function andamento(giorni, dal, al) {
+  const el = $("#andamento"), W = el.clientWidth || 900, H = 220, P = { l: 36, r: 8, t: 10, b: 24 };
+  const per = Object.fromEntries(giorni.map((g) => [g.giorno, g]));
+  const tutti = []; for (let d = new Date(dal + "T12:00:00"); d <= new Date(al + "T12:00:00"); d.setDate(d.getDate() + 1)) tutti.push(d.toISOString().slice(0, 10));
+  const max = Math.max(1, ...tutti.map((d) => Math.max((per[d] || {}).visitatori || 0, ((per[d] || {}).domande || 0) + ((per[d] || {}).fascicoli || 0))));
+  const x = (i) => P.l + (i + .5) * (W - P.l - P.r) / tutti.length, y = (v) => H - P.b - v * (H - P.t - P.b) / max;
+  const bw = Math.max(2, (W - P.l - P.r) / tutti.length * .62);
+  let s = `<line x1="${P.l}" x2="${W - P.r}" y1="${H - P.b}" y2="${H - P.b}" stroke="var(--bordo)"/>`;
+  [0, .5, 1].forEach((f) => { const v = Math.round(max * f); s += `<text x="${P.l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--t3)">${num(v)}</text>`; });
+  tutti.forEach((d, i) => {
+    const g = per[d] || {}, v = g.visitatori || 0, q = (g.domande || 0) + (g.fascicoli || 0);
+    s += `<rect x="${x(i) - bw / 2}" y="${y(v)}" width="${bw}" height="${H - P.b - y(v)}" rx="2" fill="var(--acc)"><title>${data(d)}: ${num(v)} visitatori, ${num(g.pagine)} pagine, ${num(q)} domande</title></rect>`;
+    if (q) s += `<circle cx="${x(i)}" cy="${y(q)}" r="3" fill="var(--acc2)" stroke="var(--sup)"/>`;
+  });
+  const passo = Math.ceil(tutti.length / Math.max(2, Math.floor((W - P.l) / 70)));
+  tutti.forEach((d, i) => { if (i % passo === 0) s += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--t3)">${data(d)}</text>`; });
+  el.setAttribute("viewBox", `0 0 ${W} ${H}`); el.innerHTML = s;
+}
+
+async function carica(g) {
+  document.querySelectorAll(".periodo button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.g === String(g))));
+  const r = await fetch(`/api/statistiche?giorni=${g}`, { credentials: "same-origin" });
+  if (!r.ok) { $("#sotto").textContent = "Non riesco a leggere le statistiche."; return; }
+  const d = await r.json(), t = d.totali;
+  $("#sotto").textContent = `Dal ${data(d.dal)} al ${data(d.al)}. Senza cookie e senza IP: un visitatore è contato una volta al giorno.`;
+  $("#cifre").innerHTML = [["Visitatori", t.visitatori], ["Pagine viste", t.pagine], ["Domande alla chat", t.domande], ["Fascicoli", t.fascicoli]]
+    .map(([n, v]) => `<div class="cifra"><small>${n}</small><b>${num(v)}</b></div>`).join("");
+  andamento(d.per_giorno, d.dal, d.al);
+  for (const k of ["pagine", "provenienze", "dispositivi", "browser", "lingue"]) tabella($("#" + k), d[k]);
+}
+document.querySelectorAll(".periodo button").forEach((b) => b.addEventListener("click", () => carica(b.dataset.g)));
+carica(30);
+</script>
+</body>
+</html>
