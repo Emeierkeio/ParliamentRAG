@@ -12,7 +12,7 @@ Web e Caddy stanno in `docker-compose.vps.yml`, che si usa insieme al file di ba
 docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d --build
 ```
 
-Il giro notturno gira sulla stessa macchina e scrive nel database in locale (senza `PGHOST`), come sul Mac. Decisione del 4/11/2026: `vault/10-decisioni/2026-11-04-tutto-su-vps.md`. Comandi e struttura del codice stanno nella [guida per chi sviluppa](sviluppo.md).
+Il giro notturno gira sulla stessa macchina e scrive nel database in locale (senza `PGHOST`), come sul Mac. Scelta del 4/11/2026. Comandi e struttura del codice stanno nella [guida per chi sviluppa](sviluppo.md).
 
 ## Memoria
 

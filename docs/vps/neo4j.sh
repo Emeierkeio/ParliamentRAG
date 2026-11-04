@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Spegne e riaccende Neo4j e il Postgres dell'archivio sulla VPS senza perdere niente: container e dati restano.
 # Uso (da root):  neo4j.sh spegni | accendi | stato
-# Decisione del 4/11/2026 (vault/10-decisioni/2026-11-04-tutto-su-vps.md). Vedi README.md.
+# Scelta del 4/11/2026. Vedi README.md.
 #
 # spegni:  crea il segnale /opt/parliament-rag/neo4j-spento (backup.sh lo legge e salta Neo4j),
 #          sposta in /root/cron-sospesi/ i cron che usano o riavviano Neo4j,

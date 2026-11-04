@@ -1,7 +1,7 @@
 # Neo4j sulla VPS: spegnere e riaccendere
 
 Con il servizio unico sulla VPS Neo4j non serve più, ma deve potersi riaccendere subito
-(decisione del 4/11/2026, `vault/10-decisioni/2026-11-04-tutto-su-vps.md`). `neo4j.sh`
+(scelta del 4/11/2026). `neo4j.sh`
 lo spegne senza toccare container e dati.
 
 ```sh
@@ -26,8 +26,7 @@ Ma `/opt/parliamentrag-backup/backup.sh` ferma e riavvia Neo4j per il dump: con 
 spento lo riaccenderebbe. Va modificato a mano, una volta, prima del primo `spegni`.
 
 Nel blocco Neo4j (quello con `docker stop` e `docker start`) aggiungi il controllo del
-segnale in testa alla condizione dell'`if`. Con la versione di `backup.sh` descritta in
-`vault/10-decisioni/2026-10-15-proposta-backup.md` la riga diventa:
+segnale in testa alla condizione dell'`if`. Con la versione di `backup.sh` in uso sulla VPS la riga diventa:
 
 ```bash
 if [ ! -e /opt/parliament-rag/neo4j-spento ] && { [ "$(date -u +%u)" = 7 ] || [ "${1:-}" = "--neo4j" ]; }; then
