@@ -128,7 +128,7 @@ massimo_mesi_per_giro = 60
 
 [fonti.senato_resoconti]
 legislatura = 19
-cartella_import = "../ricerca/data/senate_xml"   # resoconti AKN già scaricati (relativa alla radice del repo); le sedute nuove vengono dal bulk (senato_akn)
+cartella_import = "dati/import/senate_xml"       # resoconti AKN già scaricati dalla pipeline vecchia (relativa alla radice del repo); le sedute nuove vengono dal bulk (senato_akn)
 
 [fonti.senato_akn]
 legislatura = 19
