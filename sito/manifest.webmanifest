@@ -1,0 +1,13 @@
+{
+  "name": "ParliamentRAG",
+  "short_name": "ParliamentRAG",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {"src": "/icone/icona-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/icone/icona-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "/icone/icona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

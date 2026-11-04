@@ -5,8 +5,10 @@ rotta accetta query libere. Avvio in locale: `.venv/bin/uvicorn api.main:app --p
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import json
 import logging
+import re
 import threading
 import time
 import uuid
@@ -16,7 +18,7 @@ from typing import Annotated, Literal
 
 import psycopg
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
 
@@ -227,11 +229,36 @@ def icona():
 
 @app.middleware("http")
 async def pagine_sempre_fresche(req: Request, chiama):
-    """Le pagine e i loro file si riconvalidano a ogni visita (ETag): dopo un aggiornamento nessuno resta sul vecchio."""
+    """La pagina si riconvalida a ogni visita (ETag); i suoi file hanno l'impronta nell'indirizzo (?v=) e restano nel
+    browser un anno: una ricarica chiede solo la pagina, e dopo un aggiornamento nessuno resta sul vecchio."""
     risposta = await chiama(req)
     if not req.url.path.startswith(("/v1/", "/mcp", "/api/")):
-        risposta.headers.setdefault("Cache-Control", "no-cache")
+        if "v" in req.query_params and risposta.status_code == 200:
+            risposta.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        else:
+            risposta.headers.setdefault("Cache-Control", "no-cache")
     return risposta
+
+
+SITO = QUI / "sito"
+FILE_LOCALE = re.compile(r'(src|href)="(/[^"?#]+\.(?:js|css|png|svg|jpg|webp))"')
+_pagina: dict[str, tuple[float, str]] = {}
+
+
+def _impronta(m: re.Match) -> str:
+    f = SITO / m[2].lstrip("/")
+    return f'{m[1]}="{m[2]}?v={hashlib.sha256(f.read_bytes()).hexdigest()[:10]}"' if f.is_file() else m[0]
+
+
+@app.get("/", include_in_schema=False)
+@app.get("/index.html", include_in_schema=False)
+def pagina() -> HTMLResponse:
+    """index.html con l'impronta di ogni file locale; si ricalcola solo quando un file del sito cambia."""
+    ultimo = max(f.stat().st_mtime for f in SITO.rglob("*") if f.suffix in (".html", ".js", ".css", ".png", ".svg", ".jpg", ".webp"))
+    x = _pagina.get("index")
+    if not x or x[0] != ultimo:
+        x = _pagina["index"] = (ultimo, FILE_LOCALE.sub(_impronta, (SITO / "index.html").read_text(encoding="utf-8")))
+    return HTMLResponse(x[1])
 
 
 @app.on_event("startup")

@@ -1847,3 +1847,18 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
 @media (min-width:761px){.chat-eroe h1#t-eroe{font-size:clamp(28px,3.3vw,48px)!important;line-height:1.1;max-width:min(21em,calc(100vw - 48px))}}
 #f-eroe .info--demo{margin-left:auto;color:var(--t3)}#f-eroe .info--demo+.invia{margin-left:0}
 .esperto>.ic{width:16px;height:16px;color:var(--t3)}.esperto:hover>.ic{color:var(--t)}
+
+/* 4/11 sera: risalto del titolo, telefono (barra nascosta, criteri in alto, niente «i» né suggerimenti al tocco), suggerimento della «i» dentro lo schermo */
+.eroe__risalto{font-style:normal;color:#2D5F8F}
+[data-scelta=notte] .eroe__risalto,[data-tono=scuro] .eroe__risalto{color:#7AA6D2}
+.pesi-m{display:none}
+.pesi-m[aria-pressed="true"]{color:var(--acc)}
+#f-eroe .info--demo[data-tip]::after{left:auto;right:-10px;transform:translate(0,3px) scale(.98);max-width:min(300px,calc(100vw - 32px))}
+#f-eroe .info--demo[data-tip]:hover::after,#f-eroe .info--demo[data-tip]:focus-visible::after{transform:none}
+@media (max-width:760px){
+ .pesi-m{display:inline-flex}
+ #f-eroe .pesi-prima,#f-eroe .info--demo{display:none}
+ body:not([data-vista]):not([data-barra]) .compositore{visibility:hidden}
+ html,body{overscroll-behavior-y:none}
+}
+@media (hover:none){[data-tip]::after,[data-tip]:not(.punti a)::before{display:none!important}}

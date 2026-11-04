@@ -6,6 +6,10 @@
 <title>ParliamentRAG</title>
 <meta name="description" content="Chiedi quello che vuoi sul Parlamento italiano: rispondiamo con le parole esatte dei parlamentari, i loro voti e il link al resoconto.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='15 15 194 153'%3E%3Cstyle%3Eg%7Bcolor:%2312171a%7D@media (prefers-color-scheme:dark)%7Bg%7Bcolor:%23fff%7D%7D%3C/style%3E%3Cg%3E%3Cpath d='M 35.91 139.73 A 81 81 0 1 1 188.09 139.73' fill='none' stroke='currentColor' stroke-width='32' stroke-linecap='round'/%3E%3Ccircle cx='112' cy='146' r='22' fill='currentColor'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/icone/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-title" content="ParliamentRAG">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@600&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -42,6 +46,7 @@
   <a class="marchio" href="#/" aria-label="ParliamentRAG, home"><svg viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22"/></svg>ParliamentRAG</a>
   <div class="barra__dx">
    <div class="menu-str"><button id="apri-menu-str" class="ic-a" aria-expanded="false" aria-controls="menu-str" aria-label="Strumenti" data-tip="Strumenti"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></button><ul id="menu-str" hidden></ul></div>
+  <button class="ic-a pesi-m" data-pesi-prima aria-label="Criteri e pesi dell'autorevolezza"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
   <button class="ic-a nuova-m" data-nuova-chat aria-label="Nuova chat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
   <button class="ic-a" id="apri-storia" aria-label="Le tue chat" data-tip="Le tue chat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>
 <button class="ic-a ic-testo" id="lingua-btn" translate="no" aria-label="English" data-tip="English">EN</button>
@@ -55,7 +60,7 @@
 <div id="home">
  <section class="eroe" aria-labelledby="t-eroe"><svg class="eroe__aula" id="eroe-aula" aria-hidden="true" focusable="false"></svg><div class="chat-eroe"><div class="eroe__sx">
   <svg class="eroe__logo" viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="currentColor"/></svg>
-  <h1 id="t-eroe">Organizziamo i dati del Parlamento per un accesso facile e verificabile.</h1>
+  <h1 id="t-eroe">Organizziamo i dati del Parlamento per un accesso <em class="eroe__risalto">facile e verificabile</em>.</h1>
   <form class="chat" id="f-eroe"><label class="vh" for="q-eroe">La tua domanda sul Parlamento</label>
    <textarea id="q-eroe" rows="3" placeholder="Chi ha votato contro la fiducia sulla legge elettorale?"></textarea>
    <div class="chat__piede"><div class="ambito" role="group" aria-label="Dove cercare"><button type="button" aria-pressed="true">Parlamento</button><button type="button" aria-pressed="false">Camera</button><button type="button" aria-pressed="false">Senato</button></div><button type="button" class="ic-a pesi-prima" data-pesi-prima aria-label="Criteri e pesi" data-tip="Criteri e pesi dell'autorevolezza"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>

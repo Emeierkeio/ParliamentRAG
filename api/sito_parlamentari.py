@@ -476,13 +476,30 @@ def scalda(ogni: float = DURATA / 2) -> None:
         try:
             with connessione() as c:
                 c.execute(LENTE)
-                for chiave, calcola in (("indice", indice_deputati), ("senatori", elenco_senatori)):
+                for chiave, calcola in (("indice", indice_deputati), ("senatori", elenco_senatori), ("ultimi-voti", ultimi_voti)):
                     v = calcola(c)
                     with _blocco:
                         _memo[chiave] = (time.monotonic(), v)
         except psycopg.Error as e:
             logging.getLogger("parliamentrag.sito").warning("schede non ricalcolate: %s", type(e).__name__)
         time.sleep(ogni)
+
+
+def ultimi_voti(c: psycopg.Connection, quanti: int = 3) -> list[dict]:
+    """Le ultime votazioni finali della home, dalle sedute più recenti: le stesse che il sito chiedeva seduta per seduta."""
+    from . import pubblico
+    righe: list[dict] = []
+    for s in pubblico.esegui(c, "list_sessions", {"limit": 25}).get("sessions") or []:
+        if len(righe) >= quanti:
+            break
+        voti = [v for v in pubblico.esegui(c, "get_session_votes", {"session_id": s["id"]}).get("votes") or [] if v.get("final_vote")]
+        righe += [{"v": v, "s": {"date": s["date"], "chamber": s["chamber"]}} for v in voti[:quanti - len(righe)]]
+    return righe
+
+
+@router.get("/dati/ultimi-voti.json")
+def r_ultimi_voti(c: Db):
+    return _json(_ricordato("ultimi-voti", lambda: ultimi_voti(c)))
 
 
 @router.get("/dati/schede/indice.json")

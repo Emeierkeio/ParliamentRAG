@@ -87,6 +87,7 @@
  "Chi ha votato contro la fiducia sulla legge elettorale?": "Who voted against the confidence vote on the electoral law?",
  "Cosa hanno detto i gruppi sul salario minimo?": "What did the groups say about the minimum wage?",
  "Ultime votazioni finali": "Latest final votes",
+ "Leggo le ultime sedute…": "Reading the latest sittings…",
  "dati di oggi": "today's data",
  "Approvata": "Passed",
  "Respinta": "Rejected",
@@ -798,4 +799,5 @@ Object.assign(window.LINGUA_EN.testi, { "Chi conta su un tema": "Who matters on 
 Object.assign(window.LINGUA_EN.testi, { "Come risponde": "How it answers", "Quando chiedi le posizioni dei gruppi su un tema": "When you ask for the groups' positions on a topic", "Per questa domanda la risposta segue un metodo fisso, descritto nel nostro articolo a ISWC 2026: una voce autorevole per ogni gruppo, citazioni prese dal resoconto.": "For this question the answer follows a fixed method, described in our ISWC 2026 paper: one authoritative voice per group, quotes taken from the verbatim record." });
 Object.assign(window.LINGUA_EN.testi, { "Ogni domanda": "Every question", "Posizioni dei gruppi su un tema": "Groups' positions on a topic" });
 
-  Object.assign(window.LINGUA_EN.testi, { "Organizziamo i dati del Parlamento per un accesso facile e verificabile.": "We organise the data of the Italian Parliament so it is easy to access and verify." });
+  Object.assign(window.LINGUA_EN.testi, { "Organizziamo i dati del Parlamento per un accesso facile e verificabile.": "We organise the data of the Italian Parliament so it is easy to access and verify.",
+    "Organizziamo i dati del Parlamento per un accesso": "We organise the data of the Italian Parliament so it is", "facile e verificabile": "easy to access and verify" });

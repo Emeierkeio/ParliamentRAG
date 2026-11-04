@@ -105,9 +105,10 @@
 
   /* segnaposto che propone domande diverse */
   function segnaposto() {
-    const ta = $("#q-eroe"); if (!ta || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ta = $("#q-eroe"); if (!ta) return;
     // da telefono il campo è una riga sola: niente domande che si scrivono da sole, gli esempi stanno sopra
     if (matchMedia("(max-width: 760px)").matches) { ta.placeholder = TT("Chiedi al Parlamento", "Ask Parliament"); return; }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const fr = AVVII.filter((a) => a.q && (window.LANG !== "en" || TR(a.q) !== a.q)).map((a) => TR(a.q)); let i = 0, j = 0, giu = false;
     setInterval(() => {
       if (document.activeElement === ta || ta.value || document.body.dataset.vista) return;
@@ -144,20 +145,15 @@
   /* ---------- apertura: ultime votazioni finali, in diretta ---------- */
   async function oggi() {
     const ol = $("#oggi-v"); if (!ol) return;
-    const righe = [];
-    try {
-      const ss = (await B.mcp("list_sessions", { limit: 25 })).dati.sessions || [];
-      for (const s of ss) {
-        if (righe.length >= 3) break;
-        const vs = ((await B.mcp("get_session_votes", { session_id: s.id })).dati.votes || []).filter((v) => v.final_vote);
-        vs.slice(0, 3 - righe.length).forEach((v) => righe.push({ v, s }));
-      }
-    } catch (err) { ol.innerHTML = `<li class="oggi__car">Non riesco a leggere le sedute ora. Riprova tra poco.</li>`; return; }
-    if (!righe.length) { ol.innerHTML = `<li class="oggi__car">Nessuna votazione finale nelle ultime sedute.</li>`; return; }
+    let righe;
+    // le prepara il servizio, una volta ogni ora (api/sito_parlamentari.py, ultimi_voti): una richiesta sola
+    try { const r = await fetch("/dati/ultimi-voti.json"); if (!r.ok) throw new Error(r.status); righe = await r.json(); }
+    catch (err) { ol.innerHTML = `<li class="oggi__car">${TT("Non riesco a leggere le sedute ora. Riprova tra poco.", "I can't read the sittings right now. Try again shortly.")}</li>`; return; }
+    if (!righe.length) { ol.innerHTML = `<li class="oggi__car">${TT("Nessuna votazione finale nelle ultime sedute.", "No final votes in the latest sittings.")}</li>`; return; }
     ol.innerHTML = righe.map(({ v, s }) => {
       const tot = (v.in_favor + v.against + v.abstained) || 1, ok = /^approv/.test(v.outcome);
       const tit = B.frase((v.description || v.act_title || v.subject).replace(/\s*\((?:approvat|modificat|PDL|DDL)[^)]*\)/gi, "").replace(/, comprensiva dell'errata corrige/i, ""));
-      return `<li><a href="#/strumenti/voto/${e(v.id)}"><small>${B.data(s.date)} · ${s.chamber === "senato" ? "Senato" : "Camera"}${v.act_number && v.act_number.length < 12 ? ` · ${s.chamber === "senato" ? "DDL" : "PDL"} ${e(v.act_number)}` : ""}</small><b data-tr>${e(B.taglia(tit, 110))}</b><em style="color:${B.colVoto(ok ? "favor" : "against")}">${ok ? "Approvata" : "Respinta"}</em><div class="bv"><span><i style="width:${v.in_favor / tot * 100}%;background:${B.colVoto("favor")}"></i><i style="width:${v.against / tot * 100}%;background:${B.colVoto("against")}"></i><i style="width:${v.abstained / tot * 100}%;background:${B.colVoto("abstain")}"></i></span>${v.in_favor} sì · ${v.against} no${v.abstained ? ` · ${v.abstained} ast.` : ""}</div></a></li>`;
+      return `<li><a href="#/strumenti/voto/${e(v.id)}"><small>${B.data(s.date)} · ${s.chamber === "senato" ? "Senato" : "Camera"}${v.act_number && v.act_number.length < 12 ? ` · ${s.chamber === "senato" ? "DDL" : "PDL"} ${e(v.act_number)}` : ""}</small><b data-tr>${e(B.taglia(tit, 110))}</b><em style="color:${B.colVoto(ok ? "favor" : "against")}">${ok ? "Approvata" : "Respinta"}</em><div class="bv"><span><i style="width:${v.in_favor / tot * 100}%;background:${B.colVoto("favor")}"></i><i style="width:${v.against / tot * 100}%;background:${B.colVoto("against")}"></i><i style="width:${v.abstained / tot * 100}%;background:${B.colVoto("abstain")}"></i></span>${v.in_favor} ${TT("sì", "yes")} · ${v.against} no${v.abstained ? ` · ${v.abstained} ${TT("ast.", "abst.")}` : ""}</div></a></li>`;
     }).join("");
   }
 
