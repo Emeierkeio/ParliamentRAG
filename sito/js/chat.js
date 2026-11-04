@@ -12,7 +12,7 @@
 
   /* ---------- markdown minimo e riferimenti ---------- */
   CH.pulisci = (t) => String(t || "").replace(/\n{3,}/g, "\n\n");
-  const prosa = (t, nT) => e(CH.pulisci(t)).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+  const prosa = (t, nT) => e(CH.pulisci(t)).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*\w])\*(\S(?:[^*\n]*?\S)?)\*(?![*\w])/g, "$1<em>$2</em>")
     .replace(/\[([^\]\n]+)\]\(((?:https?:\/\/|#\/)[^\s)]+)\)/g, (m, tx, u) => `<a href="${u}"${u.startsWith("#") ? "" : ' target="_blank" rel="noopener"'}>${tx}</a>`)
     .replace(/«([^«»\n]{3,}?)»/g, "<q>$1</q>").replace(/\[(\d+(?:\s*,\s*\d+)*)\]/g, (m, ns) => ns.split(/\s*,\s*/).map((n) => `<button class="rif" data-fonte="${nT}-${n}" aria-label="Fonte ${n}">${n}</button>`).join(""))
     .split(/\n{2,}/).map((p) => p.split(/\n/).reduce((acc, l) => { const el = /^\s*[-•]\s/.test(l); const ult = acc[acc.length - 1]; if (ult && ult.el === el) ult.r.push(l); else acc.push({ el, r: [l] }); return acc; }, [])
@@ -589,7 +589,7 @@
   function mdFascicolo(md, n, num) {
     md = md.replace(PASSAGGI, (m, c) => c.toUpperCase());
     const blocchi = md.split(/\n{2,}/).map((b) => b.trim()).filter(Boolean);
-    const inline = (x) => e(x).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\[«([\s\S]+?)»\]\(([\w.-]+)\)/g, (m, q, id) => { if (!num.has(id)) num.set(id, num.size + 1); return `<q>${q}</q><button class="rif" data-fonte="${n}-${num.get(id)}" aria-label="Fonte ${num.get(id)}">${num.get(id)}</button>`; });
+    const inline = (x) => e(x).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*\w])\*(\S(?:[^*\n]*?\S)?)\*(?![*\w])/g, "$1<em>$2</em>").replace(/\[«([\s\S]+?)»\]\(([\w.-]+)\)/g, (m, q, id) => { if (!num.has(id)) num.set(id, num.size + 1); return `<q>${q}</q><button class="rif" data-fonte="${n}-${num.get(id)}" aria-label="Fonte ${num.get(id)}">${num.get(id)}</button>`; });
     const gr = (h) => h.replace(/^(Per|For)\s+([^,<]{2,160}?)(?=,|\s+nel\b|\s+in\b)/, '$1 <strong class="f-gr">$2</strong>');
     return blocchi.map((b) => /^##\s/.test(b) ? `<h4 class="f-tit">${e(b.replace(/^##\s+/, ""))}</h4>` : /^---$/.test(b) ? "" : /^[-*]\s/m.test(b) ? `<ul>${b.split("\n").map((l) => `<li>${inline(l.replace(/^[-*]\s+/, ""))}</li>`).join("")}</ul>` : `<p>${gr(inline(b))}</p>`).join("");
   }

@@ -1647,6 +1647,7 @@ html.scorre .compositore .chat{transition:none}
 /* passaggi in timeline orizzontale, sempre visibili (2/11) */
 details.come>summary{pointer-events:none}
 details.come>summary::after{display:none!important}
+details.come{min-width:0;max-width:100%}   /* la fila dei passi scorre dentro la colonna: con molti passi allargava la pagina */
 details.come .passi{display:flex;flex-wrap:nowrap;gap:0;overflow-x:auto;margin:6px 0 0;padding:2px 0 8px;scrollbar-width:thin}
 details.come .passi li{display:flex;flex-direction:column;gap:4px;flex:0 0 200px;padding:0 18px 0 0;font-size:13.5px;line-height:1.35}
 details.come .passi li::before{display:block!important;left:30px;right:0;top:11px;bottom:auto;width:auto;height:1px}
@@ -1863,15 +1864,18 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
 }
 @media (hover:none){[data-tip]::after,[data-tip]:not(.punti a)::before{display:none!important}}
 
-/* 4/11 notte, da telefono: i passi a mazzo (il nuovo davanti, il precedente dietro e coperto, niente scorrimento) e la scheda con la foto che non mangia lo spazio */
+/* 4/11 notte: i passi a mazzo, su telefono e su computer (il nuovo davanti, il precedente dietro e coperto, niente scorrimento) */
+details.come .passi{display:grid!important;overflow:visible!important;padding:12px 0 2px!important;margin:6px 0 0!important}
+details.come .passi li{grid-area:1/1;display:grid!important;grid-template-columns:22px minmax(0,1fr) auto;gap:2px 10px;align-items:start;flex:none!important;padding:10px 12px!important;background:var(--sup);border:1px solid var(--bordo);border-radius:12px;box-shadow:0 8px 20px -14px rgba(0,0,0,.5);transition:transform .25s ease,opacity .25s ease}
+details.come .passi li::before{display:none!important}
+details.come .passi li:last-child{z-index:2}
+details.come .passi li:nth-last-child(2){z-index:1;transform:translateY(-9px) scale(.95);opacity:.6}
+details.come .passi li:nth-last-child(2)>*{visibility:hidden}
+details.come .passi li:nth-last-child(n+3){display:none!important}
+@media (min-width:761px){details.come .passi{max-width:440px}}
+
+/* da telefono: la scheda con la foto che non mangia lo spazio */
 @media (max-width:760px){
- details.come .passi{display:grid!important;overflow:visible!important;padding:12px 0 2px!important;margin:6px 0 0!important}
- details.come .passi li{grid-area:1/1;display:grid!important;grid-template-columns:22px minmax(0,1fr) auto;gap:2px 10px;align-items:start;flex:none!important;padding:10px 12px!important;background:var(--sup);border:1px solid var(--bordo);border-radius:12px;box-shadow:0 8px 20px -14px rgba(0,0,0,.5);transition:transform .25s ease,opacity .25s ease}
- details.come .passi li::before{display:none!important}
- details.come .passi li:last-child{z-index:2}
- details.come .passi li:nth-last-child(2){z-index:1;transform:translateY(-9px) scale(.95);opacity:.6}
- details.come .passi li:nth-last-child(2)>*{visibility:hidden}
- details.come .passi li:nth-last-child(n+3){display:none!important}
  .persona{grid-template-columns:72px minmax(0,1fr);column-gap:16px;align-items:start}
  .persona>.foto{width:72px;height:96px}
 }
