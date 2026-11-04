@@ -1,0 +1,168 @@
+{
+ "I COMMISSIONE (AFFARI COSTITUZIONALI, DELLA PRESIDENZA DEL CONSIGLIO E INTERNI)": [
+  "immigrazione",
+  "sicurezza",
+  "ordine pubblico",
+  "cittadinanza",
+  "asilo",
+  "protezione internazionale",
+  "pubblica amministrazione",
+  "enti locali",
+  "elezioni",
+  "referendum"
+ ],
+ "II COMMISSIONE (GIUSTIZIA)": [
+  "giustizia",
+  "magistratura",
+  "processo",
+  "penale",
+  "civile",
+  "carceri",
+  "diritto",
+  "tribunale",
+  "avvocatura"
+ ],
+ "III COMMISSIONE (AFFARI ESTERI E COMUNITARI)": [
+  "politica estera",
+  "relazioni internazionali",
+  "UE",
+  "Unione Europea",
+  "trattati",
+  "diplomazia",
+  "cooperazione internazionale",
+  "NATO",
+  "ONU",
+  "Israele",
+  "Palestina",
+  "Gaza",
+  "Medio Oriente",
+  "Ucraina",
+  "Russia",
+  "conflitto internazionale",
+  "sanzioni internazionali"
+ ],
+ "IV COMMISSIONE (DIFESA)": [
+  "difesa",
+  "forze armate",
+  "esercito",
+  "marina",
+  "aeronautica",
+  "missioni militari",
+  "sicurezza nazionale"
+ ],
+ "V COMMISSIONE (BILANCIO, TESORO E PROGRAMMAZIONE)": [
+  "bilancio",
+  "finanza pubblica",
+  "debito pubblico",
+  "manovra",
+  "legge di bilancio",
+  "spesa pubblica",
+  "tesoro"
+ ],
+ "VI COMMISSIONE (FINANZE)": [
+  "fisco",
+  "tasse",
+  "tributi",
+  "imposte",
+  "banche",
+  "credito",
+  "assicurazioni",
+  "mercati finanziari"
+ ],
+ "VII COMMISSIONE (CULTURA, SCIENZA E ISTRUZIONE)": [
+  "scuola",
+  "università",
+  "ricerca",
+  "cultura",
+  "beni culturali",
+  "istruzione",
+  "formazione",
+  "sport"
+ ],
+ "VIII COMMISSIONE (AMBIENTE, TERRITORIO E LAVORI PUBBLICI)": [
+  "ambiente",
+  "territorio",
+  "urbanistica",
+  "infrastrutture",
+  "edilizia",
+  "clima",
+  "energia",
+  "rifiuti",
+  "sostenibilità"
+ ],
+ "IX COMMISSIONE (TRASPORTI, POSTE E TELECOMUNICAZIONI)": [
+  "trasporti",
+  "ferrovie",
+  "aviazione",
+  "porti",
+  "telecomunicazioni",
+  "digitale",
+  "internet",
+  "poste"
+ ],
+ "X COMMISSIONE (ATTIVITÀ PRODUTTIVE, COMMERCIO E TURISMO)": [
+  "industria",
+  "commercio",
+  "turismo",
+  "imprese",
+  "artigianato",
+  "made in Italy",
+  "export",
+  "fiere"
+ ],
+ "XI COMMISSIONE (LAVORO PUBBLICO E PRIVATO)": [
+  "lavoro",
+  "occupazione",
+  "previdenza",
+  "contratti",
+  "sindacati",
+  "pensioni",
+  "disoccupazione",
+  "welfare",
+  "salario minimo",
+  "retribuzione",
+  "tutela lavoratori",
+  "contrattazione collettiva",
+  "lavoro povero"
+ ],
+ "XII COMMISSIONE (AFFARI SOCIALI)": [
+  "sanità",
+  "salute",
+  "assistenza sociale",
+  "disabilità",
+  "famiglia",
+  "minori",
+  "anziani",
+  "droga"
+ ],
+ "XIII COMMISSIONE (AGRICOLTURA)": [
+  "agricoltura",
+  "pesca",
+  "allevamento",
+  "PAC",
+  "agroalimentare",
+  "foreste",
+  "caccia"
+ ],
+ "XIV COMMISSIONE (POLITICHE DELL'UNIONE EUROPEA)": [
+  "Unione Europea",
+  "direttive europee",
+  "regolamenti UE",
+  "politiche comunitarie",
+  "PNRR",
+  "Next Generation EU"
+ ],
+ "COMITATO PARLAMENTARE DI CONTROLLO SULL'ATTUAZIONE DELL'ACCORDO DI SCHENGEN, DI VIGILANZA SULL'ATTIVITÀ DI EUROPOL, DI CONTROLLO E VIGILANZA IN MATERIA DI IMMIGRAZIONE": [
+  "Schengen",
+  "Europol",
+  "immigrazione",
+  "frontiere",
+  "controllo migratorio",
+  "asilo"
+ ],
+ "COMITATO PER LA LEGISLAZIONE": [
+  "qualità legislativa",
+  "drafting",
+  "semplificazione"
+ ]
+}
