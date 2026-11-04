@@ -3,6 +3,8 @@
 __pycache__/
 *.pyc
 .env
+.env.*
+!.env.example
 graphify-out/
 .venv/
 benchmark/embedding/vettori/
