@@ -1,0 +1,10 @@
+# Pagina di manutenzione su Railway (README.md). Il controllo usa /salute, l'unico percorso che risponde 200.
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/salute"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

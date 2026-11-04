@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Aggiornamento in corso · ParliamentRAG</title>
+<meta name="description" content="ParliamentRAG si sta aggiornando. Torna presto su www.parliamentrag.it.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='15 15 194 153'%3E%3Cstyle%3Eg%7Bcolor:%2312171a%7D@media (prefers-color-scheme:dark)%7Bg%7Bcolor:%23fff%7D%7D%3C/style%3E%3Cg%3E%3Cpath d='M 35.91 139.73 A 81 81 0 1 1 188.09 139.73' fill='none' stroke='currentColor' stroke-width='32' stroke-linecap='round'/%3E%3Ccircle cx='112' cy='146' r='22' fill='currentColor'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* pagina di manutenzione: stessi token di sito/css/app.css (tema chiaro e netto scuro) */
+:root{
+  --fondo:#f6f7f9;--sup:#fff;--sup2:#f1f2f5;--bordo:#e4e6eb;--bordo2:#cdd1da;
+  --t:#14161d;--t2:#3b3f4b;--t3:#666b79;--acc:#2a4bd7;
+  --btn:#14161d;--su-btn:#fff;--av:#8c5b00;--logo-t:#12171a;--logo-p:#2D5F8F;
+  --f-ui:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{
+  --fondo:#000;--sup:#111113;--sup2:#1a1a1d;--bordo:rgba(255,255,255,.12);--bordo2:rgba(255,255,255,.24);
+  --t:#fff;--t2:#d4d4d8;--t3:#9b9ba4;--acc:#fff;
+  --btn:#fff;--su-btn:#000;--av:#e2ae4c;--logo-t:#fff;--logo-p:#7AA6D2;color-scheme:dark}}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--fondo);color:var(--t);font-family:var(--f-ui);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100svh}
+a{color:var(--acc)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.testata{border-bottom:1px solid var(--bordo)}
+.barra{max-width:1240px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.marchio{display:flex;align-items:center;gap:10px;color:var(--logo-t);text-decoration:none;font-family:"Geist","Helvetica Neue",Arial,sans-serif;font-weight:600;letter-spacing:-.035em;font-size:18px;line-height:1.6}
+.marchio svg{width:22px;height:auto}
+.marchio circle,.segno circle{fill:var(--logo-p)}
+.lingua{min-width:40px;height:40px;padding:0 10px;border:1px solid var(--bordo2);border-radius:999px;background:transparent;color:var(--t2);font:600 13px var(--f-ui);letter-spacing:.02em;cursor:pointer}
+.lingua:hover{color:var(--t);border-color:var(--t3)}
+main{flex:1;display:flex;align-items:center;padding:56px 24px 88px}
+.dentro{max-width:1192px;width:100%;margin:0 auto}
+.blocco{max-width:640px}
+.segno{display:block;width:64px;height:auto;color:var(--t);margin:0 0 36px}
+.stato{display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;padding:6px 12px;border:1px solid var(--bordo);border-radius:999px;background:var(--sup);font-size:13.5px;font-weight:500;color:var(--t2)}
+.stato i{width:8px;height:8px;border-radius:50%;background:var(--av);animation:batte 2.4s ease-in-out infinite}
+@keyframes batte{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.stato i{animation:none}}
+h1{font-weight:600;letter-spacing:-.035em;font-size:clamp(34px,5vw,60px);line-height:1.04;margin:0 0 20px;text-wrap:balance}
+.testo{font-size:18px;line-height:1.55;color:var(--t2);margin:0 0 30px;max-width:46ch;text-wrap:pretty}
+.testo a{font-weight:500;text-underline-offset:3px}
+.vai{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;background:var(--btn);color:var(--su-btn);font-weight:600;text-decoration:none}
+.vai svg{width:16px;height:16px}
+.vai[hidden]{display:none}
+.piede{border-top:1px solid var(--bordo);padding:20px 24px;font-size:13px;color:var(--t3)}
+.piede p{max-width:1192px;margin:0 auto}
+@media (max-width:600px){
+  .barra{padding:10px 16px}
+  main{padding:40px 16px 64px;align-items:flex-start}
+  .segno{width:52px;margin-bottom:28px}
+  .testo{font-size:17px}
+  .piede{padding:16px}
+}
+</style>
+<script>
+/* lingua prima del primo disegno: ?lang=en|it, poi la lingua del browser */
+(function () { var l; try { l = new URLSearchParams(location.search).get("lang"); } catch (e) {}
+  if (l !== "it" && l !== "en") l = (navigator.language || "it").toLowerCase().indexOf("it") === 0 ? "it" : "en";
+  document.documentElement.lang = l; })();
+</script>
+</head>
+<body>
+<header class="testata">
+ <div class="barra">
+  <a class="marchio" href="https://www.parliamentrag.it/" aria-label="ParliamentRAG"><svg viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22"/></svg>ParliamentRAG</a>
+  <button class="lingua" id="lingua" type="button" translate="no">EN</button>
+ </div>
+</header>
+
+<main id="principale">
+ <div class="dentro"><div class="blocco">
+  <svg class="segno" viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22"/></svg>
+  <p class="stato"><i aria-hidden="true"></i><span id="t-stato">Aggiornamento in corso</span></p>
+  <h1 id="t-titolo">Stiamo aggiornando ParliamentRAG</h1>
+  <p class="testo" id="t-testo">Il sito è fermo mentre lo aggiorniamo. Torna presto su <a href="https://www.parliamentrag.it/">www.parliamentrag.it</a>.</p>
+  <a class="vai" id="t-vai" href="https://www.parliamentrag.it/" hidden><span>Vai a ParliamentRAG</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+ </div></div>
+</main>
+
+<footer class="piede"><p id="t-piede">ParliamentRAG è un progetto di ricerca sui dati del Parlamento italiano.</p></footer>
+
+<script>
+(function () {
+  /* quale sito: ?sito=fascicoli|scranno|stenografo, altrimenti il nome host */
+  var NOMI = { fascicoli: "Fascicoli", scranno: "Scranno", stenografo: "Stenografo" }, sito = null, q;
+  try { q = new URLSearchParams(location.search).get("sito"); } catch (e) {}
+  if (q && NOMI[q]) sito = q;
+  else Object.keys(NOMI).forEach(function (k) { if (location.hostname.indexOf(k) !== -1) sito = k; });
+
+  var link = '<a href="https://www.parliamentrag.it/">www.parliamentrag.it</a>';
+  var T = {
+    it: {
+      stato: "Aggiornamento in corso",
+      titolo: "Stiamo aggiornando ParliamentRAG",
+      testo: "Il sito è fermo mentre lo aggiorniamo. Torna presto su " + link + ".",
+      piede: "ParliamentRAG è un progetto di ricerca sui dati del Parlamento italiano.",
+      vai: "Vai a ParliamentRAG", lingua: "EN", linguaEt: "English",
+      doc: "Aggiornamento in corso · ParliamentRAG"
+    },
+    en: {
+      stato: "Update in progress",
+      titolo: "We are updating ParliamentRAG",
+      testo: "The site is offline while we update it. Come back soon at " + link + ".",
+      piede: "ParliamentRAG is a research project on the data of the Italian Parliament.",
+      vai: "Go to ParliamentRAG", lingua: "IT", linguaEt: "Italiano",
+      doc: "Update in progress · ParliamentRAG"
+    }
+  };
+  if (sito) {
+    var n = NOMI[sito];
+    T.it.titolo = n + " confluisce in ParliamentRAG";
+    T.it.testo = "Quello che trovavi su " + n + " entra nel sito di ParliamentRAG, che stiamo aggiornando. Torna presto su " + link + ".";
+    T.it.doc = n + " confluisce in ParliamentRAG";
+    T.en.titolo = n + " is becoming part of ParliamentRAG";
+    T.en.testo = "What you found on " + n + " is moving to the ParliamentRAG site, which we are updating. Come back soon at " + link + ".";
+    T.en.doc = n + " is becoming part of ParliamentRAG";
+  }
+
+  var r = document.documentElement, btn = document.getElementById("lingua");
+  function $(id) { return document.getElementById(id); }
+  function mostra(l) {
+    var t = T[l]; r.lang = l;
+    $("t-stato").textContent = t.stato;
+    $("t-titolo").textContent = t.titolo;
+    $("t-testo").innerHTML = t.testo;
+    $("t-piede").textContent = t.piede;
+    $("t-vai").firstChild.textContent = t.vai;
+    $("t-vai").hidden = !sito;
+    btn.textContent = t.lingua;
+    btn.setAttribute("aria-label", t.linguaEt);
+    btn.setAttribute("lang", l === "it" ? "en" : "it");
+    document.title = t.doc;
+  }
+  btn.addEventListener("click", function () { mostra(r.lang === "it" ? "en" : "it"); });
+  mostra(r.lang === "en" ? "en" : "it");
+})();
+</script>
+</body>
+</html>
