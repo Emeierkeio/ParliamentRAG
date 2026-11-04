@@ -54,6 +54,7 @@ Regole
 - I fatti vengono dai dati, mai dalla memoria. Sono fatti: votazioni e numeri, atti e iter, composizione, schede. Le affermazioni dette negli interventi non sono fatti: attribuiscile sempre («secondo X (gruppo), in Aula il <data>, …»).
 - Le parole dei parlamentari solo tra «…», copiate esattamente da un intervento, con nome e gruppo vicino. Mai citare tra «…» un intervento di tipo summary: è il riassunto del funzionario. Se citi, chiama verifica_citazioni sulla risposta prima di chiuderla e togli le citazioni non verificate.
 - Gruppo Misto: indica la componente, non «Misto».
+- Un gruppo con split vero in una votazione si è diviso: scrivi come, con i numeri di quella votazione («1 contrario e 3 astenuti»), mai «il gruppo si è astenuto» o «ha votato contro». Se riassumi più votazioni, dillo per ognuna in cui il gruppo si è diviso.
 - Niente testi di parte: se ti chiedono un pezzo, un tweet o un comunicato con una tesi politica («la sinistra ha fatto ostruzionismo», «il PD ha votato contro la sicurezza»), non scriverlo con quella cornice. Dai i fatti in modo neutro (cosa si è votato, come ha votato ogni gruppo, quanti emendamenti, con le fonti) e lascia il giudizio a chi legge.
 - Niente fatti personali, familiari o di salute di parlamentari o dei loro familiari (malattie, disabilità, figli, lutti, fede, orientamento), anche se li hanno raccontati in un intervento: non riferirli e non usarli per scegliere o elencare persone. Se la domanda li chiede, rifiuta quella parte in una frase e offri quello che è pubblico: interventi, firme e voti sul tema.
 - Se il dato non c'è, dillo in una frase e indica la fonte ufficiale. I dati si aggiornano ogni notte: per oggi o gli ultimi giorni dì fino a quando arrivano.
@@ -215,6 +216,22 @@ def solo_link_visti(testo: str, visti: set[str]) -> tuple[str, int]:
     return re.sub(r"\[([^\]\n]+)\]\(([^)\s]+)\)", tieni, testo), tolti
 
 
+# note di lavoro del modello finite nel testo (4/11/2026: «Chiara Gribaudo? Wait correction: from data, Andrea? Need not
+# overclaim.»): parole che in una risposta ai cittadini non compaiono mai
+NOTA_DI_LAVORO = re.compile(r"\b(?:Wait|Hmm+|Let me|Let's|I need to|I should|I'll|Need not|overclaim|correction:|from data,|"
+                            r"Actually,|double-check|re-check)\b", re.I)
+
+
+def senza_note_di_lavoro(testo: str) -> tuple[str, int]:
+    """Toglie i paragrafi con una nota di lavoro del modello; meglio una risposta più corta che il ragionamento in vista."""
+    paragrafi = re.split(r"\n\s*\n", testo)
+    tenuti = [p for p in paragrafi if not NOTA_DI_LAVORO.search(p)]
+    tolti = len(paragrafi) - len(tenuti)
+    if tolti:
+        log.warning("note di lavoro tolte dalla risposta: %d paragrafi", tolti)
+    return "\n\n".join(tenuti), tolti
+
+
 def _conteggio(ris) -> int | None:
     if isinstance(ris, list):
         return len(ris)
@@ -297,6 +314,9 @@ def _chiudi(c, uscita: list, voci: list, visti: set[str], domanda: str) -> Itera
     m = re.search(r"\n?\s*SEGUITI:\s*(.+)\s*$", testo)
     seguiti = [x.strip() for x in m.group(1).split("|") if x.strip()][:3] if m else []
     testo = testo[: m.start()].rstrip() if m else testo
+    testo, note = senza_note_di_lavoro(testo)
+    if note and not testo.strip():
+        testo = "Non sono riuscito a chiudere la risposta: prova con una domanda più precisa."
     testo, tolti = solo_link_visti(testo, visti)
     if tolti:
         yield {"type": "status", "text": f"{tolti} link non verificati tolti"}
