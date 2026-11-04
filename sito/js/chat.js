@@ -40,6 +40,8 @@
       return d.size;
     } catch (err) { sd.errore(); return null; }
   }
+  // un clic sulle spunte apre l'elenco di tutti i passi, un altro lo richiude
+  document.addEventListener("click", (ev) => { const l = ev.target.closest("details.come .passi"); if (l) l.classList.toggle("tutti"); });
   function passo(t, id, testo, chiamata) {
     let li = t.passi.querySelector(`[data-id="${id}"]`);
     if (!li) { li = document.createElement("li"); li.dataset.id = id; li.className = "corre"; li.innerHTML = `<span class="p">${B.ico("ok")}</span><span>${e(testo)}${chiamata ? `<span class="call">${e(chiamata)}</span>` : ""}</span><span class="num"></span>`; t.passi.appendChild(li); }
@@ -537,6 +539,7 @@
     const pr = el.querySelector('[data-blocco="risposta"] .prosa');
     if (pr && !t.senzaModello && !el.querySelector(".avviso-r")) pr.insertAdjacentHTML("afterend", `<div class="avviso-r" role="note">${B.ico("info")}<p>${TT("ParliamentRAG è un progetto di ricerca: un modello di AI scrive il testo e può sbagliare. Garantiamo solo le citazioni, che copiamo parola per parola dal resoconto e colleghiamo alla seduta.", "ParliamentRAG is a research project: an AI model writes the text and can be wrong. We only guarantee the quotes, which we copy word for word from the verbatim record and link to the sitting.")} <button type="button" class="avviso-r__s" data-segnala>${TT("Segnala un errore", "Report a mistake")}</button></p></div>`);
     el.querySelector(".stato-v").textContent = "Fatto"; el.querySelector(".stato-v").classList.add("fatto");
+    t.passi.dataset.fine = TT("Risposta completata", "Answer complete");
     t.stato.textContent = `${t.passi.children.length} ${t.passi.children.length === 1 ? "passaggio" : "passaggi"}`;
     el.insertAdjacentHTML("beforeend", `<div class="azioni"><button data-copia="${n}" aria-label="Copia la risposta" data-tip="Copia la risposta">${B.ico("copia")}</button><button data-utile aria-label="Utile" data-tip="Utile">${B.ico("su")}</button><button data-utile aria-label="Non utile" data-tip="Non utile">${B.ico("giuP")}</button><button data-segnala="${n}" aria-label="Segnala un errore" data-tip="Segnala un errore">${B.ico("segnala")}</button><button data-condividi aria-label="Condividi la conversazione" data-tip="Condividi la conversazione">${B.ico("condividi")}</button></div>`);
     salva(); aperta({ id: CH.idChat, attesa: null });

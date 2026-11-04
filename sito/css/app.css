@@ -1864,15 +1864,28 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
 }
 @media (hover:none){[data-tip]::after,[data-tip]:not(.punti a)::before{display:none!important}}
 
-/* 4/11 notte: i passi a mazzo, su telefono e su computer (il nuovo davanti, il precedente dietro e coperto, niente scorrimento) */
-details.come .passi{display:grid!important;overflow:visible!important;padding:12px 0 2px!important;margin:6px 0 0!important}
-details.come .passi li{grid-area:1/1;display:grid!important;grid-template-columns:22px minmax(0,1fr) auto;gap:2px 10px;align-items:start;flex:none!important;padding:10px 12px!important;background:var(--sup);border:1px solid var(--bordo);border-radius:12px;box-shadow:0 8px 20px -14px rgba(0,0,0,.5);transition:transform .25s ease,opacity .25s ease}
-details.come .passi li::before{display:none!important}
-details.come .passi li:last-child{z-index:2}
-details.come .passi li:nth-last-child(2){z-index:1;transform:translateY(-9px) scale(.95);opacity:.6}
-details.come .passi li:nth-last-child(2)>*{visibility:hidden}
-details.come .passi li:nth-last-child(n+3){display:none!important}
-@media (min-width:761px){details.come .passi{max-width:440px}}
+/* 5/11: i passi come spunte sovrapposte (la nuova sopra la precedente) e accanto solo il passo in corso; a risposta
+   finita «Risposta completata». Un clic apre l'elenco di tutti i passi, uno sotto l'altro; un altro clic lo richiude. */
+details.come .passi{cursor:pointer}
+details.come .passi:not(.tutti){display:flex!important;align-items:center;flex-wrap:nowrap;overflow:visible!important;padding:10px 0 4px!important;margin:6px 0 0!important;gap:0!important}
+details.come .passi:not(.tutti) li{display:flex!important;flex-direction:row!important;align-items:center;gap:0!important;flex:none!important;padding:0!important;margin:0 0 0 -14px;animation:none}
+details.come .passi:not(.tutti) li:first-child{margin-left:0}
+details.come .passi:not(.tutti) li::before{display:none!important}
+details.come .passi:not(.tutti) .p{width:30px;height:30px;background:var(--ok);color:var(--su-btn);box-shadow:0 0 0 3px var(--fondo);animation:spunta .25s ease both}
+details.come .passi:not(.tutti) li.corre .p{background:var(--fondo);box-shadow:0 0 0 3px var(--fondo),inset 0 0 0 2.5px var(--acc)}
+details.come .passi:not(.tutti) .p svg{width:15px;height:15px}
+details.come .passi:not(.tutti) li>span:not(.p){display:none}
+details.come .passi:not(.tutti) li:last-child>span:nth-child(2){display:block;margin-left:14px;font-size:15px;font-weight:500;color:var(--t)}
+details.come .passi:not(.tutti) li:last-child .call{display:none}
+details.come .passi[data-fine]:not(.tutti) li:last-child>span:nth-child(2){display:none}
+details.come .passi[data-fine]:not(.tutti)::after{content:attr(data-fine);margin-left:14px;font-size:15px;font-weight:500;color:var(--t)}
+details.come .passi.tutti{display:grid!important;overflow:visible!important;padding:6px 0 2px!important;margin:6px 0 0!important}
+details.come .passi.tutti li{display:grid!important;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:start;flex:none!important;padding:7px 0!important;font-size:14.5px;line-height:1.4}
+details.come .passi.tutti li::before{display:block!important;left:11px;right:auto;top:31px;bottom:-5px;width:1px;height:auto}
+details.come .passi.tutti li:last-child::before{display:none!important}
+details.come .passi.tutti .call{font-size:12px}
+@keyframes spunta{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){details.come .passi:not(.tutti) .p{animation:none}}
 
 /* da telefono: la scheda con la foto che non mangia lo spazio */
 @media (max-width:760px){
