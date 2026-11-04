@@ -654,6 +654,7 @@ def legge(c: psycopg.Connection, slug: str) -> dict | None:
 def _risposta(c: psycopg.Connection, slug: str):
     if not re.fullmatch(r"[\w-]{1,40}", slug):
         raise HTTPException(404, "legge non trovata")
+    c.execute("SET statement_timeout = '30s'")      # una legge con migliaia di emendamenti, a freddo
     dati = _in_memoria(f"legge:{slug}", lambda: legge(c, slug))
     if dati is None:
         raise HTTPException(404, "legge non trovata")

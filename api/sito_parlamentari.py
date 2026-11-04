@@ -271,6 +271,7 @@ def _ruolo_istituzionale(c: psycopg.Connection, ids: list[str], ramo: str) -> st
 
 
 def scheda(c: psycopg.Connection, ramo: str, pid: str) -> dict | None:
+    c.execute(LENTE)                                 # i voti di una persona a freddo: migliaia di pagine di ballot
     uri = f"it:person:{ramo}:{pid}"
     base = c.execute(SQL_IN_CARICA.replace("AND m.end_date IS NULL", ""), {"ramo": ramo, "leg": LEGISLATURA, "uri": uri}).fetchone()
     if base is None:
