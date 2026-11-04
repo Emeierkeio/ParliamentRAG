@@ -1,0 +1,26 @@
+# HTTPS automatico (Let's Encrypt) per i nomi qui sotto; i record DNS su Cloudflare restano «DNS only».
+# I log degli accessi tengono l'IP: si cancellano dopo 30 giorni, come dice la privacy.
+
+(log_30_giorni) {
+	log {
+		output file /data/log/accessi.log {
+			roll_size 50MiB
+			roll_keep_for 720h
+		}
+	}
+}
+
+www.parliamentrag.it, mcp.parliamentrag.it {
+	import log_30_giorni
+	encode zstd gzip
+	reverse_proxy web:8000
+}
+
+parliamentrag.it {
+	redir https://www.parliamentrag.it{uri} permanent
+}
+
+# Quando Fascicoli, Scranno e Stenografo chiudono: togliere il commento e spostare i loro record www sulla VPS.
+# www.fascicoli.it, www.scranno.it, www.stenografo.it {
+# 	redir https://www.parliamentrag.it permanent
+# }

@@ -1,0 +1,33 @@
+# Sulla VPS, insieme a docker-compose.yml (il database «testi», lo stesso del giro notturno):
+#   docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d --build
+# web: l'immagine del Dockerfile; caddy: HTTPS con Let's Encrypt davanti a web (deploy/vps/Caddyfile).
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env.web                              # segreti del servizio web, vedi docs/produzione.md
+    environment:
+      API_PG_HOST: testi
+      PG_PORTA: "5432"
+      API_PROXY: "1"                                # l'IP del visitatore arriva da Caddy in X-Forwarded-For
+      PORT: "8000"
+    depends_on: [testi]
+    mem_limit: 1g
+    expose: ["8000"]
+
+  caddy:
+    image: caddy:2.10.2
+    restart: unless-stopped
+    depends_on: [web]
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/vps/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data                            # certificati e log degli accessi
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

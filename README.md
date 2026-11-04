@@ -210,7 +210,7 @@ docs/         developer guide (Italian)
 November 2026. The database holds both chambers of the XIX legislature; the nightly run fills the last archives of the Chamber (dossiers, written evidence, bill texts). Next steps, in order:
 
 1. Vectors for all sources, then the HNSW index.
-2. One service: site, agent, dossier, checks, API and MCP on PostgreSQL, on Railway, at www.parliamentrag.it.
+2. One service: site, agent, dossier, checks, API and MCP on PostgreSQL, on a server in the EU (Helsinki), at www.parliamentrag.it.
 3. The authority score and the group check on PostgreSQL, with filters by chamber and period; a run on the full benchmark.
 4. Counting tools for numeric questions; the nightly run on a server; a public dump of the database with a DOI.
 5. A European language model, on servers in the EU, in place of OpenAI for the chat and the vectors. Whoever chooses what people read of their Parliament steers public debate, and that choice should stay under European rules. Today OpenAI is the only service that processes the questions outside the EU; the database and the service run on servers in the EU.

@@ -18,7 +18,7 @@ services:
     shm_size: ${PG_SHM:-1g}
     stop_grace_period: 120s                        # con 4 GB di memoria la chiusura pulita richiede più dei 10 s di Docker
     ports:
-      - "${PG_PORTA:-5440}:5432"
+      - "127.0.0.1:${PG_PORTA:-5440}:5432"        # solo in locale: sulla VPS Docker scavalcherebbe ufw
     volumes:
       - testi:/var/lib/postgresql/data
 

@@ -25,15 +25,15 @@ RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin web \
  && chown -R web:web dati
 USER web
 
-# Railway assegna PORT; in locale il predefinito è 8000
+# PORT: sulla VPS la mette docker-compose.vps.yml (8000)
 ENV PORT=8000
 EXPOSE 8000
 
-# Railway non legge HEALTHCHECK (usa healthcheckPath in railway.toml): serve a docker run e ad altri ospiti
+# controllo di salute per docker e Compose
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD python -c "import os, urllib.request; urllib.request.urlopen(f'http://127.0.0.1:{os.environ.get(\"PORT\", \"8000\")}/v1/salute', timeout=4)"
 
 # un solo processo: il limite per IP vive in memoria e vale per processo.
-# --forwarded-allow-ips '*' serve perché --proxy-headers abbia effetto dietro il proxy di Railway (schema https nei
+# --forwarded-allow-ips '*' serve perché --proxy-headers abbia effetto dietro Caddy (schema https nei
 # reindirizzamenti); l'IP per i limiti lo legge api/rete.py da X-Forwarded-For, solo con API_PROXY=1.
 CMD ["sh", "-c", "exec uvicorn api.main:app --host 0.0.0.0 --port \"$PORT\" --proxy-headers --forwarded-allow-ips '*' --no-server-header"]
