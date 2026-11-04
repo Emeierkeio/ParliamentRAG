@@ -1,0 +1,86 @@
+{
+ "id": "LOB-005",
+ "trappola": false,
+ "domanda": "Chi presiede oggi la XIII Commissione Agricoltura della Camera? A me risultava Mirco Carloni.",
+ "categoria": "commissioni",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Dal 13/10/2026 la presidenza è di Francesco Bruzzone. Nei dati resta una riga di Carloni senza data di fine: il sistema deve usare la carica più recente e non indicare due presidenti.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791821.1644568,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "organo",
+   "args": {
+    "q": "XIII Commissione Agricoltura",
+    "chamber": "camera",
+    "date": null,
+    "titles": [
+     "chair"
+    ]
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "Agricoltura",
+    "chamber": "camera",
+    "date": null,
+    "titles": null
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "date": null,
+    "titles": [
+     "chair"
+    ]
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 21, \"items\": [{\"uri\": \"it:camera:19:body:o19_4361\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"Comitato Permanente per l'Attuazione dell'Agenda 2030 e lo Sviluppo Sostenibile\", \"members\": 12, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-09-18\", \"person\": \"Federica Onori\", \"uri\": \"it:person:camera:308781\", \"group\": \"AZ-PER-RE\"}]}, {\"uri\": \"it:camera:19:body:o19_4367\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"Comitato Permanente Sugli Italiani nel Mondo\", \"members\": 12, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-09-18\", \"person\": \"Simone Billi\", \"uri\": \"it:person:camera:307151\", \"group\": \"LEGA\"}]}, {\"uri\": \"it:camera:19:body:o19_4365\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"Comitato Permanente sui Diritti Umani nel Mondo\", \"members\": 12, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-09-18\", \"person\": \"Laura Boldrini\", \"uri\": \"it:person:camera:305757\", \"group\": \"PD-IDP\"}]}, {\"uri\": \"it:camera:19:body:o19_4369\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"Comitato Permanente sul Commercio Internazionale\", \"members\": 13, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-09-18\", \"person\": \"Andrea Di Giuseppe\", \"uri\": \"it:person:camera:308784\", \"group\": \"FDI\"}]}, {\"uri\": \"it:camera:19:body:o19_4342\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"Comitato Permanente sulla Politica Estera per l'Africa\", \"members\": 11, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-09-18\", \"person\": \"Stefano Giovanni Maullu\", \"uri\": \"it:person:camera:308885\", \"group\": \"FDI\"}, {\"title\": \"PRESIDENTE\", \"since\": \"2025-10-01\", \"person\": \"Stefano Giovanni Maullu\", \"uri\": \"it:person:camera:308885\", \"group\": \"FDI\"}]}, {\"uri\": \"it:camera:19:body:o19_4343\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"Comitato Permanente sulla Politica Estera per l'Area Indo - Mediterranea\", \"members\": 12, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-09-18\", \"person\": \"Deborah Bergamini\", \"uri\": \"it:person:camera:302867\", \"group\": \"FI-PPE\"}, {\"title\": \"PRESIDENTE\", \"since\": \"2025-10-01\", \"person\": \"Deborah Bergamini\", \"uri\": \"it:person:camera:302867\", \"group\": \"FI-PPE\"}]}, {\"uri\": \"it:camera:19:body:o19_4341\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"Comitato Permanente sulla Politica Estera per l'Artico\", \"members\": 11, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-09-18\", \"person\": \"Paolo Formentini\", \"uri\": \"it:person:camera:307602\", \"group\": \"LEGA\"}, {\"title\": \"PRESIDENTE\", \"since\": \"2025-10-01\", \"person\": \"Paolo Formentini\", \"uri\": \"it:person:camera:307602\", \"group\": \"LEGA\"}]}, {\"uri\""
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "it:camera:19:body:o19_3513",
+    "chamber": "camera",
+    "date": null,
+    "titles": null
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 1, \"items\": [{\"uri\": \"it:camera:19:body:o19_3513\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"XIII Commissione\", \"members\": 28, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2026-10-13\", \"person\": \"Francesco Bruzzone\", \"uri\": \"it:person:camera:307762\", \"group\": \"LEGA\"}, {\"title\": \"VICEPRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Maria Cristina Caretta\", \"uri\": \"it:person:camera:307573\", \"group\": \"FDI\"}, {\"title\": \"VICEPRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Maria Chiara Gadda\", \"uri\": \"it:person:camera:305553\", \"group\": \"IV-CR\"}, {\"title\": \"SEGRETARIO\", \"since\": \"2025-06-10\", \"person\": \"Andrea Rossi\", \"uri\": \"it:person:camera:307306\", \"group\": \"PD-IDP\"}, {\"title\": \"SEGRETARIO\", \"since\": \"2025-06-10\", \"person\": \"Raffaele Nevi\", \"uri\": \"it:person:camera:307454\", \"group\": \"FI-PPE\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Marco Cerreto\", \"uri\": \"it:person:camera:308874\", \"group\": \"FDI\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Manfred Schullian\", \"uri\": \"it:person:camera:305586\", \"group\": \"MISTO-MIN.LING.\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2022-11-09\", \"person\": \"Alessandro Caramiello\", \"uri\": \"it:person:camera:308854\", \"group\": \"M5S\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2023-11-23\", \"person\": \"Maria Chiara Gadda\", \"uri\": \"it:person:camera:305553\", \"group\": \"IV-CR\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2025-02-06\", \"person\": \"Francesco Emilio Borrelli\", \"uri\": \"it:person:camera:308857\", \"group\": \"AVS\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2025-05-21\", \"person\": \"Antonella Forattini\", \"uri\": \"it:person:camera:308916\", \"group\": \"PD-IDP\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2025-06-30\", \"person\": \"Giuseppe Castiglione\", \"uri\": \"it:person:camera:306158\", \"group\": \"FI-PPE\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2026-01-29\", \"person\": \"Laura Cavandoli\", \"uri\": \"it:person:camera:307285\", \"group\": \"LEGA\"}, {\"title\": \"CAPOGRUPPO\", \"since\": \"2026-06-30\", \"person\": \"Michela Vittoria Brambilla\", \"uri\": \"it:person:camera:302838\", \"group\": \"NM(N-C-U-I)M-CP\"}]}]}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307762"
+   },
+   "result": "{\"uri\": \"it:person:camera:307762\", \"name\": \"Francesco Bruzzone\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307762&legislatura=19\", \"given_name\": \"Francesco\", \"family_name\": \"Bruzzone\", \"gender\": \"M\", \"birth_date\": \"1962-05-23\", \"birth_place\": \"Genova\", \"profession\": \"Dipendente pubblico\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307762\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"LIGURIA - P01\", \"list\": \"LEGA PER SALVINI PREMIER\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3721\", \"target_name\": \"Conferenza dei Presidenti delle Commissioni Permanenti\", \"title\": \"member\", \"start_date\": \"2026-10-13\"}, {\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"chair\", \"start_date\": \"2026-10-13\"}, {\"target\": \"it:camera:19:group:gr4132\", \"target_name\": \"Lega - Salvini Premier\", \"title\": \"deputy_leader\", \"start_date\": \"2022-10-18\"}], \"counts\": {\"speeches\": 86, \"ballots\": 20256, \"ballots_cast\": 9272, \"ballots_mission\": 264, \"bills_first_signer\": 8, \"amendments_signed\": 316}}"
+  }
+ ],
+ "strumenti": [
+  "organo",
+  "organo",
+  "organo",
+  "organo",
+  "scheda_persona"
+ ],
+ "tempo_s": 16.6,
+ "risposta_sistema": "Oggi presiede la XIII Commissione della Camera **Francesco Bruzzone** (Lega), in carica dal **13 ottobre 2026**. [Scheda ufficiale](http://dati.camera.it/ocd/persona.rdf/p307762)\n\nMirco Carloni non risulta quindi il presidente attuale nei dati aggiornati al 4 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

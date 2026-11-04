@@ -1,0 +1,26 @@
+{
+ "id": "CIT-021",
+ "trappola": true,
+ "domanda": "che tempo fa a Roma domani?",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Fuori dominio: rifiutare con garbo e dire cosa il sistema sa fare.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791878.042131,
+ "endpoint_usato": "/api/agente",
+ "dati": [],
+ "strumenti": [],
+ "tempo_s": 2.4,
+ "risposta_sistema": "Non posso consultare dati meteorologici. Posso però aiutarti con attività di Camera e Senato previste per domani, **5 novembre 2026**.",
+ "eventi": {
+  "status": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,51 @@
+{
+  "id": "AULA-017",
+  "trappola": false,
+  "domanda": "Quali ministri hanno risposto al question time della Camera nell'ultimo mese, e quale gruppo aveva presentato ciascuna interrogazione?",
+  "categoria": "sindacato_ispettivo",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791584.573885,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "argomenti_sedute",
+    "seduta",
+    "seduta",
+    "seduta",
+    "seduta",
+    "cerca_interventi",
+    "cerca_interventi",
+    "cerca_interventi",
+    "cerca_interventi",
+    "cerca_interventi",
+    "cerca_interventi",
+    "cerca_interventi",
+    "cerca_interventi"
+  ],
+  "tempo_s": 53.7,
+  "risposta_sistema": "Nell’ultimo mese completo, **ottobre 2026**, alla Camera si sono svolti quattro question time. I ministri (e i gruppi delle interrogazioni cui hanno risposto) sono:\n\n- **7 ottobre** — [seduta n. 722](https://www.camera.it/leg19/410?idSeduta=0722&tipo=stenografico)  \n  - Matteo Salvini, Ministro delle infrastrutture e dei trasporti: **PD-IDP, Italia Viva–Casa Riformista, Lega, AVS, M5S**.  \n  - Francesco Lollobrigida, Ministro dell’agricoltura: **Fratelli d’Italia, Noi Moderati–MAIE–Centro Popolare, Forza Italia–Berlusconi Presidente–PPE**.  \n  - Anna Maria Bernini, Ministra dell’università e della ricerca: **Azione–Popolari Europeisti Riformatori–Renew Europe**.  \n  - Andrea Abodi, Ministro per lo sport e i giovani: **Misto–+Europa/Siamo Europei**.\n\n- **14 ottobre** — [seduta n. 727](https://www.camera.it/leg19/410?idSeduta=0727&tipo=stenografico)  \n  - Orazio Schillaci, Ministro della salute: **PD-IDP, Italia Viva–Casa Riformista, Misto–Futuro Nazionale Vannacci–Free, Azione–PER–RE, Forza Italia–PPE**.  \n  - Adolfo Urso, Ministro delle imprese e del made in Italy: **M5S** (due interrogazioni), **Fratelli d’Italia, AVS, Noi Moderati–MAIE–Centro Popolare, Lega**.\n\n- **21 ottobre** — [seduta n. 730](https://www.camera.it/leg19/410?idSeduta=0730&tipo=stenografico)  \n  - Adolfo Urso: **PD-IDP**.  \n  - Antonio Tajani, Ministro degli affari esteri e della cooperazione internazionale: **Misto–+Europa/Siamo Europei** e **Forza Italia–PPE**.  \n  - Luca Ciriani, Ministro per i rapporti con il Parlamento: **Azione–PER–RE**.  \n  - Carlo Nordio, Ministro della giustizia: **Lega** e **Fratelli d’Italia**.  \n  - Gianmarco Mazzi, Sottosegretario alla cultura: **AVS**.  \n  - Paolo Zangrillo, Ministro per la pubblica amministrazione: **M5S**.  \n  - Francesco Lollobrigida: **Noi Moderati–MAIE–Centro Popolare** e **Italia Viva–Casa Riformista**.\n\n- **28 ottobre** — [seduta n. 735](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico)  \n  - Eugenia Roccella, Ministra per la famiglia, la natalità e le pari opportunità: **PD-IDP** e **Misto–Futuro Nazionale Vannacci–Free**.  \n  - Luca Ciriani: **Fratelli d’Italia, Forza Italia–PPE, Lega, M5S, Italia Viva–Casa Riformista, AVS, Noi Moderati–MAIE–Centro Popolare, Azione–PER–RE**.\n\nHo indicato separatamente le componenti del Misto. I dati disponibili arrivano fino al 3 novembre 2026.",
+  "errori": [],
+  "note_domanda": "Argomenti «Svolgimento di interrogazioni a risposta immediata» (sedute 722, 727, 730, 735). Alla Camera as_office è vuoto per i ministri: la carica sta all'inizio del testo dell'intervento («, Ministro delle Imprese e del made in Italy.»).",
+  "riferimento": {
+    "risposta": "Dal 2/10 al 2/11/2026 la Camera ha svolto 4 question time (sedute 722 del 7/10, 727 del 14/10, 730 del 21/10, 735 del 28/10), con 40 interrogazioni. Hanno risposto: 7/10 Salvini (PD-IDP, IV-CR, Lega, AVS), Lollobrigida (M5S, FdI, Noi Moderati), Bernini (FI-PPE), Abodi (Azione, Misto-+Europa); 14/10 Schillaci (PD-IDP, IV-CR), Urso (Misto-Futuro Nazionale Vannacci, Azione, FI-PPE, M5S, FdI, AVS, Noi Moderati, Lega); 21/10 Urso (PD-IDP), Tajani (Misto-+Europa, FI-PPE), Ciriani (Azione), Nordio (Lega, FdI), Mazzi (AVS), Zangrillo (M5S, Noi Moderati), Lollobrigida (IV-CR); 28/10 Roccella (PD-IDP), Ciriani (Misto-Futuro Nazionale Vannacci, FdI, FI-PPE, Lega, M5S, IV-CR, AVS, Noi Moderati, Azione). Il gruppo è quello del deputato che illustra l'interrogazione.",
+    "stato": "calcolata",
+    "limiti": "«Ultimo mese» = dal 2/10 al 2/11/2026 (ultimo resoconto d'Aula: 30/10). Le interrogazioni a risposta immediata non sono legate agli atti (agenda_item_act vuoto per questi argomenti): il gruppo presentatore si ricava dal gruppo dichiarato (as_group) del deputato che illustra, non dai firmatari dell'atto. La carica del ministro non è in as_office: si legge dall'inizio del testo dell'intervento («, Ministro delle Imprese e del made in Italy.»)."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 53.7
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": "ragionamento_o_prompt",
+  "note": "Ora tutti e quattro i question time con link alle sedute, ma circa 9 delle 40 interrogazioni sono abbinate al ministro sbagliato (7/10 Bernini-Azione invece di FI, Salvini-M5S; 14/10 Schillaci con FNV, Azione, FI che sono di Urso). Stamattina 1 (mancava il 7/10)."
+}

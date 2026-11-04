@@ -1,0 +1,60 @@
+{
+ "id": "APP-011",
+ "domanda": "mi trovi il video di Conte che parla della legge elettorale?",
+ "categoria": "video",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Giuseppe Conte (M5S). Link al secondo esatto dell'intervento quando c'è il video_segment; se manca, il link al resoconto.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792203.232086,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Conte",
+    "chamber": null,
+    "group": null,
+    "in_office": true,
+    "limit": 20
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:307926\", \"name\": \"Giuseppe Conte\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307926&legislatura=19\"}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "legge elettorale",
+    "chamber": "camera",
+    "person": "it:person:camera:307926",
+    "start": null,
+    "end": null,
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 14, \"items\": [{\"uri\": \"it:camera:19:sed0727:tit00130.sub00040.int00310\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 15 e 16 ottobre 2026.\", \"person\": {\"uri\": \"it:person:camera:307926\", \"name\": \"Giuseppe Conte\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307926&legislatura=19\"}, \"speaker_label\": \"GIUSEPPE CONTE\", \"snippet\": \"Senato e anche qui, per accusare me e il MoVimento 5 Stelle. In particolare, ha detto che con questa [[legge]] [[elettorale]] io non sarei mai stato eletto Presidente del Consiglio. Non deve aver letto la [[legge]] che avete scritto, perché ... maggioranza stabilissima, la più longeva, non ha realizzato una sola promessa fatta agli elettori. E non consideri la [[legge]] [[elettorale]]: quella non era nel programma, quella l'ha fatta per imbullonarsi a quella poltrona .\\n\\nQuesta è la sostanza della democrazia\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0727&tipo=stenografico#sed0727.stenografico.tit00130.sub00040.int00310\", \"video\": \"https://webtv.camera.it/evento/32546\", \"video_start_s\": 19138}, {\"uri\": \"it:camera:19:sed0723:tit00040.sub00010.int00200\", \"sitting\": {\"uri\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 723, \"date\": \"2026-10-08\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione della proposta di legge: Bignami ed altri: Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica (Approvata dalla Camera e modificata dal Senato) (A.C. 2822-B).\", \"person\": {\"uri\": \"it:person:camera:307926\", \"name\": \"Giuseppe Conte\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307926&legislatura=19\"}, \"speaker_label\": \"GIUSEPPE CONTE\", \"snippet\": \"contano sono le soglie di sbarramento, i posti in lista, i seggi. Voi adesso vi state concentrando su una [[legge]] [[elettorale]] per perpetuare il vostro potere e la cosa più grave è che non solo lo state facendo adesso\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico#sed0723.stenografico.tit00040.sub00010.int00200\", \"video\": \"https://webtv.camera.it/evento/32457\", \"video_start_s\": 5794}, {\"uri\": \"it:camera:19:sed0723:tit00040.sub00010.int00220\", \"sitting\": {\"uri\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 723, \"date\": \"2026-10-08\", \"kind\": \"assembly_verbatim\","
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cerca_interventi"
+ ],
+ "tempo_s": 13.4,
+ "risposta_sistema": "Sì: Giuseppe Conte (M5S) è intervenuto sulla legge elettorale in Aula alla Camera l’**8 ottobre 2026**, durante l’esame della proposta **A.C. 2822-B**.\n\n- [Video WebTV della Camera](https://webtv.camera.it/evento/32457) — il suo intervento inizia a **1:36:34**.\n- [Resoconto stenografico ufficiale dell’intervento](https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico#sed0723.stenografico.tit00040.sub00010.int00200).\n\nC’è anche un altro intervento sullo stesso provvedimento nella medesima seduta, riportato nel [resoconto ufficiale](https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico#sed0723.stenografico.tit00040.sub00010.int00220).",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

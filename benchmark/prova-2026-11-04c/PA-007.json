@@ -1,0 +1,48 @@
+{
+  "id": "PA-007",
+  "trappola": false,
+  "domanda": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+  "categoria": "iter",
+  "tipo_risposta": "elenco",
+  "ramo": "senato",
+  "difficolta": "facile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791744.3791628,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "cerca_atti",
+    "cerca_atti",
+    "conta_atti",
+    "atto",
+    "atto",
+    "atto",
+    "atto",
+    "atto",
+    "atto",
+    "atto",
+    "atto"
+  ],
+  "tempo_s": 16.3,
+  "risposta_sistema": "Il **Consiglio regionale della Toscana** ha presentato al Senato **8 disegni di legge** nella XIX legislatura. Alla data disponibile (4 novembre 2026), **nessuno è diventato legge**: tre sono in esame in Commissione e cinque risultano assegnati ma non ancora esaminati.\n\n- **S. 1801** — [Riconoscimento dello Stato di Palestina](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm), presentato il 13 febbraio 2026: **assegnato, senza avvio dell’esame**.\n- **S. 1643** — [Disposizioni in materia di distretto estrattivo apuo-versiliese](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm), 10 settembre 2025: **assegnato, senza avvio dell’esame**.\n- **S. 1527** — [Norme per l’affrancazione dei canoni livellari](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm), 12 giugno 2025: **assegnato, senza avvio dell’esame**.\n- **S. 1064** — [Introduzione dell’educazione all’emotività, all’affettività e alla sessualità nell’educazione civica](https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm), 7 marzo 2024: **in esame in Commissione**.\n- **S. 476** — [Semplificazione in materia di selvicoltura e modifica del Codice dei beni culturali e del paesaggio](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm), 18 gennaio 2023: **assegnato, senza avvio dell’esame**.\n- **S. 477** — [Modifiche all’organizzazione dei tribunali ordinari e degli uffici del pubblico ministero](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm), 18 gennaio 2023: **in esame in Commissione**.\n- **S. 478** — [Agevolazione contributiva per l’occupazione nelle aree interne](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm), 18 gennaio 2023: **assegnato, senza avvio dell’esame**.\n- **S. 479** — [Ampliamento delle destinazioni d’uso degli immobili confiscati alla criminalità organizzata](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52142.htm), 18 gennaio 2023: **in esame in Commissione**.",
+  "errori": [],
+  "note_domanda": "Al Senato l'iniziativa è testo libero: «Regione Toscana» ha 8 atti. Alla Camera l'iniziativa è solo «Regioni» (77) e la Regione va letta dal titolo.",
+  "riferimento": {
+    "risposta": "Al Senato il Consiglio regionale della Toscana ha presentato 8 disegni di legge nella XIX, nessuno approvato. In esame in commissione: S. 477 (tribunali e uffici del PM, d.lgs. 155/2012; esaminato in 2ª Commissione dal 12/4 al 3/8/2023), S. 479 (immobili confiscati alla criminalità organizzata; 2ª Commissione il 10 e il 24/3/2026) e S. 1064 (educazione all'affettività e alla sessualità; 7ª Commissione, ultima seduta il 21/7/2026). Assegnati e non ancora esaminati: S. 476 (selvicoltura), S. 478 (agevolazione contributiva nelle aree interne), S. 1527 (affrancazione dei canoni livellari), S. 1643 (distretto estrattivo apuo-versiliese) e S. 1801 (riconoscimento dello Stato di Palestina, presentato il 13/2/2026).",
+    "stato": "calcolata",
+    "limiti": "Atti del Senato con act.initiative = «Regione Toscana». Lo stato è act.status (testo del Senato) senza data; le sedute di esame vengono dagli argomenti delle commissioni legati all'atto."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 16.3
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Gli 8 ddl della Regione Toscana con lo stato giusto per ciascuno (3 in esame in Commissione, 5 assegnati) e il link alla scheda del Senato. Uguale a stamattina (2)."
+}

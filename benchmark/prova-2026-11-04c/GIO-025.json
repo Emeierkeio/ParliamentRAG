@@ -1,0 +1,40 @@
+{
+  "id": "GIO-025",
+  "trappola": false,
+  "domanda": "Quanto è compatta la Lega nei voti rispetto agli altri gruppi? Indice di coesione per gruppo.",
+  "categoria": "gruppi",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791398.477768,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "voto_gruppi",
+    "voto_gruppi"
+  ],
+  "tempo_s": 51.9,
+  "risposta_sistema": "La Lega è molto compatta: indice di coesione **0,992 alla Camera** e **0,997 al Senato** (dove 1 significa che tutti i votanti del gruppo hanno espresso sempre lo stesso voto).\n\nIl confronto riguarda tutte le votazioni elettroniche **palesi** della XIX legislatura disponibili: dal 25 ottobre 2022 al 28 ottobre 2026 alla Camera (20.208 votazioni), dal 26 ottobre 2022 al 28 ottobre 2026 al Senato (8.397). Sono esclusi voti segreti, assenti, missioni e presenti non votanti.\n\n| Camera — gruppo | Indice di coesione | Voti unanimi |\n|---|---:|---:|\n| FdI | 0,998 | 93,6% |\n| PD-IDP | 0,996 | 91,4% |\n| M5S | 0,996 | 94,7% |\n| AVS | 0,995 | 98,3% |\n| **Lega** | **0,992** | **87,4%** |\n| Noi Moderati | 0,988 | 97,3% |\n| FI-PPE | 0,987 | 85,4% |\n| Azione-PER-RE | 0,975 | 91,7% |\n| Italia Viva-Casa Riformista | 0,975 | 93,6% |\n| Misto – +Europa-Stati Uniti d’Europa | 0,922 | 87,5% |\n| Misto – Minoranze linguistiche | 0,842 | 70,6% |\n| Misto senza componente | 0,564 | 35,3% |\n\nAlla Camera la Lega è quindi quinta per indice fra i gruppi con una presenza di voto consistente: meno compatta di FdI, PD, M5S e AVS, ma più di FI e degli altri gruppi riportati. Ha avuto almeno due votanti in 20.205 votazioni.\n\n| Senato — gruppo | Indice di coesione | Voti unanimi |\n|---|---:|---:|\n| **Lega Salvini Premier–Partito Sardo d’Azione** | **0,997** | **96,5%** |\n| FdI | 0,997 | 91,6% |\n| Civici d’Italia–UDC–Noi Moderati–MAIE–Centro Popolare | 0,996 | 98,6% |\n| FI-BP-PPE | 0,995 | 96,8% |\n| M5S | 0,993 | 92,6% |\n| Misto – AVS | 0,979 | 96,1% |\n| PD-IDP | 0,976 | 79,8% |\n| Italia Viva-Casa Riformista | 0,970 | 91,2% |\n| Misto – Azione-Renew Europe | 0,969 | 95,3% |\n| Per le Autonomie | 0,757 | 47,2% |\n\nAl Senato la Lega è **a pari merito con FdI al primo posto** per indice (0,997), ma ha una quota di voti completamente unanimi più alta: 96,5% contro 91,6%. Il dato della Lega si basa su 8.284 votazioni con almeno due suoi senatori votanti.\n\nI gruppi del Misto con pochissime votazioni non sono comparati: non hanno un indice statisticamente calcolabile oppure il dato deriva da una sola votazione. L’indice è quello di Hix-Noury-Roland: misura la concordanza interna fra favorevoli, contrari e astenuti nelle votazioni in cui il gruppo ha almeno due votanti.",
+  "errori": [],
+  "note_domanda": "Misto per componente alla Camera; al Senato il Misto non si può dividere: avvertire.",
+  "riferimento": {
+    "risposta": "Indice di accordo (Hix-Noury-Roland, 1 = tutti votano allo stesso modo) medio su tutte le votazioni palesi della XIX. Camera: FdI 0,998, M5S 0,997, PD-IDP 0,996, AVS 0,995, Lega 0,992, Noi Moderati 0,988, FI-PPE 0,987, IV-CR 0,975, Azione 0,975; componenti del Misto: Sud Chiama Nord 0,998 (solo dal 13/10/2026), Futuro Nazionale Vannacci 0,994 (dal 27/5/2026), +Europa 0,922, Minoranze linguistiche 0,842; i deputati del Misto senza componente 0,563. Alla Camera la Lega è quinta fra i gruppi: vota compatta nell'87,4% delle votazioni, contro il 93,6% di FdI. Senato: Lega (LSP-PSd'Az) 0,997, prima fra i gruppi, seguita da FdI 0,997, Civici d'Italia-UDC-NM 0,996, FI-BP-PPE 0,995, M5S 0,993, PD-IDP 0,976, IV-CR 0,970, Misto 0,899, Per le Autonomie 0,757. Al Senato il Misto non si può dividere per componente.",
+    "stato": "calcolata",
+    "limiti": "Indice di accordo per votazione = (max(Sì, No, Ast.) − ½ · (votanti − max)) / votanti, fra i membri del gruppo che hanno votato (almeno 2), poi media sulle votazioni; voti segreti esclusi; assenti, in missione e presenti non votanti esclusi. Gruppo = ballot.grp risolto con grp_alias (cgm4111, Misto senza componente, va al Misto). Al Senato ballot.grp non ha le componenti del Misto: il Misto resta un blocco unico. Le componenti nate da poco (SCN, FNV-F) hanno poche votazioni e non sono confrontabili con i gruppi presenti da inizio legislatura."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 51.9
+  },
+  "stamattina": {
+    "correttezza": 0
+  },
+  "causa_probabile": null,
+  "note": "Lega 0,992 quinta alla Camera e 0,997 prima al Senato, come il riferimento; tabelle per gruppo coincidenti. Omette la componente FNV (0,994) e divide il Misto del Senato per componente senza avvertire. Stamattina 0."
+}

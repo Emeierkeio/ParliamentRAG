@@ -1,0 +1,322 @@
+{
+ "id": "COMU-020",
+ "domanda": "Quante interrogazioni sono state rivolte al Ministero dell'Interno nel 2026, e quali gruppi ne hanno presentate di più?",
+ "categoria": "sindacato_ispettivo",
+ "tipo_risposta": "classifica",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Interno è il ministero più interrogato del 2026. Camera e Senato separati; gruppo del primo firmatario alla data.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792136.05635,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "laws": false,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 31/12/2026; filtri: rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 1044, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"atti\": 839, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"senato\", \"atti\": 205, \"dal\": \"2026-01-07\", \"al\": \"2026-09-30\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": true,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 31/12/2026; filtri: rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 1044, \"rows_total\": 22, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 207, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"atti\": 168, \"dal\": \"2026-01-15\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Movimento 5 Stelle (M5S)\", \"atti\": 159, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Alleanza Verdi e Sinistra (AVS)\", \"atti\": 104, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Fratelli d'Italia (FDI)\", \"atti\": 96, \"dal\": \"2026-01-05\", \"al\": \"2026-10-05\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Lega - Salvini Premier (LEGA)\", \"atti\": 41, \"dal\": \"2026-01-13\", \"al\": \"2026-10-01\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"atti\": 36, \"dal\": \"2026-01-07\", \"al\": \"2026-09-22\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 35, \"dal\": \"2026-01-07\", \"al\": \"2026-09-29\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"atti\": 34, \"dal\": \"2026-01-08\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"atti\": 29, \"dal\": \"2026-01-07\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Fratelli d'Italia (FdI)\", \"atti\": 24, \"dal\": \"2026-01-07\", \"al\": \"2026-08-07\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"atti\": 22, \"dal\": \"2026-01-15\", \"al\": \"2026-09-22\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"atti\": 21, \"dal\": \"2026-01-13\", \"al\": \"2026-10-02\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"atti\": 12, \"dal\": \"2026-01-21\", \"al\": \"2026-09-22\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"atti\": 12, \"dal\": \"2026-01-07\", \"al\": \"2026-07-16\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto (MISTO)\", \"atti\": 11, \"dal\": \"2026-01-20\", \"al\": \"2026-10-02\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto - Futuro"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "written_question",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo written_question, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 790, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"atti\": 642, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"senato\", \"atti\": 148, \"dal\": \"2026-01-08\", \"al\": \"2026-09-30\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "oral_question",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo oral_question, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 132, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"atti\": 77, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"senato\", \"atti\": 55, \"dal\": \"2026-01-07\", \"al\": \"2026-09-29\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "committee_question",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo committee_question, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 79, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"atti\": 79, \"dal\": \"2026-01-13\", \"al\": \"2026-10-01\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "written_question",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": true,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo written_question, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 790, \"rows_total\": 22, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"atti\": 155, \"dal\": \"2026-01-27\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Movimento 5 Stelle (M5S)\", \"atti\": 133, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 113, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Alleanza Verdi e Sinistra (AVS)\", \"atti\": 92, \"dal\": \"2026-01-05\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Fratelli d'Italia (FDI)\", \"atti\": 65, \"dal\": \"2026-01-05\", \"al\": \"2026-10-05\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Lega - Salvini Premier (LEGA)\", \"atti\": 35, \"dal\": \"2026-01-13\", \"al\": \"2026-10-01\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"atti\": 35, \"dal\": \"2026-01-20\", \"al\": \"2026-09-22\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"atti\": 27, \"dal\": \"2026-01-22\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"atti\": 26, \"dal\": \"2026-01-08\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"atti\": 21, \"dal\": \"2026-01-15\", \"al\": \"2026-09-22\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"atti\": 18, \"dal\": \"2026-01-13\", \"al\": \"2026-10-02\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Fratelli d'Italia (FdI)\", \"atti\": 16, \"dal\": \"2026-01-15\", \"al\": \"2026-08-04\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto (MISTO)\", \"atti\": 10, \"dal\": \"2026-01-20\", \"al\": \"2026-10-02\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"atti\": 10, \"dal\": \"2026-01-14\", \"al\": \"2026-07-16\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"atti\": 8, \"dal\": \"2026-02-09\", \"al\": \"2026-09-22\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"atti\": 7, \"dal\": \"2026-06-11\", \"al\": \"2026-10-06\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Misto"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "oral_question",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": true,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo oral_question, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 132, \"rows_total\": 20, \"offset\": 0, \"rows\": [{\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 31, \"dal\": \"2026-01-07\", \"al\": \"2026-09-29\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 27, \"dal\": \"2026-01-13\", \"al\": \"2026-10-06\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Fratelli d'Italia (FDI)\", \"atti\": 25, \"dal\": \"2026-01-05\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Fratelli d'Italia (FdI)\", \"atti\": 8, \"dal\": \"2026-01-07\", \"al\": \"2026-08-07\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"atti\": 7, \"dal\": \"2026-01-15\", \"al\": \"2026-06-18\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Movimento 5 Stelle (M5S)\", \"atti\": 6, \"dal\": \"2026-01-13\", \"al\": \"2026-09-09\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Lega - Salvini Premier (LEGA)\", \"atti\": 4, \"dal\": \"2026-03-24\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Alleanza Verdi e Sinistra (AVS)\", \"atti\": 4, \"dal\": \"2026-02-10\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"atti\": 3, \"dal\": \"2026-03-24\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"atti\": 3, \"dal\": \"2026-04-14\", \"al\": \"2026-06-09\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"atti\": 2, \"dal\": \"2026-03-24\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"atti\": 2, \"dal\": \"2026-01-07\", \"al\": \"2026-03-04\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"atti\": 2, \"dal\": \"2026-01-07\", \"al\": \"2026-07-14\"}, {\"ramo\": \"senato\", \"gruppo_primo_firmatario\": \"Misto - Azione-Renew Europe (Az-RE)\", \"atti\": 2, \"dal\": \"2026-07-22\", \"al\": \"2026-07-29\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"atti\": 1, \"dal\": \"2026-06-09\", \"al\": \"2026-06-09\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"atti\": 1, \"dal\": \"2026-09-30\", \"al\": \"2026-09-30\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmat"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "question",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo question, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "committee_question",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": true,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo committee_question, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 79, \"rows_total\": 9, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 59, \"dal\": \"2026-01-13\", \"al\": \"2026-10-01\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"atti\": 6, \"dal\": \"2026-01-15\", \"al\": \"2026-07-07\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Movimento 5 Stelle (M5S)\", \"atti\": 3, \"dal\": \"2026-01-22\", \"al\": \"2026-09-23\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Fratelli d'Italia (FDI)\", \"atti\": 3, \"dal\": \"2026-02-05\", \"al\": \"2026-09-09\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"atti\": 2, \"dal\": \"2026-03-05\", \"al\": \"2026-05-12\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Lega - Salvini Premier (LEGA)\", \"atti\": 2, \"dal\": \"2026-02-16\", \"al\": \"2026-05-12\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"atti\": 2, \"dal\": \"2026-05-12\", \"al\": \"2026-07-14\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Misto (MISTO)\", \"atti\": 1, \"dal\": \"2026-06-03\", \"al\": \"2026-06-03\"}, {\"ramo\": \"camera\", \"gruppo_primo_firmatario\": \"Alleanza Verdi e Sinistra (AVS)\", \"atti\": 1, \"dal\": \"2026-05-12\", \"al\": \"2026-05-12\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "interpellation",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo interpellation, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 43, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"atti\": 41, \"dal\": \"2026-01-13\", \"al\": \"2026-09-30\"}, {\"ramo\": \"senato\", \"atti\": 2, \"dal\": \"2026-04-08\", \"al\": \"2026-07-23\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "written_question OR oral_question OR committee_question",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "interno",
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo written_question OR oral_question OR committee_question, rivolti_al_ministero interno. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  }
+ ],
+ "strumenti": [
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti"
+ ],
+ "tempo_s": 31.0,
+ "risposta_sistema": "Nel 2026 risultano **1.044 atti rivolti al Ministero dell’Interno**: **839 alla Camera** (dal 5 gennaio al 6 ottobre) e **205 al Senato** (dal 7 gennaio al 30 settembre). Il conteggio include le diverse forme di interrogazione e le interpellanze.\n\nI gruppi con più atti, contando il **gruppo del primo firmatario** alla data di presentazione, sono:\n\n- **Camera:** PD-IDP **207**; Azione–PER–Renew Europe **168**; M5S **159**; AVS **104**; FdI **96**.\n- **Senato:** componente del Misto **AVS 36**; PD-IDP **35**; M5S **34**; Italia Viva–Casa Riformista **29**; FdI **24**.\n\nNei dati disponibili, l’ultimo atto rivolto all’Interno del 2026 è del **6 ottobre alla Camera** e del **30 settembre al Senato**; quindi non ci sono ancora atti successivi registrati fino al 4 novembre.",
+ "eventi": {
+  "status": 1,
+  "tool": 22,
+  "dati": 11,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

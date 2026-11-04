@@ -1,0 +1,43 @@
+{
+  "id": "COMU-036",
+  "domanda": "Quante audizioni ha fatto la Camera sulla legge annuale per la concorrenza 2026 e chi è stato sentito?",
+  "categoria": "audizioni",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "AC 3120.",
+  "trappola": false,
+  "endpoint": "agente",
+  "gruppo": "nuove",
+  "inizio": 1793792521.435658,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "atto",
+    "elenco_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute"
+  ],
+  "tempo_s": 25.0,
+  "risposta_sistema": "La Camera non ha ancora svolto audizioni sul disegno di legge **C. 3120, “Legge annuale per il mercato e la concorrenza 2026”**: **0 audizioni** e quindi **nessun soggetto sentito**.\n\nL’esame in X Commissione (Attività produttive) è iniziato il 27 ottobre e ha avuto un seguito il 28 ottobre 2026, entrambi in sede referente; l’atto risulta tuttora in esame in Commissione. [Scheda ufficiale C. 3120](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120)\n\nDati disponibili fino alla seduta del **3 novembre 2026**.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Nei dati la Camera non ha ancora svolto audizioni sul C. 3120 (legge annuale per il mercato e la concorrenza 2026): ci sono l'esame in V Commissione ai sensi dell'art. 123-bis (21/10/2026) e due sedute della X Commissione in sede referente (27/10/2026, relazione di Gusmeroli, e 28/10/2026), nessuna in sede di audizione. Sono stati depositati due contributi scritti: Conferenza unificata (28/10/2026) e FIAIP (30/10/2026).",
+    "stato": "parziale",
+    "limiti": "Il Bollettino delle commissioni è caricato fino al 29/10/2026: audizioni successive non sono visibili. Le audizioni informali senza memoria depositata compaiono solo come punti del Bollettino; qui non ce ne sono. I contributi scritti non dicono se l'autore è stato anche audito."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 25.0
+  },
+  "prima": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Come nel giro precedente: nessuna audizione sul C. 3120, X Commissione 27 e 28/10, scheda Camera linkata. Mancano ancora l'esame in V Commissione del 21/10 e i contributi scritti di Conferenza unificata e FIAIP."
+}

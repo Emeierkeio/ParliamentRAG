@@ -1,0 +1,50 @@
+{
+  "id": "RIC-015",
+  "trappola": false,
+  "domanda": "Come votano i deputati della componente Futuro Nazionale Vannacci rispetto alla Lega, prima e dopo l'uscita dal gruppo?",
+  "categoria": "gruppi",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "camera",
+  "difficolta": "difficile",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791416.296993,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cambi_gruppo",
+    "voto_gruppi",
+    "voto_gruppi",
+    "voto_gruppi",
+    "voto_gruppi",
+    "voto_gruppi",
+    "voto_gruppi",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona"
+  ],
+  "tempo_s": 113.4,
+  "risposta_sistema": "I cinque deputati oggi nella componente **Futuro Nazionale Vannacci - Free** che provenivano dalla Lega hanno votato quasi sempre come la Lega quando ne facevano parte: fra **98,8% e 99,6%** delle votazioni palesi cui hanno partecipato. Dopo l’uscita, continuano in larga misura a convergere con la Lega, ma meno: fra **91,0% e 94,7%**.\n\n| Deputato | Nella Lega: voto uguale alla posizione della Lega | Dopo, nella componente FNV: voto uguale alla Lega |\n|---|---:|---:|\n| [Domenico Furgiuele](http://dati.camera.it/ocd/persona.rdf/p307718) | 13.896 su 13.982 (**99,4%**) | 1.253 su 1.323 (**94,7%**) |\n| [Gianangelo Bof](http://dati.camera.it/ocd/persona.rdf/p308801) | 16.525 su 16.724 (**98,8%**) | 1.432 su 1.574 (**91,0%**) |\n| [Laura Ravetto](http://dati.camera.it/ocd/persona.rdf/p301459) | 12.981 su 13.060 (**99,4%**) | 1.374 su 1.484 (**92,6%**) |\n| [Edoardo Ziello](http://dati.camera.it/ocd/persona.rdf/p307143) | 15.481 su 15.551 (**99,5%**) | 1.510 su 1.640 (**92,1%**) |\n| [Rossano Sasso](http://dati.camera.it/ocd/persona.rdf/p307360) | 13.025 su 13.081 (**99,6%**) | 1.213 su 1.313 (**92,4%**) |\n\nIn media descrittiva, quindi, lo scarto dopo l’uscita è di circa **6–8 punti percentuali**, con Bof che si allontana di più e Furgiuele che resta più vicino alle posizioni leghiste.\n\nCome componente, dal **27 maggio al 28 ottobre 2026**, FNV e Lega hanno avuto la stessa posizione in **93,3%** delle votazioni palesi in cui entrambi i gruppi hanno espresso una posizione; le posizioni sono state diverse in **135** votazioni. La componente è stata costituita il 27 maggio per Ravetto, Ziello e Sasso, e l’8 giugno per Furgiuele e Bof; le date delle appartenenze sono nelle rispettive [schede Camera](http://dati.camera.it/ocd/persona.rdf/p307718).  \n\nIl confronto esclude voti segreti, assenze, missioni e presenti non votanti. Per “posizione della Lega” si intende la scelta prevalente fra i suoi votanti; per ciascun deputato, il confronto non usa il suo stesso voto per determinare quella posizione. I dati di voto arrivano fino al **28 ottobre 2026**.",
+  "errori": [],
+  "note_domanda": "Persone del panel: Domenico Furgiuele, Edoardo Ziello, Attilio Pierro, Davide Bergamini (passati per Misto e alcuni per FI-PPE). Il confronto va fatto sulle stesse persone in due periodi; Ziello è nel Misto senza componente dal 6/2 al 27/5/2026.",
+  "riferimento": {
+    "risposta": "Quota di votazioni palesi in cui il deputato ha votato come la maggioranza del gruppo Lega, prima e dopo l'uscita. Attilio Pierro (fuori dalla Lega dal 30/12/2025): 99,9% prima, 96,4% dopo (99,0% nel periodo FI-PPE, 93,0% nella componente Futuro Nazionale Vannacci). Davide Bergamini (fuori dal 7/1/2026): 99,8% prima, 95,7% dopo (99,1% in FI-PPE, 91,5% in FNV). Domenico Furgiuele (fuori dall'8/6/2026): 99,4% prima, 94,7% dopo, tutto in FNV. Edoardo Ziello (fuori dal 6/2/2026): 99,5% prima, 94,0% dopo (96,7% nel Misto senza componente, 91,9% in FNV). Per tutti e quattro l'allineamento con la Lega resta alto, e scende soprattutto dopo l'ingresso nella componente Futuro Nazionale Vannacci.",
+    "stato": "calcolata",
+    "limiti": "Posizione della Lega = voto più frequente (sì, no, astensione) fra i deputati con gruppo Lega nel voto, esclusi i quattro del panel; contano solo le votazioni in cui la persona ha votato sì, no o astenuta (le segrete sono escluse). «Prima» = fino alla data di fine dell'appartenenza alla Lega compresa, «dopo» = dal giorno successivo; il gruppo del secondo blocco è quello che la Camera attribuisce nel voto. Il secondo blocco conta solo le votazioni dal 31/12/2025."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 113.4
+  },
+  "stamattina": {
+    "correttezza": 0
+  },
+  "causa_probabile": "ragionamento_o_prompt",
+  "note": "Furgiuele 99,4% → 94,7% esatto come il riferimento; aggiunge Bof, Ravetto e Sasso (veri ex Lega in FNV, che il riferimento non ha) ma omette Pierro e Bergamini, passati da FI-PPE. Per Ziello conta solo il periodo FNV (92,1% invece di 94,0%). Stamattina 0; solo schede persona come link."
+}

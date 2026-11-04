@@ -1,0 +1,190 @@
+{
+ "id": "AULA-038",
+ "domanda": "Durante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026, prima del Consiglio europeo, quali gruppi hanno applaudito e quali hanno protestato?",
+ "categoria": "reazioni",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "senato",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792278.962176,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "start": "2026-10-14",
+    "end": "2026-10-14",
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524275\"}]}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:senato:19:sed0466",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524275\", \"items\": [{\"uri\": \"it:senato:19:sed0466:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0466:int00001\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:1275\", \"name\": \"Ignazio La Russa\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"La seduta è aperta (ore 9,03).\\n\\nSi dia lettura del processo verbale.\\n\\nSILVESTRONI, segretario, dà lettura del processo verbale della seduta del giorno…\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0466:int00002\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:1275\", \"name\": \"Ignazio La Russa\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Non essendovi osservazioni, il processo verbale è approvato.\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:sed0466:d-d1e38\", \"order\": 2, \"title\": \"Comunicazioni della Presidenza\", \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0466:int00003\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:1275\", \"name\": \"Ignazio La Russa\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"L'elenco dei senatori in congedo e assenti per incarico ricevuto dal Senato, nonché ulteriori comunicazioni all'Assemblea saranno pubblicati nell'alle…\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:sed0466:d-d1e46\", \"order\": 3, \"title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0466:int00004\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:1275\", \"name\": \"Ignazio La Russa\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"L'ordine del giorno reca: «Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026».\\n\\nHa facol…\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0466:int00005\", \"order\": 2, \"person\": {\""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "europa",
+    "chamber": "senato",
+    "person": "it:person:camera:302103",
+    "start": "2026-10-14",
+    "end": "2026-10-14",
+    "include_summaries": false,
+    "captions": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "applaus",
+    "chamber": "senato",
+    "person": "it:person:camera:302103",
+    "start": "2026-10-14",
+    "end": "2026-10-14",
+    "include_summaries": false,
+    "captions": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 45, \"items\": [{\"uri\": \"it:senato:19:sed0466:int00005\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"…a e rapida. Per questo abbiamo lavorato per raggiungere un accordo in ambito G7 che ha previsto il rilascio sui mercati di un significativo quantitativo di carburante, anche per prevenire il rischio di un blocco delle esportazioni americane che avrebbe impattato pesantemente sulle nostre economie. [[(Applausi)]]\"}, {\"uri\": \"it:senato:19:sed0466:int00005\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"…misura, riducendo il peso del costo della generazione a gas sul prezzo complessivo dell'elettricità.\\n\\nEcco, il risultato che ci interessa e per il quale lavoriamo: non una riga in più nelle conclusioni di un vertice, ma una bolletta più leggera per una famiglia ed un costo in meno per una impresa. [[(Applausi)]]\"}, {\"uri\": \"it:senato:19:sed0466:int00005\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"…emp"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "protest",
+    "chamber": "senato",
+    "person": "it:person:camera:302103",
+    "start": "2026-10-14",
+    "end": "2026-10-14",
+    "include_summaries": false,
+    "captions": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "senato",
+    "kinds": [
+     "applause",
+     "protests"
+    ],
+    "body": "aula",
+    "start": "2026-10-14",
+    "end": "2026-10-14",
+    "speaker": "it:person:camera:302103",
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "tipo",
+     "gruppo_che_reagisce"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Senato, sedute d'Aula, dal 14/10/2026 al 14/10/2026; filtri: tipi applause, protests, oratore it:person:camera:302103. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 45, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"tipo\": \"applause\", \"gruppo_che_reagisce\": \"(nessun gruppo nominato)\", \"reazioni\": 45}]}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 0, \"results\": [{\"quote\": \"Applausi\", \"found\": false, \"reason\": \"troppo corta per verificarla\"}]}"
+  }
+ ],
+ "strumenti": [
+  "elenco_sedute",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "conta_reazioni"
+ ],
+ "tempo_s": 18.7,
+ "risposta_sistema": "Nel resoconto delle comunicazioni di Giorgia Meloni non è indicato alcun gruppo né per gli applausi né per le proteste.\n\n- **Applausi:** 45 didascalie di «Applausi», tutte senza attribuzione a gruppi.\n- **Proteste:** nessuna didascalia di protesta registrata durante il suo intervento.\n\nQuindi non è possibile associare gli applausi a FdI, Lega o altri gruppi: il resoconto ufficiale li riporta soltanto in forma generica. [Seduta del Senato n. 466, 14 ottobre 2026](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524275)",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "FdI",
+     "PD",
+     "Lega"
+    ],
+    "missing": [
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "Per le Autonomie (SVP-PATT, Campobase)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Avanti PSI (Misto)",
+     "Rifondazione Comunista (Misto)",
+     "Italia Domani - Marco Rizzo (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "Applausi",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "Durante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026, prima del Consiglio europeo, quali gruppi hanno applaudito e quali hanno protestato?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Marco Meloni",
+      "group": "Partito Democratico",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Senato della Repubblica, XIX legislatura"
+  }
+ }
+}

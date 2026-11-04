@@ -1,0 +1,72 @@
+{
+ "id": "DJ-010",
+ "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
+ "categoria": "governo",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+ "trappola": true,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792620.682397,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_votazioni",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": true,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "chamber": "camera",
+    "secret": null,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni elettroniche, Camera, dal 13/10/2022 al 04/11/2026; filtri: fiducia sì (questioni di fiducia poste dal Governo, una per votazione: alla Camera una per articolo; esclusa la fiducia iniziale al Governo dell'ottobre 2022). Fonte: le votazioni pubblicate dai due rami (tabella vote); i rami non sono sommati.\", \"total\": 70, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"votazioni\": 70, \"dal\": \"2022-12-23\", \"al\": \"2026-10-07\"}]}"
+  },
+  {
+   "name": "conta_votazioni",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": true,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "chamber": "senato",
+    "secret": null,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni elettroniche, Senato, dal 13/10/2022 al 04/11/2026; filtri: fiducia sì (questioni di fiducia poste dal Governo, una per votazione: alla Camera una per articolo; esclusa la fiducia iniziale al Governo dell'ottobre 2022). Fonte: le votazioni pubblicate dai due rami (tabella vote); i rami non sono sommati.\", \"total\": 57, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"votazioni\": 57, \"dal\": \"2022-12-21\", \"al\": \"2026-09-30\"}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_votazioni",
+  "conta_votazioni"
+ ],
+ "tempo_s": 7.1,
+ "risposta_sistema": "Il Governo Meloni ha posto la questione di fiducia **70 volte alla Camera** e **57 volte al Senato**, dall’inizio della XIX legislatura fino al **4 novembre 2026** (ultimi dati di seduta: 3 novembre).\n\nAlla Camera uno stesso provvedimento può comportare più fiducie, perché possono essere poste su articoli distinti. Il conteggio esclude la fiducia iniziale al Governo dell’ottobre 2022.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

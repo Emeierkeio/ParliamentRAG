@@ -1,0 +1,103 @@
+{
+  "id": "GIO-005",
+  "trappola": false,
+  "domanda": "È vero che è la prima volta in questa legislatura che si mette la fiducia su una legge elettorale?",
+  "categoria": "governo",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791531.429801,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_votazioni",
+    "conta_votazioni",
+    "cerca_atti",
+    "cerca_atti",
+    "cerca_atti",
+    "atto",
+    "elenco_votazioni",
+    "elenco_votazioni",
+    "elenco_votazioni",
+    "conta_votazioni",
+    "conta_votazioni",
+    "cerca_atti",
+    "cerca_atti",
+    "atto",
+    "atto",
+    "elenco_votazioni",
+    "elenco_votazioni",
+    "elenco_votazioni"
+  ],
+  "tempo_s": 28.3,
+  "risposta_sistema": "Sì. Se per “legge elettorale” si intende una legge che modifica le regole per eleggere Camera e Senato, nella XIX legislatura la prima — e, nei dati fino al 3 novembre 2026, l’unica — apposizione della fiducia è stata sul testo poi diventato **legge n. 180 del 9 ottobre 2026**: [A.C. 2822-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B), «Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica».\n\nLa fiducia è stata votata **alla Camera**, non al Senato, in tre votazioni sugli articoli:\n- [articolo 1, 6 ottobre 2026](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_1&tipo=dettaglio): 226 favorevoli, 147 contrari, 3 astenuti;\n- [articolo 2, 6 ottobre 2026](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=721_2&tipo=dettaglio): 227 favorevoli, 149 contrari, 3 astenuti;\n- [articolo 3, 7 ottobre 2026](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=722_34&tipo=dettaglio): 228 favorevoli, 144 contrari, 3 astenuti.\n\nIl Senato aveva modificato il testo come [DDL 1971](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55214.htm), ma lì non risulta una votazione di fiducia sul provvedimento. La precisazione conta: nella legislatura ci sono stati anche decreti sulle **consultazioni elettorali**, ma non sono leggi di riforma del sistema elettorale di Camera e Senato.",
+  "errori": [],
+  "verifica": {
+    "dati": {
+      "outcome": {
+        "groups": "fail",
+        "authority": "na",
+        "quotes": "fail"
+      },
+      "groups": {
+        "present": [],
+        "missing": [
+          "Fratelli d'Italia",
+          "Partito Democratico",
+          "Lega - Salvini Premier",
+          "Movimento 5 Stelle",
+          "Forza Italia",
+          "Alleanza Verdi e Sinistra",
+          "Azione - PER",
+          "Italia Viva - Casa Riformista",
+          "Noi Moderati",
+          "+Europa (Misto)",
+          "Futuro Nazionale Vannacci (Misto)",
+          "Minoranze linguistiche (Misto)",
+          "Per le Autonomie (SVP-PATT, Campobase)",
+          "Misto, non iscritti",
+          "Governo"
+        ],
+        "silent": [
+          "Sud chiama Nord (Misto)",
+          "Avanti PSI (Misto)",
+          "Rifondazione Comunista (Misto)",
+          "Italia Domani - Marco Rizzo (Misto)"
+        ]
+      },
+      "quotes": [
+        {
+          "quote": "Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica",
+          "status": "not_found",
+          "closest_passage": null,
+          "url": null
+        }
+      ],
+      "authority": {
+        "topic": "È vero che è la prima volta in questa legislatura che si mette la fiducia su una legge elettorale?",
+        "available": true,
+        "voices": []
+      },
+      "scope": "Camera dei deputati e Senato della Repubblica, XIX legislatura"
+    }
+  },
+  "note_domanda": "La XIX dice di sì o no dai dati; il confronto storico con il Rosatellum (2017) chiede la XVII: avvertire.",
+  "riferimento": {
+    "risposta": "Sì, nei dati della XIX è la prima volta. Fra tutti i voti di fiducia della legislatura, gli unici su una legge elettorale sono i tre della Camera sul C. 2822-B (legge elettorale Bignami e altri, terza lettura): 6/10/2026 sull'articolo 1 (226 sì, 147 no, 3 astenuti) e sull'articolo 2 (227 sì, 149 no, 3 astenuti), 7/10/2026 sull'articolo 3 (228 sì, 144 no, 3 astenuti). Nelle letture precedenti la fiducia non c'è stata: prima lettura alla Camera con voto sugli emendamenti e voto finale il 16/7/2026 (217 sì, 152 no), Senato (S. 1971) con voto degli articoli e voto finale il 15/9/2026 (113 sì, 71 no). Il voto finale, segreto, è dell'8/10/2026 (227 sì, 164 no).",
+    "stato": "calcolata",
+    "limiti": "Il confronto storico (ad esempio con il Rosatellum del 2017, XVII legislatura) non è calcolabile: il database copre solo la XIX. Le tre votazioni del 6-7/10/2026 sono questioni di fiducia distinte, una per articolo. Alla Camera i voti di fiducia sulle mozioni (fiducia iniziale e mozioni di sfiducia) sono legati alla mozione e restano fuori dal filtro. Al Senato le fiducie non hanno vote_act e l'atto si legge dal titolo: due titoli non hanno il numero nella forma attesa (fiducia iniziale al Governo Meloni, 26/10/2022; fiducia sull'A.S 442, bilancio, 29/12/2022) e sono stati controllati a mano: nessuna riguarda leggi elettorali."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 28.3
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": null,
+  "note": "Sì, tre fiducie sul C. 2822-B: 6/10 artt. 1 e 2, 7/10 art. 3, con i numeri giusti (226-147-3, 227-149-3, 228-144-3) e i link ai voti. Stamattina 1 per la data sbagliata e i numeri mancanti."
+}

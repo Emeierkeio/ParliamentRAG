@@ -1,0 +1,57 @@
+{
+  "id": "CIT-025",
+  "trappola": false,
+  "domanda": "il parlamento ha votato per mandare armi all'Ucraina? chi era contro",
+  "categoria": "voti",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791450.38573,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "cerca_per_significato",
+    "elenco_votazioni",
+    "atto",
+    "atto",
+    "atto",
+    "atto",
+    "voto_gruppi",
+    "voto_gruppi",
+    "voto_gruppi",
+    "voto_gruppi",
+    "atto",
+    "atto",
+    "atto",
+    "atto",
+    "voto_gruppi",
+    "voto_gruppi",
+    "voto_gruppi",
+    "voto_gruppi"
+  ],
+  "tempo_s": 38.0,
+  "risposta_sistema": "Sì. Nella XIX legislatura il Parlamento ha più volte convertito in legge decreti che **prorogano l’autorizzazione al Governo** a cedere a Kyiv mezzi, materiali ed equipaggiamenti militari. Non è quindi una votazione su ogni singola fornitura: è l’autorizzazione legislativa che ne consente la cessione.\n\nLe quattro proroghe approvate sono diventate le leggi n. 8/2023, n. 12/2024, n. 7/2025 e n. 27/2026: [atti Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;761), [2024](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1666), [2025](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2206), [2026](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2754).\n\nChi è stato contro, nelle votazioni finali:\n\n- **Movimento 5 Stelle**: posizione contraria in tutte e quattro le votazioni finali della Camera e nelle finali del Senato del 2023, 2024 e 2025.\n- **Alleanza Verdi e Sinistra**: posizione contraria in tutte e quattro le finali alla Camera; al Senato era nel gruppo Misto come componente **Misto–Alleanza Verdi e Sinistra** e ha votato contro nelle finali 2023-2025.\n\nAlla Camera i risultati finali sono stati:\n- 24 gennaio 2023: **215 favorevoli, 46 contrari** ([votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=42_11&tipo=dettaglio));\n- 8 febbraio 2024: **218 favorevoli, 42 contrari** ([votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=241_1&tipo=dettaglio));\n- 28 gennaio 2025: **192 favorevoli, 41 contrari** ([votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=418_15&tipo=dettaglio));\n- 11 febbraio 2026: **229 favorevoli, 40 contrari** ([votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=613_16&tipo=dettaglio)).\n\nAl Senato, le tre finali con voto elettronico disponibile hanno dato rispettivamente **125-28-2** (favorevoli-contrari-astenuti) nel 2023, **113-18-0** nel 2024 e **123-25-1** nel 2025: [DDL 389](https://www.senato.it/leg/19/BGT/Schede/Ddliter/51937.htm), [DDL 974](https://www.senato.it/leg/19/BGT/Schede/Ddliter/53371.htm), [DDL 1335](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54195.htm). La legge del 2026 è stata approvata definitivamente dal Senato, ma nella scheda disponibile non risulta una votazione elettronica finale da cui ricavare le posizioni per gruppo: [DDL 1793](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55100.htm).\n\nPD, Azione, Italia Viva e i gruppi di maggioranza hanno avuto invece posizione di gruppo prevalentemente favorevole nelle finali; in alcune votazioni PD e M5S non sono risultati perfettamente compatti internamente.",
+  "errori": [],
+  "note_domanda": "Decreti di proroga delle cessioni di mezzi militari: DL 185/2022 (C. 761, S. 389, legge 8/2023) e DL 200/2023 (S. 974, legge 12/2024). Voto per gruppo, Misto per componente, Camera e Senato separati. Al Senato il Misto non è diviso per componente: si danno i nomi.",
+  "riferimento": {
+    "risposta": "Sì. Il Parlamento ha convertito quattro decreti che prorogano la cessione di mezzi militari all'Ucraina: DL 185/2022 (legge 8/2023), DL 200/2023 (legge 12/2024), DL 200/2024 (legge 7/2025), DL 201/2025 (legge 27/2026). Voti finali alla Camera: 24/1/2023 215 sì, 46 no; 8/2/2024 218 sì, 42 no; 28/1/2025 192 sì, 41 no; 11/2/2026 229 sì, 40 no. Contro hanno votato ogni volta M5S (37, 31, 30, 29) e AVS (7, 10, 10, 8), più un deputato PD nel 2023; nel Misto senza componente Soumahoro contro nel 2023, 2024 e 2025, e nel 2026 Ziello, Sasso e Pozzolo. Al Senato: 11/1/2023 125 sì, 28 no, 2 astenuti; 24/1/2024 113 sì, 18 no; 22/1/2025 123 sì, 25 no, 1 astenuto. Contro M5S (23, 16, 21), 2 senatori PD nel 2023, e nel Misto De Cristofaro, Magni, Floridia e (2025) Cucchi. Il DL 201/2025 al Senato è passato il 25/2/2026 con la fiducia (106 sì, 57 no): contro PD, M5S, IV e nel Misto Magni e Lombardo, ma è un voto sulla fiducia al Governo, non sul merito.",
+    "stato": "calcolata",
+    "limiti": "Considerati i quattro decreti di proroga (non solo i due della nota). Voti finali della Camera da vote_act; al Senato la votazione è stata scelta nella seduta in cui l'atto è all'ordine del giorno (agenda_item_act) e confermata da vote_act per S. 389, 974 e 1335; S. 1793 è passato con la questione di fiducia, che al Senato vale come approvazione e non è legata all'atto. Gruppo del votante: quello del voto della Camera (con grp_alias), per il Misto la componente alla data; al Senato il Misto non ha componenti nel DB, si danno i nomi."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 38.0
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": "ragionamento_o_prompt",
+  "note": "Quattro decreti, voti finali Camera e Senato giusti, contrari M5S e AVS. Mancano i numeri per gruppo, i contrari del Misto (Soumahoro, Ziello, Sasso, Pozzolo) e la fiducia al Senato del 25/2/2026 (106-57), detta assente. Come stamattina (1)."
+}

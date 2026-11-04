@@ -1,0 +1,67 @@
+{
+ "id": "LOB-012",
+ "trappola": false,
+ "domanda": "Quanti emendamenti al C. 3148 sono stati dichiarati inammissibili e di quali gruppi erano i primi firmatari?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Risultano 28 inammissibili su 89; gli altri hanno esito vuoto, che non vuol dire respinti.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791662.814412,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "3148",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3148\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3148\", \"kind\": \"bill\", \"title\": \"S. 2029. - \\\"Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche\\\" <i>(approvato dal Senato)</i> (3148)\", \"date\": \"2026-10-15\", \"status\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3148\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:3148",
+    "outcome": "inammissibile",
+    "venue": null,
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "gruppo_primo_firmatario",
+     "sede"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:3148, esito inammissibile. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": 28, \"rows_total\": 5, \"offset\": 0, \"rows\": [{\"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"sede\": \"referente\", \"proposte\": 17}, {\"gruppo_primo_firmatario\": \"Movimento 5 Stelle (M5S)\", \"sede\": \"referente\", \"proposte\": 7}, {\"gruppo_primo_firmatario\": \"Alleanza Verdi e Sinistra (AVS)\", \"sede\": \"referente\", \"proposte\": 2}, {\"gruppo_primo_firmatario\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"sede\": \"referente\", \"proposte\": 1}, {\"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"sede\": \"referente\", \"proposte\": 1}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "conta_emendamenti"
+ ],
+ "tempo_s": 8.4,
+ "risposta_sistema": "Sono stati dichiarati **inammissibili 28 emendamenti** al C. 3148, tutti in **sede referente** in Commissione.\n\nPer gruppo del primo firmatario:\n- **Partito Democratico – Italia Democratica e Progressista (PD-IDP): 17**\n- **Movimento 5 Stelle (M5S): 7**\n- **Alleanza Verdi e Sinistra (AVS): 2**\n- **Misto – Futuro Nazionale Vannacci – Free: 1**\n- **Italia Viva – Casa Riformista (IV-CR): 1**\n\nL’atto è il [C. 3148](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3148), di conversione del decreto-legge n. 157/2026. Il conteggio riguarda le proposte con esito registrato come “inammissibile”; la fonte è costituita dai fascicoli degli emendamenti caricati.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,49 @@
+{
+ "id": "COMU-020",
+ "domanda": "Quante interrogazioni sono state rivolte al Ministero dell'Interno nel 2026, e quali gruppi ne hanno presentate di più?",
+ "categoria": "sindacato_ispettivo",
+ "tipo_risposta": "classifica",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note_domanda": "Interno è il ministero più interrogato del 2026. Camera e Senato separati; gruppo del primo firmatario alla data.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792136.05635,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti"
+ ],
+ "tempo_s": 31.0,
+ "risposta_sistema": "Nel 2026 risultano **1.044 atti rivolti al Ministero dell’Interno**: **839 alla Camera** (dal 5 gennaio al 6 ottobre) e **205 al Senato** (dal 7 gennaio al 30 settembre). Il conteggio include le diverse forme di interrogazione e le interpellanze.\n\nI gruppi con più atti, contando il **gruppo del primo firmatario** alla data di presentazione, sono:\n\n- **Camera:** PD-IDP **207**; Azione–PER–Renew Europe **168**; M5S **159**; AVS **104**; FdI **96**.\n- **Senato:** componente del Misto **AVS 36**; PD-IDP **35**; M5S **34**; Italia Viva–Casa Riformista **29**; FdI **24**.\n\nNei dati disponibili, l’ultimo atto rivolto all’Interno del 2026 è del **6 ottobre alla Camera** e del **30 settembre al Senato**; quindi non ci sono ancora atti successivi registrati fino al 4 novembre.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Dal 1/1/2026 al 2/11/2026 le interrogazioni rivolte al Ministero dell'Interno sono 798 alla Camera (642 a risposta scritta, 77 a risposta orale, 79 in commissione) e 203 al Senato (148 scritte, 55 orali); a parte ci sono 41 interpellanze alla Camera e 2 al Senato. Camera, per gruppo del primo firmatario: PD-IDP 199, Azione-PER-RE 163, M5S 142, AVS 97, FdI 93, Lega 41, FI-PPE 21, Misto-+Europa 11, Misto-Futuro Nazionale Vannacci 8, IV-CR 7, Noi Moderati 5, Misto senza componente 11 (Soumahoro 6, Pierro, Gallo, Cesa, Marattin, Sasso 1 ciascuno). Senato: Misto 44 (Cucchi 16, De Cristofaro 11, Magni 9, Lombardo 5, Calenda 3), PD-IDP 34, M5S 33, IV-CR 29, FdI 24, Lega-PSd'Az 22, FI-BP-PPE 12, Autonomie 3, Civici d'Italia-UDC-NM 2.",
+  "stato": "parziale",
+  "limiti": "Interrogazioni = atti written_question, oral_question e committee_question con destinatario il Ministero dell'Interno (act_addressee); le interpellanze sono contate a parte. «Nel 2026» = data di presentazione dal 1/1 al 2/11/2026. Gruppo del primo firmatario alla data di presentazione. Al Senato il Misto non è diviso per componente nel DB (grp non ha componenti del Misto del Senato): si danno i nomi dei senatori, non la componente. Al Senato il gruppo si ricava via person_same_as, perché act_sponsor usa l'id Camera e membership l'id Senato."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 31.0
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": "ragionamento_o_prompt",
+ "note": "Dà 839 atti alla Camera e 205 al Senato contando anche le interpellanze (41 e 2): le interrogazioni sono 798 e 203, e non c'è più il riparto per tipo. Gruppi giusti nell'ordine ma sommati alle interpellanze (PD-IDP 207). Scende da 2 a 1; nessun link."
+}

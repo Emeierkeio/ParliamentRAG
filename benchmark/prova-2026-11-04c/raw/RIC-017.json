@@ -1,0 +1,84 @@
+{
+ "id": "RIC-017",
+ "trappola": false,
+ "domanda": "Quante proteste e commenti ricevono in Aula gli interventi dei ministri rispetto a quelli dei deputati?",
+ "categoria": "reazioni",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "speech.as_office distingue chi parla come membro del governo. Al Senato i membri del governo hanno id propri legati con person_same_as.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791773.7195652,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "protests",
+     "comments"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": "governo",
+    "contains": null,
+    "group_by": [
+     "tipo",
+     "ruolo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi protests, comments, ruolo_oratore governo. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 529, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"tipo\": \"comments\", \"ruolo_oratore\": \"governo\", \"reazioni\": 447}, {\"tipo\": \"protests\", \"ruolo_oratore\": \"governo\", \"reazioni\": 82}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "protests",
+     "comments"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": "parlamentare",
+    "contains": null,
+    "group_by": [
+     "tipo",
+     "ruolo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi protests, comments, ruolo_oratore parlamentare. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 3378, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"tipo\": \"comments\", \"ruolo_oratore\": \"parlamentare\", \"reazioni\": 2645}, {\"tipo\": \"protests\", \"ruolo_oratore\": \"parlamentare\", \"reazioni\": 733}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_reazioni",
+  "conta_reazioni"
+ ],
+ "tempo_s": 12.7,
+ "risposta_sistema": "In Aula alla Camera, dal 13 ottobre 2022 al 3 novembre 2026:\n\n- **Interventi del Governo**: **82 proteste** e **447 commenti** nei resoconti (**529** reazioni complessive).\n- **Interventi dei deputati**: **733 proteste** e **2.645 commenti** (**3.378** reazioni complessive).\n\nIl confronto usa il ruolo registrato nel resoconto: **“governo”** (quindi non soltanto ministri, ma interventi attribuiti al Governo) e **“parlamentare”**. Le reazioni sono le didascalie inserite dentro l’intervento; indicano che la reazione avviene in quel punto del resoconto, non sempre il suo bersaglio preciso.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

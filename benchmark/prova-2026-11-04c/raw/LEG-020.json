@@ -1,0 +1,83 @@
+{
+ "id": "LEG-020",
+ "trappola": false,
+ "domanda": "C'è un dossier del Servizio Studi sul DL 190/2026? Link e contenuto in breve.",
+ "categoria": "fonti",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Dossier D26190 del 27/10/2026.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791613.7723289,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": null,
+    "kind": "bill",
+    "number": "190",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:senato:19:ddl:190\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"190\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 21 aprile 2011, n. 67, ai fini dell'introduzione del personale infermieristico e degli operatori socio-sanitari tra le categorie usuranti\", \"date\": \"2022-10-19\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/51401.htm\", \"initiative\": \"Sen. Guidolin Barbara\"}, {\"uri\": \"it:camera:19:ac:190\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"190\", \"kind\": \"bill\", \"title\": \"COMAROLI ed altri: \\\"Disposizioni per la tutela, la valorizzazione e lo sviluppo economico delle città murate\\\" (190)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;190\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"decreto-legge n. 190 del 2026\"",
+    "chamber": null,
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "governo",
+    "limit": 30,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "190 2026",
+    "chamber": null,
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3159\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3159\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile\\\" (3159)\", \"date\": \"2026-10-22\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:3159"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:3159\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3159\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile\\\" (3159)\", \"date\": \"2026-10-22\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"status_date\": \"2026-10-28\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3159\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:308798\", \"name\": \"Carlo Nordio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308798&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro della Giustizia\"}, {\"person\": {\"uri\": \"it:person:camera:50115\", \"name\": \"Giancarlo Giorgetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50115&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Economia e delle finanze\"}, {\"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"first\": true, \"as_office\": \"Presidente del Consiglio dei ministri\"}, {\"person\": {\"uri\": \"it:person:camera:300356\", \"name\": \"Guido Crosetto\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro della Difesa\"}, {\"person\": {\"uri\": \"it:person:camera:309042\", \"name\": \"Matteo Piantedosi\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro dell'Interno\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-10-22\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-22\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-28\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3159.19PDL0219630\", \"title\": \"Disegno di Legge presentato il 22 ottobre 2026\", \"date\": \"2026-10-22\", \"articles\": 11, \"length\": 16027}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "atto"
+ ],
+ "tempo_s": 21.5,
+ "risposta_sistema": "Sì. Il DL 22 ottobre 2026, n. 190 è all’esame della Camera come **A.C. 3159**, sulla conversione in legge delle disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile. La scheda dell’atto è [qui](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159).\n\nNei dati disponibili non compare però un collegamento o un record separato del **dossier del Servizio Studi**: quindi non posso confermarne l’esistenza né fornire il suo link ufficiale.\n\nIn breve, dal titolo e dal testo del disegno di legge collegato, il decreto riguarda:\n- misure urgenti di **sicurezza pubblica**;\n- interventi di **contrasto alla criminalità minorile**.\n\nL’atto è stato presentato il 22 ottobre, assegnato lo stesso giorno e risulta **in corso di esame in Commissione** dal 28 ottobre 2026. Il testo presentato consta di **11 articoli**. [Scheda A.C. 3159](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159)",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

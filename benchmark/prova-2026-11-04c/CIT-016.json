@@ -1,0 +1,41 @@
+{
+  "id": "CIT-016",
+  "trappola": false,
+  "domanda": "c'è il video di quando hanno approvato la legge elettorale?",
+  "categoria": "video",
+  "tipo_risposta": "link",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791760.646522,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "cerca_atti",
+    "atto",
+    "elenco_votazioni",
+    "seduta"
+  ],
+  "tempo_s": 13.1,
+  "risposta_sistema": "Sì: l’approvazione definitiva della legge elettorale (legge n. 180/2026) è avvenuta alla **Camera l’8 ottobre 2026**, nella seduta n. 723. La votazione finale è stata approvata con **227 favorevoli e 164 contrari**. [Votazione ufficiale](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio) · [resoconto della seduta](https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico)\n\nNei dati disponibili non risulta però il link WebTV né il minuto di inizio del filmato; posso quindi indicare con certezza la seduta, ma non un collegamento video verificato. L’atto è la [proposta A.C. 2822-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B), divenuta legge n. 180 il 9 ottobre 2026.",
+  "errori": [],
+  "note_domanda": "Voto finale della PDL 2822-B alla Camera l'8/10/2026 (227 sì, 164 no, voto segreto), seduta 723: c'è un video della WebTV. Il Senato non ha video nel v3.",
+  "riferimento": {
+    "risposta": "Sì, alla Camera. La legge elettorale (PDL 2822-B) è stata approvata definitivamente l'8/10/2026 nella seduta 723, con voto finale segreto: 227 sì, 164 no. Il video della WebTV è «AULA, Seduta 723 - Legge elettorale, approvazione definitiva»: https://webtv.camera.it/evento/32457 (dalle 10:34 alle 12:52). La votazione finale inizia alle 12:37:15, al secondo 9.420 del video, con l'annuncio del presidente Fontana «Passiamo alla votazione finale»; prima ci sono le dichiarazioni di voto finale. Il passaggio al Senato non ha video nel database.",
+    "stato": "calcolata",
+    "limiti": "Nel database ci sono solo i video della Camera (743, tutti di Aula); per il Senato nessuno. L'offset in secondi è quello di video_segment.start_s; l'URL non porta un parametro di posizione."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 13.1
+  },
+  "stamattina": {
+    "correttezza": 0
+  },
+  "causa_probabile": "strumento_mancante",
+  "note": "Ora seduta 723 dell'8/10/2026, 227 sì e 164 no, legge 180/2026, con link a votazione e resoconto: stamattina parlava del voto del 16/7 (0). Dice però che il video non c'è nei dati: nessuno strumento espone la WebTV (riferimento webtv.camera.it/evento/32457)."
+}

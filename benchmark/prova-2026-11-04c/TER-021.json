@@ -1,0 +1,40 @@
+{
+  "id": "TER-021",
+  "trappola": false,
+  "domanda": "Quanti interventi in Aula hanno parlato di povertà assoluta nel 2026, divisi per gruppo?",
+  "categoria": "statistiche",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791398.476937,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_interventi",
+    "conta_interventi"
+  ],
+  "tempo_s": 17.8,
+  "risposta_sistema": "Nel 2026, fino all’ultima seduta disponibile del **3 novembre**, la frase esatta “povertà assoluta” compare in **48 interventi d’Aula alla Camera** e **17 al Senato**. Il conteggio riguarda i turni di parola che contengono la frase, non il numero totale di volte in cui è pronunciata.\n\n**Camera**\n- Movimento 5 Stelle (M5S): **21**\n- Alleanza Verdi e Sinistra (AVS): **15**\n- Partito Democratico – Italia Democratica e Progressista (PD-IDP): **11**\n- Italia Viva – Casa Riformista (IV-CR): **1**\n\n**Senato**\n- MoVimento 5 Stelle (M5S): **7**\n- Partito Democratico – Italia Democratica e Progressista (PD-IDP): **4**\n- Italia Viva – Casa Riformista (IV-CR): **2**\n- Misto – Alleanza Verdi e Sinistra (AVS): **2**\n- Lega Salvini Premier – Partito Sardo d’Azione (LSP-PSd’Az): **1**\n- Senza gruppo (ruoli non parlamentari, ad esempio Governo o Presidenza): **1**\n\nLe occorrenze complessive della frase sono **59 alla Camera** e **20 al Senato**: un singolo intervento può contenerla più di una volta.",
+  "errori": [],
+  "note_domanda": "Conteggio per parola: dichiarare la parola cercata. Rami separati.",
+  "riferimento": {
+    "risposta": "Interventi d'Aula del 2026 (al 2/11) che contengono «povertà assoluta». Camera, 48: M5S 21, AVS 15, PD-IDP 11, IV-CR 1. Senato, 17: M5S 7, PD-IDP 4, IV-CR 2, Misto 2 (Cucchi e Magni), Lega-PSd'Az 1, Governo 1 (la presidente del Consiglio Meloni). Nessun intervento degli altri gruppi contiene l'espressione.",
+    "stato": "calcolata",
+    "limiti": "Conteggio per espressione esatta «povertà assoluta» (ILIKE, comprese le varianti con apostrofo, che non cambiano il risultato) nel testo degli interventi delle sedute d'Aula, dal 1/1 al 2/11/2026. Un intervento conta una volta anche se la ripete. Gruppo dell'oratore alla data (group_at); al Senato il Misto non è diviso per componente nel DB."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 17.8
+  },
+  "stamattina": {
+    "correttezza": 0
+  },
+  "causa_probabile": null,
+  "note": "Camera 48 (M5S 21, AVS 15, PD-IDP 11, IV-CR 1) e Senato 17, identici al riferimento, con la parola cercata dichiarata. Stamattina 0: nessun numero per gruppo. Nessun link."
+}

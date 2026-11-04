@@ -1,0 +1,50 @@
+{
+ "id": "APP-024",
+ "domanda": "Calderone è uscito da Forza Italia? quando",
+ "categoria": "persone",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Tommaso Antonino Calderone: FI-PPE fino al 21/9/2026, poi Misto, componente Futuro Nazionale Vannacci - Free.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792063.305398,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Calderone",
+    "chamber": null,
+    "group": null,
+    "in_office": false,
+    "limit": 20
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:308766\", \"name\": \"Tommaso Antonino Calderone\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308766&legislatura=19\"}]}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308766"
+   },
+   "result": "{\"uri\": \"it:person:camera:308766\", \"name\": \"Tommaso Antonino Calderone\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308766&legislatura=19\", \"given_name\": \"Tommaso Antonino\", \"family_name\": \"Calderone\", \"gender\": \"M\", \"birth_date\": \"1963-01-30\", \"birth_place\": \"Barcellona Pozzo di Gotto\", \"profession\": \"Avvocato patrocinante in cassazione\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308766\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"SICILIA 2 - P01\", \"college\": \"SICILIA 2 - U05\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-09-21\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-09-21\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-09-21\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3962\", \"target_name\": \"Commissione Parlamentare per il Contrasto degli Svantaggi Derivanti dall'Insularita'\", \"title\": \"member\", \"start_date\": \"2023-07-12\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"vice_chair\", \"start_date\": \"2026-04-22\"}, {\"target\": \"it:camera:19:body:o19_3962\", \"target_name\": \"Commissione Parlamentare per il Contrasto degli Svantaggi Derivanti dall'Insularita'\", \"title\": \"chair\", \"start_date\": \"2023-07-26\"}, {\"target\": \"it:camera:19:body:o19_3962\", \"target_name\": \"Commissione Parlamentare per il Contrasto degli Svantaggi Derivanti dall'Insularita'\", \"title\": \"group_whip\", \"start_date\": \"2023-08-02\", \"end_date\": \"2026-09-22\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}], \"counts\": {\"speeches\": 1139, \"ballots\": 20256, \"ballots_cast\": 8711, \"ballots_mission\": 7336, \"bills_first_signer\": 26, \"amendments_signed\": 266}}"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "scheda_persona"
+ ],
+ "tempo_s": 9.8,
+ "risposta_sistema": "Sì. Il deputato [Tommaso Antonino Calderone](http://dati.camera.it/ocd/persona.rdf/p308766) è uscito dal gruppo **Forza Italia–Berlusconi Presidente–PPE** il **21 settembre 2026**. Nello stesso giorno è entrato nel **Gruppo Misto**, componente **Futuro Nazionale Vannacci – Free**.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

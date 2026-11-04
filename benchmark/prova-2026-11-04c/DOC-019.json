@@ -1,0 +1,45 @@
+{
+ "id": "DOC-019",
+ "domanda": "i lavori dell'Aula di questa settimana da proiettare il lunedì",
+ "categoria": "calendario",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "Settimana del 2/11/2026: Camera dal v3 (sedute planned), Senato mancante.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792138.183577,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto"
+ ],
+ "tempo_s": 16.2,
+ "risposta_sistema": "Per la settimana **2–8 novembre**, i dati disponibili fino al **3 novembre** indicano lavori d’Aula programmati solo alla **Camera**, per **mercoledì 4 novembre**. Non risultano sedute d’Aula del Senato né altre sedute della Camera programmate nel periodo.\n\nAlla Camera è previsto il seguito dell’esame di:\n\n- due decreti-legge sul caro-carburanti: il DDL **C. 3148**, su prezzi petroliferi, infrastrutture e attività energetiche strategiche, già approvato dal Senato; e il **C. 3106**, su sostegno economico, effetti dell’aumento dei carburanti e materia fiscale. Entrambi sono in stato di relazione. [C. 3148](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3148) · [C. 3106](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3106)\n- le proposte sul contrasto all’antisemitismo, incluso il testo **C. 2830**, già approvato dal Senato. [C. 2830](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2830)\n- mozioni sul superamento del diritto di veto nelle decisioni dell’Unione europea, tra cui la mozione Richetti **1-00582**. [Mozione 1-00582](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=1/00582)\n- mozioni per tutelare l’operato della Corte penale internazionale e sui crimini internazionali, tra cui la mozione Boldrini **1-00599**. [Mozione 1-00599](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=1/00599)\n- **question time**: interrogazioni a risposta immediata.\n\nMartedì 3 novembre la Camera aveva già avviato la discussione del DDL C. 3148. [Resoconto della seduta n. 737](https://www.camera.it/leg19/410?idSeduta=0737&tipo=stenografico)",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Settimana dal 2 all'8/11/2026. Camera: nel DB c'è una sola seduta convocata, martedì 3/11/2026 alle 10. Ordine del giorno: alle 11.30 interrogazioni; alle 14 discussione generale del DL 157/2026 sui prezzi petroliferi (S. 2029, approvato dal Senato, C. 3148); deliberazioni sui termini dei collegati alla manovra (concorrenza 2026, C. 3120, e autonomia di Veneto, Liguria e altre regioni, C. 3161-3164); dichiarazione d'urgenza della PDL 2916; questioni pregiudiziali sul DL 190/2026 sicurezza (C. 3159); seguito del DL 157/2026; discussione generale del DL 162/2026 carburanti (C. 3106-A, relatrice Matera). Senato: nel DB non c'è il calendario (ultima seduta registrata il 28/10/2026).",
+  "stato": "parziale",
+  "limiti": "«Questa settimana» = da lunedì 2 a domenica 8/11/2026. Per la Camera c'è solo la seduta del 3/11 (status planned), non il calendario dell'intera settimana; per il Senato mancano sedute future e calendario."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 16.2
+ },
+ "prima": {
+  "correttezza": 1
+ },
+ "causa_probabile": "ragionamento_o_prompt",
+ "note": "Odg del 4/11 (seduta 738, planned) giusto con link alle schede, Senato assente. Della seduta del 3/11 cita solo la discussione del C. 3148: mancano interrogazioni, collegati, urgenza PDL 2916, pregiudiziali DL 190, DL 162. Uguale a prima."
+}

@@ -1,0 +1,41 @@
+{
+  "id": "PARL-042",
+  "domanda": "A quale componente del Misto appartiene oggi Bruno Tabacci, e come ha votato da quando ha lasciato il PD?",
+  "categoria": "gruppi",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+  "trappola": true,
+  "endpoint": "agente",
+  "gruppo": "nuove",
+  "inizio": 1793792610.070155,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_persone",
+    "cambi_gruppo",
+    "scheda_persona",
+    "voto_gruppi",
+    "composizione"
+  ],
+  "tempo_s": 38.4,
+  "risposta_sistema": "Bruno Tabacci oggi è nel **Gruppo Misto senza aderire a una componente**: non risulta quindi assegnato a una delle quattro componenti costituite. Ha lasciato il PD-IDP il **9 luglio 2026**. [Scheda della Camera](http://dati.camera.it/ocd/persona.rdf/p34580)\n\nDa allora, nelle votazioni palesi della Camera disponibili fino al **28 ottobre 2026**, ha espresso **1.228 voti**. Il suo voto è risultato:\n\n- uguale al **PD-IDP** in **1.216 casi su 1.228 (99,0%)**;\n- uguale a **+Europa–Stati Uniti d’Europa** in **976 su 996 (98,0%)**;\n- uguale ad **AVS** in **1.162 su 1.228 (94,6%)**;\n- uguale al **M5S** in **1.144 su 1.228 (93,2%)**;\n- uguale ai gruppi di governo FdI, Lega e FI-PPE in **114 su 1.228 (9,3%)** ciascuno.\n\nIl confronto esclude voti segreti, assenze, missioni e presenti non votanti; la “stessa posizione” è calcolata rispetto alla scelta prevalente dell’altro gruppo, senza includere il suo voto. Nelle registrazioni della Camera Tabacci figura come **Misto (senza componente)**. [Scheda della Camera](http://dati.camera.it/ocd/persona.rdf/p34580)",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Trappola: dal 9/7/2026 è nel Misto senza componente. Non attribuirlo a una componente.",
+    "stato": "note_della_domanda",
+    "limiti": "Nessun file di riferimento: si usano le note della domanda (trappola)."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": "superata",
+    "tempo_s": 38.4
+  },
+  "prima": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Misto senza componente dal 9/7/2026; ora dà la convergenza sui 1.228 voti palesi (PD-IDP 99,0%, gruppi di governo 9,3%), coerente con i 1.229 palesi del giro precedente. Solo la scheda: fonti 0 come prima."
+}

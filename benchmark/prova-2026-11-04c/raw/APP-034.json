@@ -1,0 +1,90 @@
+{
+ "id": "APP-034",
+ "domanda": "chi è il deputato più giovane e il più anziano?",
+ "categoria": "persone",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Solo deputati in carica oggi, con data di nascita.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792370.4724119,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Marco Perissa",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:308812\", \"name\": \"Marco Perissa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308812&legislatura=19\"}]}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Lorenzo Cesa",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:301439\", \"name\": \"Lorenzo Cesa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301439&legislatura=19\"}]}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308812"
+   },
+   "result": "{\"uri\": \"it:person:camera:308812\", \"name\": \"Marco Perissa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308812&legislatura=19\", \"given_name\": \"Marco\", \"family_name\": \"Perissa\", \"gender\": \"M\", \"birth_date\": \"1982-05-22\", \"birth_place\": \"Roma\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308812\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"PIEMONTE 1 - P01\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3903\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulle Condizioni di Sicurezza e Sullo Stato di Degrado delle Citta' e delle Loro Periferie\", \"title\": \"member\", \"start_date\": \"2023-06-08\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"secretary\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_3903\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulle Condizioni di Sicurezza e Sullo Stato di Degrado delle Citta' e delle Loro Periferie\", \"title\": \"vice_chair\", \"start_date\": \"2023-06-21\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"secretary\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-09\"}], \"counts\": {\"speeches\": 122, \"ballots\": 20257, \"ballots_cast\": 16984, \"ballots_mission\": 0, \"bills_first_signer\": 1, \"amendments_signed\": 53}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:301439"
+   },
+   "result": "{\"uri\": \"it:person:camera:301439\", \"name\": \"Lorenzo Cesa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301439&legislatura=19\", \"given_name\": \"Lorenzo\", \"family_name\": \"Cesa\", \"gender\": \"M\", \"birth_date\": \"1951-08-16\", \"birth_place\": \"Arcinazzo Romano\", \"profession\": \"Parlamentare\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p301439\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"MOLISE - P01\", \"college\": \"MOLISE - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2022-10-27\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4148\", \"name\": \"Noi Moderati - MAIE\", \"short_name\": \"M-NM(N-C-U-I)-M\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2022-10-19\", \"end_date\": \"2022-10-27\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-27\", \"end_date\": \"2024-04-18\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2024-04-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2024-05-13\"}, {\"target\": \"it:camera:19:body:o19_3861\", \"target_name\": \"Delegazione Italiana Presso l'Assemblea Parlamentare della NATO\", \"title\": \"member\", \"start_date\": \"2023-05-04\"}, {\"target\": \"it:camera:19:body:o19_3509\", \"target_name\": \"IX Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-05-13\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"group_whip\", \"start_date\": \"2024-05-13\"}, {\"target\": \"it:camera:19:body:o19_3861\", \"target_name\": \"Delegazione Italiana Presso l'Assemblea Parlamentare della NATO\", \"title\": \"chair\", \"start_date\": \"2023-05-09\"}, {\"target\": \"it:camera:19:body:o19_3509\", \"target_name\": \"IX Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-04-18\"}], \"counts\": {\"speeches\": 63, \"ballots\": 20256, \"ballots_cast\": 3445, \"ballots_mission\": 14149, \"bills_first_signer\": 6, \"amendments_signed\": 351}}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Rachele Scarpa",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:308803\", \"name\": \"Rachele Scarpa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308803&legislatura=19\"}]}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308803"
+   },
+   "result": "{\"uri\": \"it:person:camera:308803\", \"name\": \"Rachele Scarpa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308803&legislatura=19\", \"given_name\": \"Rachele\", \"family_name\": \"Scarpa\", \"gender\": \"F\", \"birth_date\": \"1997-01-29\", \"birth_place\": \"Treviso\", \"profession\": \"Studentessa\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308803\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"VENETO 1 - P01\", \"list\": \"PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2024-06-26\"}, {\"target\": \"it:camera:19:body:o19_4002\", \"target_name\": \"Comitato Parlamentare di Controllo sull'Attuazione dell'Accordo di Schengen, di Vigilanza sull'Attivita' di Europol, di Controllo e Vigilanza in Materia di Immigrazione\", \"title\": \"member\", \"start_date\": \"2023-08-04\"}, {\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2023-07-20\", \"end_date\": \"2024-06-26\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2023-05-02\", \"end_date\": \"2023-07-20\"}, {\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2023-05-02\"}], \"offices\": [], \"counts\": {\"speeches\": 293, \"ballots\": 20257, \"ballots_cast\": 16520, \"ballots_mission\": 56, \"bills_first_signer\": 2, \"amendments_signed\": 4032}}"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cerca_persone",
+  "scheda_persona",
+  "scheda_persona",
+  "cerca_persone",
+  "scheda_persona"
+ ],
+ "tempo_s": 39.7,
+ "risposta_sistema": "La deputata più giovane è **Rachele Scarpa** (PD-IDP), nata il **29 gennaio 1997**. La scheda della Camera indica che è in carica dal 2022. [Scheda ufficiale](http://dati.camera.it/ocd/persona.rdf/p308803)\n\nIl deputato più anziano è **Lorenzo Cesa**, nato il **16 agosto 1951**; oggi aderisce al **Gruppo Misto**. [Scheda ufficiale](http://dati.camera.it/ocd/persona.rdf/p301439)",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,148 @@
+{
+ "id": "COM-012",
+ "domanda": "Fascicolo degli emendamenti sul ddl caregiver in XII Commissione: quanti per articolo e quanti articoli aggiuntivi?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "kind distingue emendamento, articoloAggiuntivo, subEmendamento.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792084.10939,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "caregiver",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 14, \"items\": [{\"uri\": \"it:camera:19:ac:2776\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2776\", \"kind\": \"bill\", \"title\": \"BARZOTTI ed altri: \\\"Agevolazioni previdenziali e contributive in favore dei genitori lavoratori, dei <em>caregiver </em>familiari e delle persone che svolgono lavori di cura non retribuiti derivanti da responsabilità familiari\\\" (2776)\", \"date\": \"2026-01-29\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2776\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2683\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2683\", \"kind\": \"bill\", \"title\": \"AMBROSI: \\\"Istituzione della Giornata nazionale del <em>caregiver</em> familiare e delega al Governo per il riconoscimento e la tutela dell’attività di assistenza e cura da esso svolta\\\" (2683)\", \"date\": \"2025-11-03\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2683\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2007\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2007\", \"kind\": \"bill\", \"title\": \"ZANELLA ed altri: \\\"Disposizioni e delega al Governo per il riconoscimento e il sostegno dell’attività di cura e assistenza svolta dal <em>caregiver</em> familiare\\\" (2007)\", \"date\": \"2024-08-01\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2007\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:1690\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1690\", \"kind\": \"bill\", \"title\": \"CIOCCHETTI ed altri: \\\"Modifica del comma 255 dell’articolo 1 della legge 27 dicembre 2017, n. 205, e altre disposizioni nonché delega al Governo per il riconoscimento e la tutela della figura del <em>caregiver</em> familiare\\\" (1690)\", \"date\": \"2024-02-06\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1690\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:1682\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1682\", \"kind\": \"bill\", \"title\": \"GIORGIANNI ed altri: \\\"Disposizioni in favore degli studenti universitari che svolgono attività di <em>caregiver</em> familiare\\\" (1682)\", \"date\": \"2024-02-01\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1682\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:1507\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1507\", \"kind\": \"bill\", \"title\": \"STEFANI ed altri: \\\"Disposizioni per il riconoscimento e il sostegno dell’attività di cura e assistenza svolta dallo studente <em>caregiver</em> familiare\\\" (1507)\", \"date\": "
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:159"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:159\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"159\", \"kind\": \"bill\", \"title\": \"SERRACCHIANI: \\\"Disposizioni per il riconoscimento e il sostegno dell’attività di cura e assistenza svolta dal <em>caregiver</em> familiare\\\" (159)\", \"date\": \"2022-10-13\", \"status\": \"Assorbito dall'approvazione di pdl abbinato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;159\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2026-10-14\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_159\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307374\", \"name\": \"Debora Serracchiani\", \"chamber\": \"camera\", \"in_office\": true, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307374&legislatura=19\"}, \"first\": true}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2022-10-13\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2022-11-10\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2024-02-14\"}, {\"order\": 4, \"title\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"date\": \"2026-10-01\"}, {\"order\": 5, \"title\": \"In discussione\", \"date\": \"2026-10-02\"}, {\"order\": 6, \"title\": \"Assorbito dall'approvazione di pdl abbinato\", \"date\": \"2026-10-14\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.159.19PDL0006900\", \"title\": \"Disegno di Legge presentato il 13 ottobre 2022\", \"date\": \"2022-10-13\", \"articles\": 9, \"length\": 21595}, {\"code\": \"leg.19.pdl.camera.2789_A.19PDL0203840\", \"title\": \"Richiesta autorizzazione a riferire oralmente il 1° ottobre 2026\", \"date\": \"2026-10-01\", \"articles\": 18, \"length\": 75651}], \"joined\": [{\"ref\": \"it:camera:19:ac:2789\", \"uri\": \"it:camera:19:ac:2789\", \"title\": \"\\\"Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari\\\" (2789)\"}], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2789"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2789\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2789\", \"kind\": \"bill\", \"title\": \"\\\"Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari\\\" (2789)\", \"date\": \"2026-02-06\", \"status\": \"Approvato. Trasmesso al Senato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2789\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"status_date\": \"2026-10-14\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2789\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307622\", \"name\": \"Alessandra Locatelli\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministra per le Disabilità\"}, {\"person\": {\"uri\": \"it:person:camera:309040\", \"name\": \"Andrea Abodi\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro per lo Sport e i giovani\"}, {\"person\": {\"uri\": \"it:person:camera:302841\", \"name\": \"Anna Maria Bernini\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro dell'Università e della ricerca\"}, {\"person\": {\"uri\": \"it:person:camera:308798\", \"name\": \"Carlo Nordio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308798&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro della Giustizia\"}, {\"person\": {\"uri\": \"it:person:camera:302748\", \"name\": \"Eugenia Maria Roccella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302748&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministra per la Famiglia\"}, {\"person\": {\"uri\": \"it:person:camera:50115\", \"name\": \"Giancarlo Giorgetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50115&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Economia e delle finanze\"}, {\"person\": {\"uri\": \"it:person:camera:300613\", \"name\": \"Giuseppe Valditara\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro dell'Istruzione e del merito\"}, {\"person\": {\"uri\": \"it:person:camera:309044\", \"name\": \"Marina Elvira Calderone\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministra del Lavoro e delle politiche sociali\"}, {\"person\": {\"uri\": \"it:person:camera:309048\", \"name\": \"Orazio Schillaci\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro della Salute\"}, {\"person\": {\"uri\": \"it:person:camera:32530\", \"name\": \"Roberto Calderoli\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro per gli Affari regionali e le autonomie\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-02-06\"}, {\"order\": 2"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2789",
+    "outcome": null,
+    "venue": "referente",
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "articolo",
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:2789, sede referente. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": 418, \"rows_total\": 22, \"offset\": 0, \"rows\": [{\"articolo\": \"4\", \"tipo\": \"emendamento\", \"proposte\": 71}, {\"articolo\": \"2\", \"tipo\": \"emendamento\", \"proposte\": 63}, {\"articolo\": \"7\", \"tipo\": \"emendamento\", \"proposte\": 50}, {\"articolo\": \"12\", \"tipo\": \"emendamento\", \"proposte\": 33}, {\"articolo\": \"8\", \"tipo\": \"emendamento\", \"proposte\": 33}, {\"articolo\": \"13\", \"tipo\": \"emendamento\", \"proposte\": 32}, {\"articolo\": \"1\", \"tipo\": \"emendamento\", \"proposte\": 29}, {\"articolo\": \"5\", \"tipo\": \"emendamento\", \"proposte\": 21}, {\"articolo\": \"3\", \"tipo\": \"emendamento\", \"proposte\": 18}, {\"articolo\": \"13\", \"tipo\": \"articoloAggiuntivo\", \"proposte\": 14}, {\"articolo\": \"6\", \"tipo\": \"emendamento\", \"proposte\": 14}, {\"articolo\": \"9\", \"tipo\": \"emendamento\", \"proposte\": 9}, {\"articolo\": \"15\", \"tipo\": \"emendamento\", \"proposte\": 8}, {\"articolo\": \"2\", \"tipo\": \"subEmendamento\", \"proposte\": 6}, {\"articolo\": \"14\", \"tipo\": \"emendamento\", \"proposte\": 4}, {\"articolo\": \"11\", \"tipo\": \"emendamento\", \"proposte\": 3}, {\"articolo\": \"5\", \"tipo\": \"articoloAggiuntivo\", \"proposte\": 3}, {\"articolo\": \"12\", \"tipo\": \"articoloAggiuntivo\", \"proposte\": 2}, {\"articolo\": \"8\", \"tipo\": \"articoloAggiuntivo\", \"proposte\": 2}, {\"articolo\": \"10\", \"tipo\": \"emendamento\", \"proposte\": 1}, {\"articolo\": \"4\", \"tipo\": \"articoloAggiuntivo\", \"proposte\": 1}, {\"articolo\": \"7\", \"tipo\": \"articoloAggiuntivo\", \"proposte\": 1}]}"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2789",
+    "outcome": null,
+    "venue": null,
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "articolo",
+     "tipo",
+     "sede"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:2789. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": 418, \"rows_total\": 22, \"offset\": 0, \"rows\": [{\"articolo\": \"4\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 71}, {\"articolo\": \"2\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 63}, {\"articolo\": \"7\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 50}, {\"articolo\": \"12\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 33}, {\"articolo\": \"8\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 33}, {\"articolo\": \"13\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 32}, {\"articolo\": \"1\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 29}, {\"articolo\": \"5\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 21}, {\"articolo\": \"3\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 18}, {\"articolo\": \"13\", \"tipo\": \"articoloAggiuntivo\", \"sede\": \"referente\", \"proposte\": 14}, {\"articolo\": \"6\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 14}, {\"articolo\": \"9\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 9}, {\"articolo\": \"15\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 8}, {\"articolo\": \"2\", \"tipo\": \"subEmendamento\", \"sede\": \"referente\", \"proposte\": 6}, {\"articolo\": \"14\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 4}, {\"articolo\": \"11\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 3}, {\"articolo\": \"5\", \"tipo\": \"articoloAggiuntivo\", \"sede\": \"referente\", \"proposte\": 3}, {\"articolo\": \"12\", \"tipo\": \"articoloAggiuntivo\", \"sede\": \"referente\", \"proposte\": 2}, {\"articolo\": \"8\", \"tipo\": \"articoloAggiuntivo\", \"sede\": \"referente\", \"proposte\": 2}, {\"articolo\": \"10\", \"tipo\": \"emendamento\", \"sede\": \"referente\", \"proposte\": 1}, {\"articolo\": \"4\", \"tipo\": \"articoloAggiuntivo\", \"sede\": \"referente\", \"proposte\": 1}, {\"articolo\": \"7\", \"tipo\": \"articoloAggiuntivo\", \"sede\": \"referente\", \"proposte\": 1}]}"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2789",
+    "outcome": null,
+    "venue": "referente",
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "articolo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:2789, sede referente. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": 418, \"rows_total\": 15, \"offset\": 0, \"rows\": [{\"articolo\": \"4\", \"proposte\": 72}, {\"articolo\": \"2\", \"proposte\": 69}, {\"articolo\": \"7\", \"proposte\": 51}, {\"articolo\": \"13\", \"proposte\": 46}, {\"articolo\": \"12\", \"proposte\": 35}, {\"articolo\": \"8\", \"proposte\": 35}, {\"articolo\": \"1\", \"proposte\": 29}, {\"articolo\": \"5\", \"proposte\": 24}, {\"articolo\": \"3\", \"proposte\": 18}, {\"articolo\": \"6\", \"proposte\": 14}, {\"articolo\": \"9\", \"proposte\": 9}, {\"articolo\": \"15\", \"proposte\": 8}, {\"articolo\": \"14\", \"proposte\": 4}, {\"articolo\": \"11\", \"proposte\": 3}, {\"articolo\": \"10\", \"proposte\": 1}]}"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2789",
+    "outcome": null,
+    "venue": "referente",
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:2789, sede referente. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": 418, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"tipo\": \"emendamento\", \"proposte\": 389}, {\"tipo\": \"articoloAggiuntivo\", \"proposte\": 23}, {\"tipo\": \"subEmendamento\", \"proposte\": 6}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "conta_emendamenti",
+  "conta_emendamenti",
+  "conta_emendamenti",
+  "conta_emendamenti"
+ ],
+ "tempo_s": 18.0,
+ "risposta_sistema": "Per il ddl governativo **C. 2789** sul riconoscimento e la tutela delle persone che assistono i propri cari, esaminato in sede referente dalla XII Commissione, il fascicolo conta **418 proposte**: **389 emendamenti**, **23 articoli aggiuntivi** e **6 subemendamenti**. [Scheda del ddl C. 2789](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2789)\n\nPer articolo (inclusi gli articoli aggiuntivi e i subemendamenti riferiti a quell’articolo):\n\n- art. 1: **29**\n- art. 2: **69** *(di cui 6 subemendamenti)*\n- art. 3: **18**\n- art. 4: **72**\n- art. 5: **24**\n- art. 6: **14**\n- art. 7: **51**\n- art. 8: **35**\n- art. 9: **9**\n- art. 10: **1**\n- art. 11: **3**\n- art. 12: **35**\n- art. 13: **46**\n- art. 14: **4**\n- art. 15: **8**\n\nI **23 articoli aggiuntivi** sono così distribuiti: dopo l’articolo 4, **1**; dopo il 5, **3**; dopo il 7, **1**; dopo l’8, **2**; dopo il 12, **2**; dopo il 13, **14**.\n\nIl conteggio considera una proposta per numero e sede; le eventuali riformulazioni con lo stesso numero valgono una sola volta. La fonte segnala che la completezza dei fascicoli caricati non è verificata.",
+ "eventi": {
+  "status": 1,
+  "tool": 14,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

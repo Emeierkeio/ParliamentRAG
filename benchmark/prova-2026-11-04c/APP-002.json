@@ -1,0 +1,47 @@
+{
+  "id": "APP-002",
+  "trappola": false,
+  "domanda": "quali deputati sono passati con Vannacci e da dove venivano?",
+  "categoria": "gruppi",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791696.647136,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cambi_gruppo",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona"
+  ],
+  "tempo_s": 47.7,
+  "risposta_sistema": "Alla Camera sono **9 i deputati** entrati nella componente del Misto **Futuro Nazionale Vannacci - Free**. Provenivano soprattutto dalla Lega (5) e da Forza Italia (3), più un deputato già di Fratelli d’Italia.\n\n- [Laura Ravetto](http://dati.camera.it/ocd/persona.rdf/p301459) — dalla **Lega - Salvini Premier**; entrata il 27 maggio 2026.\n- [Edoardo Ziello](http://dati.camera.it/ocd/persona.rdf/p307143) — dalla **Lega - Salvini Premier**; entrato il 27 maggio 2026.\n- [Rossano Sasso](http://dati.camera.it/ocd/persona.rdf/p307360) — dalla **Lega - Salvini Premier**; entrato il 27 maggio 2026.\n- [Emanuele Pozzolo](http://dati.camera.it/ocd/persona.rdf/p308822) — da **Fratelli d’Italia**; entrato il 27 maggio 2026. Era nel Misto dal 14 maggio 2025.\n- [Domenico Furgiuele](http://dati.camera.it/ocd/persona.rdf/p307718) — dalla **Lega - Salvini Premier**; entrato l’8 giugno 2026.\n- [Gianangelo Bof](http://dati.camera.it/ocd/persona.rdf/p308801) — dalla **Lega - Salvini Premier**; entrato l’8 giugno 2026.\n- [Attilio Pierro](http://dati.camera.it/ocd/persona.rdf/p308791) — da **Forza Italia - Berlusconi Presidente - PPE**; entrato l’8 giugno 2026. In precedenza era stato nella Lega fino al 30 dicembre 2025.\n- [Davide Bergamini](http://dati.camera.it/ocd/persona.rdf/p308928) — da **Forza Italia - Berlusconi Presidente - PPE**; entrato l’8 giugno 2026. In precedenza era stato nella Lega fino al 7 gennaio 2026.\n- [Tommaso Antonino Calderone](http://dati.camera.it/ocd/persona.rdf/p308766) — da **Forza Italia - Berlusconi Presidente - PPE**; entrato il 21 settembre 2026.\n\nIl conteggio considera i passaggi di gruppo dell’intera XIX legislatura e include ingressi e uscite dalle componenti del Misto; i passaggi tecnici iniziali dell’ottobre 2022 sono esclusi.",
+  "errori": [],
+  "note_domanda": "Componente Futuro Nazionale Vannacci - Free del Misto: Ziello, Pozzolo, Ravetto, Sasso dal 27/5/2026; Bergamini, Bof, Furgiuele, Pierro dall'8/6/2026; Calderone dal 21/9/2026 (prima FI-PPE). Vannacci non è deputato.",
+  "riferimento": {
+    "risposta": "Nella componente del Misto «Futuro Nazionale Vannacci - Free» alla Camera ci sono 9 deputati. Dal 27/5/2026: Emanuele Pozzolo (eletto con FdI, nel gruppo fino al 14/5/2025, poi Misto), Laura Ravetto (Lega fino al 20/5/2026), Rossano Sasso ed Edoardo Ziello (Lega fino al 6/2/2026); questi quattro il giorno prima erano già nel Misto. Dall'8/6/2026: Gianangelo Bof e Domenico Furgiuele (direttamente dalla Lega), Davide Bergamini (Lega fino al 7/1/2026, poi FI-PPE dal 20/1/2026) e Attilio Pierro (Lega fino al 30/12/2025, poi FI-PPE dal 20/1/2026). Dal 21/9/2026: Tommaso Antonino Calderone (FI-PPE). Tutti sono ancora nella componente al 2/11/2026. Roberto Vannacci non è deputato.",
+    "stato": "calcolata",
+    "limiti": "Componente = it:camera:19:group:cgm4271. «Da dove venivano» = gruppi politici precedenti in membership (Misto senza componente escluso dall'elenco) e gruppo il giorno prima dell'ingresso (group_at). Vannacci non ha un mandato alla Camera nel database."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 47.7
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "I nove deputati con data di ingresso e provenienza giuste, compresi i passaggi Lega→FI di Pierro e Bergamini; sintesi 5/3/1 corretta. Stamattina 2; ora i link sono alle schede ufficiali di dati.camera.it."
+}

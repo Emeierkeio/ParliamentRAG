@@ -1,0 +1,314 @@
+{
+ "id": "APP-036",
+ "domanda": "Magi di +Europa quante volte ha votato con la maggioranza?",
+ "categoria": "voti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Riccardo Magi, Misto componente +Europa. Definire 'maggioranza' come i gruppi che sostengono il governo, alla data.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792333.363539,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Magi",
+    "chamber": null,
+    "group": "+Europa",
+    "in_office": null,
+    "limit": 20
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Magi",
+    "chamber": null,
+    "group": null,
+    "in_office": null,
+    "limit": 20
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:307436\", \"name\": \"Riccardo Magi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307436&legislatura=19\"}]}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": null,
+    "end": null,
+    "chamber": "camera",
+    "groups": null,
+    "person": "it:person:camera:307436",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"il conteggio ha superato 25 secondi: restringi il periodo, il ramo o i filtri\"}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2023-12-31",
+    "chamber": "camera",
+    "groups": [
+     "FDI",
+     "LEGA",
+     "FI",
+     "NM"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"il conteggio ha superato 25 secondi: restringi il periodo, il ramo o i filtri\"}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2024-01-01",
+    "end": "2024-12-31",
+    "chamber": "camera",
+    "groups": [
+     "FDI",
+     "LEGA",
+     "FI",
+     "NM"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 01/01/2024 al 31/12/2024; filtri: segrete no: 5898 votazioni dal 09/01/2024 al 20/12/2024. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 5898, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 5895, \"cohesion\": 0.997, \"unanimous_share\": 0.911, \"positions\": {\"favor\": 1598, \"against\": 4291, \"abstain\": 5, \"tie\": 1}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 5895, \"cohesion\": 0.989, \"unanimous_share\": 0.83, \"positions\": {\"favor\": 1603, \"against\": 4287, \"abstain\": 5, \"tie\": 0}}, {\"group\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes_with_voters\": 5884, \"cohesion\": 0.988, \"unanimous_share\": 0.967, \"positions\": {\"favor\": 1591, \"against\": 4273, \"abstain\": 7, \"tie\": 13}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"votes_with_voters\": 5895, \"cohesion\": 0.982, \"unanimous_share\": 0.823, \"positions\": {\"favor\": 1597, \"against\": 4293, \"abstain\": 5, \"tie\": 0}}], \"agreement\": {\"LEGA\": {\"FDI\": 0.999, \"FI-PPE\": 0.999, \"NM(N-C-U-I)M-CP\": 0.998}, \"FDI\": {\"LEGA\": 0.999, \"FI-PPE\": 1.0, \"NM(N-C-U-I)M-CP\": 0.998}, \"FI-PPE\": {\"LEGA\": 0.999, \"FDI\": 1.0, \"NM(N-C-U-I)M-CP\": 0.998}, \"NM(N-C-U-I)M-CP\": {\"LEGA\": 0.998, \"FDI\": 0.998, \"FI-PPE\": 0.998}}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 2515, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 1939, \"same\": 1849, \"share\": 0.954}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia (FDI)\", \"votes\": 2515, \"same\": 408, \"share\": 0.162}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 2515, \"same\": 408, \"share\": 0.162}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Noi Moderati - MAIE - Centro Popolare ("
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2025-01-01",
+    "end": "2025-12-31",
+    "chamber": "camera",
+    "groups": [
+     "FDI",
+     "LEGA",
+     "FI",
+     "NM"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 01/01/2025 al 31/12/2025; filtri: segrete no: 5031 votazioni dal 08/01/2025 al 30/12/2025. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 5031, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 5031, \"cohesion\": 0.999, \"unanimous_share\": 0.958, \"positions\": {\"favor\": 931, \"against\": 4100, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 5031, \"cohesion\": 0.996, \"unanimous_share\": 0.919, \"positions\": {\"favor\": 931, \"against\": 4100, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"votes_with_voters\": 5031, \"cohesion\": 0.991, \"unanimous_share\": 0.888, \"positions\": {\"favor\": 929, \"against\": 4102, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes_with_voters\": 4979, \"cohesion\": 0.983, \"unanimous_share\": 0.968, \"positions\": {\"favor\": 930, \"against\": 3990, \"abstain\": 3, \"tie\": 56}}], \"agreement\": {\"LEGA\": {\"FDI\": 1.0, \"FI-PPE\": 1.0, \"NM(N-C-U-I)M-CP\": 0.996}, \"FDI\": {\"LEGA\": 1.0, \"FI-PPE\": 1.0, \"NM(N-C-U-I)M-CP\": 0.996}, \"FI-PPE\": {\"LEGA\": 1.0, \"FDI\": 1.0, \"NM(N-C-U-I)M-CP\": 0.996}, \"NM(N-C-U-I)M-CP\": {\"LEGA\": 0.996, \"FDI\": 0.996, \"FI-PPE\": 0.996}}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 1618, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 1249, \"same\": 1174, \"share\": 0.94}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes\": 1608, \"same\": 277, \"share\": 0.172}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 1618, \"same\": 277, \"share\": 0.171}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia ("
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "chamber": "camera",
+    "groups": [
+     "FDI",
+     "LEGA",
+     "FI",
+     "NM"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 01/01/2026 al 03/11/2026; filtri: segrete no: 4112 votazioni dal 14/01/2026 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 4112, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 4112, \"cohesion\": 0.999, \"unanimous_share\": 0.948, \"positions\": {\"favor\": 716, \"against\": 3394, \"abstain\": 2, \"tie\": 0}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 4112, \"cohesion\": 0.995, \"unanimous_share\": 0.917, \"positions\": {\"favor\": 718, \"against\": 3394, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes_with_voters\": 3918, \"cohesion\": 0.993, \"unanimous_share\": 0.987, \"positions\": {\"favor\": 686, \"against\": 3217, \"abstain\": 2, \"tie\": 13}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"votes_with_voters\": 4112, \"cohesion\": 0.991, \"unanimous_share\": 0.884, \"positions\": {\"favor\": 716, \"against\": 3394, \"abstain\": 2, \"tie\": 0}}], \"agreement\": {\"LEGA\": {\"FDI\": 1.0, \"FI-PPE\": 1.0, \"NM(N-C-U-I)M-CP\": 0.998}, \"FDI\": {\"LEGA\": 1.0, \"FI-PPE\": 1.0, \"NM(N-C-U-I)M-CP\": 0.999}, \"FI-PPE\": {\"LEGA\": 1.0, \"FDI\": 1.0, \"NM(N-C-U-I)M-CP\": 0.999}, \"NM(N-C-U-I)M-CP\": {\"LEGA\": 0.998, \"FDI\": 0.999, \"FI-PPE\": 0.999}}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 1327, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 1072, \"same\": 1018, \"share\": 0.95}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes\": 1187, \"same\": 139, \"share\": 0.117}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia (FDI)\", \"votes\": 1327, \"same\": 150, \"share\": 0.113}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Forza Italia - Berlusconi"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2022-12-31",
+    "chamber": "camera",
+    "groups": [
+     "FDI"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 13/10/2022 al 31/12/2022; filtri: segrete no: 507 votazioni dal 25/10/2022 al 30/12/2022. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 507, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 507, \"cohesion\": 0.997, \"unanimous_share\": 0.945, \"positions\": {\"favor\": 76, \"against\": 417, \"abstain\": 14, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 339, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 282, \"same\": 277, \"share\": 0.982}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia (FDI)\", \"votes\": 339, \"same\": 61, \"share\": 0.18}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2023-01-01",
+    "end": "2023-03-31",
+    "chamber": "camera",
+    "groups": [
+     "FDI"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 01/01/2023 al 31/03/2023; filtri: segrete no: 829 votazioni dal 10/01/2023 al 30/03/2023. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 829, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 829, \"cohesion\": 0.998, \"unanimous_share\": 0.943, \"positions\": {\"favor\": 262, \"against\": 565, \"abstain\": 2, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 326, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 278, \"same\": 262, \"share\": 0.942}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia (FDI)\", \"votes\": 326, \"same\": 121, \"share\": 0.371}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2023-04-01",
+    "end": "2023-06-30",
+    "chamber": "camera",
+    "groups": [
+     "FDI"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 01/04/2023 al 30/06/2023; filtri: segrete no: 919 votazioni dal 03/04/2023 al 29/06/2023. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 919, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 919, \"cohesion\": 0.999, \"unanimous_share\": 0.947, \"positions\": {\"favor\": 273, \"against\": 644, \"abstain\": 2, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 422, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 402, \"same\": 390, \"share\": 0.97}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia (FDI)\", \"votes\": 422, \"same\": 107, \"share\": 0.254}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2023-07-01",
+    "end": "2023-09-30",
+    "chamber": "camera",
+    "groups": [
+     "FDI"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 01/07/2023 al 30/09/2023; filtri: segrete no: 1194 votazioni dal 04/07/2023 al 28/09/2023. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 1194, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 1194, \"cohesion\": 0.999, \"unanimous_share\": 0.954, \"positions\": {\"favor\": 347, \"against\": 847, \"abstain\": 0, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 660, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 467, \"same\": 454, \"share\": 0.972}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia (FDI)\", \"votes\": 660, \"same\": 131, \"share\": 0.198}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2023-10-01",
+    "end": "2023-12-31",
+    "chamber": "camera",
+    "groups": [
+     "FDI"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 01/10/2023 al 31/12/2023; filtri: segrete no: 1718 votazioni dal 04/10/2023 al 29/12/2023. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 1718, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 1718, \"cohesion\": 0.998, \"unanimous_share\": 0.9, \"positions\": {\"favor\": 475, \"against\": 1243, \"abstain\": 0, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 749, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 417, \"same\": 405, \"share\": 0.971}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia (FDI)\", \"votes\": 749, \"same\": 108, \"share\": 0.144}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "chamber": "camera",
+    "groups": [
+     "FDI"
+    ],
+    "person": "it:person:camera:307436",
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 13/10/2022 al 03/11/2026; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 20205, \"cohesion\": 0.998, \"unanimous_share\": 0.936, \"positions\": {\"favor\": 4678, \"against\": 15501, \"abstain\": 25, \"tie\": 1}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307436\", \"votes_cast\": 7956, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"votes\": 6106, \"same\": 5829, \"share\": 0.955}, {\"own_group_at_vote\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"compared_with\": \"Fratelli d'Italia (FDI)\", \"votes\": 7956, \"same\": 1363, \"share\": 0.171}]}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307436"
+   },
+   "result": "{\"uri\": \"it:person:camera:307436\", \"name\": \"Riccardo Magi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307436&legislatura=19\", \"given_name\": \"Riccardo\", \"family_name\": \"Magi\", \"gender\": \"M\", \"birth_date\": \"1976-08-07\", \"birth_place\": \"Roma\", \"profession\": \"già Segretario Radicali italiani, Presidente di +Europa\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307436\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"PIEMONTE 1 - P01\", \"college\": \"PIEMONTE 1 - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2022-10-19\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_4301\", \"target_name\": \"Commissione Parlamentare di Inchiesta Sugli Effetti Economici e Sociali Derivanti Dalla Transizione Demografica in Atto\", \"title\": \"member\", \"start_date\": \"2025-01-16\", \"end_date\": \"2026-03-25\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:group:gr4111\", \"target_name\": \"Misto\", \"title\": \"deputy_leader\", \"start_date\": \"2022-10-19\"}, {\"target\": \"it:camera:19:group:gr4111\", \"target_name\": \"Misto\", \"title\": \"component_representative\", \"start_date\": \"2022-10-19\"}, {\"target\": \"it:camera:19:body:o19_4301\", \"target_name\": \"Commissione Parlamentare di Inchiesta Sugli Effetti Economici e Sociali Derivanti Dalla Transizione Demografica in Atto\", \"title\": \"group_whip\", \"start_date\": \"2025-02-17\", \"end_date\": \"2026-03-25\"}], \"counts\": {\"speeches\": 683, \"ballots\": 20257, \"ballots_cast\": 7959, \"ballots_mission\": 10840, \"bills_first_signer\": 23, \"amendments_signed\": 1403}}"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cerca_persone",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "scheda_persona"
+ ],
+ "tempo_s": 215.2,
+ "risposta_sistema": "Riccardo Magi ha votato **come Fratelli d’Italia — usato qui come riferimento della maggioranza — 1.363 volte**, su **7.956 votazioni palesi** alle quali ha partecipato: **17,1%**.\n\nIl periodo coperto va dal **13 ottobre 2022 al 3 novembre 2026**; l’ultima votazione inclusa risale al **28 ottobre 2026**. Il calcolo esclude voti segreti, assenze, missioni e presenti non votanti. Per ciascun voto, la posizione di FdI è quella scelta dalla maggioranza dei suoi votanti; il voto di Magi è confrontato con quella posizione.\n\nQuesto è un indicatore della convergenza con **FdI**, non un conteggio separato dell’intera coalizione di governo. Nei dati letti, Magi risulta nella componente **+Europa – Stati Uniti d’Europa** del Gruppo Misto. La sua scheda ufficiale è disponibile nel [dataset della Camera](http://dati.camera.it/ocd/persona.rdf/p307436).",
+ "eventi": {
+  "status": 1,
+  "tool": 28,
+  "dati": 14,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

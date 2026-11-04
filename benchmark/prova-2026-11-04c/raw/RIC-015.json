@@ -1,0 +1,220 @@
+{
+ "id": "RIC-015",
+ "trappola": false,
+ "domanda": "Come votano i deputati della componente Futuro Nazionale Vannacci rispetto alla Lega, prima e dopo l'uscita dal gruppo?",
+ "categoria": "gruppi",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Persone del panel: Domenico Furgiuele, Edoardo Ziello, Attilio Pierro, Davide Bergamini (passati per Misto e alcuni per FI-PPE). Il confronto va fatto sulle stesse persone in due periodi; Ziello è nel Misto senza componente dal 6/2 al 27/5/2026.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791416.296993,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cambi_gruppo",
+   "args": {
+    "chamber": "camera",
+    "start": null,
+    "end": "2026-11-04",
+    "person": null,
+    "group": "Futuro Nazionale Vannacci",
+    "components": true,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Passaggi di gruppo, Camera, fino al 04/11/2026; filtri: gruppo Futuro Nazionale Vannacci. Conta anche l'ingresso o l'uscita da una componente del Misto. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio prima della costituzione dei gruppi). La nascita di un gruppo nuovo (es. IV-CR alla Camera) conta come cambio; un ritorno al gruppo di prima conta come un nuovo cambio. Data = inizio dell'appartenenza nuova. Fonte: appartenenze ai gruppi dell'anagrafica dei due rami.\", \"by_chamber\": {\"camera\": {\"persons\": 9, \"changes\": 9}}, \"rows_total\": 9, \"offset\": 0, \"rows\": [{\"persona\": \"Tommaso Antonino Calderone\", \"ramo\": \"camera\", \"date\": \"2026-09-21\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308766\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Domenico Furgiuele\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307718\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Attilio Pierro\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308791\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Gianangelo Bof\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308801\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Davide Bergamini\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308928\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Laura Ravetto\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:301459\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Edoardo Ziello\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307143\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Rossano Sasso\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307360\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Emanuele Pozzolo\", \"ramo\": \"camera\", \"date\": \"2026-05-27\", \"from\": \"Fratelli d'Italia (FDI)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308822\", \"gruppo_oggi\": \"MISTO-FNV-F\"}]}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": null,
+    "end": "2026-11-04",
+    "chamber": "camera",
+    "groups": [
+     "LEGA"
+    ],
+    "person": "it:person:camera:307718",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, fino al 04/11/2026; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307718\", \"votes_cast\": 15305, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Lega - Salvini Premier (LEGA)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 13982, \"same\": 13896, \"share\": 0.994}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes\": 1323, \"same\": 1321, \"share\": 0.998}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 1323, \"same\": 1253, \"share\": 0.947}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": null,
+    "end": "2026-11-04",
+    "chamber": "camera",
+    "groups": [
+     "LEGA"
+    ],
+    "person": "it:person:camera:308801",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, fino al 04/11/2026; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:308801\", \"votes_cast\": 18298, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Lega - Salvini Premier (LEGA)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 16724, \"same\": 16525, \"share\": 0.988}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes\": 1567, \"same\": 1548, \"share\": 0.988}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 1574, \"same\": 1432, \"share\": 0.91}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": null,
+    "end": "2026-11-04",
+    "chamber": "camera",
+    "groups": [
+     "LEGA"
+    ],
+    "person": "it:person:camera:301459",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, fino al 04/11/2026; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:301459\", \"votes_cast\": 14626, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Lega - Salvini Premier (LEGA)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 13060, \"same\": 12981, \"share\": 0.994}, {\"own_group_at_vote\": \"Misto (MISTO)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 82, \"same\": 82, \"share\": 1.0}, {\"own_group_at_vote\": \"Misto (MISTO)\", \"compared_with\": \"Misto (MISTO)\", \"votes\": 8, \"same\": 5, \"share\": 0.625}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes\": 1461, \"same\": 1457, \"share\": 0.997}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 1484, \"same\": 1374, \"share\": 0.926}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": null,
+    "end": "2026-11-04",
+    "chamber": "camera",
+    "groups": [
+     "LEGA"
+    ],
+    "person": "it:person:camera:307143",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, fino al 04/11/2026; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307143\", \"votes_cast\": 18378, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Lega - Salvini Premier (LEGA)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 15551, \"same\": 15481, \"share\": 0.995}, {\"own_group_at_vote\": \"Misto (MISTO)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 1187, \"same\": 1147, \"share\": 0.966}, {\"own_group_at_vote\": \"Misto (MISTO)\", \"compared_with\": \"Misto (MISTO)\", \"votes\": 732, \"same\": 393, \"share\": 0.537}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes\": 1539, \"same\": 1539, \"share\": 1.0}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 1640, \"same\": 1510, \"share\": 0.921}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": null,
+    "end": "2026-11-04",
+    "chamber": "camera",
+    "groups": [
+     "LEGA"
+    ],
+    "person": "it:person:camera:307360",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, fino al 04/11/2026; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}], \"agreement\": {}, \"person\": {\"uri\": \"it:person:camera:307360\", \"votes_cast\": 15275, \"note\": \"quota delle votazioni in cui la persona ha votato come la posizione del gruppo (senza il suo voto), divisa per il gruppo della persona nella scheda di quel voto\", \"alignment\": [{\"own_group_at_vote\": \"Lega - Salvini Premier (LEGA)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 13081, \"same\": 13025, \"share\": 0.996}, {\"own_group_at_vote\": \"Misto (MISTO)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 881, \"same\": 847, \"share\": 0.961}, {\"own_group_at_vote\": \"Misto (MISTO)\", \"compared_with\": \"Misto (MISTO)\", \"votes\": 496, \"same\": 338, \"share\": 0.681}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes\": 1311, \"same\": 1307, \"share\": 0.997}, {\"own_group_at_vote\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"compared_with\": \"Lega - Salvini Premier (LEGA)\", \"votes\": 1313, \"same\": 1213, \"share\": 0.924}]}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2026-05-27",
+    "end": "2026-11-04",
+    "chamber": "camera",
+    "groups": [
+     "MISTO-FNV-F",
+     "LEGA"
+    ],
+    "person": null,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 27/05/2026 al 04/11/2026; filtri: segrete no: 2090 votazioni dal 27/05/2026 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 2090, \"groups\": [{\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 2090, \"cohesion\": 0.996, \"unanimous_share\": 0.938, \"positions\": {\"favor\": 320, \"against\": 1770, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes_with_voters\": 2014, \"cohesion\": 0.994, \"unanimous_share\": 0.98, \"positions\": {\"favor\": 291, \"against\": 1707, \"abstain\": 16, \"tie\": 0}}], \"agreement\": {\"MISTO-FNV-F\": {\"LEGA\": 0.933}, \"LEGA\": {\"MISTO-FNV-F\": 0.933}}, \"different_positions\": {\"total\": 135, \"note\": \"votazioni in cui i due gruppi hanno preso posizioni diverse (tie esclusi)\", \"rows_total\": 135, \"offset\": 0, \"rows\": [{\"vote\": \"it:camera:19:sed0730:v059\", \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\": \"favor\", \"Lega - Salvini Premier (LEGA)\": \"against\", \"date\": \"2026-10-21\", \"title\": \"Votazione Emendamento 1.7 PDL n. 0362\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_59&tipo=dettaglio\"}, {\"vote\": \"it:camera:19:sed0730:v004\", \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\": \"abstain\", \"Lega - Salvini Premier (LEGA)\": \"favor\", \"date\": \"2026-10-21\", \"title\": \"Votazione Articolo 4 DDL n. 2958\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_4&tipo=dettaglio\"}, {\"vote\": \"it:camera:19:sed0729:v003\", \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\": \"favor\", \"Lega - Salvini Premier (LEGA)\": \"against\", \"date\": \"2026-10-20\", \"title\": \"Votazione Emendamento 1.1000 DDL n. 3131\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=729_3&tipo=dettaglio\"}, {\"vote\": \"it:camera:19:sed0729:v042\", \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\": \"abstain\", \"Lega - Salvini Premier (LEGA)\": \"favor\", \"date\": \"2026-10-20\", \"title\": \"Votazione finale DDL n. 3131\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/v"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307718"
+   },
+   "result": "{\"uri\": \"it:person:camera:307718\", \"name\": \"Domenico Furgiuele\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307718&legislatura=19\", \"given_name\": \"Domenico\", \"family_name\": \"Furgiuele\", \"gender\": \"M\", \"birth_date\": \"1983-01-01\", \"birth_place\": \"Lamezia Terme\", \"profession\": \"Imprenditore edile\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307718\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-01\", \"constituency\": \"CALABRIA - P01\", \"college\": \"CALABRIA - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_4161\", \"target_name\": \"Commissione Parlamentare di Vigilanza sulla Cassa Depositi e Prestiti\", \"title\": \"member\", \"start_date\": \"2024-02-14\"}, {\"target\": \"it:camera:19:body:o19_3509\", \"target_name\": \"IX Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3509\", \"target_name\": \"IX Commissione\", \"title\": \"secretary\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_3509\", \"target_name\": \"IX Commissione\", \"title\": \"secretary\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:camera:19:group:gr4132\", \"target_name\": \"Lega - Salvini Premier\", \"title\": \"deputy_leader\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-06-08\"}], \"counts\": {\"speeches\": 177, \"ballots\": 20257, \"ballots_cast\": 15305, \"ballots_mission\": 29, \"bills_first_signer\": 5, \"amendments_signed\": 548}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308801"
+   },
+   "result": "{\"uri\": \"it:person:camera:308801\", \"name\": \"Gianangelo Bof\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308801&legislatura=19\", \"given_name\": \"Gianangelo\", \"family_name\": \"Bof\", \"gender\": \"M\", \"birth_date\": \"1975-01-07\", \"birth_place\": \"Vittorio Veneto\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308801\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"VENETO 1 - P01\", \"list\": \"LEGA PER SALVINI PREMIER\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-06-08\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_4221\", \"target_name\": \"Commissione Parlamentare per la Semplificazione\", \"title\": \"member\", \"start_date\": \"2024-03-19\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2025-04-16\", \"end_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-04-16\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_4221\", \"target_name\": \"Commissione Parlamentare per la Semplificazione\", \"title\": \"vice_chair\", \"start_date\": \"2024-03-26\"}], \"counts\": {\"speeches\": 313, \"ballots\": 20256, \"ballots_cast\": 18298, \"ballots_mission\": 20, \"bills_first_signer\": 10, \"amendments_signed\": 1234}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:301459"
+   },
+   "result": "{\"uri\": \"it:person:camera:301459\", \"name\": \"Laura Ravetto\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301459&legislatura=19\", \"given_name\": \"Laura\", \"family_name\": \"Ravetto\", \"gender\": \"F\", \"birth_date\": \"1971-01-25\", \"birth_place\": \"Cuneo\", \"profession\": \"Avvocato\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p301459\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-03\", \"constituency\": \"LOMBARDIA 1 - P01\", \"college\": \"LOMBARDIA 1 - U05\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-05-20\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-05-20\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-05-27\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-17\"}, {\"target\": \"it:camera:19:body:o19_3941\", \"target_name\": \"Commissione Parlamentare di Inchiesta sul Femminicidio, Nonche' Su Ogni Forma di Violenza di Genere\", \"title\": \"member\", \"start_date\": \"2023-07-03\"}, {\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"member\", \"start_date\": \"2026-06-09\", \"end_date\": \"2026-06-17\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2025-12-03\", \"end_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"member\", \"start_date\": \"2025-04-17\", \"end_date\": \"2025-12-03\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-04-17\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3941\", \"target_name\": \"Commissione Parlamentare di Inchiesta sul Femminicidio, Nonche' Su Ogni Forma di Violenza di Genere\", \"title\": \"secretary\", \"start_date\": \"2023-07-26\"}], \"counts\": {\"speeches\": 123, \"ballots\": 20257, \"ballots_cast\": 14626, \"ballots_mission\": 62, \"bills_first_signer\": 11, \"amendments_signed\": 684}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307143"
+   },
+   "result": "{\"uri\": \"it:person:camera:307143\", \"name\": \"Edoardo Ziello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307143&legislatura=19\", \"given_name\": \"Edoardo\", \"family_name\": \"Ziello\", \"gender\": \"M\", \"birth_date\": \"1992-04-11\", \"birth_place\": \"Civitavecchia\", \"profession\": \"Giurista\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307143\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"TOSCANA - P03\", \"college\": \"TOSCANA - U04\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-02-06\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-02-06\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-05-27\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3903\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulle Condizioni di Sicurezza e Sullo Stato di Degrado delle Citta' e delle Loro Periferie\", \"title\": \"member\", \"start_date\": \"2023-06-08\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:group:gr4111\", \"target_name\": \"Misto\", \"title\": \"deputy_leader\", \"start_date\": \"2026-05-27\"}, {\"target\": \"it:camera:19:group:gr4111\", \"target_name\": \"Misto\", \"title\": \"component_representative\", \"start_date\": \"2026-05-27\"}, {\"target\": \"it:camera:19:body:o19_3903\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulle Condizioni di Sicurezza e Sullo Stato di Degrado delle Citta' e delle Loro Periferie\", \"title\": \"secretary\", \"start_date\": \"2023-06-21\"}, {\"target\": \"it:camera:19:group:gr4132\", \"target_name\": \"Lega - Salvini Premier\", \"title\": \"floor_delegate\", \"start_date\": \"2022-10-19\", \"end_date\": \"2026-02-06\"}], \"counts\": {\"speeches\": 256, \"ballots\": 20257, \"ballots_cast\": 18378, \"ballots_mission\": 176, \"bills_first_signer\": 14, \"amendments_signed\": 824}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307360"
+   },
+   "result": "{\"uri\": \"it:person:camera:307360\", \"name\": \"Rossano Sasso\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307360&legislatura=19\", \"given_name\": \"Rossano\", \"family_name\": \"Sasso\", \"gender\": \"M\", \"birth_date\": \"1975-06-18\", \"birth_place\": \"Bari\", \"profession\": \"Insegnante\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307360\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"PUGLIA - P03\", \"college\": \"PUGLIA - U06\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-02-06\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-02-06\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2026-05-27\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3961\", \"target_name\": \"Commissione Parlamentare per l'Infanzia e l'Adolescenza\", \"title\": \"member\", \"start_date\": \"2023-07-12\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"group_whip\", \"start_date\": \"2026-06-09\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\", \"end_date\": \"2026-02-06\"}, {\"target\": \"it:gov:182:og182_624\", \"target_name\": \"Ministero dell'Istruzione\", \"title\": \"undersecretary\", \"start_date\": \"2021-02-25\", \"end_date\": \"2022-10-21\"}], \"counts\": {\"speeches\": 515, \"ballots\": 20257, \"ballots_cast\": 15275, \"ballots_mission\": 0, \"bills_first_signer\": 7, \"amendments_signed\": 301}}"
+  }
+ ],
+ "strumenti": [
+  "cambi_gruppo",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "voto_gruppi",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona"
+ ],
+ "tempo_s": 113.4,
+ "risposta_sistema": "I cinque deputati oggi nella componente **Futuro Nazionale Vannacci - Free** che provenivano dalla Lega hanno votato quasi sempre come la Lega quando ne facevano parte: fra **98,8% e 99,6%** delle votazioni palesi cui hanno partecipato. Dopo l’uscita, continuano in larga misura a convergere con la Lega, ma meno: fra **91,0% e 94,7%**.\n\n| Deputato | Nella Lega: voto uguale alla posizione della Lega | Dopo, nella componente FNV: voto uguale alla Lega |\n|---|---:|---:|\n| [Domenico Furgiuele](http://dati.camera.it/ocd/persona.rdf/p307718) | 13.896 su 13.982 (**99,4%**) | 1.253 su 1.323 (**94,7%**) |\n| [Gianangelo Bof](http://dati.camera.it/ocd/persona.rdf/p308801) | 16.525 su 16.724 (**98,8%**) | 1.432 su 1.574 (**91,0%**) |\n| [Laura Ravetto](http://dati.camera.it/ocd/persona.rdf/p301459) | 12.981 su 13.060 (**99,4%**) | 1.374 su 1.484 (**92,6%**) |\n| [Edoardo Ziello](http://dati.camera.it/ocd/persona.rdf/p307143) | 15.481 su 15.551 (**99,5%**) | 1.510 su 1.640 (**92,1%**) |\n| [Rossano Sasso](http://dati.camera.it/ocd/persona.rdf/p307360) | 13.025 su 13.081 (**99,6%**) | 1.213 su 1.313 (**92,4%**) |\n\nIn media descrittiva, quindi, lo scarto dopo l’uscita è di circa **6–8 punti percentuali**, con Bof che si allontana di più e Furgiuele che resta più vicino alle posizioni leghiste.\n\nCome componente, dal **27 maggio al 28 ottobre 2026**, FNV e Lega hanno avuto la stessa posizione in **93,3%** delle votazioni palesi in cui entrambi i gruppi hanno espresso una posizione; le posizioni sono state diverse in **135** votazioni. La componente è stata costituita il 27 maggio per Ravetto, Ziello e Sasso, e l’8 giugno per Furgiuele e Bof; le date delle appartenenze sono nelle rispettive [schede Camera](http://dati.camera.it/ocd/persona.rdf/p307718).  \n\nIl confronto esclude voti segreti, assenze, missioni e presenti non votanti. Per “posizione della Lega” si intende la scelta prevalente fra i suoi votanti; per ciascun deputato, il confronto non usa il suo stesso voto per determinare quella posizione. I dati di voto arrivano fino al **28 ottobre 2026**.",
+ "eventi": {
+  "status": 1,
+  "tool": 24,
+  "dati": 12,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

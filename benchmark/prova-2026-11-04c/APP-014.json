@@ -1,0 +1,38 @@
+{
+  "id": "APP-014",
+  "trappola": false,
+  "domanda": "Lega e Fratelli d'Italia hanno mai votato diversamente in un voto finale?",
+  "categoria": "confronto",
+  "tipo_risposta": "elenco",
+  "ramo": "entrambi",
+  "difficolta": "difficile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791643.141662,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "voto_gruppi",
+    "voto_gruppi"
+  ],
+  "tempo_s": 10.3,
+  "risposta_sistema": "No. Nelle votazioni finali **palesi** della XIX legislatura disponibili fino al 3 novembre 2026, Lega e Fratelli d’Italia hanno sempre avuto la stessa posizione prevalente.\n\n- **Camera:** 405 votazioni finali (10 novembre 2022–28 ottobre 2026); posizioni diverse: **0**. Accordo: **100%**.\n- **Senato:** 264 votazioni finali (16 novembre 2022–28 ottobre 2026); posizioni diverse: **0**. Accordo: **100%**.\n\nIl confronto esclude i voti segreti e considera la posizione prevalente tra i membri votanti di ciascun gruppo; non considera quindi assenti, missioni e presenti non votanti.",
+  "errori": [],
+  "note_domanda": "Voto del gruppo = posizione della maggioranza dei suoi votanti. Elencare i casi, separati per ramo.",
+  "riferimento": {
+    "risposta": "No. Nelle 405 votazioni finali palesi della Camera e nelle 264 del Senato della XIX, la maggioranza dei votanti della Lega e quella di Fratelli d'Italia hanno sempre preso la stessa posizione: sempre a favore, tranne una votazione alla Camera (21/3/2023, it:camera:19:sed0072:v011) in cui entrambi i gruppi hanno votato contro all'unanimità (Lega 45 su 45, FdI 86 su 86). Restano fuori le 2 votazioni finali segrete della Camera sulla legge elettorale (PDL 2822-A, 16/7/2026, e 2822-B, 8/10/2026), dove non si sa come ha votato ciascuno.",
+    "stato": "calcolata",
+    "limiti": "Voto finale = vote.final = true (esclusi i voti con kind 'final' ma final = false, che sono articoli ed emendamenti dei Doc. XXII e voti delle Giunte). Posizione del gruppo = risultato più frequente fra favorevoli, contrari e astenuti dei suoi membri; gruppo preso da ballot.grp, risolto con grp_alias. I voti segreti sono esclusi: si conosce solo la partecipazione."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 10.3
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "No, 405 finali palesi alla Camera e 264 al Senato senza posizioni diverse, come il riferimento; non cita le 2 finali segrete. Come stamattina (2)."
+}

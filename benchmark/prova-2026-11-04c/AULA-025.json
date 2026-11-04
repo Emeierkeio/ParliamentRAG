@@ -1,0 +1,45 @@
+{
+  "id": "AULA-025",
+  "trappola": false,
+  "domanda": "Nel voto di fiducia sul decreto giustizia (S. 1939) del 30 luglio 2026 al Senato, quali senatori di maggioranza non hanno partecipato al voto o hanno votato contro?",
+  "categoria": "voti",
+  "tipo_risposta": "elenco",
+  "ramo": "senato",
+  "difficolta": "difficile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791671.2446342,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "elenco_votazioni",
+    "votazione",
+    "presenze",
+    "presenze",
+    "presenze",
+    "presenze",
+    "atto",
+    "seduta"
+  ],
+  "tempo_s": 21.8,
+  "risposta_sistema": "Nel voto di fiducia sul DDL S. 1939 del 30 luglio 2026 **nessun senatore dei gruppi di maggioranza ha votato contro**. Non hanno partecipato al voto perché **in missione** 26 senatori; non risultano assenti non giustificati nei quattro gruppi di maggioranza.\n\n- **FdI (11):** Alberto Balboni, Adolfo Urso, Nello Musumeci, Giovanbattista Fazzolari, Isabella Rauti, Guido Castelli, Anna Maria Fallucchi, Filippo Melchiorre, Raoul Russo, Marcello Pera, Alessio Butti.\n- **Lega (8):** Massimo Garavaglia, Matteo Salvini, Roberto Marti, Paolo Tosato, Alessandro Morelli, Claudio Durigon, Tilde Minasi, Marco Dreosto.\n- **Forza Italia (6):** Maria Elisabetta Alberti Casellati, Roberto Rosso, Paolo Zangrillo, Mario Occhiuto, Antonio Salvatore Trevisi, Claudio Fazzone.\n- **Civici d’Italia-UDC-Noi Moderati-MAIE-Centro Popolare (1):** Antonio Guidi.\n\nLa fiducia è stata approvata con **92 voti favorevoli e 63 contrari**; nel dettaglio dei gruppi di maggioranza: FdI 51 favorevoli e 11 missioni, Lega 20 e 8, FI 14 e 6, Civici 7 e 1. [Resoconto della seduta del Senato n. 444, 30 luglio 2026](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1518033) · [scheda del DDL S. 1939](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55442.htm)",
+  "errori": [],
+  "note_domanda": "Trappola: nei ballot del Senato gli assenti non hanno riga (non esiste «absent»): si ricavano dai mandati in corso. Chi è in missione non è assente. Votazione it:senato:19:sed0444:v001.",
+  "riferimento": {
+    "risposta": "Nella votazione di fiducia del 30/7/2026 sull'articolo unico del DDL S. 1939 (conversione del DL 100/2026), approvata con 92 sì e 63 no, nessun senatore dei gruppi di maggioranza (FdI, Lega, FI, Civici d'Italia-NM) ha votato contro. Dei 120 senatori di maggioranza in carica, 92 hanno votato sì e 26 erano in congedo o missione (FdI 11, Lega 8, FI 6, Civici d'Italia-NM 1: non sono assenze). Due non hanno partecipato al voto: Gian Marco Centinaio (Lega), che presiedeva la seduta in quel momento, e Ignazio La Russa (FdI), senza riga nei voti individuali.",
+    "stato": "calcolata",
+    "limiti": "Gli assenti si ricavano per differenza: senatori con mandato in corso il 30/7/2026 e gruppo di maggioranza a quella data, senza riga in ballot. Maggioranza = FdI, LSP-PSd'Az, FI-BP-PPE, Cd'I-UDC-NM-MAIE-CP (regola dichiarata, non un dato); i senatori del Misto non sono considerati perché al Senato il Misto non è diviso per componente. Il database non registra le cariche di Presidente e vicepresidente del Senato: il presidente di turno si ricava dal resoconto (chi indice la votazione)."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 21.8
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": "dato_mancante",
+  "note": "Nessun contrario, 92-63, 26 in missione per gruppo: giusto. Ripete «non risultano assenti»: Centinaio (presiedeva) e La Russa non hanno votato. Come stamattina (1)."
+}

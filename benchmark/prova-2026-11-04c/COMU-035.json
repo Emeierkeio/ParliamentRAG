@@ -1,0 +1,54 @@
+{
+  "id": "COMU-035",
+  "trappola": false,
+  "domanda": "Quali interrogazioni ha presentato il Movimento 5 Stelle al Senato sulla sanità nel 2026? E gli altri gruppi?",
+  "categoria": "sindacato_ispettivo",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "senato",
+  "difficolta": "media",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791488.393444,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_atti",
+    "conta_atti",
+    "cerca_atti",
+    "cerca_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti"
+  ],
+  "tempo_s": 43.0,
+  "risposta_sistema": "Al Senato, nel 2026 risultano **270 interrogazioni sulla sanità** presentate fino al **4 novembre** (ultimi atti registrati: 28 ottobre), classificate con il tema sanitario dei thesauri e attribuite al **gruppo del primo firmatario**.\n\nIl **MoVimento 5 Stelle** ne ha presentate **77**: **47 a risposta scritta** e **30 a risposta orale**. Sono atti depositati tra l’8 gennaio e il 28 ottobre 2026.\n\nGli altri gruppi:\n\n| Gruppo del primo firmatario | Interrogazioni | Scritte | Orali |\n|---|---:|---:|---:|\n| PD-IDP | **57** | 12 | 45 |\n| Italia Viva–Casa Riformista | **39** | 32 | 7 |\n| Misto – Alleanza Verdi e Sinistra | **29** | 26 | 3 |\n| Lega Salvini Premier–Partito Sardo d’Azione | **26** | 20 | 6 |\n| Fratelli d’Italia | **18** | 13 | 5 |\n| Forza Italia–Berlusconi Presidente–PPE | **11** | 5 | 6 |\n| Misto – Azione-Renew Europe | **6** | 3 | 3 |\n| Per le Autonomie (SVP-PATT, Campobase) | **4** | 4 | — |\n| Civici d’Italia–UDC–Noi Moderati–MAIE–Centro Popolare | **2** | 1 | 1 |\n| Misto – Avanti PSI–Progetto Civico Italia | **1** | 1 | — |\n\nPer “sanità” ho incluso gli atti collegati ad almeno uno dei **158 concetti sanitari** della classificazione, fra cui assistenza sanitaria, ASL, Agenas, accertamenti sanitari e One Health. Non sono comprese qui interpellanze, mozioni, risoluzioni e ordini del giorno: il totale riguarda solo gli atti il cui titolo è un’interrogazione.",
+  "errori": [],
+  "note_domanda": null,
+  "riferimento": {
+    "risposta": "Al Senato, dal 1/1/2026 al 2/11/2026, le interrogazioni (scritte e orali) con almeno un tema EuroVoc della salute sono 313. Il M5S ne ha presentate 87 come primo firmatario (57 scritte, 30 orali), più di ogni altro gruppo; l'elenco con numero, data, primo firmatario e temi è nel risultato. Gli altri gruppi: PD-IDP 66 (14 scritte, 52 orali), Misto 47, IV-CR 40, LSP-PSd'Az 32, FdI 22, FI-BP-PPE 11, Per le Autonomie 5, Civici d'Italia-UDC-NM 3. Il Misto del Senato non si può dividere per componente.",
+    "stato": "calcolata",
+    "limiti": "Sanità = interrogazioni con almeno un concetto EuroVoc in act_subject fra politica sanitaria, malattia, professione sanitaria, scienze mediche, diritto alla salute e i loro concetti più specifici (gerarchia di concept.broader). Interrogazioni = act.kind written_question e oral_question (escluse le interpellanze); anno 2026 per data di presentazione. Gruppo del primo firmatario alla data, passando per person_same_as perché al Senato act_sponsor usa l'id della Camera. La scelta dei temi è un'interpretazione: con altri concetti il numero cambia."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 43.0
+  },
+  "stamattina": {
+    "correttezza": 0
+  },
+  "causa_probabile": "strumento_sbagliato_o_argomenti",
+  "note": "Conta ma con un'altra selezione di temi: 270 interrogazioni e M5S 77 contro 313 e 87 del riferimento; ordine dei gruppi simile. Nessun elenco degli atti, Misto del Senato diviso per componente. Stamattina 0."
+}

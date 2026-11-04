@@ -1,0 +1,40 @@
+{
+ "id": "COM-031",
+ "domanda": "Il Bollettino delle commissioni del 30 ottobre 2026 è definitivo o ancora provvisorio?",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "sitting.provisional: 352 sedute provvisorie, tutte resoconti stenografici di commissione. Le risposte su sedute provvisorie vanno marcate.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792154.3570838,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "argomenti_sedute",
+  "elenco_sedute",
+  "elenco_sedute"
+ ],
+ "tempo_s": 16.0,
+ "risposta_sistema": "Non risulta alcuna seduta di commissione né alla Camera né al Senato il **30 ottobre 2026** nei dati disponibili, aggiornati fino al 3 novembre. Perciò non posso classificare un eventuale Bollettino di quella data come definitivo o provvisorio: il documento non è presente nei dati consultabili.\n\nAlla Camera risulta invece una seduta d’Aula il 30 ottobre, indicata come svolta nel [resoconto ufficiale della seduta n. 736](https://www.camera.it/leg19/410?idSeduta=0736&tipo=stenografico).",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il Bollettino delle commissioni del 30/10/2026 non è nel database: l'ultimo caricato è il n. 756 del 29/10/2026 (11 sedute). I Bollettini dal 26 al 29/10/2026 (n. 753-756) risultano tutti non provvisori. Gli unici resoconti provvisori della settimana sono 4 stenografici di commissione del 27/10/2026, che non fanno parte del Bollettino.",
+  "stato": "non_calcolabile",
+  "limiti": "Il Bollettino del 30/10/2026 manca (non si sa dai dati se sia uscito). Il flag sitting.provisional riguarda di fatto i resoconti stenografici di commissione (committee_verbatim, 352 provvisori); per il Bollettino (committee_summary) vale sempre false, quindi non distingue un Bollettino provvisorio da uno definitivo."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": null,
+  "trappola": null,
+  "tempo_s": 16.0
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": null,
+ "note": "Nessuna seduta di commissione il 30/10/2026 nei dati, quindi il Bollettino non è classificabile: giusto come prima. Non dice che l'ultimo Bollettino caricato è il n. 756 del 29/10."
+}

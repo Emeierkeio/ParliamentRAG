@@ -1,0 +1,40 @@
+{
+  "id": "LEG-020",
+  "trappola": false,
+  "domanda": "C'è un dossier del Servizio Studi sul DL 190/2026? Link e contenuto in breve.",
+  "categoria": "fonti",
+  "tipo_risposta": "link",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791613.7723289,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "cerca_atti",
+    "cerca_atti",
+    "atto"
+  ],
+  "tempo_s": 21.5,
+  "risposta_sistema": "Sì. Il DL 22 ottobre 2026, n. 190 è all’esame della Camera come **A.C. 3159**, sulla conversione in legge delle disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile. La scheda dell’atto è [qui](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159).\n\nNei dati disponibili non compare però un collegamento o un record separato del **dossier del Servizio Studi**: quindi non posso confermarne l’esistenza né fornire il suo link ufficiale.\n\nIn breve, dal titolo e dal testo del disegno di legge collegato, il decreto riguarda:\n- misure urgenti di **sicurezza pubblica**;\n- interventi di **contrasto alla criminalità minorile**.\n\nL’atto è stato presentato il 22 ottobre, assegnato lo stesso giorno e risulta **in corso di esame in Commissione** dal 28 ottobre 2026. Il testo presentato consta di **11 articoli**. [Scheda A.C. 3159](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159)",
+  "errori": [],
+  "note_domanda": "Dossier D26190 del 27/10/2026.",
+  "riferimento": {
+    "risposta": "Sì. Il Servizio Studi della Camera (Dipartimento Giustizia) ha pubblicato il 27/10/2026 il dossier D26190 «Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile» sul D.L. 190/2026 (A.C. 3159, conversione del decreto-legge 22 ottobre 2026, n. 190), dossier n. 786, serie Progetti di legge n. 683: https://temi.camera.it/leg19/dossier/OCD18-23777/disposizioni-urgenti-materia-sicurezza-pubblica-e-contrasto-alla-criminalita-minorile.html. Contiene le schede di lettura dei 10 articoli: modifiche al codice penale (fra cui il regime di imputabilità dei minori ultraquattordicenni e nuove aggravanti per devastazione e saccheggio nel corso di manifestazioni), al codice di procedura penale, al d.P.R. 448/1988 sul processo minorile, al regio decreto 12/1941, una sanzione amministrativa per danni da condotte illecite, modifiche al codice antimafia (d.lgs. 159/2011), all'art. 11-bis del d.l. 59/1978, misure per la sicurezza dopo i gravi incidenti di Milano, la clausola di invarianza finanziaria e l'entrata in vigore.",
+    "stato": "calcolata",
+    "limiti": "Il contenuto in breve è ricavato dall'indice del testo del dossier."
+  },
+  "punteggi": {
+    "correttezza": 0,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 21.5
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": "strumento_sbagliato_o_argomenti",
+  "note": "Dice che il dossier non risulta: c'è, D26190 del 27/10/2026 su temi.camera.it. Trova solo l'A.C. 3159. Stamattina 2: peggiorata, non usa più la ricerca che trovava i documenti."
+}

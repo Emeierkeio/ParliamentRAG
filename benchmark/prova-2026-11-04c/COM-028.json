@@ -1,0 +1,42 @@
+{
+  "id": "COM-028",
+  "trappola": false,
+  "domanda": "Testo della risoluzione 7/00423 (Manzi) e stato della discussione in commissione.",
+  "categoria": "sindacato_ispettivo",
+  "tipo_risposta": "testo",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791786.376506,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "cerca_atti",
+    "atto",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "cerca_interventi"
+  ],
+  "tempo_s": 17.1,
+  "risposta_sistema": "La risoluzione in commissione **7/00423**, presentata alla Camera da Irene Manzi (PD-IDP) il 22 ottobre 2026, chiede al Governo di sostenere la candidatura della **European paper route** al programma degli itinerari culturali del Consiglio d’Europa per il ciclo 2027-2028. [Testo ufficiale dell’atto](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423)\n\nIl dispositivo impegna il Governo a:\n1. sostenere la candidatura nelle sedi del Consiglio d’Europa, in particolare nel Consiglio di direzione dell’Accordo parziale allargato sugli itinerari culturali;\n2. valutare forme di sostegno alla rete, compatibilmente con la finanza pubblica, anche per l’accesso ai programmi europei culturali, di cooperazione territoriale e per le industrie creative;\n3. valutare iniziative per tutelare e valorizzare i saperi artigianali della carta fatta a mano, anche in vista del riconoscimento come patrimonio culturale immateriale.\n\nLa premessa ricostruisce il progetto promosso da Fabriano e Angoulême: la rete comprende anche Santa Maria da Feira, Capellades, Heidelberg, Lione e Barcellona e punta alla candidatura nel 2027-2028.\n\n**Stato in Commissione:** nei dati disponibili fino al **3 novembre 2026**, l’atto non registra passaggi di iter, sedute o interventi della VII Commissione riferiti alla risoluzione. Risulta quindi presentato, senza una discussione in commissione registrata né una deliberazione sull’atto. [Scheda e testo ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423)",
+  "errori": [],
+  "note_domanda": "Presentata il 22/10/2026.",
+  "riferimento": {
+    "risposta": "La risoluzione in commissione 7/00423 è stata presentata il 22/10/2026 (seduta n. 731) da Irene Manzi (PD-IDP) con Mollicone, Amorese (FdI), Curti, Berruto, Iacono, Orfini (PD-IDP), Latini, Miele (Lega), Caso (M5S), Giachetti (IV-CR), Grippo (Azione), Piccolotti (AVS) e Tassinari (FI-PPE). Riguarda la candidatura della European paper route (Fabriano con Angoulême, Santa Maria da Feira, Capellades, Heidelberg, Lione e Barcellona) agli itinerari culturali del Consiglio d'Europa. Impegna il Governo a sostenere la candidatura nel ciclo di certificazione 2027-2028 presso il Consiglio di Direzione dell'Accordo parziale allargato sugli itinerari culturali; a valutare, compatibilmente con i vincoli di finanza pubblica, forme di sostegno alle attività della rete; a valutare iniziative per tutelare e valorizzare i saperi della carta fatta a mano, anche come patrimonio culturale immateriale. Stato: non conclusa; fino all'ultimo Bollettino della VII Commissione in archivio (29/10/2026) non risulta ancora iscritta né discussa in commissione.",
+    "stato": "calcolata",
+    "limiti": "Il testo integrale è in act.text (risultato della prima query). «Non discussa» vuol dire che nessun argomento del Bollettino fino al 29/10/2026 la cita; sedute successive non sono ancora caricate. act.status è vuoto per questo tipo di atto, lo stato si legge da concluded e closed_date."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 17.1
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Data, presentatrice, dispositivo e stato (nessuna discussione in VII Commissione) giusti, con link al testo ufficiale. Mancano ancora i 13 cofirmatari. Uguale a stamattina (2)."
+}

@@ -1,0 +1,39 @@
+{
+  "id": "RIC-011",
+  "trappola": false,
+  "domanda": "Ricostruisci la rete delle cofirme degli emendamenti fra deputati di gruppi diversi nella XIX: quali coppie di gruppi cofirmano più spesso?",
+  "categoria": "emendamenti",
+  "tipo_risposta": "classifica",
+  "ramo": "camera",
+  "difficolta": "difficile",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791837.752473,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_emendamenti"
+  ],
+  "tempo_s": 39.5,
+  "risposta_sistema": "La rete delle cofirme alla **Camera** è molto concentrata nell’area delle opposizioni. Considerando gli emendamenti della XIX legislatura dal **13 ottobre 2022 al 3 novembre 2026** che hanno almeno un firmatario di gruppi diversi, la coppia più frequente è:\n\n1. **PD-IDP – AVS:** 2.396 proposte emendative  \n2. **M5S – PD-IDP:** 1.016  \n3. **M5S – AVS:** 894  \n4. **PD-IDP – Italia Viva-Casa Riformista:** 622  \n5. **+Europa–Stati Uniti d’Europa (componente del Misto) – PD-IDP:** 613  \n6. **+Europa–Stati Uniti d’Europa (componente del Misto) – AVS:** 580  \n7. **+Europa–Stati Uniti d’Europa (componente del Misto) – M5S:** 572  \n8. **M5S – Italia Viva-Casa Riformista:** 564  \n9. **AVS – Italia Viva-Casa Riformista:** 561  \n10. **+Europa–Stati Uniti d’Europa (componente del Misto) – Italia Viva-Casa Riformista:** 508  \n\nIl nucleo della rete è quindi **PD-IDP–AVS–M5S**: tutte e tre le loro relazioni reciproche occupano le prime tre posizioni. Attorno a quel nucleo si collega con particolare continuità la componente **+Europa–Stati Uniti d’Europa**, che supera le 500 cofirme con ciascuno dei quattro soggetti oppositivi principali sopra elencati. Anche **Italia Viva-Casa Riformista** è fortemente integrata: le sue relazioni più frequenti sono con PD-IDP (622), M5S (564), AVS (561) e +Europa–Stati Uniti d’Europa (508).\n\nNel perimetro della maggioranza, le coppie più ricorrenti sono invece:\n\n- **FDI – FI-PPE:** 382;\n- **Lega – FI-PPE:** 356;\n- **Lega – FDI:** 341;\n- **FI-PPE – Noi Moderati-MAIE-Centro Popolare:** 252;\n- **FDI – Noi Moderati-MAIE-Centro Popolare:** 249;\n- **Lega – Noi Moderati-MAIE-Centro Popolare:** 205.\n\nLa rete della maggioranza è quindi meno densa, nei volumi, di quella oppositiva: la sua coppia più forte, FDI–FI-PPE, è molto al di sotto di PD-IDP–AVS.\n\nLe collaborazioni trasversali fra maggioranza e opposizione esistono ma sono più limitate. Le principali sono:\n\n- **FDI – PD-IDP:** 120;\n- **FI-PPE – PD-IDP:** 113;\n- **M5S – FDI:** 111;\n- **M5S – FI-PPE:** 107;\n- **Lega – PD-IDP:** 91;\n- **FI-PPE – AVS:** 81;\n- **FDI – AVS:** 78;\n- **M5S – Lega:** 75.\n\nIn tutto emergono **74 coppie di gruppi** con almeno una cofirma intergruppo. Il conteggio riguarda proposte emendative: una proposta sottoscritta da tre o più gruppi contribuisce a ciascuna coppia di gruppi presente fra i firmatari. I gruppi sono attribuiti alla data della firma; le componenti del Misto sono considerate distintamente. La fonte è costituita dai fascicoli ufficiali degli emendamenti caricati nei dati parlamentari; la loro completezza è segnalata come non verificata.",
+  "errori": [],
+  "note_domanda": "Il gruppo del firmatario va preso alla data dell'emendamento (group_at), non a oggi: 77 persone hanno cambiato gruppo.",
+  "riferimento": {
+    "risposta": "Camera, XIX: delle 90.792 proposte emendative con firmatari deputati, 3.281 sono firmate da deputati di almeno due gruppi diversi (gruppo alla data). Le coppie di gruppi che cofirmano più spesso: PD-IDP e AVS 2.330 emendamenti; M5S e PD-IDP 943; M5S e AVS 833; PD-IDP e IV-CR 616; Misto-+Europa e PD-IDP 604; Misto-+Europa e AVS 577; Misto-+Europa e M5S 570; AVS e IV-CR 561; M5S e IV-CR 560; Misto-+Europa e IV-CR 507. Nella maggioranza: FdI e FI-PPE 326, Lega e FI-PPE 301, Lega e FdI 291, FdI e Noi Moderati 230, FI-PPE e Noi Moderati 227. Fra maggioranza e opposizione le coppie più frequenti sono FI-PPE e PD-IDP 95, FdI e PD-IDP 94, M5S e FI-PPE 94.",
+    "stato": "calcolata",
+    "limiti": "Proposta = (atto, sede, numero) distinti: le riformulazioni ripetono il numero e si contano una volta. Gruppo del firmatario = group_at alla data della seduta (o di presentazione), Misto per componente; firme senza persona (governo, relatori senza id) escluse; 49 firme senza gruppo alla data. Per coppia si conta il numero di proposte che hanno almeno un firmatario di ciascuno dei due gruppi. Gli emendamenti della Camera vengono dai fascicoli caricati (dal 31/10/2022 al 28/10/2026), la cui completezza non è verificata."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 39.5
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": "strumento_sbagliato_o_argomenti",
+  "note": "Stesse coppie in testa del riferimento (PD-AVS, M5S-PD, M5S-AVS) ma numeri diversi: 2.396 contro 2.330, FdI-FI 382 contro 326, Lega-FdI 341 contro 291. Uguale a stamattina (1)."
+}

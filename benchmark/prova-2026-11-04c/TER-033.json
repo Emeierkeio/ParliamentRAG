@@ -1,0 +1,43 @@
+{
+  "id": "TER-033",
+  "trappola": false,
+  "domanda": "Su quali temi il Ministero del Lavoro riceve più interrogazioni: sicurezza sul lavoro, pensioni o ammortizzatori sociali?",
+  "categoria": "temi",
+  "tipo_risposta": "classifica",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791638.318625,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti",
+    "conta_atti"
+  ],
+  "tempo_s": 24.5,
+  "risposta_sistema": "Il tema più frequente è **le pensioni**: **180 atti di sindacato ispettivo rivolti al Ministero del Lavoro** nella XIX legislatura — **150 alla Camera** e **30 al Senato**.\n\nPer confronto, con la classificazione tematica disponibile:\n- **sicurezza sul lavoro**: 0;\n- **ammortizzatori sociali**: 0.\n\nIl confronto è fatto sugli atti rivolti al Ministero del Lavoro e indicizzati nei thesauri tematici, dal 13 ottobre 2022 al 4 novembre 2026. Per “pensioni” la classificazione comprende 68 concetti collegati; per gli altri due temi i descrittori disponibili sono più circoscritti. Dunque il risultato mostra soprattutto che le pensioni sono di gran lunga il tema più intercettato dalla classificazione, non che non esistano interrogazioni su sicurezza o ammortizzatori formulate con termini diversi.",
+  "errori": [],
+  "note_domanda": null,
+  "riferimento": {
+    "risposta": "Fra le 2.783 interrogazioni e interpellanze della XIX rivolte al Ministero del Lavoro (2.207 Camera, 576 Senato), la sicurezza sul lavoro è il tema più frequente dei tre: 341 atti (285 Camera, 56 Senato). Seguono gli ammortizzatori sociali con 216 (186 e 30) e le pensioni con 178 (148 e 30). Un atto può toccare più temi.",
+    "stato": "calcolata",
+    "limiti": "I temi sono gruppi di descrittori EuroVoc scelti per la domanda (regola dichiarata): sicurezza sul lavoro = sicurezza del lavoro, infortunio sul lavoro, prevenzione degli infortuni, malattia professionale, sanità del lavoro (più assicurazione infortuni sul lavoro, mai trovato); pensioni = pensionato, pensione complementare, pensionamento anticipato, condizione di pensionamento, regime pensionistico, cumulo delle pensioni; ammortizzatori sociali = cassa integrazione, assicurazione di disoccupazione. Non inclusi i descrittori generici «disoccupazione» e «sicurezza sociale». Atti considerati: interrogazioni a risposta scritta, orale, in commissione e interpellanze."
+  },
+  "punteggi": {
+    "correttezza": 0,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 24.5
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": "strumento_sbagliato_o_argomenti",
+  "note": "Pensioni prima con 180 e zero per sicurezza e ammortizzatori: sbagliato, il riferimento ha sicurezza 341, ammortizzatori 216, pensioni 178. Non ha trovato i descrittori degli altri due temi. Stamattina 1: peggiorata."
+}

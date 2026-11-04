@@ -1,0 +1,39 @@
+{
+  "id": "LEG-009",
+  "trappola": false,
+  "domanda": "Quante leggi sono state approvate definitivamente nella XIX legislatura finora, distinte fra iniziativa governativa e parlamentare?",
+  "categoria": "statistiche",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "difficile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791813.366484,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_atti",
+    "conta_atti",
+    "conta_atti"
+  ],
+  "tempo_s": 7.8,
+  "risposta_sistema": "Sono **366** le leggi definitivamente approvate e pubblicate nella XIX legislatura, dal 13 ottobre 2022 fino ai dati disponibili al 4 novembre 2026.\n\n- **274** da iniziativa **governativa**\n- **87** da iniziativa **parlamentare**\n\nLe restanti **5** leggi sono: 3 di iniziativa mista, 1 popolare e 1 regionale. Tra tutte le leggi approvate, **125** sono conversioni di decreti-legge e **241** non lo sono.\n\nIl conteggio considera ogni legge una sola volta, anche se il relativo progetto è passato in entrambi i rami; esclude i testi approvati ma non ancora pubblicati con numero di legge.",
+  "errori": [],
+  "note_domanda": "La stessa legge compare in entrambi i rami: deduplicare per law_number e law_date. Al Senato initiative è testo grezzo («Gov. Meloni-I: …», «Sen. …») e va ricondotto a governo o parlamento.",
+  "riferimento": {
+    "risposta": "Nella XIX, fino al 2/11/2026, le leggi approvate definitivamente e pubblicate sono 366 (363 ordinarie, 3 costituzionali), contate una volta sola anche se l'atto compare in tutti e due i rami. Iniziativa governativa: 274 (125 conversioni di decreti-legge, 148 altri disegni di legge, 1 legge costituzionale). Iniziativa parlamentare: 87 (86 ordinarie, 1 costituzionale). Altre: 3 miste (2 testi unificati con atti del governo e parlamentari, 1 con un atto del CNEL), 1 popolare, 1 costituzionale regionale (Statuto del Friuli-Venezia Giulia, L. cost. 1/2026).",
+    "stato": "calcolata",
+    "limiti": "Legge = coppia (law_number, anno di law_date) distinta, separando leggi ordinarie e costituzionali (constitutional); conta una volta la legge anche se compare in più atti o in tutti e due i rami. Esclusa la riga con law_date 2100-01-01. Iniziativa normalizzata dal testo grezzo del Senato; se gli atti di una legge hanno iniziative diverse è «Mista». Decreto convertito = titolo con «conversione in legge». Dati fino al 2/11/2026. Non sono contati i ddl approvati in via definitiva ma non ancora pubblicati (senza law_number)."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 7.8
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "366 leggi, 274 governative, 87 parlamentari, 3 miste, 1 popolare e 1 regionale, come il riferimento; nessun link. Uguale a stamattina (2)."
+}

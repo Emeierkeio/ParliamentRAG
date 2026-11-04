@@ -1,0 +1,409 @@
+{
+ "id": "COMU-035",
+ "trappola": false,
+ "domanda": "Quali interrogazioni ha presentato il Movimento 5 Stelle al Senato sulla sanità nel 2026? E gli altri gruppi?",
+ "categoria": "sindacato_ispettivo",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "senato",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": null,
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791488.393444,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": "written_question",
+    "initiative": null,
+    "q": null,
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "tipo",
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo written_question; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 164, \"rows_total\": 11, \"offset\": 0, \"rows\": [{\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"atti\": 47, \"dal\": \"2026-01-14\", \"al\": \"2026-10-27\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"atti\": 32, \"dal\": \"2026-01-13\", \"al\": \"2026-10-27\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"atti\": 26, \"dal\": \"2026-01-08\", \"al\": \"2026-10-27\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"atti\": 20, \"dal\": \"2026-02-04\", \"al\": \"2026-10-27\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Fratelli d'Italia (FdI)\", \"atti\": 13, \"dal\": \"2026-01-28\", \"al\": \"2026-09-11\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 12, \"dal\": \"2026-01-08\", \"al\": \"2026-10-27\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"atti\": 5, \"dal\": \"2026-01-28\", \"al\": \"2026-07-29\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Per le Autonomie (SVP-PATT, Campobase) (Aut (SVP-PATT, Cb))\", \"atti\": 4, \"dal\": \"2026-02-10\", \"al\": \"2026-10-28\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Misto - Azione-Renew Europe (Az-RE)\", \"atti\": 3, \"dal\": \"2026-02-24\", \"al\": \"2026-10-27\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare (Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP)\", \"atti\": 1, \"dal\": \"2026-10-13\", \"al\": \"2026-10-13\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Misto - Avanti PSI - Progetto Civico Italia (A-PSI-PrCivIt)\", \"atti\": 1, \"dal\": \"2026-10-28\", \"al\": \"2026-10-28\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "tipo",
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 504, \"rows_total\": 46, \"offset\": 0, \"rows\": [{\"tipo\": \"agenda_order\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 66, \"dal\": \"2026-02-25\", \"al\": \"2026-09-22\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"atti\": 47, \"dal\": \"2026-01-14\", \"al\": \"2026-10-27\"}, {\"tipo\": \"oral_question\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 45, \"dal\": \"2026-01-07\", \"al\": \"2026-10-28\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"atti\": 32, \"dal\": \"2026-01-13\", \"al\": \"2026-10-27\"}, {\"tipo\": \"agenda_order\", \"gruppo_primo_firmatario\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"atti\": 31, \"dal\": \"2026-02-25\", \"al\": \"2026-10-07\"}, {\"tipo\": \"oral_question\", \"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"atti\": 30, \"dal\": \"2026-01-08\", \"al\": \"2026-10-28\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"atti\": 26, \"dal\": \"2026-01-08\", \"al\": \"2026-10-27\"}, {\"tipo\": \"agenda_order\", \"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"atti\": 25, \"dal\": \"2026-06-04\", \"al\": \"2026-10-13\"}, {\"tipo\": \"written_question\", \"gruppo_primo_firmatario\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"atti\": 20, \"dal\": \"2026-02-04\", \"al\": \"2026-10-27\"}, {\"tipo\": \"committee_agenda_order\", \"gruppo_primo_firmatario\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"atti\": 19, \"dal\": \"2026-02-12\", \"al\": \"2026-09-23\"}, {\"tipo\": \"committee_agenda_order\", \"gruppo_primo_firmatario\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"atti\": 18, \"dal\": \"2026-01-29\", \"al\": \"2026-09-30\"}, {\"tipo\": \"committee_agenda_order\", \"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 17, \"dal\": \"2026-02-2"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "written_question",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 3504, \"items\": [{\"uri\": \"it:senato:19:aic:4-03499\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"4/03499\", \"kind\": \"written_question\", \"title\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/03499 presentata da MATERA DOMENICO (FRATELLI D'ITALIA) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=4/03499\"}, {\"uri\": \"it:senato:19:aic:4-03500\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"4/03500\", \"kind\": \"written_question\", \"title\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/03500 presentata da MENIA ROBERTO (FRATELLI D'ITALIA) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=4/03500\"}, {\"uri\": \"it:senato:19:aic:4-03501\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"4/03501\", \"kind\": \"written_question\", \"title\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/03501 presentata da BILOTTI ANNA (MOVIMENTO 5 STELLE) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=4/03501\"}, {\"uri\": \"it:senato:19:aic:4-03502\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"4/03502\", \"kind\": \"written_question\", \"title\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/03502 presentata da DREOSTO MARCO (LEGA SALVINI PREMIER - PARTITO SARDO D'AZIONE) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=4/03502\"}, {\"uri\": \"it:senato:19:aic:4-03503\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"4/03503\", \"kind\": \"written_question\", \"title\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/03503 presentata da PIRONDINI LUCA (MOVIMENTO 5 STELLE) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=4/03503\"}, {\"uri\": \"it:senato:19:aic:4-03504\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"4/03504\", \"kind\": \"written_question\", \"title\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/03504 presentata da MAGNI CELESTINO (MISTO-ALLEANZA VERDI E SINISTRA) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=4/03504\"}, {\"uri\": \"it:senato:19:aic:4-03505\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"4/03505\", \"kind\": \"written_question\", \"title\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/03505 presentata da MAGNI CELESTINO (MISTO-ALLEANZA VERDI E SINISTRA) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "oral_question",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2877, \"items\": [{\"uri\": \"it:senato:19:aic:3-02876\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"3/02876\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA ORALE 3/02876 presentata da LOREFICE PIETRO (MOVIMENTO 5 STELLE) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=3/02876\"}, {\"uri\": \"it:senato:19:aic:3-02877\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"3/02877\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA ORALE 3/02877 presentata da VERDUCCI FRANCESCO (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 29/10/2026\", \"date\": \"2026-10-29\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=3/02877\"}, {\"uri\": \"it:senato:19:aic:3-02869\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"3/02869\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA ORALE 3/02869 presentata da SENSI FILIPPO (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 28/10/2026\", \"date\": \"2026-10-28\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=3/02869\"}, {\"uri\": \"it:senato:19:aic:3-02870\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"3/02870\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA ORALE 3/02870 presentata da LOMBARDO MARCO (MISTO-AZIONE-RENEW EUROPE) in data 28/10/2026\", \"date\": \"2026-10-28\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=3/02870\"}, {\"uri\": \"it:senato:19:aic:3-02871\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"3/02871\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA ORALE 3/02871 presentata da MATERA DOMENICO (FRATELLI D'ITALIA) in data 28/10/2026\", \"date\": \"2026-10-28\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=3/02871\"}, {\"uri\": \"it:senato:19:aic:3-02872\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"3/02872\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA ORALE 3/02872 presentata da PAITA RAFFAELLA (ITALIA VIVA - CASA RIFORMISTA) in data 28/10/2026\", \"date\": \"2026-10-28\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=3/02872\"}, {\"uri\": \"it:senato:19:aic:3-02873\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"3/02873\", \"kind\": \"oral_question\", \"title\": \"INTERROGAZIONE A RISPOSTA ORALE 3/02873 presentata da MALPEZZI SIMONA FLAVIA (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in dat"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": "oral_question",
+    "initiative": null,
+    "q": null,
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "gruppo_primo_firmatario"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: tipo oral_question; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 106, \"rows_total\": 9, \"offset\": 0, \"rows\": [{\"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"atti\": 45, \"dal\": \"2026-01-07\", \"al\": \"2026-10-28\"}, {\"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"atti\": 30, \"dal\": \"2026-01-08\", \"al\": \"2026-10-28\"}, {\"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"atti\": 7, \"dal\": \"2026-02-24\", \"al\": \"2026-10-28\"}, {\"gruppo_primo_firmatario\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"atti\": 6, \"dal\": \"2026-03-03\", \"al\": \"2026-10-27\"}, {\"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"atti\": 6, \"dal\": \"2026-01-21\", \"al\": \"2026-10-13\"}, {\"gruppo_primo_firmatario\": \"Fratelli d'Italia (FdI)\", \"atti\": 5, \"dal\": \"2026-03-04\", \"al\": \"2026-07-22\"}, {\"gruppo_primo_firmatario\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"atti\": 3, \"dal\": \"2026-01-07\", \"al\": \"2026-07-29\"}, {\"gruppo_primo_firmatario\": \"Misto - Azione-Renew Europe (Az-RE)\", \"atti\": 3, \"dal\": \"2026-07-22\", \"al\": \"2026-10-28\"}, {\"gruppo_primo_firmatario\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare (Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP)\", \"atti\": 1, \"dal\": \"2026-07-22\", \"al\": \"2026-07-22\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "gruppo_primo_firmatario",
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 270, \"rows_total\": 20, \"offset\": 0, \"rows\": [{\"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"tipo\": \"written_question\", \"atti\": 47, \"dal\": \"2026-01-14\", \"al\": \"2026-10-27\"}, {\"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"tipo\": \"oral_question\", \"atti\": 45, \"dal\": \"2026-01-07\", \"al\": \"2026-10-28\"}, {\"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"tipo\": \"written_question\", \"atti\": 32, \"dal\": \"2026-01-13\", \"al\": \"2026-10-27\"}, {\"gruppo_primo_firmatario\": \"MoVimento 5 Stelle (M5S)\", \"tipo\": \"oral_question\", \"atti\": 30, \"dal\": \"2026-01-08\", \"al\": \"2026-10-28\"}, {\"gruppo_primo_firmatario\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"tipo\": \"written_question\", \"atti\": 26, \"dal\": \"2026-01-08\", \"al\": \"2026-10-27\"}, {\"gruppo_primo_firmatario\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"tipo\": \"written_question\", \"atti\": 20, \"dal\": \"2026-02-04\", \"al\": \"2026-10-27\"}, {\"gruppo_primo_firmatario\": \"Fratelli d'Italia (FdI)\", \"tipo\": \"written_question\", \"atti\": 13, \"dal\": \"2026-01-28\", \"al\": \"2026-09-11\"}, {\"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"tipo\": \"written_question\", \"atti\": 12, \"dal\": \"2026-01-08\", \"al\": \"2026-10-27\"}, {\"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"tipo\": \"oral_question\", \"atti\": 7, \"dal\": \"2026-02-24\", \"al\": \"2026-10-28\"}, {\"gruppo_primo_firmatario\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"tipo\": \"oral_question\", \"atti\": 6, \"dal\": \"2026-03-03\", \"al\": \"2026-10-27\"}, {\"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"tipo\": \"oral_question\", \"atti\": 6, \"dal\": \"2026-01-21\", \"al\": \"2026-10-13\"}, {\"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"tipo\": \"written_question\", \"at"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "M5S",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario M5S; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 77, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 77, \"dal\": \"2026-01-08\", \"al\": \"2026-10-28\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "PD-IDP",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario PD-IDP; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 57, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 57, \"dal\": \"2026-01-07\", \"al\": \"2026-10-28\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "IV-CR",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario IV-CR; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 39, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 39, \"dal\": \"2026-01-13\", \"al\": \"2026-10-28\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "AVS",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario AVS; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 29, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 29, \"dal\": \"2026-01-07\", \"al\": \"2026-10-27\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "LSP-PSd'Az",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario LSP-PSd'Az; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 26, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 26, \"dal\": \"2026-02-04\", \"al\": \"2026-10-27\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "FdI",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario FdI; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 18, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 18, \"dal\": \"2026-01-28\", \"al\": \"2026-09-11\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "FI-BP-PPE",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario FI-BP-PPE; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 11, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 11, \"dal\": \"2026-01-21\", \"al\": \"2026-10-13\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "Aut",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario Aut; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 4, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 4, \"dal\": \"2026-02-10\", \"al\": \"2026-10-28\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "Az-RE",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario Az-RE; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 6, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 6, \"dal\": \"2026-02-24\", \"al\": \"2026-10-28\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": null,
+    "initiative": null,
+    "q": "interrogazione",
+    "subject": "sanit",
+    "signer": null,
+    "first_signer": false,
+    "group": "Cd'I-UDC-NM",
+    "addressee": null,
+    "became_law": null,
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [],
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 01/01/2026 al 04/11/2026; filtri: parole_del_titolo interrogazione, gruppo_del_primo_firmatario Cd'I-UDC-NM; tema «sanit»: atti con almeno uno di 158 concetti dei thesauri (ACCERTAMENTI SANITARI, AGENZIA NAZIONALE PER I SERVIZI SANITARI REGIONALI ( AGENAS ), AGENZIA PER I SERVIZI SANITARI REGIONALI ( ASSR ), ASSISTENZA SANITARIA, ASSISTENZA SANITARIA INTEGRATIVA, AZIENDE SANITARIE LOCALI, Approccio \\\"One Health\\\", Autorità per la preparazione e la risposta alle emergenze sanitarie, CASSA PER LE PENSIONI AI SANITARI ( CPS ), CERTIFICATI E REFERTI SANITARI, CESSANITI, COMITATO INTERMINISTERIALE GESTIONE FONDO INTERVENTI EDUCAZIONE E INFORMAZIONE SANITARIA…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 2, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"atti\": 2, \"dal\": \"2026-07-22\", \"al\": \"2026-10-13\"}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_atti",
+  "conta_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti"
+ ],
+ "tempo_s": 43.0,
+ "risposta_sistema": "Al Senato, nel 2026 risultano **270 interrogazioni sulla sanità** presentate fino al **4 novembre** (ultimi atti registrati: 28 ottobre), classificate con il tema sanitario dei thesauri e attribuite al **gruppo del primo firmatario**.\n\nIl **MoVimento 5 Stelle** ne ha presentate **77**: **47 a risposta scritta** e **30 a risposta orale**. Sono atti depositati tra l’8 gennaio e il 28 ottobre 2026.\n\nGli altri gruppi:\n\n| Gruppo del primo firmatario | Interrogazioni | Scritte | Orali |\n|---|---:|---:|---:|\n| PD-IDP | **57** | 12 | 45 |\n| Italia Viva–Casa Riformista | **39** | 32 | 7 |\n| Misto – Alleanza Verdi e Sinistra | **29** | 26 | 3 |\n| Lega Salvini Premier–Partito Sardo d’Azione | **26** | 20 | 6 |\n| Fratelli d’Italia | **18** | 13 | 5 |\n| Forza Italia–Berlusconi Presidente–PPE | **11** | 5 | 6 |\n| Misto – Azione-Renew Europe | **6** | 3 | 3 |\n| Per le Autonomie (SVP-PATT, Campobase) | **4** | 4 | — |\n| Civici d’Italia–UDC–Noi Moderati–MAIE–Centro Popolare | **2** | 1 | 1 |\n| Misto – Avanti PSI–Progetto Civico Italia | **1** | 1 | — |\n\nPer “sanità” ho incluso gli atti collegati ad almeno uno dei **158 concetti sanitari** della classificazione, fra cui assistenza sanitaria, ASL, Agenas, accertamenti sanitari e One Health. Non sono comprese qui interpellanze, mozioni, risoluzioni e ordini del giorno: il totale riguarda solo gli atti il cui titolo è un’interrogazione.",
+ "eventi": {
+  "status": 1,
+  "tool": 32,
+  "dati": 16,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

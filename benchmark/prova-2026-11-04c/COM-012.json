@@ -1,0 +1,43 @@
+{
+ "id": "COM-012",
+ "domanda": "Fascicolo degli emendamenti sul ddl caregiver in XII Commissione: quanti per articolo e quanti articoli aggiuntivi?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "kind distingue emendamento, articoloAggiuntivo, subEmendamento.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792084.10939,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "conta_emendamenti",
+  "conta_emendamenti",
+  "conta_emendamenti",
+  "conta_emendamenti"
+ ],
+ "tempo_s": 18.0,
+ "risposta_sistema": "Per il ddl governativo **C. 2789** sul riconoscimento e la tutela delle persone che assistono i propri cari, esaminato in sede referente dalla XII Commissione, il fascicolo conta **418 proposte**: **389 emendamenti**, **23 articoli aggiuntivi** e **6 subemendamenti**. [Scheda del ddl C. 2789](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2789)\n\nPer articolo (inclusi gli articoli aggiuntivi e i subemendamenti riferiti a quell’articolo):\n\n- art. 1: **29**\n- art. 2: **69** *(di cui 6 subemendamenti)*\n- art. 3: **18**\n- art. 4: **72**\n- art. 5: **24**\n- art. 6: **14**\n- art. 7: **51**\n- art. 8: **35**\n- art. 9: **9**\n- art. 10: **1**\n- art. 11: **3**\n- art. 12: **35**\n- art. 13: **46**\n- art. 14: **4**\n- art. 15: **8**\n\nI **23 articoli aggiuntivi** sono così distribuiti: dopo l’articolo 4, **1**; dopo il 5, **3**; dopo il 7, **1**; dopo l’8, **2**; dopo il 12, **2**; dopo il 13, **14**.\n\nIl conteggio considera una proposta per numero e sede; le eventuali riformulazioni con lo stesso numero valgono una sola volta. La fonte segnala che la completezza dei fascicoli caricati non è verificata.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Il ddl caregiver è l'AC 2789 del governo («Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari»), in sede referente in XII Commissione. Le proposte distinte sono 418: 389 emendamenti (387 nel fascicolo del 22/4/2026 più gli emendamenti 1.100 e 2.100 del relatore), 23 articoli aggiuntivi e 6 subemendamenti al 2.100. Per articolo: art. 1: 29; art. 2: 63 emendamenti e 6 subemendamenti; art. 3: 18; art. 4: 71 e 1 articolo aggiuntivo; art. 5: 21 e 3; art. 6: 14; art. 7: 50 e 1; art. 8: 33 e 2; art. 9: 9; art. 10: 1; art. 11: 3; art. 12: 33 e 2; art. 13: 32 e 14; art. 14: 4; art. 15: 8. Ne risultano approvate 46.",
+  "stato": "calcolata",
+  "limiti": "Proposta = numero distinto (con tipo e articolo): lo stesso numero ricompare fra le riformulazioni e fra le approvate e va contato una volta (499 righe, 418 proposte). Gli articoli aggiuntivi sono contati sotto l'articolo dopo cui si inseriscono. Il dato degli approvati viene dai gruppi «PROPOSTE EMENDATIVE APPROVATE» del Bollettino."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 18.0
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": null,
+ "note": "418 proposte (389 emendamenti, 23 articoli aggiuntivi, 6 subemendamenti) e riparto per articolo identico al riferimento, come prima. Ora la scheda del C. 2789 ha l'URL: fonti da 0 a 1."
+}

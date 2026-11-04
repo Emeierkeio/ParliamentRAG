@@ -1,0 +1,114 @@
+{
+ "id": "GIO-049",
+ "domanda": "Quanti emendamenti ha presentato ogni gruppo sulla legge elettorale alla Camera, in prima lettura?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "AC 2822: Misto per componente.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792504.168216,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "legge elettorale",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 10, \"items\": [{\"uri\": \"it:camera:19:ac:3145\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3145\", \"kind\": \"bill\", \"title\": \"PROPOSTA DI LEGGE COSTITUZIONALE SPERANZA: \\\"Modifica all’articolo 94 della Costituzione in materia di divieto di apposizione della questione di fiducia su progetti di legge vertenti su materia costituzionale o elettorale\\\" (3145)\", \"date\": \"2026-10-13\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3145\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2946\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2946\", \"kind\": \"bill\", \"title\": \"MORRONE ed altri: \\\"Modifiche alle leggi 4 aprile 1956, n. 212, e 10 dicembre 1993, n. 515, in materia di impiego della lingua italiana nella propaganda e nelle campagne elettorali\\\" (2946)\", \"date\": \"2026-05-29\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2946\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2751\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2751\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 27 dicembre 2025, n. 196, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell’anno 2026\\\" (2751)\", \"date\": \"2025-12-27\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"18\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2751\", \"initiative\": \"Governo\"}, {\"uri\": \"it:camera:19:ac:2362\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2362\", \"kind\": \"bill\", \"title\": \"S. 1425. - \\\"Conversione in legge, con modificazioni, del decreto-legge 19 marzo 2025, n. 27, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell’anno 2025\\\" <em>(approvato dal Senato) </em>(2362)\", \"date\": \"2025-04-16\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"72\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2362\", \"initiative\": \"Governo\"}, {\"uri\": \"it:camera:19:ac:2298\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2298\", \"kind\": \"bill\", \"title\": \"PROPOSTA DI LEGGE COSTITUZIONALE ALFONSO COLUCCI ed altri: \\\"Modifiche agli articoli 66 e 134 della Costituzione concernenti il ricorso alla Corte costituzionale in materia di verifica dei titoli di ammissione e delle cause di ineleggibilità e incompatibilità dei membri del Parlamento nonché di regolarità dei procedimenti elettorali e referendari e norme per assicurare la libertà del voto contro le pratiche di disinformazione\\\" (2298)\", \"date\": \"2025-03-10\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2298\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2212\", \"chamber\": \"c"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2822",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2822\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822\", \"kind\": \"bill\", \"title\": \"BIGNAMI ed altri: \\\"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\\\" (2822)\", \"date\": \"2026-02-26\", \"status\": \"Approvato, segue Navette\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2822",
+    "outcome": null,
+    "venue": "referente",
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "gruppo_primo_firmatario",
+     "sede"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:2822, sede referente. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": 731, \"rows_total\": 11, \"offset\": 0, \"rows\": [{\"gruppo_primo_firmatario\": \"Alleanza Verdi e Sinistra (AVS)\", \"sede\": \"referente\", \"proposte\": 386}, {\"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"sede\": \"referente\", \"proposte\": 153}, {\"gruppo_primo_firmatario\": \"Movimento 5 Stelle (M5S)\", \"sede\": \"referente\", \"proposte\": 99}, {\"gruppo_primo_firmatario\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"sede\": \"referente\", \"proposte\": 53}, {\"gruppo_primo_firmatario\": \"Misto (MISTO)\", \"sede\": \"referente\", \"proposte\": 15}, {\"gruppo_primo_firmatario\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"sede\": \"referente\", \"proposte\": 8}, {\"gruppo_primo_firmatario\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"sede\": \"referente\", \"proposte\": 7}, {\"gruppo_primo_firmatario\": \"Fratelli d'Italia (FDI)\", \"sede\": \"referente\", \"proposte\": 4}, {\"gruppo_primo_firmatario\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"sede\": \"referente\", \"proposte\": 3}, {\"gruppo_primo_firmatario\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"sede\": \"referente\", \"proposte\": 2}, {\"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"sede\": \"referente\", \"proposte\": 1}]}"
+  },
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2822",
+    "outcome": null,
+    "venue": "assembly",
+    "group": null,
+    "start": null,
+    "end": null,
+    "cross_group": false,
+    "group_by": [
+     "gruppo_primo_firmatario",
+     "sede"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, tutta la XIX legislatura; filtri: atto it:camera:19:ac:2822, sede assembly. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": 299, \"rows_total\": 14, \"offset\": 0, \"rows\": [{\"gruppo_primo_firmatario\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"sede\": \"assembly\", \"proposte\": 102}, {\"gruppo_primo_firmatario\": \"Movimento 5 Stelle (M5S)\", \"sede\": \"assembly\", \"proposte\": 66}, {\"gruppo_primo_firmatario\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"sede\": \"assembly\", \"proposte\": 53}, {\"gruppo_primo_firmatario\": \"Alleanza Verdi e Sinistra (AVS)\", \"sede\": \"assembly\", \"proposte\": 14}, {\"gruppo_primo_firmatario\": \"Fratelli d'Italia (FDI)\", \"sede\": \"assembly\", \"proposte\": 12}, {\"gruppo_primo_firmatario\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"sede\": \"assembly\", \"proposte\": 12}, {\"gruppo_primo_firmatario\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"sede\": \"assembly\", \"proposte\": 8}, {\"gruppo_primo_firmatario\": \"(senza gruppo)\", \"sede\": \"assembly\", \"proposte\": 8}, {\"gruppo_primo_firmatario\": \"Italia Viva - Casa Riformista (IV-CR)\", \"sede\": \"assembly\", \"proposte\": 7}, {\"gruppo_primo_firmatario\": \"Misto (MISTO)\", \"sede\": \"assembly\", \"proposte\": 6}, {\"gruppo_primo_firmatario\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"sede\": \"assembly\", \"proposte\": 4}, {\"gruppo_primo_firmatario\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"sede\": \"assembly\", \"proposte\": 4}, {\"gruppo_primo_firmatario\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"sede\": \"assembly\", \"proposte\": 2}, {\"gruppo_primo_firmatario\": \"Lega - Salvini Premier (LEGA)\", \"sede\": \"assembly\", \"proposte\": 1}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2822"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2822\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822\", \"kind\": \"bill\", \"title\": \"BIGNAMI ed altri: \\\"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\\\" (2822)\", \"date\": \"2026-02-26\", \"status\": \"Approvato, segue Navette\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"status_date\": \"2026-07-16\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2822\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:307456\", \"name\": \"Alessandro Battilocchio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307456&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307603\", \"name\": \"Alessandro Colucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307603&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307641\", \"name\": \"Igor Giancarlo Iezzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307641&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:300447\", \"name\": \"Maurizio Enzo Lupi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300447&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "conta_emendamenti",
+  "conta_emendamenti",
+  "atto"
+ ],
+ "tempo_s": 17.3,
+ "risposta_sistema": "Per la prima lettura alla Camera della proposta di legge elettorale **C. 2822**, approvata il 16 luglio 2026 e poi trasmessa al Senato, gli emendamenti sono stati conteggiati secondo il **gruppo del primo firmatario**, separando Commissione e Aula. [Scheda ufficiale dell’atto C. 2822](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822)\n\n| Gruppo | Commissione (sede referente) | Aula |\n|---|---:|---:|\n| AVS | 386 | 14 |\n| PD-IDP | 153 | 102 |\n| M5S | 99 | 66 |\n| Misto – +Europa–Stati Uniti d’Europa | 53 | 53 |\n| Misto – Futuro Nazionale Vannacci–Free | 7 | 8 |\n| Misto – Minoranze linguistiche | 2 | 4 |\n| Misto, senza componente indicata nei dati | 15 | 6 |\n| Azione–Popolari Europeisti Riformatori–Renew Europe | 8 | 12 |\n| Italia Viva–Casa Riformista | 1 | 7 |\n| FdI | 4 | 12 |\n| Forza Italia–Berlusconi Presidente–PPE | 0 | 2 |\n| Lega–Salvini Premier | 0 | 1 |\n| Noi Moderati–MAIE–Centro Popolare | 3 | 4 |\n| Senza gruppo | 0 | 8 |\n\nIn tutto, risultano **731 proposte in Commissione** e **299 in Aula**. Il conteggio considera una proposta per atto, sede e numero; eventuali riformulazioni con lo stesso numero contano una sola volta. La fonte segnala inoltre che la completezza dei fascicoli di emendamenti caricati non è verificata.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,159 @@
+{
+ "id": "AULA-025",
+ "trappola": false,
+ "domanda": "Nel voto di fiducia sul decreto giustizia (S. 1939) del 30 luglio 2026 al Senato, quali senatori di maggioranza non hanno partecipato al voto o hanno votato contro?",
+ "categoria": "voti",
+ "tipo_risposta": "elenco",
+ "ramo": "senato",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Trappola: nei ballot del Senato gli assenti non hanno riga (non esiste «absent»): si ricavano dai mandati in corso. Chi è in missione non è assente. Votazione it:senato:19:sed0444:v001.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791671.2446342,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1939",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1939\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1939\", \"kind\": \"bill\", \"title\": \"Conversione in legge del decreto-legge 12 giugno 2026, n. 100, recante misure urgenti in materia di giustizia e per l'attuazione del Patto dell'Unione europea sulla migrazione e l'asilo del 14 maggio 2024\", \"date\": \"2026-06-12\", \"status\": \"approvato\", \"law_number\": \"145\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55442.htm\", \"initiative\": \"Gov. Meloni-I: Pres. Consiglio Meloni, Ministro aff. europei, PNRR e politiche di coesione Foti ed altri\"}]}"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "senato",
+    "act": null,
+    "kind": null,
+    "final": null,
+    "confidence": true,
+    "start": "2026-07-30",
+    "end": "2026-07-30",
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:sed0444:v001\", \"sitting\": \"it:senato:19:sed0444\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-07-30\", \"title\": \"Disegno di legge n. 1939. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 92, \"against\": 63, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": true}]}"
+  },
+  {
+   "name": "votazione",
+   "args": {
+    "uri": "it:senato:19:sed0444:v001",
+    "with_ballots": true
+   },
+   "result": "{\"uri\": \"it:senato:19:sed0444:v001\", \"sitting\": \"it:senato:19:sed0444\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-07-30\", \"title\": \"Disegno di legge n. 1939. Votazione questione di fiducia\", \"kind\": \"confidence\", \"favor\": 92, \"against\": 63, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": true, \"present\": 156, \"voting\": 155, \"majority\": 78, \"final\": false, \"ballots_match\": true, \"acts\": [], \"groups\": [{\"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"favor\": 51, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 11, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 28, \"abstain\": 0, \"absent\": 0, \"mission\": 5, \"other\": 0, \"majority\": \"against\"}, {\"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"favor\": 20, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 8, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 22, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 0, \"majority\": \"against\"}, {\"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"favor\": 14, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 6, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:senato:19:group:92\", \"name\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare\", \"short_name\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\", \"kind\": \"group\"}, \"favor\": 7, \"against\": 0, \"abstain\": 0, \"absent\": 0, \"mission\": 1, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:senato:19:group:91\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 7, \"abstain\": 0, \"absent\": 0, \"mission\": 0, \"other\": 0, \"majority\": \"against\"}, {\"group\": {\"uri\": \"it:senato:19:group:9\", \"name\": \"Misto, non iscritti\", \"short_name\": \"Misto\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 4, \"abstain\": 0, \"absent\": 0, \"mission\": 2, \"other\": 0, \"majority\": \"against\"}, {\"group\": {\"uri\": \"it:senato:19:group:69\", \"name\": \"Per le Autonomie (SVP-PATT, Campobase)\", \"short_name\": \"Aut (SVP-PATT, Cb)\", \"kind\": \"group\"}, \"favor\": 0, \"against\": 2, \"abstain\": 0, \"absent\": 0, \"mission\": 4, \"other\": 0, \"majority\": \"against\"}], \"ballots\": [{\"person\": {\"uri\": \"it:person:senato:36404\", \"name\": \"Ada Lopreiato\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036404.jpg\"}, \"result\": \"against\"}, {\"person\": {\"uri\": \"it:person:senato:1805"
+  },
+  {
+   "name": "presenze",
+   "args": {
+    "chamber": "senato",
+    "persons": null,
+    "group": "FdI",
+    "government": false,
+    "kind": null,
+    "final": null,
+    "start": "2026-07-30",
+    "end": "2026-07-30",
+    "order_by": "mission",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Schede di voto, Senato, dal 30/07/2026 al 30/07/2026: 1 votazioni dal 30/07/2026 al 30/07/2026; persone: i membri del gruppo FdI quando erano nel gruppo. voted = favorevoli + contrari + astenuti + voti segreti dati; mission = in missione (per incarico, non è assenza); absent = assente; chair = presiede. Le votazioni contate sono quelle dell'insieme, anche fuori dal periodo di un incarico; chi ha avuto il mandato per parte del periodo ha meno schede (ballots).\", \"votes_in_set\": 1, \"persons_total\": 62, \"rows_total\": 62, \"offset\": 0, \"rows\": [{\"persona\": \"Alberto Balboni\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:17542\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Adolfo Urso\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:2444\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Nello Musumeci\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:28306\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Giovanbattista Fazzolari\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:32628\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Isabella Rauti\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:32699\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Guido Castelli\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:36388\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Anna Maria Fallucchi\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:36398\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Filippo Melchiorre\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:36407\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Raoul Russo\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:36421\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Marcello Pera\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:3900\", \"gruppo_oggi\": \"FdI\"}, {\"persona\": \"Alessio Butti\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, "
+  },
+  {
+   "name": "presenze",
+   "args": {
+    "chamber": "senato",
+    "persons": null,
+    "group": "LSP-PSd'Az",
+    "government": false,
+    "kind": null,
+    "final": null,
+    "start": "2026-07-30",
+    "end": "2026-07-30",
+    "order_by": "mission",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Schede di voto, Senato, dal 30/07/2026 al 30/07/2026: 1 votazioni dal 30/07/2026 al 30/07/2026; persone: i membri del gruppo LSP-PSd'Az quando erano nel gruppo. voted = favorevoli + contrari + astenuti + voti segreti dati; mission = in missione (per incarico, non è assenza); absent = assente; chair = presiede. Le votazioni contate sono quelle dell'insieme, anche fuori dal periodo di un incarico; chi ha avuto il mandato per parte del periodo ha meno schede (ballots).\", \"votes_in_set\": 1, \"persons_total\": 28, \"rows_total\": 28, \"offset\": 0, \"rows\": [{\"persona\": \"Massimo Garavaglia\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:22963\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Matteo Salvini\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:25407\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Roberto Marti\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:29480\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Paolo Tosato\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:30915\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Alessandro Morelli\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:32988\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Claudio Durigon\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:33096\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Tilde Minasi\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:36013\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Marco Dreosto\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:36396\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Antonino Germana'\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:1116\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Daisy Pirovano\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:18562\", \"gruppo_oggi\": \"LSP-PSd'Az\"}, {\"persona\": \"Giulia Bongiorno\", \"ballots\": 1, \"favor\": 1, \""
+  },
+  {
+   "name": "presenze",
+   "args": {
+    "chamber": "senato",
+    "persons": null,
+    "group": "FI-BP-PPE",
+    "government": false,
+    "kind": null,
+    "final": null,
+    "start": "2026-07-30",
+    "end": "2026-07-30",
+    "order_by": "mission",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Schede di voto, Senato, dal 30/07/2026 al 30/07/2026: 1 votazioni dal 30/07/2026 al 30/07/2026; persone: i membri del gruppo FI-BP-PPE quando erano nel gruppo. voted = favorevoli + contrari + astenuti + voti segreti dati; mission = in missione (per incarico, non è assenza); absent = assente; chair = presiede. Le votazioni contate sono quelle dell'insieme, anche fuori dal periodo di un incarico; chi ha avuto il mandato per parte del periodo ha meno schede (ballots).\", \"votes_in_set\": 1, \"persons_total\": 20, \"rows_total\": 20, \"offset\": 0, \"rows\": [{\"persona\": \"Maria Elisabetta Alberti Casellati\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:32\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Roberto Rosso\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:32779\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Paolo Zangrillo\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:33038\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Mario Occhiuto\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:36413\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Antonio Salvatore Trevisi\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:36448\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Claudio Fazzone\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:4192\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Maurizio Gasparri\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:1103\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Pierantonio Zanettin\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:17811\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Francesco Paolo Sisto\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:22263\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": \"Stefania Gabriella Anastasia Craxi\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:22914\", \"gruppo_oggi\": \"FI-BP-PPE\"}, {\"persona\": "
+  },
+  {
+   "name": "presenze",
+   "args": {
+    "chamber": "senato",
+    "persons": null,
+    "group": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "government": false,
+    "kind": null,
+    "final": null,
+    "start": "2026-07-30",
+    "end": "2026-07-30",
+    "order_by": "mission",
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Schede di voto, Senato, dal 30/07/2026 al 30/07/2026: 1 votazioni dal 30/07/2026 al 30/07/2026; persone: i membri del gruppo Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP quando erano nel gruppo. voted = favorevoli + contrari + astenuti + voti segreti dati; mission = in missione (per incarico, non è assenza); absent = assente; chair = presiede. Le votazioni contate sono quelle dell'insieme, anche fuori dal periodo di un incarico; chi ha avuto il mandato per parte del periodo ha meno schede (ballots).\", \"votes_in_set\": 1, \"persons_total\": 8, \"rows_total\": 8, \"offset\": 0, \"rows\": [{\"persona\": \"Antonio Guidi\", \"ballots\": 1, \"favor\": 0, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 1, \"chair\": 0, \"other\": 0, \"voted\": 0, \"persona_uri\": \"it:person:senato:1227\", \"gruppo_oggi\": \"ID-MR\"}, {\"persona\": \"Antonio De Poli\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:22814\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"persona\": \"Michaela Biancofiore\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:22871\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"persona\": \"Mariastella Gelmini\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:22966\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"persona\": \"Giovanna Petrenga\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:25429\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"persona\": \"Mario Alejandro Borghese\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:29291\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"persona\": \"Giusy Versace\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:33027\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"persona\": \"Giorgio Salvitti\", \"ballots\": 1, \"favor\": 1, \"against\": 0, \"abstain\": 0, \"secret_voted\": 0, \"absent\": 0, \"mission\": 0, \"chair\": 0, \"other\": 0, \"voted\": 1, \"persona_uri\": \"it:person:senato:36443\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1939"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1939\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1939\", \"kind\": \"bill\", \"title\": \"Conversione in legge del decreto-legge 12 giugno 2026, n. 100, recante misure urgenti in materia di giustizia e per l'attuazione del Patto dell'Unione europea sulla migrazione e l'asilo del 14 maggio 2024\", \"date\": \"2026-06-12\", \"status\": \"approvato\", \"law_number\": \"145\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55442.htm\", \"initiative\": \"Gov. Meloni-I: Pres. Consiglio Meloni, Ministro aff. europei, PNRR e politiche di coesione Foti ed altri\", \"kind_raw\": \"di conversione di decreto-legge\", \"description\": \"Ministro degli affari esteri e coop. inter.le Antonio Tajani (Gov. Meloni-I); Ministro dell'economia e finanze Giancarlo Giorgetti (Gov. Meloni-I); Ministro dell'interno Matteo Piantedosi (Gov. Meloni-I); Ministro della giustizia Carlo Nordio (Gov. Meloni-I); Ministro senza portafoglio per gli aff. europei, PNRR e politiche di coesione Tommaso Foti (Gov. Meloni-I); Pres. Consiglio Giorgia Meloni (Gov. Meloni-I)\", \"law_date\": \"2026-08-07\", \"source_uri\": \"http://dati.senato.it/ddl/60214\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01510221\", \"kind\": \"presented\", \"articles\": 20, \"length\": 109834}, {\"code\": \"senato.19.01511819\", \"kind\": \"presented\", \"articles\": 0, \"length\": 1117}, {\"code\": \"senato.19.01517979\", \"kind\": \"message\", \"articles\": 1, \"length\": 588}], \"joined\": [], \"votes\": [{\"uri\": \"it:senato:19:sed0442:v001\", \"sitting\": \"it:senato:19:sed0442\", \"chamber\": \"senato\", \"number\": 1, \"date\": \"2026-07-28\", \"title\": \"Votazione questione pregiudiziale\", \"kind\": \"other\", \"favor\": 68, \"against\": 91, \"abstain\": 0, \"approved\": false, \"secret\": false, \"confidence\": false}], \"amendments\": {\"total\": 1254, \"by_outcome\": {\"Approvato\": 3, \"Precluso\": 607, \"Respinta (*)\": 2, \"non indicato\": 642}}}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:senato:19:sed0444",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:senato:19:sed0444\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 444, \"date\": \"2026-07-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1518033\", \"items\": [{\"uri\": \"it:senato:19:sed0444:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0444:int00001\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:29067\", \"name\": \"Gian Marco Centinaio\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029067.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"La seduta è aperta (ore 9,31).\\n\\nSi dia lettura del processo verbale.\\n\\nTERNULLO, segretario, dà lettura del processo verbale della seduta del giorno pr…\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0444:int00002\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:29067\", \"name\": \"Gian Marco Centinaio\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029067.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Non essendovi osservazioni, il processo verbale è approvato.\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0444:int00070\", \"order\": 3, \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032707.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Il senatore Gasparri ha facoltà di illustrare l'interrogazione 3-02748 sui progressi dell'Alleanza globale per la soluzione a due Stati in Medio Orien…\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0444:int00071\", \"order\": 4, \"person\": {\"uri\": \"it:person:senato:1103\", \"name\": \"Maurizio Gasparri\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001103.jpg\"}, \"speaker_label\": \"GASPARRI\", \"as_group\": \"FI-BP-PPE\", \"as_office\": \"senatore\", \"text\": \"Signor Ministro, lo scorso 28 e il 29 luglio si è tenuta a Roma - proprio in queste ore possiamo dire - una riunione dell'Alleanza globale per l'attua…\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0444:int00072\", \"order\": 5, \"person\": {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PP"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "elenco_votazioni",
+  "votazione",
+  "presenze",
+  "presenze",
+  "presenze",
+  "presenze",
+  "atto",
+  "seduta"
+ ],
+ "tempo_s": 21.8,
+ "risposta_sistema": "Nel voto di fiducia sul DDL S. 1939 del 30 luglio 2026 **nessun senatore dei gruppi di maggioranza ha votato contro**. Non hanno partecipato al voto perché **in missione** 26 senatori; non risultano assenti non giustificati nei quattro gruppi di maggioranza.\n\n- **FdI (11):** Alberto Balboni, Adolfo Urso, Nello Musumeci, Giovanbattista Fazzolari, Isabella Rauti, Guido Castelli, Anna Maria Fallucchi, Filippo Melchiorre, Raoul Russo, Marcello Pera, Alessio Butti.\n- **Lega (8):** Massimo Garavaglia, Matteo Salvini, Roberto Marti, Paolo Tosato, Alessandro Morelli, Claudio Durigon, Tilde Minasi, Marco Dreosto.\n- **Forza Italia (6):** Maria Elisabetta Alberti Casellati, Roberto Rosso, Paolo Zangrillo, Mario Occhiuto, Antonio Salvatore Trevisi, Claudio Fazzone.\n- **Civici d’Italia-UDC-Noi Moderati-MAIE-Centro Popolare (1):** Antonio Guidi.\n\nLa fiducia è stata approvata con **92 voti favorevoli e 63 contrari**; nel dettaglio dei gruppi di maggioranza: FdI 51 favorevoli e 11 missioni, Lega 20 e 8, FI 14 e 6, Civici 7 e 1. [Resoconto della seduta del Senato n. 444, 30 luglio 2026](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1518033) · [scheda del DDL S. 1939](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55442.htm)",
+ "eventi": {
+  "status": 1,
+  "tool": 18,
+  "dati": 9,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

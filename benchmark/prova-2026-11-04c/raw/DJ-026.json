@@ -1,0 +1,299 @@
+{
+ "id": "DJ-026",
+ "domanda": "Quanti interventi ha fatto la presidente del Consiglio Giorgia Meloni in Parlamento, e quanti question time?",
+ "categoria": "governo",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Al Senato i membri del governo hanno un id proprio legato con person_same_as. Il premier time si riconosce dall'argomento della seduta.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792574.562369,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Giorgia Meloni",
+    "chamber": null,
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": null,
+    "phrase": null,
+    "person": "it:person:camera:302103",
+    "group": null,
+    "role": "governo",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "ramo",
+     "sede"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, Aula e commissioni, dal 13/10/2022 al 03/11/2026; filtri: persona it:person:camera:302103, ruolo governo. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 157}, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"sede\": \"aula\", \"interventi\": 157, \"dal\": \"2022-10-25\", \"al\": \"2026-10-14\"}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "senato",
+    "body": null,
+    "phrase": null,
+    "person": "it:person:camera:302103",
+    "group": null,
+    "role": "governo",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "ramo",
+     "sede"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Senato, Aula e commissioni, dal 13/10/2022 al 03/11/2026; filtri: persona it:person:camera:302103, ruolo governo. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 68}, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"ramo\": \"senato\", \"sede\": \"aula\", \"interventi\": 68, \"dal\": \"2022-10-25\", \"al\": \"2026-10-14\"}]}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:302103"
+   },
+   "result": "{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\", \"given_name\": \"Giorgia\", \"family_name\": \"Meloni\", \"gender\": \"F\", \"birth_date\": \"1977-01-15\", \"birth_place\": \"Roma\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p302103\", \"same_as\": [\"it:person:senato:23006\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"ABRUZZO - P01\", \"college\": \"ABRUZZO - U03\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2024-10-31\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-10-31\"}], \"offices\": [{\"target\": \"it:gov:202\", \"target_name\": \"I Governo Meloni\", \"title\": \"prime_minister\", \"start_date\": \"2022-10-21\"}, {\"target\": \"it:gov:202:og202_665\", \"target_name\": \"Ministero del Turismo\", \"title\": \"minister\", \"start_date\": \"2026-03-26\", \"end_date\": \"2026-04-03\"}], \"counts\": {\"speeches\": 228, \"ballots\": 20257, \"ballots_cast\": 14, \"ballots_mission\": 19829, \"bills_first_signer\": 175, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": "interrogazioni a risposta immediata",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 171, \"items\": [{\"uri\": \"it:camera:19:sed0735:tit00080\", \"title\": \"Svolgimento di interrogazioni a risposta immediata.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0735\", \"date\": \"2026-10-28\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 735, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:308934\", \"name\": \"Ilenia Malavasi\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:camera:302748\", \"name\": \"Eugenia Maria Roccella\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:308891\", \"name\": \"Silvia Roggiani\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:camera:301459\", \"name\": \"Laura Ravetto\", \"group\": \"MISTO-FNV-F\"}, {\"uri\": \"it:person:camera:307774\", \"name\": \"Luca Ciriani\", \"group\": null}, {\"uri\": \"it:person:camera:308814\", \"name\": \"Luigi Giovanni Maiorano\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:308795\", \"name\": \"Carmine Fabio Raimondo\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:307248\", \"name\": \"Erica Mazzetti\", \"group\": \"FI-PPE\"}, {\"uri\": \"it:person:camera:308890\", \"name\": \"Andrea Barabotti\", \"group\": \"LEGA\"}, {\"uri\": \"it:person:camera:308221\", \"name\": \"Emma Pavanelli\", \"group\": \"M5S\"}, {\"uri\": \"it:person:camera:306352\", \"name\": \"Enrico Cappelletti\", \"group\": \"M5S\"}, {\"uri\": \"it:person:camera:306382\", \"name\": \"Mauro Del Barba\", \"group\": \"IV-CR\"}, {\"uri\": \"it:person:camera:302080\", \"name\": \"Angelo Bonelli\", \"group\": \"AVS\"}, {\"uri\": \"it:person:camera:307603\", \"name\": \"Alessandro Colucci\", \"group\": \"NM(N-C-U-I)M-CP\"}, {\"uri\": \"it:person:camera:308913\", \"name\": \"Fabrizio Benzoni\", \"group\": \"AZ-PER-RE\"}], \"speakers_total\": 15}, {\"uri\": \"it:camera:19:sed0730:tit00080\", \"title\": \"Svolgimento di interrogazioni a risposta immediata.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0730\", \"date\": \"2026-10-21\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 730, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0730&tipo=stenografico\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:309220\", \"name\": \"Alberto Pandolfo\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:camera:39200\", \"name\": \"Adolfo Urso\", \"group\": null}, {\"uri\": \"it:person:camera:302746\", \"name\": \"Vinicio Giuseppe Guido Peluffo\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:camera:301577\", \"name\": \"Benedetto Della Vedova\", \"group\": \"MISTO-+EU-SUEU\"}, {\"uri\": \"it:person:camera:308838\", \"name\": \"Antonio Tajani\", \"group\": \"FI-PPE\"}, {\"uri\": \"it:person:camera:307436\", \"name\": \"Riccardo Magi\", \"group\": \"MISTO-+EU-SUEU\"}, {\"uri\": \"it:person:camera:308899\", \"name\": \"Paolo Emilio Russo\", \"group\": \"FI-PPE\"}, {\"uri\": \"it:person:camera:308875\", \"name\": \"Antonio D'Alessio\", \"group\": \"AZ-PER-RE\"}, {\"uri\": \"it:person:camera:307774\", \"name\": \"Luca Ciriani\", \"group\": null}, {\"uri\": \"it:person:camera:308895\", \"name\": \"Giulia Pastorella\", \"group\": \"AZ-PER-RE\"}, {\"uri\": \"it:person:camera:307300\", \"name\": \"Jacopo Morrone\", \"group\": \"LEGA\"}, {\"uri\": \"it:person:camera:308798\", \"name\": \"Carlo"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": "interrogazioni a risposta immediata",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 115, \"items\": [{\"uri\": \"it:senato:19:sed0467:d-d1e2489\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento\", \"stage\": null, \"sitting\": \"it:senato:19:sed0467\", \"date\": \"2026-10-15\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 467, \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524409\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:32653\", \"name\": \"Ettore Antonio Licheri\", \"group\": \"M5S\"}, {\"uri\": \"it:person:camera:300356\", \"name\": \"Guido Crosetto\", \"group\": null}], \"speakers_total\": 2}, {\"uri\": \"it:senato:19:sed0464:d-d1e177\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento\", \"stage\": null, \"sitting\": \"it:senato:19:sed0464\", \"date\": \"2026-10-08\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 464, \"status\": \"held\", \"url\": null, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:36447\", \"name\": \"Domenica Spinelli\", \"group\": \"FdI\"}, {\"uri\": \"it:person:camera:308860\", \"name\": \"Gianmarco Mazzi\", \"group\": \"FDI\"}], \"speakers_total\": 2}, {\"uri\": \"it:senato:19:sed0461:d-d1e53\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento\", \"stage\": null, \"sitting\": \"it:senato:19:sed0461\", \"date\": \"2026-10-01\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 461, \"status\": \"held\", \"url\": null, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:30742\", \"name\": \"Matteo Renzi\", \"group\": \"IV-CR\"}, {\"uri\": \"it:person:camera:300613\", \"name\": \"Giuseppe Valditara\", \"group\": null}], \"speakers_total\": 2}, {\"uri\": \"it:senato:19:sed0456:d-d1e258\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento\", \"stage\": null, \"sitting\": \"it:senato:19:sed0456\", \"date\": \"2026-09-17\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 456, \"status\": \"held\", \"url\": null, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:37415\", \"name\": \"Daniela Ternullo\", \"group\": \"FI-BP-PPE\"}, {\"uri\": \"it:person:camera:308860\", \"name\": \"Gianmarco Mazzi\", \"group\": \"FDI\"}], \"speakers_total\": 2}, {\"uri\": \"it:senato:19:sed0444:d-d1e768\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento\", \"stage\": null, \"sitting\": \"it:senato:19:sed0444\", \"date\": \"2026-07-30\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 444, \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1518033\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:22918\", \"name\": \"Peppe De Cristofaro\", \"group\": \"AVS\"}, {\"uri\": \"it:person:camera:308838\", \"name\": \"Antonio Tajani\", \"group\": \"FI-PPE\"}], \"speakers_total\": 2}, {\"uri\": \"it:senato:19:sed0441:d-d1e260\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento\", \"stage\": null, \"sitting\": \"it:sen"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": null,
+    "body": "aula",
+    "phrase": "interrogazioni a risposta immediata",
+    "person": "it:person:camera:302103",
+    "group": null,
+    "role": "governo",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "ramo"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera e Senato, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: frase 'interrogazioni a risposta immediata', persona it:person:camera:302103, ruolo governo. Con la frase: interventi che contengono «interrogazioni a risposta immediata» a parole intere, maiuscole indifferenti; occorrenze = le volte che ricorre (un intervento conta una volta in «interventi»). Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {}, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": "interrogazioni",
+    "person": "it:person:camera:302103",
+    "group": null,
+    "role": "governo",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "ramo"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: frase 'interrogazioni', persona it:person:camera:302103, ruolo governo. Con la frase: interventi che contengono «interrogazioni» a parole intere, maiuscole indifferenti; occorrenze = le volte che ricorre (un intervento conta una volta in «interventi»). Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {}, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "phrase": "interrogazioni",
+    "person": "it:person:camera:302103",
+    "group": null,
+    "role": "governo",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "ramo"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Senato, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: frase 'interrogazioni', persona it:person:camera:302103, ruolo governo. Con la frase: interventi che contengono «interrogazioni» a parole intere, maiuscole indifferenti; occorrenze = le volte che ricorre (un intervento conta una volta in «interventi»). Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {}, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": "Presidente del Consiglio",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 73, \"items\": [{\"uri\": \"it:senato:19:sed0466:d-d1e46\", \"title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"stage\": null, \"sitting\": \"it:senato:19:sed0466\", \"date\": \"2026-10-14\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 466, \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524275\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"group\": \"FDI\"}, {\"uri\": \"it:person:senato:28543\", \"name\": \"Mario Monti\", \"group\": \"Misto\"}, {\"uri\": \"it:person:senato:28550\", \"name\": \"Giuliomaria Terzi Di Sant'Agata\", \"group\": \"FdI\"}], \"speakers_total\": 3}, {\"uri\": \"it:senato:19:sed0466:d-d1e348\", \"title\": \"Ripresa della discussione sulle comunicazioni del Presidente del Consiglio dei ministri\", \"stage\": null, \"sitting\": \"it:senato:19:sed0466\", \"date\": \"2026-10-14\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 466, \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524275\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:32586\", \"name\": \"Giorgio Maria Bergesio\", \"group\": \"LSP-PSd'Az\"}, {\"uri\": \"it:person:senato:36414\", \"name\": \"Fausto Orsomarso\", \"group\": \"FdI\"}, {\"uri\": \"it:person:senato:22814\", \"name\": \"Antonio De Poli\", \"group\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"uri\": \"it:person:senato:32600\", \"name\": \"Maria Domenica Castellone\", \"group\": \"M5S\"}, {\"uri\": \"it:person:senato:36396\", \"name\": \"Marco Dreosto\", \"group\": \"LSP-PSd'Az\"}, {\"uri\": \"it:person:senato:28670\", \"name\": \"Graziano Delrio\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:senato:36431\", \"name\": \"Michele Barcaiuolo\", \"group\": \"FdI\"}, {\"uri\": \"it:person:senato:31725\", \"name\": \"Annamaria Furlan\", \"group\": \"IV-CR\"}, {\"uri\": \"it:person:senato:22966\", \"name\": \"Mariastella Gelmini\", \"group\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"uri\": \"it:person:senato:30110\", \"name\": \"Carlo Calenda\", \"group\": \"Az-RE\"}, {\"uri\": \"it:person:senato:32707\", \"name\": \"Licia Ronzulli\", \"group\": \"FI-BP-PPE\"}, {\"uri\": \"it:person:senato:32658\", \"name\": \"Alessandra Maiorino\", \"group\": \"M5S\"}, {\"uri\": \"it:person:senato:32697\", \"name\": \"Stefania Pucciarelli\", \"group\": \"LSP-PSd'Az\"}, {\"uri\": \"it:person:senato:32578\", \"name\": \"Alessandro Alfieri\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:senato:33863\", \"name\": \"Marco Scurria\", \"group\": \"FdI\"}, {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:50204\", \"name\": \"Tommaso Foti\", \"group\": \"FDI\"}, {\"uri\": \"it:person:senato:25555\", \"name\": \"Francesco Boccia\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:senato:32727\", \"name\": \"Julia Unterberger\", \"group\": \"Aut (SVP-PATT, Cb)\"}, {\"uri\": \"it:person:senato:30742\", \"name\": \"Matteo Renzi\", \"group\": \"IV-CR\"}, {\"uri\": \"it:person:senato:22871\", \"name\": \"Michaela Biancofiore\", \"group\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"uri\": \"it:person:senato:36437\", \""
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": "Presidente del Consiglio",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 50, \"items\": [{\"uri\": \"it:camera:19:sed0727:tit00060\", \"title\": \"Consegna del testo delle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 15 e 16 ottobre 2026.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0727\", \"date\": \"2026-10-14\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 727, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0727&tipo=stenografico\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"group\": \"FDI\"}], \"speakers_total\": 1}, {\"uri\": \"it:camera:19:sed0727:tit00130\", \"title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 15 e 16 ottobre 2026.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0727\", \"date\": \"2026-10-14\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 727, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0727&tipo=stenografico\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:306379\", \"name\": \"Isabella De Monte\", \"group\": \"FI-PPE\"}, {\"uri\": \"it:person:camera:301459\", \"name\": \"Laura Ravetto\", \"group\": \"MISTO-FNV-F\"}, {\"uri\": \"it:person:camera:301531\", \"name\": \"Maria Rosaria Carfagna\", \"group\": \"NM(N-C-U-I)M-CP\"}, {\"uri\": \"it:person:camera:305553\", \"name\": \"Maria Chiara Gadda\", \"group\": \"IV-CR\"}, {\"uri\": \"it:person:camera:307502\", \"name\": \"Alessandro Giglio Vigna\", \"group\": \"LEGA\"}, {\"uri\": \"it:person:camera:300674\", \"name\": \"Ettore Rosato\", \"group\": \"AZ-PER-RE\"}, {\"uri\": \"it:person:camera:307219\", \"name\": \"Salvatore Deidda\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:307561\", \"name\": \"Piero De Luca\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:camera:302080\", \"name\": \"Angelo Bonelli\", \"group\": \"AVS\"}, {\"uri\": \"it:person:camera:307250\", \"name\": \"Riccardo Ricciardi\", \"group\": \"M5S\"}, {\"uri\": \"it:person:camera:307328\", \"name\": \"Luigi Marattin\", \"group\": \"MISTO\"}, {\"uri\": \"it:person:camera:307340\", \"name\": \"Ylenja Lucaselli\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:308243\", \"name\": \"Giuseppe Luciano Calogero Provenzano\", \"group\": \"PD-IDP\"}, {\"uri\": \"it:person:camera:307418\", \"name\": \"Filippo Scerra\", \"group\": \"M5S\"}, {\"uri\": \"it:person:camera:301577\", \"name\": \"Benedetto Della Vedova\", \"group\": \"MISTO-+EU-SUEU\"}, {\"uri\": \"it:person:camera:308940\", \"name\": \"Emanuele Loperfido\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:50204\", \"name\": \"Tommaso Foti\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:307436\", \"name\": \"Riccardo Magi\", \"group\": \"MISTO-+EU-SUEU\"}, {\"uri\": \"it:person:camera:307902\", \"name\": \"Dieter Steger\", \"group\": \"MISTO-MIN.LING.\"}, {\"uri\": \"it:person:camera:307143\", \"name\": \"Edoardo Ziello\", \"group\": \"MISTO-FNV-F\"}, {\"uri\": \"it:person:camera:302789\", \"name\": \"Maria Anna Madia\", \"group\": \"IV-CR\"}, {\"uri\": \"it:person:camera:300447\", \"name\": \"Maurizio Enzo Lupi\", \"group\": \"NM(N-C-U-I)M-CP\"}, "
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": "risposta immediata Presidente del Consiglio",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "seat": null,
+    "stage": null,
+    "q": "risposta immediata Presidente del Consiglio",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 3, \"items\": [{\"uri\": \"it:senato:19:sed0419:d-d1e644\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento, al Presidente del Consiglio dei ministri\", \"stage\": null, \"sitting\": \"it:senato:19:sed0419\", \"date\": \"2026-05-13\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 419, \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1506236\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:30110\", \"name\": \"Carlo Calenda\", \"group\": \"Az-RE\"}, {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"group\": \"FDI\"}], \"speakers_total\": 2}, {\"uri\": \"it:senato:19:sed0300:d-d1e469\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento, al Presidente del Consiglio dei ministri\", \"stage\": null, \"sitting\": \"it:senato:19:sed0300\", \"date\": \"2025-05-07\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 300, \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1455104\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:30110\", \"name\": \"Carlo Calenda\", \"group\": \"Az-RE\"}, {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"group\": \"FDI\"}], \"speakers_total\": 2}, {\"uri\": \"it:senato:19:sed0129:d-d1e149\", \"title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento, al Presidente del Consiglio dei ministri\", \"stage\": null, \"sitting\": \"it:senato:19:sed0129\", \"date\": \"2023-11-23\", \"chamber\": \"senato\", \"body_name\": null, \"seat\": null, \"number\": 129, \"status\": \"held\", \"url\": null, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:senato:22814\", \"name\": \"Antonio De Poli\", \"group\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"group\": \"FDI\"}], \"speakers_total\": 2}], \"more\": false}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "question time",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 4, \"items\": [{\"uri\": \"it:camera:19:sed0212:tit00090.sub00040.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0212\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 212, \"date\": \"2023-12-12\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 14 e 15 dicembre 2023.\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"politica estera che deve fare l'Italia. Dopodiché, guardi, sui comici russi ho già risposto, c'è stato un [[question]] [[time]] che è stato fatto dai suoi colleghi al Senato. Ribadisco qui di essere fiera di avere detto in quella ... quel lavoro silenzioso del quale non si sa niente, che però, poi, è fondamentale per mettere a terra le [[questioni]]. Mi fa piacere anche, collega Rosato, che lei abbia ringraziato il Primo Ministro albanese, Rama, per la disponibilità\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0212&tipo=stenografico#sed0212.stenografico.tit00090.sub00040.int00040\"}, {\"uri\": \"it:senato:19:sed0129:int00013\", \"sitting\": {\"uri\": \"it:senato:19:sed0129\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 129, \"date\": \"2023-11-23\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di interrogazioni a risposta immediata, ai sensi dell'articolo 151-bis del Regolamento, al Presidente del Consiglio dei ministri\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"Signor Presidente, onorevoli senatori, ringrazio il senatore De Poli anche per aver ricordato, pur non essendo oggetto del [[question]] [[time]], il tema della violenza. Vorrei approfittare per ringraziare tutti i Gruppi parlamentari per il lavoro che hanno fatto in sede\"}, {\"uri\": \"it:senato:19:sed0129:int00063\", \"sitting\": {\"uri\": \"it:senato:19:sed0129\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 129, \"date\": \"2023-11-23\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "risposta della Presidente del Consiglio Giorgia Meloni alle interrogazioni a risposta immediata in Aula, question time",
+    "fonti": [
+     "interventi"
+    ],
+    "ramo": "camera",
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"risposta della Presidente del Consiglio Giorgia Meloni alle interrogazioni a risposta immediata in Aula, question time\", \"fonti\": [\"interventi\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0193:tit00030.sub00010.int00060\", \"testo\": \"Oggi l'abbiamo interpellata: abbiamo chiesto a Giorgia Meloni di essere qui a rispondere e ad assumersi la responsabilità politica di quanto è successo e ha mandato una sua rappresentante ma non abbiamo la possibilità di avere questo confronto in Aula. Abbiamo tante questioni importanti con riferimento alle quali il Parlamento chiede alla Presidente di esserci.\\n\\nLa Presidente non può sfuggire al confronto con il Parlamento, non può sfuggire al confronto con il Paese e ci deve rispondere a questa domanda. Purtroppo, non possiamo essere soddisfatti della risposta, non sappiamo che verifiche sono state fatte, non sappiamo quante altre situazioni come questa ci sono in campo. Sappiamo solamente \", \"chi\": \"Andrea Casu\", \"persona\": \"it:person:camera:308600\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2023-11-10\", \"seduta\": 193, \"organo\": null, \"dibattito\": \"Svolgimento di interpellanze urgenti.\", \"riassunto\": false, \"url\": \"https://www.camera.it/leg19/410?idSeduta=0193&tipo=stenografico#sed0193.stenografico.tit00030.sub00010.int00060\", \"similarita\": 0.831}, {\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0314:tit00020.sub00020.int00080\", \"testo\": \"Vede, Presidente, la questione è e rimane molto semplice e, siccome io riconosco a Giorgia Meloni che - almeno a parole - è una Premier che ama parlare chiaro, io oggi vorrei una risposta: Presidente, lei è una donna di Stato, siede nella sedia del Presidente del Consiglio in quest'Aula; lei ci deve dire dove sta schierando l'Italia, se sta schierando l'Italia tra gli euroscettici o tra i sistemi democratici ed europeisti, perché, se le alleanze dell'Italia sono più facili con i Paesi che non rispettano lo Stato di diritto dell'Unione europea, la questione è molto seria e dobbiamo porcela con una certa urgenza e una certa fretta.\\n\\nSi stanno definendo - forse è troppo tardi -, si sono già def\", \"chi\": \"Maria Anna Madia\", \"persona\": \"it:person:camera:302789\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2024-06-26\", \"seduta\": 314, \"organo\": null, \"dibattito\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 27 e 28 giugno 2024.\", \"riassunto\": false, \"url\": \"https://www.camera.it/leg19/410?idSeduta=0314&tipo=stenografico#sed0314.stenografico.tit00020.sub00020.int00080\", \"similarita\": 0.829}, {\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0450:tit00090.sub00010.int00500\", \"testo\": \"Dicevo che l'ultima apparizione della Presidente Meloni risale allo scorso dicembre e le volte in cui si è palesata in quest'Aula si contano sulle dita delle man"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "conta_interventi",
+  "conta_interventi",
+  "scheda_persona",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "cerca_interventi",
+  "cerca_per_significato"
+ ],
+ "tempo_s": 46.1,
+ "risposta_sistema": "Giorgia Meloni ha svolto **225 interventi come componente del Governo** nei resoconti parlamentari disponibili fino al 3 novembre 2026:\n\n- **Camera:** 157 interventi, tutti in Aula (dal 25 ottobre 2022 al 14 ottobre 2026).\n- **Senato:** 68 interventi, tutti in Aula (stesso intervallo).\n\nLa sua [scheda parlamentare](http://dati.camera.it/ocd/persona.rdf/p302103) riporta invece **228 interventi complessivi**: la differenza di 3 riguarda interventi non classificati con il ruolo di Governo.\n\nPer i **question time rivolti alla Presidente del Consiglio**, i dati identificano con certezza **3 appuntamenti al Senato**: 23 novembre 2023, 7 maggio 2025 e 13 maggio 2026. L’ultimo è documentato nel [resoconto del Senato del 13 maggio 2026](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1506236). Alla Camera il titolo dell’argomento è generico (“interrogazioni a risposta immediata”) e non consente, nei dati disponibili, di attribuire un conteggio certo alla sola Presidente del Consiglio.",
+ "eventi": {
+  "status": 1,
+  "tool": 30,
+  "dati": 15,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,100 @@
+{
+ "id": "AULA-038",
+ "domanda": "Durante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026, prima del Consiglio europeo, quali gruppi hanno applaudito e quali hanno protestato?",
+ "categoria": "reazioni",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "senato",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792278.962176,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "elenco_sedute",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "conta_reazioni"
+ ],
+ "tempo_s": 18.7,
+ "risposta_sistema": "Nel resoconto delle comunicazioni di Giorgia Meloni non è indicato alcun gruppo né per gli applausi né per le proteste.\n\n- **Applausi:** 45 didascalie di «Applausi», tutte senza attribuzione a gruppi.\n- **Proteste:** nessuna didascalia di protesta registrata durante il suo intervento.\n\nQuindi non è possibile associare gli applausi a FdI, Lega o altri gruppi: il resoconto ufficiale li riporta soltanto in forma generica. [Seduta del Senato n. 466, 14 ottobre 2026](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524275)",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "FdI",
+     "PD",
+     "Lega"
+    ],
+    "missing": [
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "Per le Autonomie (SVP-PATT, Campobase)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Avanti PSI (Misto)",
+     "Rifondazione Comunista (Misto)",
+     "Italia Domani - Marco Rizzo (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "Applausi",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "Durante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026, prima del Consiglio europeo, quali gruppi hanno applaudito e quali hanno protestato?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Marco Meloni",
+      "group": "Partito Democratico",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Senato della Repubblica, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Non si può dire quali gruppi hanno applaudito o protestato. Nella seduta 466 del Senato (14/10/2026) la presidente del Consiglio Meloni parla due volte: nelle comunicazioni (it:senato:19:sed0466:int00005) il resoconto in archivio registra 33 applausi e 3 commenti, nella replica (int00055) 12 applausi e 5 commenti (fra cui «Vivaci commenti» e «Commenti del senatore Turco»). Proteste non ne risultano. Tranne il commento del senatore Turco, nessuna reazione dice da chi viene.",
+  "stato": "non_calcolabile",
+  "limiti": "Le reazioni del Senato vengono dal resoconto AKN e hanno solo il tipo («Applausi», «Commenti»), senza chi reagisce: reaction.from_raw è vuoto e reaction_from non ha righe per il Senato. Il gruppo di chi applaude o protesta non si ricava. Si contano solo le reazioni dentro gli interventi di Meloni; quelle durante gli interventi dei senatori nella stessa discussione sono escluse."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 18.7
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": null,
+ "note": "45 applausi senza gruppo e nessuna protesta: coincide col riferimento non calcolabile (33+12 applausi). Non cita più i «Commenti», ma ora linka il resoconto della seduta 466: fonti da 0 a 1."
+}

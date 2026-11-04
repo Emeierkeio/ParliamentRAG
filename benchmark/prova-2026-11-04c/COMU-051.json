@@ -1,0 +1,38 @@
+{
+  "id": "COMU-051",
+  "trappola": false,
+  "domanda": "Quante leggi di iniziativa parlamentare sono diventate legge in questa legislatura rispetto a quelle del governo?",
+  "categoria": "statistiche",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791635.322643,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_atti",
+    "conta_atti"
+  ],
+  "tempo_s": 7.8,
+  "risposta_sistema": "Nella XIX legislatura sono diventate legge **87 leggi di iniziativa parlamentare**, contro **274 di iniziativa del Governo**.\n\nIn tutto le leggi approvate e pubblicate sono **366** (conteggio unico fra Camera e Senato, aggiornato alle leggi pubblicate fino al 23 ottobre 2026). Le altre 5 derivano da iniziativa mista (3), popolare (1) e regionale (1).",
+  "errori": [],
+  "note_domanda": "Contare le leggi una volta sola: lo stesso atto ha un numero alla Camera e uno al Senato.",
+  "riferimento": {
+    "risposta": "Nella XIX (dati al 2/11/2026) risultano 367 leggi pubblicate, contate una volta sola. Di iniziativa del governo: 273 leggi ordinarie più 1 legge costituzionale (274). Di iniziativa parlamentare: 86 leggi ordinarie più 1 legge costituzionale (87). Le altre: 2 di iniziativa mista governo-parlamento, 1 del CNEL, 1 popolare e 1 legge costituzionale di iniziativa regionale. Il rapporto è circa 3 a 1 a favore del governo.",
+    "stato": "calcolata",
+    "limiti": "Una legge = coppia (anno, numero) di act.law_number, distinta fra leggi ordinarie e costituzionali, unendo l'atto della Camera e quello del Senato. L'iniziativa è quella della scheda Camera quando c'è (campo pulito), altrimenti quella del Senato ricondotta a Governo/Parlamentare/Regioni/CNEL/Popolare dal testo. Escluso S. 1353 (approvato definitivamente, non pubblicato, con law_date 2100-01-01). Le leggi di conversione dei decreti contano come iniziativa del governo."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 7.8
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": null,
+  "note": "87 parlamentari contro 274 governative su 366, contate una volta, come il riferimento (86+1 e 273+1). Stamattina 1 con numeri vecchi di giugno. Nessun link."
+}

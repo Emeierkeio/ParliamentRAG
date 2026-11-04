@@ -1,0 +1,56 @@
+{
+ "id": "CIT-034",
+ "domanda": "quante leggi ha fatto questo governo?",
+ "categoria": "statistiche",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Contare le leggi una volta sola (lo stesso atto compare in due rami). Distinguere iniziativa del governo e parlamentare, e i decreti convertiti.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792076.663219,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "bill",
+    "initiative": "governo",
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": true,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": true,
+    "group_by": [
+     "conversione_decreto"
+    ],
+    "sum_chambers": true,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Leggi nate da atti della XIX, Camera e Senato, atti presentati dal 13/10/2022 al 04/11/2026; filtri: tipo bill, iniziativa governo, diventati_legge sì. Una legge = numero e anno della legge (law_number, law_date), ordinarie e costituzionali a parte: conta una volta anche se l'atto compare in tutti e due i rami o in più atti. Iniziativa per categoria (governo, parlamentare, regione, cnel, popolare), «mista» se gli atti di una legge ne hanno più d'una; conversione_decreto = titolo con «conversione in legge». Esclusi i testi approvati non ancora pubblicati (senza numero di legge).\", \"total\": 274, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"conversione_decreto\": false, \"leggi\": 149, \"dal\": \"2022-12-29\", \"al\": \"2026-10-16\"}, {\"conversione_decreto\": true, \"leggi\": 125, \"dal\": \"2022-11-17\", \"al\": \"2026-10-23\"}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_atti"
+ ],
+ "tempo_s": 7.4,
+ "risposta_sistema": "Il Governo ha fatto approvare **274 leggi** nella XIX legislatura, dal 13 ottobre 2022 al 4 novembre 2026:\n\n- **125** conversioni in legge di decreti-legge;\n- **149** altre leggi di iniziativa governativa.\n\nIl conteggio considera una legge una sola volta anche se il relativo testo è passato in entrambi i rami; esclude i testi approvati ma non ancora pubblicati con numero di legge. Dati aggiornati alle sedute disponibili fino al **3 novembre 2026**.",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

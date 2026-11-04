@@ -1,0 +1,72 @@
+{
+ "id": "GIO-025",
+ "trappola": false,
+ "domanda": "Quanto è compatta la Lega nei voti rispetto agli altri gruppi? Indice di coesione per gruppo.",
+ "categoria": "gruppi",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Misto per componente alla Camera; al Senato il Misto non si può dividere: avvertire.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791398.477768,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "chamber": "camera",
+    "groups": null,
+    "person": null,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 13/10/2022 al 03/11/2026; filtri: segrete no: 20208 votazioni dal 25/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 20208, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 20205, \"cohesion\": 0.998, \"unanimous_share\": 0.936, \"positions\": {\"favor\": 4678, \"against\": 15501, \"abstain\": 25, \"tie\": 1}}, {\"group\": \"Misto - Sud Chiama Nord (MISTO-SCN)\", \"votes_with_voters\": 526, \"cohesion\": 0.998, \"unanimous_share\": 0.997, \"positions\": {\"favor\": 66, \"against\": 459, \"abstain\": 0, \"tie\": 1}}, {\"group\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"votes_with_voters\": 20199, \"cohesion\": 0.996, \"unanimous_share\": 0.914, \"positions\": {\"favor\": 16630, \"against\": 1713, \"abstain\": 1855, \"tie\": 1}}, {\"group\": \"Movimento 5 Stelle (M5S)\", \"votes_with_voters\": 20135, \"cohesion\": 0.996, \"unanimous_share\": 0.947, \"positions\": {\"favor\": 16723, \"against\": 1978, \"abstain\": 1434, \"tie\": 0}}, {\"group\": \"Alleanza Verdi e Sinistra (AVS)\", \"votes_with_voters\": 20200, \"cohesion\": 0.995, \"unanimous_share\": 0.983, \"positions\": {\"favor\": 16640, \"against\": 1906, \"abstain\": 1643, \"tie\": 11}}, {\"group\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"votes_with_voters\": 2014, \"cohesion\": 0.994, \"unanimous_share\": 0.98, \"positions\": {\"favor\": 291, \"against\": 1707, \"abstain\": 16, \"tie\": 0}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 20205, \"cohesion\": 0.992, \"unanimous_share\": 0.874, \"positions\": {\"favor\": 4685, \"against\": 15497, \"abstain\": 23, \"tie\": 0}}, {\"group\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"votes_with_voters\": 19947, \"cohesion\": 0.988, \"unanimous_share\": 0.973, \"positions\": {\"favor\": 4633, \"against\": 15194, \"abstain\": 36, \"tie\": 84}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"votes_with_voters\": 20205, \"cohesion\": 0.987, \"unanimous_share\": 0.854, \"positions\": {\"favor\": 4671, \"against\": 15500, \"abstain\": 34, \"tie\": 0}}, {\"group\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"votes_with_voters\": 20174, \"cohesion\": 0.975, \"unanimous_share\": 0.917, \"positions\": {\"favor\": 14249, \"against\":"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": null,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "chamber": "senato",
+    "groups": null,
+    "person": null,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Senato, dal 13/10/2022 al 03/11/2026; filtri: segrete no: 8397 votazioni dal 26/10/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 8397, \"groups\": [{\"group\": \"Misto (Misto)\", \"votes_with_voters\": 310, \"cohesion\": 1.0, \"unanimous_share\": 1.0, \"positions\": {\"favor\": 119, \"against\": 141, \"abstain\": 50, \"tie\": 0}}, {\"group\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"votes_with_voters\": 8284, \"cohesion\": 0.997, \"unanimous_share\": 0.965, \"positions\": {\"favor\": 1859, \"against\": 6415, \"abstain\": 10, \"tie\": 0}}, {\"group\": \"Fratelli d'Italia (FdI)\", \"votes_with_voters\": 8284, \"cohesion\": 0.997, \"unanimous_share\": 0.916, \"positions\": {\"favor\": 1860, \"against\": 6416, \"abstain\": 8, \"tie\": 0}}, {\"group\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare (Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP)\", \"votes_with_voters\": 8284, \"cohesion\": 0.996, \"unanimous_share\": 0.986, \"positions\": {\"favor\": 1859, \"against\": 6414, \"abstain\": 8, \"tie\": 3}}, {\"group\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"votes_with_voters\": 8284, \"cohesion\": 0.995, \"unanimous_share\": 0.968, \"positions\": {\"favor\": 1858, \"against\": 6417, \"abstain\": 9, \"tie\": 0}}, {\"group\": \"MoVimento 5 Stelle (M5S)\", \"votes_with_voters\": 8116, \"cohesion\": 0.993, \"unanimous_share\": 0.926, \"positions\": {\"favor\": 6383, \"against\": 935, \"abstain\": 798, \"tie\": 0}}, {\"group\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"votes_with_voters\": 8247, \"cohesion\": 0.979, \"unanimous_share\": 0.961, \"positions\": {\"favor\": 6662, \"against\": 863, \"abstain\": 654, \"tie\": 68}}, {\"group\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"votes_with_voters\": 8265, \"cohesion\": 0.976, \"unanimous_share\": 0.798, \"positions\": {\"favor\": 6509, \"against\": 805, \"abstain\": 948, \"tie\": 3}}, {\"group\": \"Italia Viva - Casa Riformista (IV-CR)\", \"votes_with_voters\": 8236, \"cohesion\": 0.97, \"unanimous_share\": 0.912, \"positions\": {\"favor\": 5170, \"against\": 1614, \"abstain\": 1424, \"tie\": 28}}, {\"group\": \"Misto - Azione-Renew Europe (Az-RE)\", \"votes_with_voters\": 4456, \"cohesion\": 0.969, \"unanimous_share\": 0.953, \"positi"
+  }
+ ],
+ "strumenti": [
+  "voto_gruppi",
+  "voto_gruppi"
+ ],
+ "tempo_s": 51.9,
+ "risposta_sistema": "La Lega è molto compatta: indice di coesione **0,992 alla Camera** e **0,997 al Senato** (dove 1 significa che tutti i votanti del gruppo hanno espresso sempre lo stesso voto).\n\nIl confronto riguarda tutte le votazioni elettroniche **palesi** della XIX legislatura disponibili: dal 25 ottobre 2022 al 28 ottobre 2026 alla Camera (20.208 votazioni), dal 26 ottobre 2022 al 28 ottobre 2026 al Senato (8.397). Sono esclusi voti segreti, assenti, missioni e presenti non votanti.\n\n| Camera — gruppo | Indice di coesione | Voti unanimi |\n|---|---:|---:|\n| FdI | 0,998 | 93,6% |\n| PD-IDP | 0,996 | 91,4% |\n| M5S | 0,996 | 94,7% |\n| AVS | 0,995 | 98,3% |\n| **Lega** | **0,992** | **87,4%** |\n| Noi Moderati | 0,988 | 97,3% |\n| FI-PPE | 0,987 | 85,4% |\n| Azione-PER-RE | 0,975 | 91,7% |\n| Italia Viva-Casa Riformista | 0,975 | 93,6% |\n| Misto – +Europa-Stati Uniti d’Europa | 0,922 | 87,5% |\n| Misto – Minoranze linguistiche | 0,842 | 70,6% |\n| Misto senza componente | 0,564 | 35,3% |\n\nAlla Camera la Lega è quindi quinta per indice fra i gruppi con una presenza di voto consistente: meno compatta di FdI, PD, M5S e AVS, ma più di FI e degli altri gruppi riportati. Ha avuto almeno due votanti in 20.205 votazioni.\n\n| Senato — gruppo | Indice di coesione | Voti unanimi |\n|---|---:|---:|\n| **Lega Salvini Premier–Partito Sardo d’Azione** | **0,997** | **96,5%** |\n| FdI | 0,997 | 91,6% |\n| Civici d’Italia–UDC–Noi Moderati–MAIE–Centro Popolare | 0,996 | 98,6% |\n| FI-BP-PPE | 0,995 | 96,8% |\n| M5S | 0,993 | 92,6% |\n| Misto – AVS | 0,979 | 96,1% |\n| PD-IDP | 0,976 | 79,8% |\n| Italia Viva-Casa Riformista | 0,970 | 91,2% |\n| Misto – Azione-Renew Europe | 0,969 | 95,3% |\n| Per le Autonomie | 0,757 | 47,2% |\n\nAl Senato la Lega è **a pari merito con FdI al primo posto** per indice (0,997), ma ha una quota di voti completamente unanimi più alta: 96,5% contro 91,6%. Il dato della Lega si basa su 8.284 votazioni con almeno due suoi senatori votanti.\n\nI gruppi del Misto con pochissime votazioni non sono comparati: non hanno un indice statisticamente calcolabile oppure il dato deriva da una sola votazione. L’indice è quello di Hix-Noury-Roland: misura la concordanza interna fra favorevoli, contrari e astenuti nelle votazioni in cui il gruppo ha almeno due votanti.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

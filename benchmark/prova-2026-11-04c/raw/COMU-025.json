@@ -1,0 +1,235 @@
+{
+ "id": "COMU-025",
+ "trappola": true,
+ "domanda": "La premier ha detto in Aula che «l'Italia non manderà mai soldati in Ucraina»? Verifica la frase esatta e dimmi quando.",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Trappola: citazione probabilmente non presente alla lettera. Se non c'è, dirlo e mostrare le frasi vere più vicine, senza ricostruirla.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791993.583022,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"l'Italia non manderà mai soldati in Ucraina\"",
+    "chamber": null,
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Meloni",
+    "chamber": null,
+    "group": null,
+    "in_office": false,
+    "limit": 20
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, {\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\"}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "manderà soldati Ucraina",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 19, \"items\": [{\"uri\": \"it:camera:19:sed0727:tit00200.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"TESTI DEGLI INTERVENTI DI CUI È STATA AUTORIZZATA LA PUBBLICAZIONE IN CALCE AL RESOCONTO STENOGRAFICO DELLA SEDUTA ODIERNA: COMUNICAZIONI DEL PRESIDENTE DEL CONSIGLIO DEI MINISTRI IN VISTA DELLA RIUNIONE DEL CONSIGLIO EUROPEO DEL 15 E 16 OTTOBRE 2026\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"finora è questa la scelta che hanno fatto, allora almeno lo facciano a nome di tutti e con un [[mandato]] ufficiale dato da tutti.\\n\\nPerché sarò onesta: considero secondario il tema di chi siede a quale tavolo. Mi interessa ... regali a Mosca, in questi giorni, ne abbiamo fatti abbastanza.\\n\\nDopodiché, colleghi, quello che accade in [[Ucraina]] non resta in [[Ucraina]]. Il Consiglio europeo discuterà, in modo specifico, dell'escalation degli attacchi ibridi russi. Ed è giusto così, perché\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0727&tipo=stenografico#sed0727.stenografico.tit00200.int00010\"}, {\"uri\": \"it:senato:19:sed0466:int00005\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"insieme (finora è la scelta che hanno fatto), allora almeno lo facciano a nome di tutti e con un [[mandato]] ufficiale dato da tutti. . Sarò onesta: considero secondario il tema di chi siede a quale tavolo; mi interessa a nome ... regali a Mosca di questi tempi ne abbiamo fatti abbastanza. .\\n\\nColleghi, quello che accade in [[Ucraina]] non resta in [[Ucraina]]. Il Consiglio europeo discuterà in modo specifico dell' escalation degli attacchi ibridi russi ed è giusto così, perché la minaccia\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524275\"}, {\"uri\": \"it:camera:19:sed0673:tit00020.sub00010.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0673\", \"chamber\": \"camera\", \"body\": \"it:camera:1"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "soldati in Ucraina",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 29, \"items\": [{\"uri\": \"it:camera:19:sed0727:tit00130.sub00030.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 15 e 16 ottobre 2026.\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"questa proposta che non è sostenibile. Forse non siamo liberi di sostenere lo stop degli attacchi russi contro l'[[Ucraina]] ? Perché, se così fosse, vi prego, almeno non mi fate la morale sulla difesa dell'interesse italiano e sulla libertà ... abbiamo già detto quale sia la nostra risposta. Dopodiché, sull'ETS lei ha detto che non abbiamo usato i [[soldi]] degli ETS per abbattere le bollette e per modernizzare, che avremmo utilizzato a questo scopo solo il 9 per cento\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0727&tipo=stenografico#sed0727.stenografico.tit00130.sub00030.int00020\", \"video\": \"https://webtv.camera.it/evento/32546\", \"video_start_s\": 14098}, {\"uri\": \"it:camera:19:sed0727:tit00200.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"TESTI DEGLI INTERVENTI DI CUI È STATA AUTORIZZATA LA PUBBLICAZIONE IN CALCE AL RESOCONTO STENOGRAFICO DELLA SEDUTA ODIERNA: COMUNICAZIONI DEL PRESIDENTE DEL CONSIGLIO DEI MINISTRI IN VISTA DELLA RIUNIONE DEL CONSIGLIO EUROPEO DEL 15 E 16 OTTOBRE 2026\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"Mosca, in questi giorni, ne abbiamo fatti abbastanza.\\n\\nDopodiché, colleghi, quello che accade in [[Ucraina]] non resta in [[Ucraina]]. Il Consiglio europeo discuterà, in modo specifico, dell'escalation degli attacchi ibridi russi. Ed è giusto così, perché la minaccia ibrida ... flessibilità per difesa e sicurezza significa essenzialmente risorse aggiuntive rispetto a quelle consentite dai parametri europei. Non sono, quindi, [[soldi]] tolti alla sanità o alla scuola. Se non li spendessimo per la difesa, non potremmo spenderli per altro.\\n\\nChi racconta\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0727&tipo=stenografico#sed0727.stenografico.tit00"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Italia non manderà",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 42, \"items\": [{\"uri\": \"it:camera:19:sed0727:tit00200.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0727\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 727, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"TESTI DEGLI INTERVENTI DI CUI È STATA AUTORIZZATA LA PUBBLICAZIONE IN CALCE AL RESOCONTO STENOGRAFICO DELLA SEDUTA ODIERNA: COMUNICAZIONI DEL PRESIDENTE DEL CONSIGLIO DEI MINISTRI IN VISTA DELLA RIUNIONE DEL CONSIGLIO EUROPEO DEL 15 E 16 OTTOBRE 2026\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"sedersi al tavolo delle trattative.\\n\\nDiscorso diverso è una tregua tra le parti sulle centrali energetiche, che l'[[Italia]] chiaramente sostiene. Ringraziamo il Presidente Zelensky per aver immediatamente dichiarato la piena disponibilità ucraina in questo senso. Ci aspettiamo ... essere scritte senza di noi.\\n\\nPer questo continuo a chiedere che i Ventisette individuino una figura autorevole, con il [[mandato]] di tutti, capace di portare al tavolo la voce dell'Europa. E se su un nome non si trova convergenza\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0727&tipo=stenografico#sed0727.stenografico.tit00200.int00010\"}, {\"uri\": \"it:senato:19:sed0466:int00005\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"sedersi al tavolo delle trattative. . Discorso diverso è una tregua tra le parti sulle centrali energetiche, che l'[[Italia]] chiaramente sostiene, e ringraziamo il presidente Zelensky per aver immediatamente dichiarato la piena disponibilità ucraina in questo senso. Ci aspettiamo ... essere scritte senza di noi. Per questo continuo a chiedere che i 27 individuino una figura autorevole, con il [[mandato]] di tutti, capace di portare al tavolo la voce dell'Europa. Se su un nome non si trova convergenza, siamo\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1524275\"}, {\"uri\": \"it:senato:19:sed0466:int00055\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"mai soldati\"",
+    "chamber": null,
+    "person": "it:person:camera:302103",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0450",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0450\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 450, \"date\": \"2025-03-19\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0450&tipo=stenografico\", \"items\": [{\"uri\": \"it:camera:19:sed0450:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0450:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307591\", \"name\": \"Lorenzo Fontana\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307591&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 97, come risulta dall'elenco consultabile presso la Presidenza e che sarà pubblicato nell'allegato A al resoconto stenografico della seduta odierna .\", \"reactions\": [{\"kind\": \"procedure\", \"raw\": \"Ulteriori comunicazioni all'Assemblea saranno pubblicate nell'allegato A al resoconto della seduta odierna\", \"offset_char\": 295}]}]}, {\"uri\": \"it:camera:19:sed0450:tit00020\", \"order\": 2, \"title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 20 e 21 marzo 2025.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0450:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307591\", \"name\": \"Lorenzo Fontana\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307591&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"L'ordine del giorno reca la discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 20 e 21 marzo 2025.\\n\\nLa ripartizione dei tempi riservati alla discussione è pubblicata nel vigente calendario dei lavori (vedi calendario).\", \"reactions\": []}, {\"uri\": \"it:camera:19:sed0450:tit00020.sub00010.int00010\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307591\", \"name\": \"Lorenzo Fontana\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307591&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Dichiaro aperta la discussione sulle comunicazioni del Presidente del Consiglio dei ministri. È iscritto a parlare il deputato Luigi Marattin. Ne ha facoltà.\", \"reactions\": []}, {\"uri\": \"it:camera:19:sed0450:tit00020.sub00010.int000"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:senato:19:sed0273",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:senato:19:sed0273\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 273, \"date\": \"2025-02-13\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1445344\", \"items\": [{\"uri\": \"it:senato:19:sed0273:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0273:int00001\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:29067\", \"name\": \"Gian Marco Centinaio\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029067.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"La seduta è aperta (ore 10,06).\\n\\nSi dia lettura del processo verbale.\\n\\nFALLUCCHI, f.f. segretario, dà lettura del processo verbale della seduta del giorno precedente.\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0273:int00002\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:29067\", \"name\": \"Gian Marco Centinaio\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029067.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Non essendovi osservazioni, il processo verbale è approvato.\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0273:int00010\", \"order\": 3, \"person\": {\"uri\": \"it:person:senato:29067\", \"name\": \"Gian Marco Centinaio\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029067.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Segue l'interrogazione 3-01453 sul potenziamento degli uffici giudiziari per tutelare le indagini relative al contrasto delle mafie.\\n\\nIl rappresentante del Governo ha facoltà di rispondere a tale interrogazione.\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0273:int00011\", \"order\": 4, \"person\": {\"uri\": \"it:person:camera:307479\", \"name\": \"Andrea Delmastro delle Vedove\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307479&legislatura=19\"}, \"speaker_label\": \"DELMASTRO DELLE VEDOVE, sottosegretario di Stato per la giustizia\", \"as_office\": \"Sottosegretario di Stato per la giustizia\", \"text\": \"Signor Presidente, l'occasione dell'interrogazione consente al Governo non solo di ringraziare gli onorevoli interroganti, ma anche di ribadire, ancora una volta, l'impegno nella lotta alla mafia da parte dell'Esecutivo.\\n\\nÈ con orgoglio che questo Governo, "
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"mandare i soldati in Ucraina\"",
+    "chamber": "camera",
+    "person": "it:person:camera:302103",
+    "start": "2025-03-19",
+    "end": "2025-03-19",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0450:tit00020.sub00030.int00120\", \"sitting\": {\"uri\": \"it:camera:19:sed0450\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 450, \"date\": \"2025-03-19\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione del Consiglio europeo del 20 e 21 marzo 2025.\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"GIORGIA MELONI\", \"snippet\": \"Ministro inglese Keir Starmer, noi dovremmo, per il fatto che è stata fatta dall'Europa, adeguarci e [[mandare]] i [[soldati]] in [[Ucraina]] ? Perché io su questo non sono d'accordo.\\n\\nQuando dice: Trump non sarà mai niente di simile\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0450&tipo=stenografico#sed0450.stenografico.tit00020.sub00030.int00120\"}]}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {
+    "text": "No. Nei resoconti d’Aula consultati non risulta la frase «l'Italia non manderà mai soldati in Ucraina». Il 19 marzo 2025, alla Camera, Giorgia Meloni (Fratelli d’Italia) ha detto: «noi dovremmo, per il fatto che è stata fatta dall'Europa, adeguarci e mandare i soldati in Ucraina? Perché io su questo non sono d'accordo». Il 22 ottobre 2025 ha dichiarato: «L'Italia ha già chiarito che non prevede l'invio di propri soldati in territorio ucraino»."
+   },
+   "result": "{\"quotes\": 3, \"verified\": 1, \"results\": [{\"quote\": \"l'Italia non manderà mai soldati in Ucraina\", \"found\": false, \"reason\": \"non si trova, parola per parola, in nessun intervento\"}, {\"quote\": \"noi dovremmo, per il fatto che è stata fatta dall'Europa, adeguarci e mandare i soldati in Ucraina? Perché io su questo non sono d'accordo\", \"found\": false, \"reason\": \"non si trova, parola per parola, in nessun intervento\"}, {\"quote\": \"L'Italia ha già chiarito che non prevede l'invio di propri soldati in territorio ucraino\", \"found\": true, \"speech\": \"it:camera:19:sed0552:tit00220.int00010\", \"sitting\": \"it:camera:19:sed0552\", \"chamber\": \"camera\", \"date\": \"2025-10-22\", \"speaker\": \"Giorgia Meloni\", \"group\": \"FDI\"}]}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 2, \"verified\": 1, \"results\": [{\"quote\": \"l’Italia non manderà mai soldati in Ucraina\", \"found\": false, \"reason\": \"non si trova, parola per parola, in nessun intervento\"}, {\"quote\": \"L'Italia ha già chiarito che non prevede l'invio di propri soldati in territorio ucraino\", \"found\": true, \"speech\": \"it:camera:19:sed0552:tit00220.int00010\", \"sitting\": \"it:camera:19:sed0552\", \"chamber\": \"camera\", \"date\": \"2025-10-22\", \"speaker\": \"Giorgia Meloni\", \"group\": \"FDI\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_persone",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta",
+  "seduta",
+  "cerca_interventi",
+  "verifica_citazioni"
+ ],
+ "tempo_s": 36.7,
+ "risposta_sistema": "No: nei resoconti parlamentari non risulta, parola per parola, la frase «l’Italia non manderà mai soldati in Ucraina».\n\nIl riferimento più vicino è del **19 marzo 2025**, alla **Camera**: Giorgia Meloni, intervenendo nella discussione sulle comunicazioni in vista del Consiglio europeo, ha espresso il suo dissenso sull’ipotesi di mandare soldati in Ucraina. [Resoconto ufficiale della seduta](https://www.camera.it/leg19/410?idSeduta=0450&tipo=stenografico#sed0450.stenografico.tit00020.sub00030.int00120)\n\nLa formulazione esplicita e verificata è però successiva: il **22 ottobre 2025**, sempre alla Camera, Meloni (Fratelli d’Italia) ha dichiarato: «L'Italia ha già chiarito che non prevede l'invio di propri soldati in territorio ucraino». [Resoconto ufficiale](https://www.camera.it/leg19/410?idSeduta=0552&tipo=stenografico#sed0552.stenografico.tit00220.int00010)",
+ "eventi": {
+  "status": 1,
+  "tool": 20,
+  "dati": 11,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "pass",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "FdI",
+     "Governo"
+    ],
+    "missing": [
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Misto, non iscritti"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "l’Italia non manderà mai soldati in Ucraina",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    },
+    {
+     "quote": "L'Italia ha già chiarito che non prevede l'invio di propri soldati in territorio ucraino",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0552&tipo=stenografico#sed0552.stenografico.tit00220.int00010"
+    }
+   ],
+   "authority": {
+    "topic": "La premier ha detto in Aula che «l'Italia non manderà mai soldati in Ucraina»? Verifica la frase esatta e dimmi quando.",
+    "available": true,
+    "voices": [
+     {
+      "name": "Giorgia Meloni",
+      "group": "Governo",
+      "role": "governo",
+      "rank": 2,
+      "pool_size": 10,
+      "group_size": 10,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "quoted"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

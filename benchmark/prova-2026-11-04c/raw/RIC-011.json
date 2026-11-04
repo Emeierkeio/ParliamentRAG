@@ -1,0 +1,53 @@
+{
+ "id": "RIC-011",
+ "trappola": false,
+ "domanda": "Ricostruisci la rete delle cofirme degli emendamenti fra deputati di gruppi diversi nella XIX: quali coppie di gruppi cofirmano più spesso?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "classifica",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Il gruppo del firmatario va preso alla data dell'emendamento (group_at), non a oggi: 77 persone hanno cambiato gruppo.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791837.752473,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_emendamenti",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "outcome": null,
+    "venue": null,
+    "group": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "cross_group": true,
+    "group_by": [
+     "coppia_gruppi"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Proposte emendative, Camera, dal 13/10/2022 al 04/11/2026; filtri: solo_cofirmate_da_più_gruppi sì. Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, relatori) escluse. Per gruppo: proposte con almeno un firmatario del gruppo; per gruppo_primo_firmatario: il gruppo di chi firma per primo (una proposta conta una volta); per coppia: proposte con almeno un firmatario di ciascuno dei due gruppi. Esito: quello registrato (se le righe ne hanno più d'uno, il primo in ordine alfabetico). Fonte: i fascicoli degli emendamenti caricati, la cui completezza non è verificata.\", \"total\": null, \"rows_total\": 74, \"offset\": 0, \"rows\": [{\"proposte\": 2396, \"coppia_gruppi\": [\"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"Alleanza Verdi e Sinistra (AVS)\"]}, {\"proposte\": 1016, \"coppia_gruppi\": [\"Movimento 5 Stelle (M5S)\", \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\"]}, {\"proposte\": 894, \"coppia_gruppi\": [\"Movimento 5 Stelle (M5S)\", \"Alleanza Verdi e Sinistra (AVS)\"]}, {\"proposte\": 622, \"coppia_gruppi\": [\"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"Italia Viva - Casa Riformista (IV-CR)\"]}, {\"proposte\": 613, \"coppia_gruppi\": [\"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\"]}, {\"proposte\": 580, \"coppia_gruppi\": [\"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"Alleanza Verdi e Sinistra (AVS)\"]}, {\"proposte\": 572, \"coppia_gruppi\": [\"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"Movimento 5 Stelle (M5S)\"]}, {\"proposte\": 564, \"coppia_gruppi\": [\"Movimento 5 Stelle (M5S)\", \"Italia Viva - Casa Riformista (IV-CR)\"]}, {\"proposte\": 561, \"coppia_gruppi\": [\"Alleanza Verdi e Sinistra (AVS)\", \"Italia Viva - Casa Riformista (IV-CR)\"]}, {\"proposte\": 508, \"coppia_gruppi\": [\"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"Italia Viva - Casa Riformista (IV-CR)\"]}, {\"proposte\": 382, \"coppia_gruppi\": [\"Fratelli d'Italia (FDI)\", \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\"]}, {\"proposte\": 356, \"coppia_gruppi\": [\"Lega - Salvini Premier (LEGA)\", \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\"]}, {\"proposte\": 341, \"coppia_gruppi\": [\"Lega - Salvini Premier (LEGA)\", \"Fratelli d'Italia (FDI)\"]}, {\"proposte\": 252, \"coppia_gruppi\": [\"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\"]}, {\"proposte\": 249, \"coppia_gruppi\": [\"Fratelli d'Italia (FDI)\", \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\"]}, {\"proposte\": 227, \"coppia_gruppi\": [\"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\"]}, {\"proposte\": 205, \"coppia_gruppi\": [\"Lega - Salvini Premier (LEGA)\", \"Noi Moderati - MAIE "
+  }
+ ],
+ "strumenti": [
+  "conta_emendamenti"
+ ],
+ "tempo_s": 39.5,
+ "risposta_sistema": "La rete delle cofirme alla **Camera** è molto concentrata nell’area delle opposizioni. Considerando gli emendamenti della XIX legislatura dal **13 ottobre 2022 al 3 novembre 2026** che hanno almeno un firmatario di gruppi diversi, la coppia più frequente è:\n\n1. **PD-IDP – AVS:** 2.396 proposte emendative  \n2. **M5S – PD-IDP:** 1.016  \n3. **M5S – AVS:** 894  \n4. **PD-IDP – Italia Viva-Casa Riformista:** 622  \n5. **+Europa–Stati Uniti d’Europa (componente del Misto) – PD-IDP:** 613  \n6. **+Europa–Stati Uniti d’Europa (componente del Misto) – AVS:** 580  \n7. **+Europa–Stati Uniti d’Europa (componente del Misto) – M5S:** 572  \n8. **M5S – Italia Viva-Casa Riformista:** 564  \n9. **AVS – Italia Viva-Casa Riformista:** 561  \n10. **+Europa–Stati Uniti d’Europa (componente del Misto) – Italia Viva-Casa Riformista:** 508  \n\nIl nucleo della rete è quindi **PD-IDP–AVS–M5S**: tutte e tre le loro relazioni reciproche occupano le prime tre posizioni. Attorno a quel nucleo si collega con particolare continuità la componente **+Europa–Stati Uniti d’Europa**, che supera le 500 cofirme con ciascuno dei quattro soggetti oppositivi principali sopra elencati. Anche **Italia Viva-Casa Riformista** è fortemente integrata: le sue relazioni più frequenti sono con PD-IDP (622), M5S (564), AVS (561) e +Europa–Stati Uniti d’Europa (508).\n\nNel perimetro della maggioranza, le coppie più ricorrenti sono invece:\n\n- **FDI – FI-PPE:** 382;\n- **Lega – FI-PPE:** 356;\n- **Lega – FDI:** 341;\n- **FI-PPE – Noi Moderati-MAIE-Centro Popolare:** 252;\n- **FDI – Noi Moderati-MAIE-Centro Popolare:** 249;\n- **Lega – Noi Moderati-MAIE-Centro Popolare:** 205.\n\nLa rete della maggioranza è quindi meno densa, nei volumi, di quella oppositiva: la sua coppia più forte, FDI–FI-PPE, è molto al di sotto di PD-IDP–AVS.\n\nLe collaborazioni trasversali fra maggioranza e opposizione esistono ma sono più limitate. Le principali sono:\n\n- **FDI – PD-IDP:** 120;\n- **FI-PPE – PD-IDP:** 113;\n- **M5S – FDI:** 111;\n- **M5S – FI-PPE:** 107;\n- **Lega – PD-IDP:** 91;\n- **FI-PPE – AVS:** 81;\n- **FDI – AVS:** 78;\n- **M5S – Lega:** 75.\n\nIn tutto emergono **74 coppie di gruppi** con almeno una cofirma intergruppo. Il conteggio riguarda proposte emendative: una proposta sottoscritta da tre o più gruppi contribuisce a ciascuna coppia di gruppi presente fra i firmatari. I gruppi sono attribuiti alla data della firma; le componenti del Misto sono considerate distintamente. La fonte è costituita dai fascicoli ufficiali degli emendamenti caricati nei dati parlamentari; la loro completezza è segnalata come non verificata.",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

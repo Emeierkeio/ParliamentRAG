@@ -1,0 +1,41 @@
+{
+ "id": "APP-022",
+ "domanda": "è vero che il femminicidio è passato all'unanimità?",
+ "categoria": "voti",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "Camera 25/11/2025: 237 sì, 0 no, 0 astenuti. Unanimità dei votanti, non dei 400 deputati. Il voto finale del Senato è del 23/7/2025 (S. 1433).",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792052.0416389,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_atti",
+  "atto",
+  "atto",
+  "elenco_votazioni",
+  "elenco_votazioni"
+ ],
+ "tempo_s": 11.3,
+ "risposta_sistema": "Sì, se per “passato” intendi il **voto finale sul disegno di legge che introduce il delitto di femminicidio**: è stato approvato senza voti contrari né astensioni in entrambi i rami.\n\n- **Senato**, 23 luglio 2025: **161 favorevoli, 0 contrari, 0 astenuti**. [Votazione finale](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54411.htm)  \n- **Camera**, 25 novembre 2025: **237 favorevoli, 0 contrari, 0 astenuti**. [Votazione finale](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=571_45&tipo=dettaglio)\n\nNon significa però che abbiano votato tutti i membri delle Camere: hanno votato all’unanimità i parlamentari presenti e votanti. Il testo è diventato la **legge n. 181 del 2 dicembre 2025**. [Scheda Camera del provvedimento](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2528)",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Sì, all'unanimità dei votanti, non di tutti i parlamentari. La legge sul delitto di femminicidio (S. 1433, C. 2528, legge 181/2025) è passata al Senato il 23/7/2025 con 161 sì, 0 no e 0 astenuti (4 presenti non votanti: Zanettin, Delrio, Alfieri, Camusso; 30 in missione) e alla Camera, in via definitiva, il 25/11/2025 con 237 sì, 0 no e 0 astenuti (89 assenti, 72 in missione).",
+  "stato": "calcolata",
+  "limiti": "Al Senato i voti individuali non hanno righe per gli assenti, quindi gli assenti del Senato non si possono contare."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 11.3
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": null,
+ "note": "Senato 23/7/2025 161-0-0 e Camera 25/11/2025 237-0-0, L. 181/2025, unanimità dei soli votanti: giusto come prima. Link alla scheda S. 1433, alla votazione 571_45 della Camera e alla scheda C. 2528."
+}

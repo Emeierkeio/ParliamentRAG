@@ -1,0 +1,110 @@
+{
+  "id": "COMU-025",
+  "trappola": true,
+  "domanda": "La premier ha detto in Aula che «l'Italia non manderà mai soldati in Ucraina»? Verifica la frase esatta e dimmi quando.",
+  "categoria": "fonti",
+  "tipo_risposta": "fatto",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [
+    "citazioni_esatte"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791993.583022,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_interventi",
+    "cerca_persone",
+    "cerca_interventi",
+    "cerca_interventi",
+    "cerca_interventi",
+    "cerca_interventi",
+    "seduta",
+    "seduta",
+    "cerca_interventi",
+    "verifica_citazioni"
+  ],
+  "tempo_s": 36.7,
+  "risposta_sistema": "No: nei resoconti parlamentari non risulta, parola per parola, la frase «l’Italia non manderà mai soldati in Ucraina».\n\nIl riferimento più vicino è del **19 marzo 2025**, alla **Camera**: Giorgia Meloni, intervenendo nella discussione sulle comunicazioni in vista del Consiglio europeo, ha espresso il suo dissenso sull’ipotesi di mandare soldati in Ucraina. [Resoconto ufficiale della seduta](https://www.camera.it/leg19/410?idSeduta=0450&tipo=stenografico#sed0450.stenografico.tit00020.sub00030.int00120)\n\nLa formulazione esplicita e verificata è però successiva: il **22 ottobre 2025**, sempre alla Camera, Meloni (Fratelli d’Italia) ha dichiarato: «L'Italia ha già chiarito che non prevede l'invio di propri soldati in territorio ucraino». [Resoconto ufficiale](https://www.camera.it/leg19/410?idSeduta=0552&tipo=stenografico#sed0552.stenografico.tit00220.int00010)",
+  "errori": [],
+  "verifica": {
+    "dati": {
+      "outcome": {
+        "groups": "fail",
+        "authority": "pass",
+        "quotes": "fail"
+      },
+      "groups": {
+        "present": [
+          "FdI",
+          "Governo"
+        ],
+        "missing": [
+          "Partito Democratico",
+          "Lega - Salvini Premier",
+          "Movimento 5 Stelle",
+          "Forza Italia",
+          "Alleanza Verdi e Sinistra",
+          "Azione - PER",
+          "Italia Viva - Casa Riformista",
+          "Noi Moderati",
+          "+Europa (Misto)",
+          "Futuro Nazionale Vannacci (Misto)",
+          "Minoranze linguistiche (Misto)",
+          "Misto, non iscritti"
+        ],
+        "silent": [
+          "Sud chiama Nord (Misto)"
+        ]
+      },
+      "quotes": [
+        {
+          "quote": "l’Italia non manderà mai soldati in Ucraina",
+          "status": "not_found",
+          "closest_passage": null,
+          "url": null
+        },
+        {
+          "quote": "L'Italia ha già chiarito che non prevede l'invio di propri soldati in territorio ucraino",
+          "status": "exact",
+          "closest_passage": null,
+          "url": "https://www.camera.it/leg19/410?idSeduta=0552&tipo=stenografico#sed0552.stenografico.tit00220.int00010"
+        }
+      ],
+      "authority": {
+        "topic": "La premier ha detto in Aula che «l'Italia non manderà mai soldati in Ucraina»? Verifica la frase esatta e dimmi quando.",
+        "available": true,
+        "voices": [
+          {
+            "name": "Giorgia Meloni",
+            "group": "Governo",
+            "role": "governo",
+            "rank": 2,
+            "pool_size": 10,
+            "group_size": 10,
+            "pool": "speakers_on_topic",
+            "authoritative": true,
+            "source": "quoted"
+          }
+        ]
+      },
+      "scope": "Camera dei deputati, XIX legislatura"
+    }
+  },
+  "note_domanda": "Trappola: citazione probabilmente non presente alla lettera. Se non c'è, dirlo e mostrare le frasi vere più vicine, senza ricostruirla.",
+  "riferimento": {
+    "note": "Trappola: citazione probabilmente non presente alla lettera. Se non c'è, dirlo e mostrare le frasi vere più vicine, senza ricostruirla."
+  },
+  "punteggi": {
+    "correttezza": null,
+    "fonti": null,
+    "trappola": 1,
+    "tempo_s": 36.7
+  },
+  "stamattina": {
+    "correttezza": null
+  },
+  "causa_probabile": null,
+  "note": "Dice che la frase non risulta alla lettera e riporta la frase vera e verificata di Meloni del 22/10/2025 (seduta 552) con link, più il 19/3/2025 senza citazione. Superata come stamattina."
+}

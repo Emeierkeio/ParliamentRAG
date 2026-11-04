@@ -1,0 +1,40 @@
+{
+ "id": "APP-011",
+ "domanda": "mi trovi il video di Conte che parla della legge elettorale?",
+ "categoria": "video",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note_domanda": "Giuseppe Conte (M5S). Link al secondo esatto dell'intervento quando c'è il video_segment; se manca, il link al resoconto.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792203.232086,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_persone",
+  "cerca_interventi"
+ ],
+ "tempo_s": 13.4,
+ "risposta_sistema": "Sì: Giuseppe Conte (M5S) è intervenuto sulla legge elettorale in Aula alla Camera l’**8 ottobre 2026**, durante l’esame della proposta **A.C. 2822-B**.\n\n- [Video WebTV della Camera](https://webtv.camera.it/evento/32457) — il suo intervento inizia a **1:36:34**.\n- [Resoconto stenografico ufficiale dell’intervento](https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico#sed0723.stenografico.tit00040.sub00010.int00200).\n\nC’è anche un altro intervento sullo stesso provvedimento nella medesima seduta, riportato nel [resoconto ufficiale](https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico#sed0723.stenografico.tit00040.sub00010.int00220).",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Gli interventi di Giuseppe Conte in Aula sulla legge elettorale (proposta Bignami ed altri, A.C. 2822-A) con video sono due: 16/7/2026, https://webtv.camera.it/evento/31988 dal secondo 5710 al 6327 (intervento it:camera:19:sed0691:tit00030.sub00010.int00210); 8/10/2026, https://webtv.camera.it/evento/32457 dal secondo 5794 al 6422 (it:camera:19:sed0723:tit00040.sub00010.int00200, che prosegue in int00220 senza tratto video proprio). Ne parla anche il 14/10/2026 nelle comunicazioni del Presidente del Consiglio (https://webtv.camera.it/evento/32546, secondi 19138-19760) e il 14/7/2026 sull'ordine dei lavori (senza video legato: resta il resoconto, sed. 689).",
+  "stato": "calcolata",
+  "limiti": "Si cercano gli interventi di Conte nel resoconto della Camera con «legge elettorale» nel testo o nell'argomento sulla riforma elettorale. Il secondo d'inizio viene da video_segment.start_s; il formato del link WebTV al secondo esatto non è nel database, quindi si danno l'evento e i secondi. Le citazioni del 25/10/2022 e del 12/3/2025 sono menzioni di passaggio, non interventi sulla legge."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 13.4
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "Trova solo l'intervento dell'8/10/2026 (evento 32457, da 1:36:34) con resoconto. Manca quello del 16/7/2026 (evento 31988, secondo 5710) che prima c'era: scende da 2 a 1. Due sole chiamate (cerca_persone, cerca_interventi)."
+}

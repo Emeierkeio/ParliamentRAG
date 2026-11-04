@@ -1,0 +1,38 @@
+{
+  "id": "DJ-009",
+  "trappola": false,
+  "domanda": "Quanti parlamentari hanno cambiato gruppo dall'inizio della legislatura? Voglio il numero aggiornato a oggi, Camera e Senato.",
+  "categoria": "persone",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791759.4981,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cambi_gruppo",
+    "cambi_gruppo"
+  ],
+  "tempo_s": 5.8,
+  "risposta_sistema": "Alla data di oggi, **4 novembre 2026**:\n\n- **Camera:** **40 deputati** hanno cambiato gruppo almeno una volta dall’inizio della legislatura; i passaggi complessivi sono **52**.\n- **Senato:** **13 senatori** hanno cambiato gruppo almeno una volta; i passaggi complessivi sono **15**.\n\nIl conteggio include entrate e uscite dalle componenti del Gruppo Misto, esclude i passaggi tecnici iniziali dell’ottobre 2022 e considera anche i ritorni a un gruppo precedente come nuovi cambi. Fonte: anagrafiche dei gruppi di Camera e Senato.",
+  "errori": [],
+  "note_domanda": "Escludere i passaggi tecnici dell'ottobre 2022 (Misto provvisorio prima della costituzione dei gruppi) e l'ingresso in una componente del Misto senza lasciare il Misto. Il numero va dato separato per ramo.",
+  "riferimento": {
+    "risposta": "Al 2/11/2026, dall'inizio della XIX: alla Camera 40 deputati hanno cambiato gruppo, per 52 passaggi in tutto (fra cui i 9 deputati di Italia Viva usciti da Azione-IV il 20/11/2023 per formare IV-CR); al Senato 13 senatori, per 15 passaggi. L'elenco con date, gruppo di partenza e di arrivo è in «risultato».",
+    "stato": "calcolata",
+    "limiti": "Gruppo = gruppo parlamentare, con le componenti del Misto ricondotte al Misto: entrare in una componente del Misto restando nel Misto non conta. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio e componenti AVS e NM prima della costituzione dei gruppi). Conta come cambio anche la nascita di IV-CR alla Camera. Un ritorno al gruppo di prima conta come un nuovo cambio."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 5.8
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Camera 40 deputati e 52 passaggi, Senato 13 e 15, come il riferimento. Resta la frase sbagliata sul conto che includerebbe le componenti del Misto, e nessun link. Uguale a stamattina (2)."
+}

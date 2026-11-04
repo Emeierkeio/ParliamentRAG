@@ -1,0 +1,38 @@
+{
+  "id": "DJ-010",
+  "domanda": "Quanti voti di fiducia ha chiesto il governo Meloni finora?",
+  "categoria": "governo",
+  "tipo_risposta": "conteggio",
+  "ramo": "entrambi",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": "Trappola: il numero di votazioni di fiducia della Camera non è il numero di questioni poste (il PDL 2822-B ne ha avute tre in due giorni). Le mozioni di fiducia al governo all'insediamento sono un'altra cosa.",
+  "trappola": true,
+  "endpoint": "agente",
+  "gruppo": "nuove",
+  "inizio": 1793792620.682397,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_votazioni",
+    "conta_votazioni"
+  ],
+  "tempo_s": 7.1,
+  "risposta_sistema": "Il Governo Meloni ha posto la questione di fiducia **70 volte alla Camera** e **57 volte al Senato**, dall’inizio della XIX legislatura fino al **4 novembre 2026** (ultimi dati di seduta: 3 novembre).\n\nAlla Camera uno stesso provvedimento può comportare più fiducie, perché possono essere poste su articoli distinti. Il conteggio esclude la fiducia iniziale al Governo dell’ottobre 2022.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Questioni di fiducia poste dal Governo Meloni: 70 alla Camera e 57 al Senato, rami separati, esclusa la fiducia iniziale al Governo (ottobre 2022). Alla Camera la C. 2822-B ha avuto tre questioni di fiducia (articoli 1 e 2 il 6/10/2026, articolo 3 il 7/10). Nel DB: 71 votazioni di fiducia alla Camera e 58 al Senato comprese le fiducie d'insediamento.",
+    "stato": "note_della_domanda",
+    "limiti": "Nessun file di riferimento: note della domanda in selezione.json e conteggio dato per il giro 4 (70 Camera, 57 Senato)."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": "superata",
+    "tempo_s": 7.1
+  },
+  "prima": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Come nel giro precedente: 70 questioni di fiducia alla Camera e 57 al Senato, rami separati, fiducia iniziale esclusa, nota sulle più fiducie per provvedimento. Nessun link."
+}

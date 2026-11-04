@@ -1,0 +1,38 @@
+{
+ "id": "GIO-009",
+ "domanda": "Quante sedute d'Aula ha fatto la Camera nel 2026 e quante ore in totale? Confronto con il Senato.",
+ "categoria": "confronto",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792292.346077,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "conta_sedute",
+  "conta_sedute"
+ ],
+ "tempo_s": 7.9,
+ "risposta_sistema": "Nel 2026, fino al **4 novembre** (dati aggiornati all’ultima seduta del **3 novembre**):\n\n- **Camera:** **147 sedute d’Aula**; **863,8 ore** complessive dai video WebTV, sospensioni incluse.\n- **Senato:** **93 sedute d’Aula**; il totale delle ore **non è disponibile** nei dati, perché non includono video del Senato.\n\nIl conteggio considera le sedute effettivamente tenute nel periodo 1° gennaio–4 novembre 2026.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nel 2026, fino al 30/10 per la Camera e al 28/10 per il Senato, la Camera ha tenuto 146 sedute d'Aula (dalla n. 591 alla n. 736) e il Senato 93 (dalla n. 377 alla n. 469). Alla Camera la durata dalle registrazioni della WebTV somma circa 854 ore, in media 5,85 ore per seduta (dalla più breve, 4 minuti e 50 secondi il 5/1/2026, alla seduta 648 del 22-24/4/2026 sul decreto sicurezza, con due video per circa 38 ore). Per il Senato le ore non sono calcolabili.",
+  "stato": "parziale",
+  "limiti": "Le ore si ricavano solo dai video della Camera (end_ts - start_ts, sospensioni comprese): sitting non ha orari di inizio e fine per le sedute d'Aula di nessuno dei due rami e per il Senato non ci sono video. Il confronto sulle ore con il Senato non è quindi possibile; il confronto sul numero di sedute sì."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "trappola": null,
+  "tempo_s": 7.9
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": null,
+ "note": "Camera 147 sedute e 863,8 ore di video (854 al 30/10 più la seduta del 3/11), Senato 93 sedute e ore non disponibili: uguale a prima. Nessun link."
+}

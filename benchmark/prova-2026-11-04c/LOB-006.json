@@ -1,0 +1,54 @@
+{
+  "id": "LOB-006",
+  "trappola": false,
+  "domanda": "Mi servono presidenti e vicepresidenti della 8ª, 9ª e 10ª Commissione del Senato e della X Attività produttive della Camera, per la nostra mappa degli interlocutori.",
+  "categoria": "commissioni",
+  "tipo_risposta": "elenco",
+  "ramo": "entrambi",
+  "difficolta": "facile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791653.4288058,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "organo",
+    "organo",
+    "organo",
+    "organo",
+    "organo",
+    "organo",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona",
+    "scheda_persona"
+  ],
+  "tempo_s": 43.2,
+  "risposta_sistema": "Cariche in corso al **4 novembre 2026** (tutte decorrenti dal 10 giugno 2025).\n\n- **Senato — 8ª Commissione** (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)  \n  Presidente: [Claudio Fazzone (FI-BP-PPE)](http://dati.senato.it/senatore/4192)  \n  Vicepresidenti: [Lorenzo Basso (PD-IDP)](http://dati.senato.it/senatore/29270); [Gianni Rosa (FdI)](http://dati.senato.it/senatore/36420).\n\n- **Senato — 9ª Commissione** (Industria, commercio, turismo, agricoltura e produzione agroalimentare)  \n  Presidente: [Luca De Carlo (FdI)](http://dati.senato.it/senatore/32898)  \n  Vicepresidenti: [Silvia Fregolent (IV-CR)](http://dati.senato.it/senatore/29406); [Giorgio Maria Bergesio (LSP-PSd’Az)](http://dati.senato.it/senatore/32586).\n\n- **Senato — 10ª Commissione** (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)  \n  Presidente: [Francesco Zaffini (FdI)](http://dati.senato.it/senatore/32732)  \n  Vicepresidenti: [Maria Cristina Cantù (LSP-PSd’Az)](http://dati.senato.it/senatore/32598); [Orfeo Mazzella (M5S)](http://dati.senato.it/senatore/36406).\n\n- **Camera — X Commissione Attività produttive**  \n  Presidente: [Alberto Luigi Gusmeroli (LEGA)](http://dati.camera.it/ocd/persona.rdf/p307475)  \n  Vicepresidenti: [Vinicio Giuseppe Guido Peluffo (PD-IDP)](http://dati.camera.it/ocd/persona.rdf/p302746); [Ilaria Cavo (NM(N-C-U-I)M-CP)](http://dati.camera.it/ocd/persona.rdf/p308785).",
+  "errori": [],
+  "note_domanda": "Presidenti attesi: Fazzone (8ª), De Carlo (9ª), Zaffini (10ª), Gusmeroli (X). Le cariche hanno doppia riga per il rinnovo di metà legislatura (10/6/2025).",
+  "riferimento": {
+    "risposta": "Cariche in corso al 2/11/2026 (dopo il rinnovo del 10/6/2025). Senato, 8ª Commissione (Ambiente, energia, lavori pubblici, comunicazioni): presidente Claudio Fazzone (FI-BP-PPE); vicepresidenti Lorenzo Basso (PD-IDP) e Gianni Rosa (FdI). 9ª Commissione (Industria, commercio, turismo, agricoltura): presidente Luca De Carlo (FdI); vicepresidenti Giorgio Maria Bergesio (LSP-PSd'Az) e Silvia Fregolent (IV-CR). 10ª Commissione (Affari sociali, sanità, lavoro): presidente Francesco Zaffini (FdI); vicepresidenti Maria Cristina Cantù (LSP-PSd'Az) e Orfeo Mazzella (M5S). Camera, X Attività produttive: presidente Alberto Luigi Gusmeroli (Lega); vicepresidenti Ilaria Cavo (Noi Moderati) e Vinicio Peluffo (PD-IDP).",
+    "stato": "calcolata",
+    "limiti": "Cariche = office con title chair o vice_chair, aperte al 2/11/2026; gruppo = group_at alla stessa data. I segretari non sono richiesti e sono esclusi."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 43.2
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Presidenti e vicepresidenti delle quattro commissioni tutti giusti con i gruppi, con link alle schede ufficiali. Come stamattina (2), ora con le fonti."
+}

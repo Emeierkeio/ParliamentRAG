@@ -1,0 +1,41 @@
+{
+  "id": "LOB-042",
+  "domanda": "Quando è convocata la prossima seduta della VIII Commissione sul DL 177/2026 (C. 3133) e cosa c'è all'ordine del giorno?",
+  "categoria": "calendario",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": null,
+  "trappola": false,
+  "endpoint": "agente",
+  "gruppo": "nuove",
+  "inizio": 1793792548.539096,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "argomenti_sedute",
+    "elenco_sedute",
+    "argomenti_sedute",
+    "cerca_atti",
+    "argomenti_sedute"
+  ],
+  "tempo_s": 16.2,
+  "risposta_sistema": "Non risulta ancora convocata, nei dati disponibili fino al **3 novembre 2026**, una prossima seduta della VIII Commissione (Ambiente) dedicata al DL 177/2026, **C. 3133**. Di conseguenza non è disponibile un nuovo ordine del giorno.\n\nL’ultima trattazione registrata è del **27 ottobre 2026**, in **sede referente**, con “seguito dell’esame e rinvio”. Il provvedimento risulta tuttora **in corso di esame in Commissione** nella [scheda ufficiale C. 3133](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133).",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Nei dati non c'è la prossima convocazione della VIII Commissione sul C. 3133: l'unica seduta programmata nel database è l'Aula della Camera del 3/11/2026 (seduta 737), che non ha il C. 3133 all'ordine del giorno. L'ultima seduta registrata della VIII Commissione sul DL 177/2026 è del 27/10/2026, in sede referente alle 13:05, con «Seguito dell'esame e rinvio»; lo stesso giorno si sono svolte audizioni informali (fra gli altri Comieco, autorità di bacino distrettuali, Legambiente, ISS, ENEA, ANCI).",
+    "stato": "non_calcolabile",
+    "limiti": "Le convocazioni future delle commissioni non sono caricate: sitting ha una sola seduta in stato planned (Aula, 3/11/2026), non le 120 indicate nel benchmark. Il Bollettino delle commissioni arriva al 29/10/2026. Il risultato riporta solo l'ultima seduta svolta come contesto."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 16.2
+  },
+  "prima": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Dice che la prossima convocazione non è nei dati e indica l'ultima seduta referente del 27/10/2026 con «seguito dell'esame e rinvio», con la scheda C. 3133. Non cita le audizioni informali dello stesso giorno: resta 2."
+}

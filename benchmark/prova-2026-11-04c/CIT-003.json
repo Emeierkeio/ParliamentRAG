@@ -1,0 +1,41 @@
+{
+  "id": "CIT-003",
+  "domanda": "chi ha votato contro il salario minimo?",
+  "categoria": "voti",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "camera",
+  "difficolta": "difficile",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "note_domanda": "Trappola. Il 6/12/2023 la Camera approvò la PDL 1275 (153 sì, 118 no, 3 astenuti), ma con l'emendamento della maggioranza che la trasformò in delega al governo: i firmatari (Conte ed altri) ritirarono la firma e le opposizioni votarono no. È diventata la legge 144/2025. Il sistema deve spiegarlo prima di elencare chi ha votato no.",
+  "trappola": true,
+  "endpoint": "agente",
+  "gruppo": "nuove",
+  "inizio": 1793792627.7504032,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "atto",
+    "votazione"
+  ],
+  "tempo_s": 14.7,
+  "risposta_sistema": "Nella votazione finale della Camera del 6 dicembre 2023 sul testo abbinato alla proposta sul salario minimo (C. 1275), **118 deputati votarono contro**. Non era però un voto finale sull’introduzione di un salario minimo legale: il testo approvato delegava il Governo su retribuzioni e contrattazione collettiva. [Risultato e voti individuali della votazione](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=210_1&tipo=dettaglio)\n\nI contrari appartenevano a:\n- **Partito Democratico – Italia Democratica e Progressista**: 59;\n- **Movimento 5 Stelle**: 35;\n- **Azione – Popolari Europeisti Riformatori – Renew Europe**: 7;\n- **Alleanza Verdi e Sinistra**: 7;\n- **Italia Viva – Casa Riformista**: 6;\n- componente del Misto **+Europa – Stati Uniti d’Europa**: 2;\n- **Misto, non iscritti**: 2.\n\nLa votazione fu approvata con **153 favorevoli, 118 contrari e 3 astensioni**. Il relativo iter si è poi concluso con la legge n. 144 del 2025. [Scheda dell’atto C. 1275](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1275)",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Attenzione: il voto del 6/12/2023 alla Camera sulla PDL 1275 non fu un voto sul salario minimo. Il testo approvato era già stato trasformato in «Deleghe al Governo in materia di retribuzione dei lavoratori e di contrattazione collettiva» e i firmatari (Conte ed altri) avevano ritirato la firma; è poi diventato la legge 26 settembre 2025, n. 144. Il voto finale passò con 153 sì, 118 no e 3 astenuti. Votarono contro: PD-IDP 59, M5S 35, AVS 7, Azione 7, IV-CR 6, Misto-+Europa 2, Misto senza componente 2 (Francesco Gallo e Aboubakar Soumahoro). Votarono a favore FdI 86, Lega 36, FI-PPE 25, Noi Moderati 5 e 1 deputato delle Minoranze linguistiche; gli altri 3 delle Minoranze linguistiche si astennero.",
+    "stato": "calcolata",
+    "limiti": "Si risponde sul voto finale della Camera del 6/12/2023 (sed. 210, votazione 1), l'unico voto finale della Camera sul testo nato dalle proposte sul salario minimo; il gruppo è quello attribuito dalla Camera nel voto (ballot.grp, con grp_alias). Il voto finale del Senato del 23/9/2025 non è considerato."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": "superata",
+    "tempo_s": 14.7
+  },
+  "prima": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Come nel giro precedente: spiega che il 6/12/2023 si votò la delega al Governo (153-118-3, poi legge 144/2025) prima di dare i contrari per gruppo giusti (PD 59, M5S 35, Azione 7, AVS 7, IV 6, +Europa 2, Misto 2). Non dice ancora del ritiro delle firme."
+}

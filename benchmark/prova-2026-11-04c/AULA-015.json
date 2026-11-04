@@ -1,0 +1,45 @@
+{
+ "id": "AULA-015",
+ "domanda": "Chi è intervenuto a fine seduta il 28 ottobre 2026 alla Camera e su quali argomenti?",
+ "categoria": "interventi",
+ "tipo_risposta": "sintesi_con_citazioni",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note_domanda": "Seduta it:camera:19:sed0735, argomento «Interventi di fine seduta.» (fra gli altri Maria Stefania Marino). Il PRESIDENTE non è un intervento di fine seduta.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792273.5217438,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "argomenti_sedute",
+  "seduta",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 18.8,
+ "risposta_sistema": "Alla Camera, negli [interventi di fine seduta del 28 ottobre 2026](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico), sono intervenuti quattro deputati:\n\n- **Maria Stefania Marino (PD-IDP)**: difficoltà economiche denunciate da agricoltori e autotrasportatori, con riferimento ai costi e alle richieste rivolte al Governo. [Intervento e video](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00020) — WebTV, inizio **10:04:03**.\n- **Rachele Scarpa (PD-IDP)**: astensione dell’Italia all’Assemblea generale ONU sulla risoluzione per la fine dell’embargo a Cuba. [Intervento e video](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00060) — WebTV, inizio **10:06:13**.\n- **Stefania Ascari (M5S)**: la stessa votazione ONU sull’embargo a Cuba e la posizione italiana di astensione. [Intervento e video](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00120) — WebTV, inizio **10:08:54**.\n- **Arnaldo Lomuti (M5S)**: rapine e furti nel Vulture-Melfese, in Basilicata — in particolare a Venosa e Lavello — e richiesta di maggiori risorse per la sicurezza. [Intervento e video](https://www.camera.it/leg19/410?idSeduta=0735&tipo=stenografico#sed0735.stenografico.tit00160.int00140) — WebTV, inizio **10:10:18**.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nella seduta n. 735 della Camera del 28/10/2026, punto «Interventi di fine seduta», sono intervenuti quattro deputati: Maria Stefania Marino (PD-IDP), solidarietà agli agricoltori e agli autotrasportatori che manifestano per chiedere aiuti; Rachele Scarpa (PD-IDP), l'astensione dell'Italia all'Assemblea generale dell'ONU sul voto per la fine dell'embargo a Cuba; Stefania Ascari (M5S), sullo stesso voto su Cuba («Una sola parola: vergogna»); Arnaldo Lomuti (M5S), rapine e furti violenti nel Vulture-Melfese (Venosa e Lavello). Gli interventi di Marino e Scarpa sono spezzati in più frammenti dalle interruzioni della Presidenza.",
+  "stato": "calcolata",
+  "limiti": "Esclusi gli interventi del PRESIDENTE. Gli argomenti sono ricavati dall'inizio del testo di ciascun intervento."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 18.8
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": null,
+ "note": "Marino e Scarpa (PD-IDP), Ascari e Lomuti (M5S) con gli argomenti del riferimento, link al resoconto della seduta 735 e agli interventi: uguale a prima."
+}

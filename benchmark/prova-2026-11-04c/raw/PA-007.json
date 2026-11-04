@@ -1,0 +1,165 @@
+{
+ "id": "PA-007",
+ "trappola": false,
+ "domanda": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+ "categoria": "iter",
+ "tipo_risposta": "elenco",
+ "ramo": "senato",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Al Senato l'iniziativa è testo libero: «Regione Toscana» ha 8 atti. Alla Camera l'iniziativa è solo «Regioni» (77) e la Regione va letta dal titolo.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791744.3791628,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "Consiglio regionale della Toscana",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "Toscana",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 8, \"items\": [{\"uri\": \"it:senato:19:ddl:1801\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1801\", \"kind\": \"bill\", \"title\": \"Riconoscimento dello Stato di Palestina\", \"date\": \"2026-02-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1643\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1643\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di distretto estrattivo apuo-versiliese\", \"date\": \"2025-09-10\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1527\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1527\", \"kind\": \"bill\", \"title\": \"Norme per l'affrancazione dei canoni livellari\", \"date\": \"2025-06-12\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1064\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1064\", \"kind\": \"bill\", \"title\": \"Modifica alla legge 20 agosto 2019, n. 92, in materia di introduzione dell'educazione all'emotività, all'affettività e alla sessualità nell'ambito dell'insegnamento trasversale dell'educazione civica\", \"date\": \"2024-03-07\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:476\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"476\", \"kind\": \"bill\", \"title\": \"Disposizioni di semplificazione in materia di selvicoltura. Modifica al codice dei beni culturali e del paesaggio, di cui al decreto legislativo 22 gennaio 2004, n. 42\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:477\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"477\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:478\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"478\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge 30 dicembre 2020, n. 178, recante bilancio di previsione dello Stato per l'anno finanziario 2021 e bilancio pluriennale per il triennio 2021-2023, in materia di agevolazione contributiva per l'occupazione nelle aree interne\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:479\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"479\", \"kind\": \"bill\", \"ti"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "Consiglio regionale",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": "bill",
+    "initiative": "Toscana",
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "iniziativa"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati dal 13/10/2022 al 04/11/2026; filtri: tipo bill, iniziativa Toscana. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 8, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"iniziativa\": \"regione\", \"atti\": 8, \"dal\": \"2023-01-18\", \"al\": \"2026-02-13\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1801"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1801\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1801\", \"kind\": \"bill\", \"title\": \"Riconoscimento dello Stato di Palestina\", \"date\": \"2026-02-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/59902\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01496723\", \"kind\": \"presented\", \"articles\": 1, \"length\": 4950}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1643"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1643\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1643\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di distretto estrattivo apuo-versiliese\", \"date\": \"2025-09-10\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/59521\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01476236\", \"kind\": \"presented\", \"articles\": 2, \"length\": 5178}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1527"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1527\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1527\", \"kind\": \"bill\", \"title\": \"Norme per l'affrancazione dei canoni livellari\", \"date\": \"2025-06-12\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/59245\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01461501\", \"kind\": \"presented\", \"articles\": 2, \"length\": 1899}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1064"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1064\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1064\", \"kind\": \"bill\", \"title\": \"Modifica alla legge 20 agosto 2019, n. 92, in materia di introduzione dell'educazione all'emotività, all'affettività e alla sessualità nell'ambito dell'insegnamento trasversale dell'educazione civica\", \"date\": \"2024-03-07\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/58061\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01411265\", \"kind\": \"presented\", \"articles\": 1, \"length\": 3413}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:476"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:476\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"476\", \"kind\": \"bill\", \"title\": \"Disposizioni di semplificazione in materia di selvicoltura. Modifica al codice dei beni culturali e del paesaggio, di cui al decreto legislativo 22 gennaio 2004, n. 42\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/56468\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01372894\", \"kind\": \"presented\", \"articles\": 1, \"length\": 5209}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:477"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:477\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"477\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/56469\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01372326\", \"kind\": \"presented\", \"articles\": 3, \"length\": 9884}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:478"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:478\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"478\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge 30 dicembre 2020, n. 178, recante bilancio di previsione dello Stato per l'anno finanziario 2021 e bilancio pluriennale per il triennio 2021-2023, in materia di agevolazione contributiva per l'occupazione nelle aree interne\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/56470\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01375733\", \"kind\": \"presented\", \"articles\": 2, \"length\": 6284}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:479"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:479\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"479\", \"kind\": \"bill\", \"title\": \"Modifica al codice delle leggi antimafia e delle misure di prevenzione, di cui al decreto legislativo 6 settembre 2011, n. 159, in materia di ampliamento delle destinazioni di uso degli immobili confiscati alle associazioni di criminalità organizzata\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52142.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/56471\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01372606\", \"kind\": \"presented\", \"articles\": 1, \"length\": 4261}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "conta_atti",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto"
+ ],
+ "tempo_s": 16.3,
+ "risposta_sistema": "Il **Consiglio regionale della Toscana** ha presentato al Senato **8 disegni di legge** nella XIX legislatura. Alla data disponibile (4 novembre 2026), **nessuno è diventato legge**: tre sono in esame in Commissione e cinque risultano assegnati ma non ancora esaminati.\n\n- **S. 1801** — [Riconoscimento dello Stato di Palestina](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm), presentato il 13 febbraio 2026: **assegnato, senza avvio dell’esame**.\n- **S. 1643** — [Disposizioni in materia di distretto estrattivo apuo-versiliese](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm), 10 settembre 2025: **assegnato, senza avvio dell’esame**.\n- **S. 1527** — [Norme per l’affrancazione dei canoni livellari](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm), 12 giugno 2025: **assegnato, senza avvio dell’esame**.\n- **S. 1064** — [Introduzione dell’educazione all’emotività, all’affettività e alla sessualità nell’educazione civica](https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm), 7 marzo 2024: **in esame in Commissione**.\n- **S. 476** — [Semplificazione in materia di selvicoltura e modifica del Codice dei beni culturali e del paesaggio](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm), 18 gennaio 2023: **assegnato, senza avvio dell’esame**.\n- **S. 477** — [Modifiche all’organizzazione dei tribunali ordinari e degli uffici del pubblico ministero](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm), 18 gennaio 2023: **in esame in Commissione**.\n- **S. 478** — [Agevolazione contributiva per l’occupazione nelle aree interne](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm), 18 gennaio 2023: **assegnato, senza avvio dell’esame**.\n- **S. 479** — [Ampliamento delle destinazioni d’uso degli immobili confiscati alla criminalità organizzata](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52142.htm), 18 gennaio 2023: **in esame in Commissione**.",
+ "eventi": {
+  "status": 1,
+  "tool": 24,
+  "dati": 12,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

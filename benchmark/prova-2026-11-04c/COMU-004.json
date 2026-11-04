@@ -1,0 +1,41 @@
+{
+  "id": "COMU-004",
+  "trappola": false,
+  "domanda": "Dopo l'informativa di Piantedosi del 3 febbraio 2026 la maggioranza si è alzata in piedi ad applaudire? Mi serve la riga del resoconto.",
+  "categoria": "reazioni",
+  "tipo_risposta": "fatto",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [
+    "citazioni_esatte"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791573.031189,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_interventi",
+    "seduta",
+    "cerca_interventi"
+  ],
+  "tempo_s": 11.5,
+  "risposta_sistema": "Sì. Al termine dell’informativa del ministro Piantedosi, si sono alzati in piedi e hanno applaudito i deputati di **Fratelli d’Italia, Lega, Forza Italia e Noi Moderati–MAIE–Centro Popolare**.\n\nLa riga del resoconto è:\n\n> *(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare, che si levano in piedi)*\n\nLo stesso rilievo compare anche poco prima, dopo un passaggio dell’informativa. [Resoconto stenografico della seduta della Camera del 3 febbraio 2026](https://www.camera.it/leg19/410?idSeduta=0607&tipo=stenografico)",
+  "errori": [],
+  "note_domanda": "Il resoconto scrive «che si levano in piedi»: va riportato il testo esatto della didascalia.",
+  "riferimento": {
+    "risposta": "Sì. Nel resoconto della seduta 607 della Camera (3/2/2026, informativa urgente del Governo sugli scontri di Torino durante il corteo pro Askatasuna), l'intervento del ministro Matteo Piantedosi si chiude con «Grazie» seguito dalla didascalia: «(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in piedi)». La stessa didascalia compare anche a metà intervento, dopo la frase «Credo che chi sfila a fianco di questi delinquenti finisce per offrire loro una prospettiva di impunità». All'inizio, dopo la solidarietà agli agenti feriti, il resoconto scrive «L'Assemblea e i membri del Governo si levano in piedi», con applausi. Intervento: it:camera:19:sed0607:tit00050.sub00010.int00020.",
+    "stato": "calcolata",
+    "limiti": "Didascalie riportate come sono in reaction.raw (la parentesi chiusa dopo «Centro Popolare» è nel testo della fonte). Il gruppo di chi applaude viene da reaction_from (FdI, Lega, FI-PPE, Noi Moderati)."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 11.5
+  },
+  "stamattina": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Sì, con la didascalia esatta «che si levano in piedi» e il link al resoconto della seduta 607. Come stamattina (2), ora con la fonte."
+}

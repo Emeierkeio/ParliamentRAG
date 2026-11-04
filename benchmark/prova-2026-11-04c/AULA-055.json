@@ -1,0 +1,113 @@
+{
+ "id": "AULA-055",
+ "domanda": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note_domanda": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792073.130055,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto"
+ ],
+ "tempo_s": 31.5,
+ "risposta_sistema": "Alla Camera risultano **22 approvazioni in sede legislativa**, in commissione, dall’inizio della XIX legislatura fino ai dati del **3 novembre 2026**. Riguardano **21 progetti distinti**, perché il progetto C. 813 sul melanoma è stato approvato dalla XII Commissione due volte, nella prima lettura e nel successivo passaggio.\n\n- **20 dicembre 2023 — VII Cultura:** [C. 1550](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1550), contributo stabile all’Istituto della Enciclopedia italiana — legge n. 223/2023.\n- **23 maggio 2024 — VII Cultura:** [C. 1764](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1764), sostegno al *Pistoia Blues Festival* e al Festival *Time in Jazz* — legge n. 79/2024.\n- **23 maggio 2024 — VII Cultura:** [C. 1763](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1763), realizzazione del Monteverdi Festival di Cremona — legge n. 80/2024.\n- **23 maggio 2024 — VII Cultura:** [C. 1127](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1127), contributo all’Associazione Arena Sferisterio per il Macerata Opera Festival — legge n. 142/2024.\n- **7 agosto 2024 — VII Cultura:** [C. 1956](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1956), centenario della città di Latina (1932-2032) — legge n. 130/2024.\n- **17 ottobre 2024 — VIII Ambiente:** [C. 1080](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1080), gestione e salvaguardia della laguna di Orbetello — legge n. 11/2025.\n- **17 ottobre 2024 — VII Cultura:** [C. 1980](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1980), istituzione del Museo del Ricordo in Roma — legge n. 165/2024.\n- **12 febbraio 2025 — VII Cultura:** [C. 418-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;418), competenze non cognitive e trasversali nei percorsi di istruzione.\n- **26 febbraio 2025 — VII Cultura:** [C. 1979](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1979), manifestazioni in abiti storici, rievocazioni storiche e Giornata nazionale degli abiti storici — legge n. 59/2025.\n- **5 marzo 2025 — IX Trasporti:** [C. 1976](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1976), semplificazione delle autorizzazioni per competizioni sportive su strada — legge n. 58/2025.\n- **20 marzo 2025 — VIII Ambiente:** [C. 2145](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2145), benefici per le vittime di cedimenti di infrastrutture stradali o autostradali di rilievo nazionale — legge n. 63/2025.\n- **11 giugno 2025 — XII Affari sociali:** [C. 813](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;813), prevenzione e diagnosi precoce del melanoma e Giornata nazionale della prevenzione del melanoma.\n- **12 novembre 2025 — V Bilancio:** [C. 2668](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2668), rilancio dell’economia nei territori di Marche e Umbria — legge n. 171/2025.\n- **11 febbraio 2026 — VII Cultura:** [C. 758](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;758), Giornata nazionale della scrittura a mano.\n- **11 febbraio 2026 — VII Cultura:** [C. 2159](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2159), ridenominazione dell’Archivio centrale dello Stato in Archivio nazionale.\n- **29 aprile 2026 — VII Cultura:** [C. 1858](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1858), Giornata nazionale in memoria delle vittime della strage dello stadio Heysel — legge n. 101/2026.\n- **13 maggio 2026 — XII Affari sociali:** [C. 813-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;813), testo sul melanoma, riesaminato dopo il passaggio al Senato.\n- **4 agosto 2026 — I Affari costituzionali:** [C. 1296](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1296), Giornata nazionale per il diritto al divertimento in sicurezza.\n- **4 agosto 2026 — VIII Ambiente:** [C. 2772](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2772), istituzione dell’area marina protetta «Isola di Capri» — legge n. 158/2026.\n- **1° ottobre 2026 — XII Affari sociali:** [C. 1886](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1886), Giornata nazionale della meraviglia — legge n. 175/2026.\n- **7 ottobre 2026 — VII Cultura:** [C. 2239](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2239), dichiarazione di monumento nazionale di Palazzo Fortunato a Rionero in Vulture — legge n. 192/2026.\n- **14 ottobre 2026 — VIII Ambiente:** [C. 1786](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1786), destinazione dei veicoli fuori uso a scuole tecniche e ITS per fini didattici.\n\nNell’elenco ho indicato il progetto capofila o il testo trasmesso dall’altro ramo: alcuni procedimenti comprendevano proposte abbinate, assorbite nell’approvazione del testo principale.",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "warn"
+   },
+   "groups": {
+    "present": [],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": []
+   },
+   "quotes": [
+    {
+     "quote": "Isola di Capri",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+    "available": false,
+    "voices": [
+     {
+      "name": "Tommaso Antonino Calderone",
+      "group": "Forza Italia",
+      "role": null,
+      "authoritative": null,
+      "source": "quoted"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "Dal Bollettino risultano 23 approvazioni in sede legislativa nelle commissioni della Camera, su 22 provvedimenti (il melanoma, AC 813, è approvato due volte: 11/6/2025 e, come AC 813-B, 13/5/2026). Per commissione: VII Cultura 12 (AC 1550, 1127-1289, 866-1764, 1763, 1956, 1980, 418-B, 1979, 758, 2159, 1858, 1738-2239), VIII Ambiente 4 (laguna di Orbetello AC 400 e abb., vittime dei crolli di infrastrutture AC 2145-2146, area marina di Capri AC 2057-2772, veicoli fuori uso alle scuole AC 1786-2209), XII Affari sociali 3 (AC 813, 813-B, 1886), IX Trasporti 1 (AC 1976), V Bilancio 1 (AC 2668), I Affari costituzionali 1 (AC 1296), VII e XII riunite 1 (AC 2637). Quindici sono già legge (fra cui L. 223/2023, 142/2024, 79/2024, 80/2024, 130/2024, 165/2024, 11/2025, 59/2025, 58/2025, 63/2025, 171/2025, 101/2026, 158/2026, 175/2026, 192/2026); le altre sono state trasmesse al Senato o sono in navetta.",
+  "stato": "parziale",
+  "limiti": "Il Bollettino delle commissioni c'è solo dal 15/5/2023: approvazioni in sede legislativa fra ottobre 2022 e maggio 2023 non si vedono. L'approvazione si legge da agenda_item.stage (contiene «approvazione» o «conclusione») nelle sedute con seat = 'SEDE LEGISLATIVA'; act_assignment non distingue la sede (solo 'referente'). Lo stato dell'atto è quello di act.status oggi."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 31.5
+ },
+ "prima": {
+  "correttezza": 1
+ },
+ "causa_probabile": "strumento_sbagliato_o_argomenti",
+ "note": "Come prima: 22 approvazioni su 21 progetti, con schede e numeri di legge giusti. Manca ancora l'AC 2637 delle Commissioni VII e XII riunite (23 su 22 nel riferimento)."
+}

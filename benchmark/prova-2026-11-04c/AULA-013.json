@@ -1,0 +1,50 @@
+{
+ "id": "AULA-013",
+ "domanda": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+ "categoria": "regolamento",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note_domanda": "Molti risultati della ricerca sono di commissioni e giunte (Bollettino): vanno separati dall'Aula.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792216.681102,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "seduta",
+  "elenco_votazioni",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 56.8,
+ "risposta_sistema": "Non riesco a confermare, con i dati già letti, sedute d’Aula della Camera in cui sia stata **formalmente accertata** la mancanza del numero legale su una votazione nel 2026.\n\nHo trovato soltanto un riferimento nella [seduta n. 640 dell’8 aprile 2026](https://www.camera.it/leg19/410?idSeduta=0640&tipo=stenografico): il Presidente Giorgio Mulè, durante un confronto sull’ordine dei lavori, dice che non c’è “manco il numero legale”. Dal resoconto che ho potuto leggere, però, questo avviene nel contesto di una discussione procedurale e **non identifica una votazione né prova un accertamento formale del numero legale**.\n\nGli altri riferimenti rinvenuti nel 2026 riguardano invece la Commissione parlamentare di vigilanza Rai o un passaggio al Senato, non l’Aula della Camera.\n\nPer verificare in modo conclusivo la richiesta occorre consultare i resoconti stenografici integrali delle sedute d’Aula 2026 e le relative schede delle votazioni sul sito ufficiale della Camera, cercando le formule di accertamento del numero legale e il punto di votazione associato.",
+ "errori": [],
+ "riferimento": {
+  "risposta": "Nei resoconti d'Aula della Camera caricati per il 2026 non risulta alcuna seduta in cui il Presidente constati la mancanza del numero legale. In tutta la legislatura il Presidente nomina il numero legale solo 5 volte, per dire che è raggiunto (5/3/2024, 26/11/2025) o in battute (12/6/2024, 8/4/2026). Nessuna votazione della Camera porta l'indicazione del numero legale.",
+  "stato": "parziale",
+  "limiti": "Ricerca per testo nei resoconti stenografici d'Aula (sitting.kind = assembly_verbatim) con le formule «manca/mancanza del/mancando il/non è in numero legale»; nessun campo strutturato registra l'evento. Il risultato «nessuna» vale per i testi caricati: non si può escludere che la formula del Presidente sia scritta in altro modo o non sia nel testo canonico. Le sedute del Bollettino (commissioni) sono escluse."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 56.8
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": null,
+ "note": "Nessuna mancanza formale del numero legale in Aula nel 2026; scarta la battuta di Mulè dell'8/4 (seduta 640, linkata). Uguale a prima, con la stessa prudenza finale."
+}

@@ -1,0 +1,73 @@
+{
+ "id": "COMU-004",
+ "trappola": false,
+ "domanda": "Dopo l'informativa di Piantedosi del 3 febbraio 2026 la maggioranza si è alzata in piedi ad applaudire? Mi serve la riga del resoconto.",
+ "categoria": "reazioni",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Il resoconto scrive «che si levano in piedi»: va riportato il testo esatto della didascalia.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791573.031189,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Piantedosi",
+    "chamber": null,
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "captions": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00320\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:302080\", \"name\": \"Angelo Bonelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302080&legislatura=19\"}, \"speaker_label\": \"ANGELO BONELLI\", \"snippet\": \"…vo: c'era il terrorismo. Lei oggi viene qui, in quest'Aula, quando lei, da Ministro dell'Interno, doveva tutelare i manifestanti pacifici e anche noi, fermando coloro i quali vanno a fare quegli scontri - perché li conoscevate, perché voi sapete chi sono -, ma gli avete consentito di fare tutto ciò [[(Commenti del Ministro Piantedosi)]]\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00320\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:302080\", \"name\": \"Angelo Bonelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302080&legislatura=19\"}, \"speaker_label\": \"ANGELO BONELLI\", \"snippet\": \"…, dal suo punto di vista legittimamente, i centri sociali, e noi che legittimamente diciamo che nel Paese c'è un problema serio di rivendicazione di spazi sociali, perché le periferie sono ormai un deserto. Ma lei, signor Ministro… ed eviti di ridere poco, per favore … signor Ministro, lei dovrebbe [[(Commenti del Ministro Piantedosi)]]\"}]}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0607",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0607&tipo=stenografico\", \"items\": [{\"uri\": \"it:camera:19:sed0607:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0607:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 84, come risulta dall'elenco consultabile presso la Presidenza e che sarà pubblicato nell'allegato A al resoconto stenografico della seduta in corso .\", \"reactions\": [{\"kind\": \"procedure\", \"raw\": \"Ulteriori comunicazioni all'Assemblea saranno pubblicate nell'allegato A al resoconto della seduta odierna\", \"offset_char\": 296}]}]}, {\"uri\": \"it:camera:19:sed0607:tit00020\", \"order\": 2, \"title\": \"Svolgimento di interrogazioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0607:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"L'ordine del giorno reca lo svolgimento di interrogazioni.\", \"reactions\": []}, {\"uri\": \"it:camera:19:sed0607:tit00020.sub00010.int00010\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Passiamo alla prima interrogazione all'ordine del giorno Casu ed altri n. 3-02470 .\\n\\nLa Sottosegretaria di Stato per l'Istruzione e il merito, Paola Frassinetti, ha facoltà di rispondere.\", \"reactions\": [{\"kind\": \"procedure\", \"raw\": \"Vedi l'allegato A\", \"offset_char\": 84}]}, {\"uri\": \"it:camera:19:sed0607:tit00020.sub00010.int00020\", \"order\": 3, \"person\": {\"uri\": \"it:person:camera:301457\", \"name\": \"Paola Frassinetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "piedi",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "captions": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 7, \"items\": [{\"uri\": \"it:camera:19:sed0607:tit00050.sub00010.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:309042\", \"name\": \"Matteo Piantedosi\", \"in_office\": false}, \"speaker_label\": \"MATTEO PIANTEDOSI\", \"snippet\": \"…, Ministro dell'Interno. Grazie, Presidente. Onorevoli deputati, vorrei partire - consentitemelo - innanzitutto esprimendo, anche in questa sede, a nome mio e di tutto il Governo, la solidarietà agli agenti rimasti feriti negli scontri [[(L'Assemblea e i membri del Governo si levano in piedi)]]\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00010.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:309042\", \"name\": \"Matteo Piantedosi\", \"in_office\": false}, \"speaker_label\": \"MATTEO PIANTEDOSI\", \"snippet\": \"…lo degli scontri. I disordini di sabato confermano il vero volto degli antagonisti ospiti dei centri sociali occupati abusivamente, talvolta anche grazie a coperture politiche ben identificabili. Credo che chi sfila a fianco di questi delinquenti finisce per offrire loro una prospettiva di impunità [[(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in piedi)]]\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00010.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:309042\", \"name\": \"Matteo Piantedosi\", \"in_office\": false}, \"speaker_label\": \"MATTEO PIANTEDOSI\", \"snippet\": \"…videre posizioni comuni per respingere, senza ipocrisia o infingimenti, ogni tentazione di blandire e giustificare queste espressioni eversive e antidemocratiche, sostenendo le Forze di Polizia attraverso l'individuazione di ulteriori misure di tutela da ogni violenza e forma di aggressione. Grazie [[(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in pi"
+  }
+ ],
+ "strumenti": [
+  "cerca_interventi",
+  "seduta",
+  "cerca_interventi"
+ ],
+ "tempo_s": 11.5,
+ "risposta_sistema": "Sì. Al termine dell’informativa del ministro Piantedosi, si sono alzati in piedi e hanno applaudito i deputati di **Fratelli d’Italia, Lega, Forza Italia e Noi Moderati–MAIE–Centro Popolare**.\n\nLa riga del resoconto è:\n\n> *(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare, che si levano in piedi)*\n\nLo stesso rilievo compare anche poco prima, dopo un passaggio dell’informativa. [Resoconto stenografico della seduta della Camera del 3 febbraio 2026](https://www.camera.it/leg19/410?idSeduta=0607&tipo=stenografico)",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

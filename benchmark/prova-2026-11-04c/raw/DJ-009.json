@@ -1,0 +1,60 @@
+{
+ "id": "DJ-009",
+ "trappola": false,
+ "domanda": "Quanti parlamentari hanno cambiato gruppo dall'inizio della legislatura? Voglio il numero aggiornato a oggi, Camera e Senato.",
+ "categoria": "persone",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Escludere i passaggi tecnici dell'ottobre 2022 (Misto provvisorio prima della costituzione dei gruppi) e l'ingresso in una componente del Misto senza lasciare il Misto. Il numero va dato separato per ramo.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791759.4981,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cambi_gruppo",
+   "args": {
+    "chamber": "camera",
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "person": null,
+    "group": null,
+    "components": true,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Passaggi di gruppo, Camera, dal 13/10/2022 al 04/11/2026. Conta anche l'ingresso o l'uscita da una componente del Misto. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio prima della costituzione dei gruppi). La nascita di un gruppo nuovo (es. IV-CR alla Camera) conta come cambio; un ritorno al gruppo di prima conta come un nuovo cambio. Data = inizio dell'appartenenza nuova. Fonte: appartenenze ai gruppi dell'anagrafica dei due rami.\", \"by_chamber\": {\"camera\": {\"persons\": 40, \"changes\": 52}}, \"rows_total\": 52, \"offset\": 0, \"rows\": [{\"persona\": \"Fabrizio Sala\", \"ramo\": \"camera\", \"date\": \"2026-10-28\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto (MISTO)\", \"persona_uri\": \"it:person:camera:308882\", \"gruppo_oggi\": \"MISTO\"}, {\"persona\": \"Simonetta Matone\", \"ramo\": \"camera\", \"date\": \"2026-10-26\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"persona_uri\": \"it:person:camera:308836\", \"gruppo_oggi\": \"FI-PPE\"}, {\"persona\": \"Manlio Messina\", \"ramo\": \"camera\", \"date\": \"2026-10-12\", \"from\": \"Fratelli d'Italia (FDI)\", \"to\": \"Misto - Sud Chiama Nord (MISTO-SCN)\", \"persona_uri\": \"it:person:camera:308897\", \"gruppo_oggi\": \"MISTO-SCN\"}, {\"persona\": \"Luca Sbardella\", \"ramo\": \"camera\", \"date\": \"2026-10-12\", \"from\": \"Fratelli d'Italia (FDI)\", \"to\": \"Misto - Sud Chiama Nord (MISTO-SCN)\", \"persona_uri\": \"it:person:camera:308908\", \"gruppo_oggi\": \"MISTO-SCN\"}, {\"persona\": \"Tommaso Antonino Calderone\", \"ramo\": \"camera\", \"date\": \"2026-09-21\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308766\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Roberto Traversi\", \"ramo\": \"camera\", \"date\": \"2026-07-28\", \"from\": \"Misto (MISTO)\", \"to\": \"Fratelli d'Italia (FDI)\", \"persona_uri\": \"it:person:camera:307132\", \"gruppo_oggi\": \"FDI\"}, {\"persona\": \"Bruno Tabacci\", \"ramo\": \"camera\", \"date\": \"2026-07-09\", \"from\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"to\": \"Misto (MISTO)\", \"persona_uri\": \"it:person:camera:34580\", \"gruppo_oggi\": \"MISTO\"}, {\"persona\": \"Erik Umberto Pretto\", \"ramo\": \"camera\", \"date\": \"2026-07-06\", \"from\": \"Misto (MISTO)\", \"to\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"persona_uri\": \"it:person:camera:307585\", \"gruppo_oggi\": \"FI-PPE\"}, {\"persona\": \"Domenico Furgiuele\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Lega - Salvini Premier (LEGA)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:307718\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Attilio Pierro\", \"ramo\": \"camera\", \"date\": \"2026-06-08\", \"from\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"to\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"persona_uri\": \"it:person:camera:308791\", \"gruppo_oggi\": \"MISTO-FNV-F\"}, {\"persona\": \"Gianangelo B"
+  },
+  {
+   "name": "cambi_gruppo",
+   "args": {
+    "chamber": "senato",
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "person": null,
+    "group": null,
+    "components": true,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Passaggi di gruppo, Senato, dal 13/10/2022 al 04/11/2026. Conta anche l'ingresso o l'uscita da una componente del Misto. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio prima della costituzione dei gruppi). La nascita di un gruppo nuovo (es. IV-CR alla Camera) conta come cambio; un ritorno al gruppo di prima conta come un nuovo cambio. Data = inizio dell'appartenenza nuova. Fonte: appartenenze ai gruppi dell'anagrafica dei due rami.\", \"by_chamber\": {\"senato\": {\"persons\": 13, \"changes\": 15}}, \"rows_total\": 15, \"offset\": 0, \"rows\": [{\"persona\": \"Andrea Crisanti\", \"ramo\": \"senato\", \"date\": \"2026-10-23\", \"from\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"to\": \"Misto - Partito della Rifondazione Comunista - Sinistra Europea - Open Sinistra (PRC-SE-OS)\", \"persona_uri\": \"it:person:senato:36387\", \"gruppo_oggi\": \"PRC-SE-OS\"}, {\"persona\": \"Antonio Guidi\", \"ramo\": \"senato\", \"date\": \"2026-10-22\", \"from\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare (Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP)\", \"to\": \"Misto - Italia Domani - Marco Rizzo (ID-MR)\", \"persona_uri\": \"it:person:senato:1227\", \"gruppo_oggi\": \"ID-MR\"}, {\"persona\": \"Luigi Nave\", \"ramo\": \"senato\", \"date\": \"2026-10-09\", \"from\": \"MoVimento 5 Stelle (M5S)\", \"to\": \"Misto - Avanti PSI - Progetto Civico Italia (A-PSI-PrCivIt)\", \"persona_uri\": \"it:person:senato:36410\", \"gruppo_oggi\": \"A-PSI-PrCivIt\"}, {\"persona\": \"Annamaria Furlan\", \"ramo\": \"senato\", \"date\": \"2025-03-07\", \"from\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"to\": \"Italia Viva - Casa Riformista (IV-CR)\", \"persona_uri\": \"it:person:senato:31725\", \"gruppo_oggi\": \"IV-CR\"}, {\"persona\": \"Aurora Floridia\", \"ramo\": \"senato\", \"date\": \"2025-02-19\", \"from\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"to\": \"Per le Autonomie (SVP-PATT, Campobase) (Aut (SVP-PATT, Cb))\", \"persona_uri\": \"it:person:senato:36399\", \"gruppo_oggi\": \"Aut (SVP-PATT, Cb)\"}, {\"persona\": \"Giusy Versace\", \"ramo\": \"senato\", \"date\": \"2024-11-27\", \"from\": \"Misto - Azione-Renew Europe (Az-RE)\", \"to\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare (Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP)\", \"persona_uri\": \"it:person:senato:33027\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"persona\": \"Mariastella Gelmini\", \"ramo\": \"senato\", \"date\": \"2024-10-30\", \"from\": \"Misto - Azione-Renew Europe (Az-RE)\", \"to\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare (Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP)\", \"persona_uri\": \"it:person:senato:22966\", \"gruppo_oggi\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\"}, {\"persona\": \"Antonio Salvatore Trevisi\", \"ramo\": \"senato\", \"date\": \"2024-08-07\", \"from\": \"MoVimento 5 Stelle (M5S)\", \"to\": \"Forza Italia - Berlusconi Presidente - PPE (FI-BP-PPE)\", \"persona_uri\": \"it:person:senato:36448\""
+  }
+ ],
+ "strumenti": [
+  "cambi_gruppo",
+  "cambi_gruppo"
+ ],
+ "tempo_s": 5.8,
+ "risposta_sistema": "Alla data di oggi, **4 novembre 2026**:\n\n- **Camera:** **40 deputati** hanno cambiato gruppo almeno una volta dall’inizio della legislatura; i passaggi complessivi sono **52**.\n- **Senato:** **13 senatori** hanno cambiato gruppo almeno una volta; i passaggi complessivi sono **15**.\n\nIl conteggio include entrate e uscite dalle componenti del Gruppo Misto, esclude i passaggi tecnici iniziali dell’ottobre 2022 e considera anche i ritorni a un gruppo precedente come nuovi cambi. Fonte: anagrafiche dei gruppi di Camera e Senato.",
+ "eventi": {
+  "status": 2,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

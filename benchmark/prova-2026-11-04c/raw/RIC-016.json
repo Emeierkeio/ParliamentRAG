@@ -1,0 +1,309 @@
+{
+ "id": "RIC-016",
+ "trappola": false,
+ "domanda": "Nei resoconti della Camera, quali gruppi applaudono gli interventi di quali altri gruppi? Voglio la matrice degli applausi incrociati.",
+ "categoria": "reazioni",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Gli applausi «dai banchi della maggioranza» non nominano un gruppo e non vanno attribuiti a caso. La diagonale (un gruppo che applaude sé stesso) va distinta. Il gruppo di chi parla si prende da group_at alla data, non da speech.as_group.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791529.6660469,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_che_reagisce",
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 60791, \"rows_total\": 171, \"offset\": 0, \"rows\": [{\"gruppo_che_reagisce\": \"Movimento 5 Stelle (M5S)\", \"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 14063}, {\"gruppo_che_reagisce\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 9566}, {\"gruppo_che_reagisce\": \"Alleanza Verdi e Sinistra (AVS)\", \"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 5587}, {\"gruppo_che_reagisce\": \"Fratelli d'Italia (FDI)\", \"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 4827}, {\"gruppo_che_reagisce\": \"Lega - Salvini Premier (LEGA)\", \"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 3327}, {\"gruppo_che_reagisce\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 2135}, {\"gruppo_che_reagisce\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 1767}, {\"gruppo_che_reagisce\": \"Fratelli d'Italia (FDI)\", \"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 1470}, {\"gruppo_che_reagisce\": \"(nessun gruppo nominato)\", \"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 1408}, {\"gruppo_che_reagisce\": \"Italia Viva - Casa Riformista (IV-CR)\", \"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 1113}, {\"gruppo_che_reagisce\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 1112}, {\"gruppo_che_reagisce\": \"Alleanza Verdi e Sinistra (AVS)\", \"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 1078}, {\"gruppo_che_reagisce\": \"Lega - Salvini Premier (LEGA)\", \"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 965}, {\"gruppo_che_reagisce\": \"Movimento 5 Stelle (M5S)\", \"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 850}, {\"gruppo_che_reagisce\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"gruppo_oratore\": \"("
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_che_reagisce",
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 200,
+    "offset": 100
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 60791, \"rows_total\": 171, \"offset\": 100, \"rows\": [{\"gruppo_che_reagisce\": \"Misto (MISTO)\", \"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 11}, {\"gruppo_che_reagisce\": \"Lega - Salvini Premier (LEGA)\", \"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 11}, {\"gruppo_che_reagisce\": \"Lega - Salvini Premier (LEGA)\", \"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 11}, {\"gruppo_che_reagisce\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 11}, {\"gruppo_che_reagisce\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 11}, {\"gruppo_che_reagisce\": \"(nessun gruppo nominato)\", \"gruppo_oratore\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"reazioni\": 11}, {\"gruppo_che_reagisce\": \"Misto (MISTO)\", \"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 8}, {\"gruppo_che_reagisce\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"gruppo_oratore\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"reazioni\": 8}, {\"gruppo_che_reagisce\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 7}, {\"gruppo_che_reagisce\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 7}, {\"gruppo_che_reagisce\": \"Misto (MISTO)\", \"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 7}, {\"gruppo_che_reagisce\": \"Misto (MISTO)\", \"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 7}, {\"gruppo_che_reagisce\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 6}, {\"gruppo_che_reagisce\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 6}, {\"gruppo_che_reagisce\": \"Movimento 5 Stelle (M5S)\", \"gruppo_oratore\": \"Forza Italia - Berlusconi President"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "M5S",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce M5S. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 15815, \"rows_total\": 12, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 14063}, {\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 850}, {\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 478}, {\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 163}, {\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 88}, {\"gruppo_oratore\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"reazioni\": 58}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 56}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 37}, {\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 12}, {\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 5}, {\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 4}, {\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 1}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "PD-IDP",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce PD-IDP. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 12160, \"rows_total\": 15, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 9566}, {\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 1112}, {\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 685}, {\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 281}, {\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 219}, {\"gruppo_oratore\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"reazioni\": 126}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 80}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 36}, {\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 18}, {\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 17}, {\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 11}, {\"gruppo_oratore\": \"Misto - Alleanza Verdi e Sinistra (MISTO-AVS)\", \"reazioni\": 5}, {\"gruppo_oratore\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"reazioni\": 2}, {\"gruppo_oratore\": \"Misto - Futuro Nazionale Vannacci - Free (MISTO-FNV-F)\", \"reazioni\": 1}, {\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 1}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "AVS",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce AVS. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 7264, \"rows_total\": 12, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 5587}, {\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 1078}, {\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 282}, {\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 107}, {\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 91}, {\"gruppo_oratore\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"reazioni\": 60}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 27}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 20}, {\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 5}, {\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 3}, {\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 3}, {\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 1}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "FDI",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce FDI. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 7606, \"rows_total\": 14, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 4827}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 1470}, {\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 534}, {\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 370}, {\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 171}, {\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 98}, {\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 37}, {\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 30}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 25}, {\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 21}, {\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 15}, {\"gruppo_oratore\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"reazioni\": 4}, {\"gruppo_oratore\": \"Misto - Noi Moderati - MAIE (M-NM(N-C-U-I)-M)\", \"reazioni\": 3}, {\"gruppo_oratore\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"reazioni\": 1}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "LEGA",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce LEGA. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 5063, \"rows_total\": 12, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 3327}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 965}, {\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 341}, {\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 216}, {\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 104}, {\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 55}, {\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 22}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 11}, {\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 11}, {\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 5}, {\"gruppo_oratore\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"reazioni\": 3}, {\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 3}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "FI-PPE",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce FI-PPE. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 3645, \"rows_total\": 13, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 2135}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 843}, {\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 228}, {\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 201}, {\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 79}, {\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 64}, {\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 40}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 19}, {\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 16}, {\"gruppo_oratore\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"reazioni\": 8}, {\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 6}, {\"gruppo_oratore\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"reazioni\": 3}, {\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 3}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "AZ-PER-RE",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce AZ-PER-RE. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 2147, \"rows_total\": 12, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 1767}, {\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 114}, {\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 57}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 51}, {\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 50}, {\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 32}, {\"gruppo_oratore\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"reazioni\": 30}, {\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 20}, {\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 12}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 6}, {\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 5}, {\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 3}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "IV-CR",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce IV-CR. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 1454, \"rows_total\": 13, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 1113}, {\"gruppo_oratore\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"reazioni\": 84}, {\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 71}, {\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 47}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 41}, {\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 25}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 23}, {\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 21}, {\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 18}, {\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 5}, {\"gruppo_oratore\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"reazioni\": 2}, {\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 2}, {\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 2}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "applause"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": "NM(N-C-U-I)M-CP",
+    "speaker_role": null,
+    "contains": null,
+    "group_by": [
+     "gruppo_oratore"
+    ],
+    "sum_chambers": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi applause, gruppo_che_reagisce NM(N-C-U-I)M-CP. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Per gruppo che reagisce una reazione conta una volta per ogni gruppo nominato («Applausi dei gruppi PD-IDP e AVS» conta per entrambi); «(nessun gruppo nominato)» = reazioni senza gruppo riconosciuto («Applausi», «dai banchi della maggioranza», singoli deputati). Gruppo che reagisce alla data della seduta, il Misto per componente. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 1617, \"rows_total\": 13, \"offset\": 0, \"rows\": [{\"gruppo_oratore\": \"Noi Moderati - MAIE - Centro Popolare (NM(N-C-U-I)M-CP)\", \"reazioni\": 808}, {\"gruppo_oratore\": \"(senza gruppo)\", \"reazioni\": 530}, {\"gruppo_oratore\": \"Fratelli d'Italia (FDI)\", \"reazioni\": 97}, {\"gruppo_oratore\": \"Forza Italia - Berlusconi Presidente - PPE (FI-PPE)\", \"reazioni\": 76}, {\"gruppo_oratore\": \"Lega - Salvini Premier (LEGA)\", \"reazioni\": 66}, {\"gruppo_oratore\": \"Azione - Popolari Europeisti Riformatori - Renew Europe (AZ-PER-RE)\", \"reazioni\": 19}, {\"gruppo_oratore\": \"Italia Viva - Casa Riformista (IV-CR)\", \"reazioni\": 11}, {\"gruppo_oratore\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"reazioni\": 4}, {\"gruppo_oratore\": \"Misto (MISTO)\", \"reazioni\": 2}, {\"gruppo_oratore\": \"Misto - Minoranze Linguistiche (MISTO-MIN.LING.)\", \"reazioni\": 1}, {\"gruppo_oratore\": \"Misto - +Europa - Stati Uniti d'Europa (MISTO-+EU-SUEU)\", \"reazioni\": 1}, {\"gruppo_oratore\": \"Movimento 5 Stelle (M5S)\", \"reazioni\": 1}, {\"gruppo_oratore\": \"Alleanza Verdi e Sinistra (AVS)\", \"reazioni\": 1}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni",
+  "conta_reazioni"
+ ],
+ "tempo_s": 43.4,
+ "risposta_sistema": "Nei resoconti d’Aula della Camera, dal **13 ottobre 2022 al 3 novembre 2026**, risultano **60.791 registrazioni di applausi attribuiti a un gruppo**. Un applauso con più gruppi indicati viene contato una volta per ciascun gruppo; quindi non è un numero di episodi fisici univoci.\n\nMatrice dei principali gruppi: **riga = gruppo che applaude; colonna = gruppo dell’oratore**.\n\n| Applaude \\ Oratore | M5S | PD-IDP | AVS | FDI | Lega | FI-PPE | Azione | IV-CR | NM-CP |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n| **M5S** | 14.063 | 850 | 478 | 12 | 4 | 5 | 88 | 163 | 1 |\n| **PD-IDP** | 685 | 9.566 | 1.112 | 17 | 11 | 18 | 219 | 281 | 1 |\n| **AVS** | 282 | 1.078 | 5.587 | 5 | 3 | 3 | 91 | 107 | 1 |\n| **FDI** | 15 | 30 | 21 | 4.827 | 534 | 370 | 98 | 37 | 171 |\n| **Lega** | 3 | 11 | 5 | 341 | 3.327 | 216 | 55 | 22 | 104 |\n| **FI-PPE** | 6 | 16 | 3 | 228 | 201 | 2.135 | 64 | 40 | 79 |\n| **Azione** | 32 | 114 | 50 | 12 | 5 | 20 | 1.767 | 57 | 3 |\n| **IV-CR** | 21 | 71 | 25 | 5 | 2 | 18 | 47 | 1.113 | 2 |\n| **NM-CP** | 1 | 4 | 1 | 97 | 66 | 76 | 19 | 11 | 808 |\n\nLe combinazioni incrociate più frequenti, escluse quelle dello stesso gruppo, sono:\n\n- **PD-IDP → AVS:** 1.112; **AVS → PD-IDP:** 1.078.\n- **M5S → PD-IDP:** 850; **PD-IDP → M5S:** 685.\n- **FDI → Lega:** 534; **Lega → FDI:** 341.\n- **FDI → FI-PPE:** 370; **FI-PPE → FDI:** 228.\n- **Lega → FI-PPE:** 216; **FI-PPE → Lega:** 201.\n- **FDI → Noi Moderati:** 171.\n- **PD-IDP → Italia Viva:** 281; **Italia Viva → PD-IDP:** 71.\n- **Azione → PD-IDP:** 114; **PD-IDP → Azione:** 219.\n\nLa matrice completa ha **171 coppie gruppo-che-reagisce / gruppo-dell’oratore**: oltre ai gruppi in tabella comprende le componenti del Misto, gruppi esistiti solo in una parte della legislatura e i casi in cui il gruppo dell’oratore non è attribuibile. Tra le componenti, ad esempio, la componente **Misto – +Europa – Stati Uniti d’Europa** applaude interventi PD-IDP 25 volte, di Italia Viva 20 e di M5S 7; gli interventi della stessa componente ricevono 210 applausi dalla componente stessa.\n\nAttenzione: il dato segnala che la didascalia dell’applauso è inserita **all’interno dell’intervento** di quel gruppo; non prova necessariamente che l’applauso fosse politicamente rivolto all’oratore. Inoltre gli applausi senza un gruppo esplicitamente nominato non sono assegnabili nella matrice.",
+ "eventi": {
+  "status": 1,
+  "tool": 22,
+  "dati": 11,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

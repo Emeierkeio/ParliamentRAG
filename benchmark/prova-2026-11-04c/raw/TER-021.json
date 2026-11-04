@@ -1,0 +1,80 @@
+{
+ "id": "TER-021",
+ "trappola": false,
+ "domanda": "Quanti interventi in Aula hanno parlato di povertà assoluta nel 2026, divisi per gruppo?",
+ "categoria": "statistiche",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Conteggio per parola: dichiarare la parola cercata. Rami separati.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791398.476937,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": "povertà assoluta",
+    "person": null,
+    "group": null,
+    "role": null,
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "gruppo"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/01/2026 al 31/12/2026; filtri: frase 'povertà assoluta'. Con la frase: interventi che contengono «povertà assoluta» a parole intere, maiuscole indifferenti; occorrenze = le volte che ricorre (un intervento conta una volta in «interventi»). Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 48, \"occorrenze\": 59}, \"rows_total\": 4, \"offset\": 0, \"rows\": [{\"gruppo\": \"Movimento 5 Stelle (M5S)\", \"interventi\": 21, \"occorrenze\": 28, \"dal\": \"2026-01-20\", \"al\": \"2026-07-21\"}, {\"gruppo\": \"Alleanza Verdi e Sinistra (AVS)\", \"interventi\": 15, \"occorrenze\": 15, \"dal\": \"2026-02-24\", \"al\": \"2026-10-14\"}, {\"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 11, \"occorrenze\": 15, \"dal\": \"2026-01-21\", \"al\": \"2026-10-28\"}, {\"gruppo\": \"Italia Viva - Casa Riformista (IV-CR)\", \"interventi\": 1, \"occorrenze\": 1, \"dal\": \"2026-07-30\", \"al\": \"2026-07-30\"}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "phrase": "povertà assoluta",
+    "person": null,
+    "group": null,
+    "role": null,
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "gruppo"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Senato, sedute d'Aula, dal 01/01/2026 al 31/12/2026; filtri: frase 'povertà assoluta'. Con la frase: interventi che contengono «povertà assoluta» a parole intere, maiuscole indifferenti; occorrenze = le volte che ricorre (un intervento conta una volta in «interventi»). Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 17, \"occorrenze\": 20}, \"rows_total\": 6, \"offset\": 0, \"rows\": [{\"gruppo\": \"MoVimento 5 Stelle (M5S)\", \"interventi\": 7, \"occorrenze\": 8, \"dal\": \"2026-02-25\", \"al\": \"2026-10-13\"}, {\"gruppo\": \"Partito Democratico - Italia Democratica e Progressista (PD-IDP)\", \"interventi\": 4, \"occorrenze\": 6, \"dal\": \"2026-03-11\", \"al\": \"2026-10-27\"}, {\"gruppo\": \"Italia Viva - Casa Riformista (IV-CR)\", \"interventi\": 2, \"occorrenze\": 2, \"dal\": \"2026-04-01\", \"al\": \"2026-10-27\"}, {\"gruppo\": \"Misto - Alleanza Verdi e Sinistra (AVS)\", \"interventi\": 2, \"occorrenze\": 2, \"dal\": \"2026-10-13\", \"al\": \"2026-10-13\"}, {\"gruppo\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"interventi\": 1, \"occorrenze\": 1, \"dal\": \"2026-07-15\", \"al\": \"2026-07-15\"}, {\"gruppo\": \"(senza gruppo)\", \"interventi\": 1, \"occorrenze\": 1, \"dal\": \"2026-05-13\", \"al\": \"2026-05-13\"}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_interventi",
+  "conta_interventi"
+ ],
+ "tempo_s": 17.8,
+ "risposta_sistema": "Nel 2026, fino all’ultima seduta disponibile del **3 novembre**, la frase esatta “povertà assoluta” compare in **48 interventi d’Aula alla Camera** e **17 al Senato**. Il conteggio riguarda i turni di parola che contengono la frase, non il numero totale di volte in cui è pronunciata.\n\n**Camera**\n- Movimento 5 Stelle (M5S): **21**\n- Alleanza Verdi e Sinistra (AVS): **15**\n- Partito Democratico – Italia Democratica e Progressista (PD-IDP): **11**\n- Italia Viva – Casa Riformista (IV-CR): **1**\n\n**Senato**\n- MoVimento 5 Stelle (M5S): **7**\n- Partito Democratico – Italia Democratica e Progressista (PD-IDP): **4**\n- Italia Viva – Casa Riformista (IV-CR): **2**\n- Misto – Alleanza Verdi e Sinistra (AVS): **2**\n- Lega Salvini Premier – Partito Sardo d’Azione (LSP-PSd’Az): **1**\n- Senza gruppo (ruoli non parlamentari, ad esempio Governo o Presidenza): **1**\n\nLe occorrenze complessive della frase sono **59 alla Camera** e **20 al Senato**: un singolo intervento può contenerla più di una volta.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

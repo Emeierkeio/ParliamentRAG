@@ -1,0 +1,76 @@
+{
+ "id": "APP-014",
+ "trappola": false,
+ "domanda": "Lega e Fratelli d'Italia hanno mai votato diversamente in un voto finale?",
+ "categoria": "confronto",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Voto del gruppo = posizione della maggioranza dei suoi votanti. Elencare i casi, separati per ramo.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791643.141662,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": true,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "chamber": "camera",
+    "groups": [
+     "LEGA",
+     "FRATELLI D'ITALIA"
+    ],
+    "person": null,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Camera, dal 13/10/2022 al 03/11/2026; filtri: finali sì, segrete no: 405 votazioni dal 10/11/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 405, \"groups\": [{\"group\": \"Fratelli d'Italia (FDI)\", \"votes_with_voters\": 405, \"cohesion\": 0.999, \"unanimous_share\": 0.98, \"positions\": {\"favor\": 404, \"against\": 1, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Lega - Salvini Premier (LEGA)\", \"votes_with_voters\": 405, \"cohesion\": 0.998, \"unanimous_share\": 0.953, \"positions\": {\"favor\": 404, \"against\": 1, \"abstain\": 0, \"tie\": 0}}], \"agreement\": {\"LEGA\": {\"FDI\": 1.0}, \"FDI\": {\"LEGA\": 1.0}}, \"different_positions\": {\"total\": 0, \"note\": \"votazioni in cui i due gruppi hanno preso posizioni diverse (tie esclusi)\", \"rows_total\": 0, \"offset\": 0, \"rows\": []}}"
+  },
+  {
+   "name": "voto_gruppi",
+   "args": {
+    "kind": null,
+    "final": true,
+    "approved": null,
+    "confidence": null,
+    "act": null,
+    "q": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "chamber": "senato",
+    "groups": [
+     "LEGA",
+     "FRATELLI D'ITALIA"
+    ],
+    "person": null,
+    "limit": 200,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Votazioni palesi, Senato, dal 13/10/2022 al 03/11/2026; filtri: finali sì, segrete no: 264 votazioni dal 16/11/2022 al 28/10/2026. Posizione di un gruppo in un voto = la scelta più frequente fra favorevoli, contrari e astenuti dei suoi membri che hanno votato (a pari merito: tie, nessuna posizione). Coesione = indice di accordo di Hix, Noury e Roland, (max − ½·(votanti − max)) / votanti, in media sulle votazioni con almeno 2 votanti del gruppo (1 = tutti uguali); unanimous_share = quota di quelle votazioni in cui il gruppo ha votato tutto allo stesso modo. Accordo fra due gruppi (agreement, per sigla) = quota delle votazioni in cui entrambi hanno una posizione e la posizione è la stessa, solo per le coppie con almeno 20 votazioni in comune. Esclusi voti segreti, assenti, in missione e presenti non votanti. Gruppo = quello che il ramo scrive nella scheda, alla data del voto, il Misto per componente («Misto (…)» = chi è nel Misto senza componente).\", \"votes\": 264, \"groups\": [{\"group\": \"Lega Salvini Premier - Partito Sardo d'Azione (LSP-PSd'Az)\", \"votes_with_voters\": 264, \"cohesion\": 0.999, \"unanimous_share\": 0.992, \"positions\": {\"favor\": 264, \"against\": 0, \"abstain\": 0, \"tie\": 0}}, {\"group\": \"Fratelli d'Italia (FdI)\", \"votes_with_voters\": 264, \"cohesion\": 0.997, \"unanimous_share\": 0.951, \"positions\": {\"favor\": 264, \"against\": 0, \"abstain\": 0, \"tie\": 0}}], \"agreement\": {\"LSP-PSd'Az\": {\"FdI\": 1.0}, \"FdI\": {\"LSP-PSd'Az\": 1.0}}, \"different_positions\": {\"total\": 0, \"note\": \"votazioni in cui i due gruppi hanno preso posizioni diverse (tie esclusi)\", \"rows_total\": 0, \"offset\": 0, \"rows\": []}}"
+  }
+ ],
+ "strumenti": [
+  "voto_gruppi",
+  "voto_gruppi"
+ ],
+ "tempo_s": 10.3,
+ "risposta_sistema": "No. Nelle votazioni finali **palesi** della XIX legislatura disponibili fino al 3 novembre 2026, Lega e Fratelli d’Italia hanno sempre avuto la stessa posizione prevalente.\n\n- **Camera:** 405 votazioni finali (10 novembre 2022–28 ottobre 2026); posizioni diverse: **0**. Accordo: **100%**.\n- **Senato:** 264 votazioni finali (16 novembre 2022–28 ottobre 2026); posizioni diverse: **0**. Accordo: **100%**.\n\nIl confronto esclude i voti segreti e considera la posizione prevalente tra i membri votanti di ciascun gruppo; non considera quindi assenti, missioni e presenti non votanti.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,38 @@
+{
+  "id": "LOB-012",
+  "trappola": false,
+  "domanda": "Quanti emendamenti al C. 3148 sono stati dichiarati inammissibili e di quali gruppi erano i primi firmatari?",
+  "categoria": "emendamenti",
+  "tipo_risposta": "conteggio",
+  "ramo": "camera",
+  "difficolta": "facile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791662.814412,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "cerca_atti",
+    "conta_emendamenti"
+  ],
+  "tempo_s": 8.4,
+  "risposta_sistema": "Sono stati dichiarati **inammissibili 28 emendamenti** al C. 3148, tutti in **sede referente** in Commissione.\n\nPer gruppo del primo firmatario:\n- **Partito Democratico – Italia Democratica e Progressista (PD-IDP): 17**\n- **Movimento 5 Stelle (M5S): 7**\n- **Alleanza Verdi e Sinistra (AVS): 2**\n- **Misto – Futuro Nazionale Vannacci – Free: 1**\n- **Italia Viva – Casa Riformista (IV-CR): 1**\n\nL’atto è il [C. 3148](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3148), di conversione del decreto-legge n. 157/2026. Il conteggio riguarda le proposte con esito registrato come “inammissibile”; la fonte è costituita dai fascicoli degli emendamenti caricati.",
+  "errori": [],
+  "note_domanda": "Risultano 28 inammissibili su 89; gli altri hanno esito vuoto, che non vuol dire respinti.",
+  "riferimento": {
+    "risposta": "Al C. 3148 (conversione del DL 157/2026) sono stati presentati in sede referente 89 emendamenti; 28 risultano inammissibili. Per gruppo del primo firmatario: PD-IDP 17 (fra i primi firmatari Amendola, Barbagallo, Braga, Ferrari, Forattini, Gnassi, Pandolfo, Peluffo, Simiani), M5S 7 (Appendino, Cappelletti, L'Abbate, Pavanelli, Raffa), AVS 2 (Bonelli), IV-CR 1 (Del Barba), Misto-componente Futuro Nazionale Vannacci-Free 1 (Ziello). Nessun inammissibile della maggioranza. Gli altri 61 hanno esito vuoto, che non significa respinti.",
+    "stato": "calcolata",
+    "limiti": "Gruppo del primo firmatario alla data di presentazione (amendment.presented). Esito vuoto = esito non caricato."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 8.4
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": null,
+  "note": "28 inammissibili: PD-IDP 17, M5S 7, AVS 2, IV-CR 1, FNV 1, identico al riferimento. Stamattina 1 (PD 19, mancavano IV e FNV). Link solo alla scheda dell'atto, non agli emendamenti."
+}

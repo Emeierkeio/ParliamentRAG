@@ -1,0 +1,44 @@
+{
+  "id": "COM-038",
+  "domanda": "Progetti di atti dell'Unione europea esaminati dalla XIV Commissione nel 2026.",
+  "categoria": "commissioni",
+  "tipo_risposta": "elenco",
+  "ramo": "camera",
+  "difficolta": "media",
+  "garanzie": [],
+  "note_domanda": null,
+  "trappola": false,
+  "endpoint": "agente",
+  "gruppo": "nuove",
+  "inizio": 1793792410.156151,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute",
+    "argomenti_sedute"
+  ],
+  "tempo_s": 34.7,
+  "risposta_sistema": "La XIV Commissione della Camera (Politiche dell’Unione europea) ha esaminato nel 2026, nella sede “Atti dell’Unione europea”, proposte su questi temi. L’elenco seguente elimina le ripetizioni dovute a esame, rinvio e conclusione in sedute diverse. I dati arrivano fino al **3 novembre 2026**.\n\n- **Ambiente, energia e mobilità:** obblighi per operatori e commercianti nel regolamento UE 2023/1115; riserva stabilizzatrice del mercato delle emissioni per edilizia e trasporto stradale; crediti di emissione per veicoli pesanti; norme per produzione biologica, etichettatura e certificazione; trasporto militare nell’UE; semplificazione delle prescrizioni tecniche e delle prove per i veicoli a motore; estensione del CBAM alle merci a valle e misure antielusione; infrastrutture energetiche transeuropee; bollette elettriche, elettrificazione e digitalizzazione; decarbonizzazione e competitività; idrogeno come carburante di riferimento nei test dei motori; etichettatura energetica e degli pneumatici.\n\n- **Digitale, telecomunicazioni e dati:** Omnibus digitale sull’IA; proroga del regolamento UE 2021/1232; cibersicurezza, ENISA e catene di approvvigionamento TIC; reti digitali; protezione dei dati personali da parte di istituzioni e organismi UE; servizi mobili via satellite nella banda dei 2 GHz; ecosistema dei semiconduttori (“chip 2.0”); cloud e IA; Atto legislativo europeo a favore dell’innovazione; EU Kids Act.\n\n- **Mercato interno, finanza e impresa:** prodotto pensionistico individuale paneuropeo (PEPP); carattere definitivo del regolamento e garanzie finanziarie; informativa sulla sostenibilità nei servizi finanziari e documenti informativi per prodotti d’investimento; quadro societario del “28° regime” (“EU Inc.”); semplificazione del quadro UE per l’imposizione diretta; ecosistema europeo delle biotecnologie e della biofabbricazione; accelerazione della capacità industriale e della decarbonizzazione in settori strategici.\n\n- **Giustizia, sicurezza e affari interni:** accesso di EPPO e OLAF alle informazioni IVA; monitoraggio e controllo dei precursori di droghe; lotta al traffico di armi da fuoco; Eurojust; ordine europeo di indagine penale e ordine europeo di partecipazione a distanza.\n\n- **Salute, alimentazione e consumatori:** dispositivi medici e medico-diagnostici in vitro; sicurezza degli alimenti e dei mangimi; proroga di determinati periodi di protezione dei dati per i biocidi; microrganismi geneticamente modificati e trattamento di organi; tessera europea di sicurezza sociale (ESSPASS).\n\n- **Altri dossier:** prenotazione multimodale; associazione dell’UE con Andorra e San Marino; disponibilità e accessibilità economica degli alloggi.\n\nFra gli argomenti trattati figurano inoltre il **Programma di lavoro della Commissione europea per il 2026**, la relazione 2024 su sussidiarietà, proporzionalità e rapporti con i parlamenti nazionali, e la comunicazione su un corpus di norme UE più semplice e chiaro. I risultati del Bollettino registrano **91 punti all’ordine del giorno** nel 2026: tale numero comprende sia i singoli progetti sia i loro successivi riesami e gli altri documenti UE.",
+  "errori": [],
+  "riferimento": {
+    "risposta": "Nel 2026 (al 2/11) la XIV Commissione (Politiche dell'Unione europea) ha esaminato 48 atti dell'Unione europea: 38 proposte di regolamento, 5 proposte di direttiva, 2 proposte di decisione, il Programma di lavoro della Commissione per il 2026, una comunicazione, la Relazione 2024 su sussidiarietà e proporzionalità e la decisione (UE, Euratom) 2026/1296 sull'elezione del Parlamento europeo. 45 sono stati conclusi (per lo più con valutazione di conformità; pareri motivati, fra gli altri, su servizi mobili via satellite, bollette elettriche e ETS); 3 sono ancora in esame: la comunicazione esaminata il 17/6, la proposta sull'idrogeno nei motori (dal 21/10) e l'EU Kids Act (dal 27/10). L'elenco completo è in «risultato».",
+    "stato": "parziale",
+    "limiti": "Atti UE ricavati dai titoli degli argomenti del Bollettino nelle sedute della XIV (body o19_3514) in sede «Atti dell'Unione europea» o «Esame di decisioni del Consiglio», dal 1/1 al 2/11/2026; un atto per titolo. Gli atti UE non sono in act e i titoli non riportano il codice COM, quindi non si possono unire con certezza: due righe della stessa proposta (regolamenti 2023/1542 e 2024/1244) differiscono per un refuso e sono contate una volta. Negli esami congiunti compare un solo titolo per argomento, quindi l'atto abbinato può mancare. Escluse le sedute delle commissioni riunite."
+  },
+  "punteggi": {
+    "correttezza": 2,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 34.7
+  },
+  "prima": {
+    "correttezza": 2
+  },
+  "causa_probabile": null,
+  "note": "Elenca per tema circa 42 proposte più programma di lavoro 2026, relazione sussidiarietà e comunicazione (45 voci contro 48 del riferimento), ma non dà un conteggio degli atti né gli esiti (dichiara solo 91 punti all'ordine del giorno). Resta 2; nessun link."
+}

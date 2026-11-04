@@ -1,0 +1,167 @@
+{
+ "id": "COMU-016",
+ "domanda": "Da quando esiste la componente del Misto «Futuro Nazionale Vannacci - Free» e chi ne fa parte?",
+ "categoria": "gruppi",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note_domanda": "Nove deputati: Pozzolo, Ravetto, Sasso e Ziello dal 27/5/2026; Bergamini, Bof, Furgiuele e Pierro dall'8/6/2026; Calderone dal 21/9/2026.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792170.3929348,
+ "endpoint_usato": "/api/agente",
+ "strumenti": [
+  "composizione",
+  "composizione",
+  "cambi_gruppo",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona"
+ ],
+ "tempo_s": 75.8,
+ "risposta_sistema": "La componente della Camera nel Gruppo Misto **«Futuro Nazionale Vannacci - Free»** esiste dal **27 maggio 2026**: in quella data vi risultano iscritti i primi quattro deputati. Al 4 novembre 2026 conta **9 deputati**. Composizione della Camera\n\nNe fanno parte:\n\n- [Laura Ravetto](http://dati.camera.it/ocd/persona.rdf/p301459) — dal 27 maggio 2026  \n- [Edoardo Ziello](http://dati.camera.it/ocd/persona.rdf/p307143) — dal 27 maggio 2026  \n- [Rossano Sasso](http://dati.camera.it/ocd/persona.rdf/p307360) — dal 27 maggio 2026  \n- [Emanuele Pozzolo](http://dati.camera.it/ocd/persona.rdf/p308822) — dal 27 maggio 2026  \n- [Domenico Furgiuele](http://dati.camera.it/ocd/persona.rdf/p307718) — dall’8 giugno 2026  \n- [Attilio Pierro](http://dati.camera.it/ocd/persona.rdf/p308791) — dall’8 giugno 2026  \n- [Gianangelo Bof](http://dati.camera.it/ocd/persona.rdf/p308801) — dall’8 giugno 2026  \n- [Davide Bergamini](http://dati.camera.it/ocd/persona.rdf/p308928) — dall’8 giugno 2026  \n- [Tommaso Antonino Calderone](http://dati.camera.it/ocd/persona.rdf/p308766) — dal 21 settembre 2026",
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "warn"
+   },
+   "groups": {
+    "present": [
+     "FN"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": []
+   },
+   "quotes": [
+    {
+     "quote": "Futuro Nazionale Vannacci - Free",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0713&tipo=stenografico#sed0713.stenografico.tit00020.int00010"
+    }
+   ],
+   "authority": {
+    "topic": "Da quando esiste la componente del Misto «Futuro Nazionale Vannacci - Free» e chi ne fa parte?",
+    "available": false,
+    "voices": [
+     {
+      "name": "Fabio Rampelli",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "authoritative": null,
+      "source": "quoted"
+     },
+     {
+      "name": "Laura Ravetto",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Edoardo Ziello",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Rossano Sasso",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Domenico Furgiuele",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Tommaso Antonino Calderone",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Attilio Pierro",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Gianangelo Bof",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Emanuele Pozzolo",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     },
+     {
+      "name": "Davide Bergamini",
+      "group": "Futuro Nazionale Vannacci (Misto)",
+      "role": null,
+      "authoritative": null,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ },
+ "riferimento": {
+  "risposta": "La componente del Misto «Futuro Nazionale Vannacci - Free» (MISTO-FNV-F) esiste alla Camera dal 27/5/2026. Ne fanno parte 9 deputati: dal 27/5/2026 Emanuele Pozzolo (prima FdI), Laura Ravetto (Lega), Rossano Sasso (Lega) ed Edoardo Ziello (Lega); dall'8/6/2026 Davide Bergamini (FI-PPE), Gianangelo Bof (Lega), Domenico Furgiuele (Lega) e Attilio Pierro (FI-PPE); dal 21/9/2026 Tommaso Antonino Calderone (FI-PPE). Nessuno ne è uscito.",
+  "stato": "calcolata",
+  "limiti": "Tra parentesi l'ultimo gruppo diverso dal Misto a cui la persona apparteneva prima di entrare nella componente. Dati al 2/11/2026."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "trappola": null,
+  "tempo_s": 75.8
+ },
+ "prima": {
+  "correttezza": 2
+ },
+ "causa_probabile": null,
+ "note": "Dal 27/5/2026, nove deputati con le tre date d'ingresso giuste (27/5, 8/6, 21/9): uguale a prima. Link alle schede dati.camera.it."
+}

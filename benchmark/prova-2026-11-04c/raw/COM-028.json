@@ -1,0 +1,116 @@
+{
+ "id": "COM-028",
+ "trappola": false,
+ "domanda": "Testo della risoluzione 7/00423 (Manzi) e stato della discussione in commissione.",
+ "categoria": "sindacato_ispettivo",
+ "tipo_risposta": "testo",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Presentata il 22/10/2026.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791786.376506,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": null,
+    "kind": "resolution",
+    "number": "7/00423",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": null,
+    "number": "7-00423",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:7-00423\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"7/00423\", \"kind\": \"committee_resolution\", \"title\": \"RISOLUZIONE IN COMMISSIONE 7/00423 presentata da MANZI IRENE (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 22/10/2026\", \"date\": \"2026-10-22\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:aic:7-00423"
+   },
+   "result": "{\"uri\": \"it:camera:19:aic:7-00423\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"7/00423\", \"kind\": \"committee_resolution\", \"title\": \"RISOLUZIONE IN COMMISSIONE 7/00423 presentata da MANZI IRENE (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 22/10/2026\", \"date\": \"2026-10-22\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423\", \"kind_raw\": \"RISOLUZIONE IN COMMISSIONE\", \"text\": \"Atto Camera Risoluzione in commissione 7-00423 presentato da MANZI Irene testo di Giovedì 22 ottobre 2026, seduta n. 731 La VII Commissione, premesso che: il Programma degli itinerari culturali del Consiglio d'Europa, avviato nel 1987, riconosce reti transnazionali di territori, istituzioni culturali, università, imprese e comunità. Queste reti, attorno a un tema di rilevanza europea, promuovono la conoscenza reciproca, il dialogo interculturale e la consapevolezza di un patrimonio comune, in coerenza con la missione del Consiglio d'Europa a tutela della democrazia, dei diritti umani e dello Stato di diritto; gli itinerari certificati sono oggi 52, a seguito delle tre nuove certificazioni deliberate nel maggio 2026. L'Italia è attraversata da numerosi di essi, a partire dalla Via Francigena; la certificazione è rilasciata dal consiglio di Direzione dell'Accordo parziale allargato sugli itinerari culturali, composto da un rappresentante designato da ciascuno Stato Membro, sulla base di requisiti stringenti: a) il tema deve essere comune ad almeno tre Paesi e fondato su una ricerca scientifica multidisciplinare; b) la rete deve disporre di una struttura giuridica e coinvolgere più Stati membri; c) la rete deve presentare un programma pluriennale, un piano finanziario e indicatori di impatto; d) la rete deve sviluppare attività di scambio educativo tra giovani e iniziative di turismo culturale sostenibile; la città di Fabriano ha promosso – a partire dal 2024 – insieme alla città di Angoulême la costituzione di un itinerario europeo dedicato alla cultura della carta, sottoscrivendo un manifesto per la costituzione di una European paper route nel quadro del Programma; Fabriano costituisce uno dei luoghi europei più identificati con la storia della carta: a) un documento del 1264, conservato a Matelica, attesta già allora la produzione cartaria in città; b) la tradizione attribuisce ai maestri cartai fabrianesi innovazioni decisive, tra cui la collatura con gelatina animale, la pila a magli multipli e la filigrana; c) nel 1782 Pietro Miliani avviò le cartiere che diedero alla produzione una dimensione industriale; il patrimonio cartario fabrianese è oggi custodito e valorizzato da un insieme articolato di soggetti: a) il Museo della carta e della filigrana; b) la Pia Università dei Cartai, che nel 2026 compie settecento anni; c) la Fondazione Fedrigoni Fabriano, che custodisce il museo d'impresa delle ex Cartiere Miliani; d) il Consorzio «Ca"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "7-00423",
+    "start": "2026-10-22",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "European paper route",
+    "start": "2026-10-22",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "7-00423",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-22",
+    "end": "2026-11-03",
+    "include_summaries": true,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "cerca_interventi"
+ ],
+ "tempo_s": 17.1,
+ "risposta_sistema": "La risoluzione in commissione **7/00423**, presentata alla Camera da Irene Manzi (PD-IDP) il 22 ottobre 2026, chiede al Governo di sostenere la candidatura della **European paper route** al programma degli itinerari culturali del Consiglio d’Europa per il ciclo 2027-2028. [Testo ufficiale dell’atto](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423)\n\nIl dispositivo impegna il Governo a:\n1. sostenere la candidatura nelle sedi del Consiglio d’Europa, in particolare nel Consiglio di direzione dell’Accordo parziale allargato sugli itinerari culturali;\n2. valutare forme di sostegno alla rete, compatibilmente con la finanza pubblica, anche per l’accesso ai programmi europei culturali, di cooperazione territoriale e per le industrie creative;\n3. valutare iniziative per tutelare e valorizzare i saperi artigianali della carta fatta a mano, anche in vista del riconoscimento come patrimonio culturale immateriale.\n\nLa premessa ricostruisce il progetto promosso da Fabriano e Angoulême: la rete comprende anche Santa Maria da Feira, Capellades, Heidelberg, Lione e Barcellona e punta alla candidatura nel 2027-2028.\n\n**Stato in Commissione:** nei dati disponibili fino al **3 novembre 2026**, l’atto non registra passaggi di iter, sedute o interventi della VII Commissione riferiti alla risoluzione. Risulta quindi presentato, senza una discussione in commissione registrata né una deliberazione sull’atto. [Scheda e testo ufficiale](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423)",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

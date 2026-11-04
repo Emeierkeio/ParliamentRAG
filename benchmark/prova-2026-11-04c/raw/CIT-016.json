@@ -1,0 +1,93 @@
+{
+ "id": "CIT-016",
+ "trappola": false,
+ "domanda": "c'è il video di quando hanno approvato la legge elettorale?",
+ "categoria": "video",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Voto finale della PDL 2822-B alla Camera l'8/10/2026 (227 sì, 164 no, voto segreto), seduta 723: c'è un video della WebTV. Il Senato non ha video nel v3.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791760.646522,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "legge elettorale",
+    "chamber": null,
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 30,
+    "offset": 0
+   },
+   "result": "{\"total\": 15, \"items\": [{\"uri\": \"it:camera:19:ac:3145\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3145\", \"kind\": \"bill\", \"title\": \"PROPOSTA DI LEGGE COSTITUZIONALE SPERANZA: \\\"Modifica all’articolo 94 della Costituzione in materia di divieto di apposizione della questione di fiducia su progetti di legge vertenti su materia costituzionale o elettorale\\\" (3145)\", \"date\": \"2026-10-13\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3145\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:2946\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2946\", \"kind\": \"bill\", \"title\": \"MORRONE ed altri: \\\"Modifiche alle leggi 4 aprile 1956, n. 212, e 10 dicembre 1993, n. 515, in materia di impiego della lingua italiana nella propaganda e nelle campagne elettorali\\\" (2946)\", \"date\": \"2026-05-29\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2946\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:senato:19:ddl:1785\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1785\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 27 dicembre 2025, n. 196, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell'anno 2026\", \"date\": \"2026-02-05\", \"status\": \"appr. definit. Legge\", \"law_number\": \"18\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55097.htm\", \"initiative\": \"Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro interno Piantedosi Matteo (Meloni-I) ed altri.\"}, {\"uri\": \"it:camera:19:ac:2751\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2751\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 27 dicembre 2025, n. 196, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell’anno 2026\\\" (2751)\", \"date\": \"2025-12-27\", \"status\": \"Approvato definitivamente dal Senato. Legge\", \"law_number\": \"18\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2751\", \"initiative\": \"Governo\"}, {\"uri\": \"it:camera:19:ac:2362\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2362\", \"kind\": \"bill\", \"title\": \"S. 1425. - \\\"Conversione in legge, con modificazioni, del decreto-legge 19 marzo 2025, n. 27, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell’anno 2025\\\" <em>(approvato dal Senato) </em>(2362)\", \"date\": \"2025-04-16\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"72\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2362\", \"initiative\": \"Governo\"}, {\"uri\": \"it:senato:19:ddl:1425\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1425\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 19 marzo 2025, n. 27, recante disposizioni urgenti per le consultaz"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2822-B",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2822-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822-B\", \"kind\": \"bill\", \"title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"date\": \"2026-09-15\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"180\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2822-B"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2822-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822-B\", \"kind\": \"bill\", \"title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"date\": \"2026-09-15\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"180\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"description\": \"Legge 180 del 9 ottobre 2026 pubblicata nella Gazzetta Ufficiale n. 235 del 9 ottobre 2026\", \"law_date\": \"2026-10-09\", \"status_date\": \"2026-10-09\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2822-B\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:307456\", \"name\": \"Alessandro Battilocchio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307456&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307603\", \"name\": \"Alessandro Colucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307603&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307641\", \"name\": \"Igor Giancarlo Iezzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307641&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:300447\", \"name\": \"Maurizio Enzo Lupi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300447&legi"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2822-B",
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": null,
+    "end": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0723:v001\", \"sitting\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-10-08\", \"title\": \"Votazione finale PDL n. 2822-B\", \"kind\": \"final\", \"favor\": 227, \"against\": 164, \"abstain\": 0, \"approved\": true, \"secret\": true, \"confidence\": false, \"act_title\": \"S. 1971. - BIGNAMI ed altri: \\\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\\\" <i>(approvata dalla Camera e modificata dal Senato) </i>(2822-B)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio\"}]}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0723",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0723\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 723, \"date\": \"2026-10-08\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico\", \"items\": [{\"uri\": \"it:camera:19:sed0723:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0723:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 74, c…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0723:tit00020\", \"order\": 2, \"title\": \"Approvazione in Commissione.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0723:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, nella seduta di mercoledì 7 ottobre 2026, la VII Commissione permanente (Cultura, scienza e istruzione) ha approvato, in sede legislativ…\", \"reactions\": [{\"kind\": \"other\", \"raw\": \"approvata dal Senato della Repubblica\", \"offset_char\": 304}]}]}, {\"uri\": \"it:camera:19:sed0723:tit00030\", \"order\": 3, \"title\": \"Preavviso di votazioni elettroniche (ore 10,40). (ore 10,40) (ore 10,40)\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0723:tit00030.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307130\", \"name\": \"Giorgio Mule'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307130&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Poiché nel corso della seduta potranno aver luogo votazioni mediante procedimento elettronico, decorrono da questo momento i termini di preavviso di 5…\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:sed0723:tit00040\", \"order\": 4, \"title\": \"Seguito della discussione della proposta di legge: Bignami ed altri: Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica (Approvata dalla Camera e modificata dal Senato) (A.C. 2822-B).\", \"acts\": [{\"ref\": \"pdl:282"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "elenco_votazioni",
+  "seduta"
+ ],
+ "tempo_s": 13.1,
+ "risposta_sistema": "Sì: l’approvazione definitiva della legge elettorale (legge n. 180/2026) è avvenuta alla **Camera l’8 ottobre 2026**, nella seduta n. 723. La votazione finale è stata approvata con **227 favorevoli e 164 contrari**. [Votazione ufficiale](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio) · [resoconto della seduta](https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico)\n\nNei dati disponibili non risulta però il link WebTV né il minuto di inizio del filmato; posso quindi indicare con certezza la seduta, ma non un collegamento video verificato. L’atto è la [proposta A.C. 2822-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B), divenuta legge n. 180 il 9 ottobre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

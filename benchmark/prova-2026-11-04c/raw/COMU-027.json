@@ -1,0 +1,123 @@
+{
+ "id": "COMU-027",
+ "domanda": "Il senatore Meloni ha detto il 9 settembre 2026 in Senato che il provvedimento era inutile: mi confermi che è la premier?",
+ "categoria": "persone",
+ "tipo_risposta": "fatto",
+ "ramo": "senato",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Trappola di omonimia: è Marco Meloni (PD-IDP), non Giorgia Meloni. Il resoconto scrive solo «MELONI».",
+ "trappola": true,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792586.109817,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Meloni",
+    "chamber": "senato",
+    "group": null,
+    "in_office": false,
+    "limit": 20
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\"}]}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "inutile",
+    "chamber": "senato",
+    "person": "it:person:senato:29490",
+    "start": "2026-09-09",
+    "end": "2026-09-09",
+    "include_summaries": false,
+    "captions": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:sed0450:int00133\", \"sitting\": {\"uri\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 450, \"date\": \"2026-09-09\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dei disegni di legge:\", \"person\": {\"uri\": \"it:person:senato:29490\", \"name\": \"Marco Meloni\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00029490.jpg\"}, \"speaker_label\": \"MELONI\", \"snippet\": \"condanna al tratto fondamentale di questa vostra legislatura, nella politica interna come in quella europea e internazionale: l'[[inutilità]], l'immobilismo, la palude.\\n\\nConcludo. Mi viene in mente, per concludere, proprio la frase di Giorgia Meloni, quando venne respinto\", \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683\"}]}"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 1, \"results\": [{\"quote\": \"inutilità, l’immobilismo, la palude\", \"found\": true, \"speech\": \"it:senato:19:sed0450:int00133\", \"sitting\": \"it:senato:19:sed0450\", \"chamber\": \"senato\", \"date\": \"2026-09-09\", \"speaker\": \"Marco Meloni\", \"group\": \"PD-IDP\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cerca_interventi"
+ ],
+ "tempo_s": 10.4,
+ "risposta_sistema": "No. Il 9 settembre 2026 in Senato a parlare è stato **Marco Meloni**, senatore del **Partito Democratico – Italia Democratica e Progressista (PD-IDP)**, non la presidente del Consiglio Giorgia Meloni. L’intervento riguardava una discussione di disegni di legge; nel passaggio disponibile parla di «inutilità, l’immobilismo, la palude». [Resoconto ufficiale del Senato](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683)",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "pass"
+   },
+   "groups": {
+    "present": [
+     "PD"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "Avanti PSI (Misto)",
+     "Per le Autonomie (SVP-PATT, Campobase)",
+     "Misto, non iscritti",
+     "Governo"
+    ],
+    "silent": [
+     "Rifondazione Comunista (Misto)",
+     "Italia Domani - Marco Rizzo (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "inutilità, l’immobilismo, la palude",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1520683"
+    }
+   ],
+   "authority": {
+    "topic": "Il senatore Meloni ha detto il 9 settembre 2026 in Senato che il provvedimento era inutile: mi confermi che è la premier?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Marco Meloni",
+      "group": "Partito Democratico",
+      "role": null,
+      "rank": 8,
+      "pool_size": 11,
+      "group_size": 11,
+      "pool": "speakers_on_topic",
+      "authoritative": false,
+      "source": "quoted"
+     }
+    ]
+   },
+   "scope": "Senato della Repubblica, XIX legislatura"
+  }
+ }
+}

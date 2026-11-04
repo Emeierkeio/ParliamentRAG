@@ -1,0 +1,106 @@
+{
+ "id": "LOB-042",
+ "domanda": "Quando è convocata la prossima seduta della VIII Commissione sul DL 177/2026 (C. 3133) e cosa c'è all'ordine del giorno?",
+ "categoria": "calendario",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792548.539096,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "3133",
+    "start": "2026-11-04",
+    "end": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "start": "2026-11-04",
+    "end": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "177/2026",
+    "start": null,
+    "end": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:bol20261027:c08:sede00020:tit00010\", \"title\": \"DL 177/2026: Disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l'economia circolare e le bonifiche.\", \"stage\": \"Seguito dell'esame e rinvio\", \"sitting\": \"it:camera:19:bol20261027:c08:sede00020\", \"date\": \"2026-10-27\", \"chamber\": \"camera\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"seat\": \"SEDE REFERENTE\", \"number\": 20, \"status\": \"held\", \"url\": null, \"acts\": [{\"ref\": \"ac:3133\", \"uri\": \"it:camera:19:ac:3133\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:307892\", \"name\": \"Agostino Santillo\", \"group\": \"M5S\"}], \"speakers_total\": 2}, {\"uri\": \"it:camera:19:bol20261014:c08:sede00010:tit00040\", \"title\": \"DL 177/2026: Disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l'economia circolare e le bonifiche.\", \"stage\": \"Esame e rinvio\", \"sitting\": \"it:camera:19:bol20261014:c08:sede00010\", \"date\": \"2026-10-14\", \"chamber\": \"camera\", \"body_name\": \"Ambiente, territorio e lavori pubblici (VIII)\", \"seat\": \"SEDE REFERENTE\", \"number\": 10, \"status\": \"held\", \"url\": null, \"acts\": [{\"ref\": \"ac:3133\", \"uri\": \"it:camera:19:ac:3133\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:308942\", \"name\": \"Graziano Pizzimenti\", \"group\": \"LEGA\"}, {\"uri\": \"it:person:camera:307455\", \"name\": \"Mauro Rotelli\", \"group\": \"FDI\"}], \"speakers_total\": 3}], \"more\": false}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "3133",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3133\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3133\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 8 ottobre 2026, n. 177, recante disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici, l’economia circolare e le bonifiche\\\" (3133)\", \"date\": \"2026-10-08\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "VIII Commissione",
+    "seat": null,
+    "stage": null,
+    "q": null,
+    "start": "2026-11-04",
+    "end": "2026-12-31",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  }
+ ],
+ "strumenti": [
+  "argomenti_sedute",
+  "elenco_sedute",
+  "argomenti_sedute",
+  "cerca_atti",
+  "argomenti_sedute"
+ ],
+ "tempo_s": 16.2,
+ "risposta_sistema": "Non risulta ancora convocata, nei dati disponibili fino al **3 novembre 2026**, una prossima seduta della VIII Commissione (Ambiente) dedicata al DL 177/2026, **C. 3133**. Di conseguenza non è disponibile un nuovo ordine del giorno.\n\nL’ultima trattazione registrata è del **27 ottobre 2026**, in **sede referente**, con “seguito dell’esame e rinvio”. Il provvedimento risulta tuttora **in corso di esame in Commissione** nella [scheda ufficiale C. 3133](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3133).",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

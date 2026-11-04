@@ -1,0 +1,49 @@
+{
+  "id": "RIC-016",
+  "trappola": false,
+  "domanda": "Nei resoconti della Camera, quali gruppi applaudono gli interventi di quali altri gruppi? Voglio la matrice degli applausi incrociati.",
+  "categoria": "reazioni",
+  "tipo_risposta": "confronto_gruppi",
+  "ramo": "camera",
+  "difficolta": "difficile",
+  "garanzie": [
+    "tutti_i_gruppi"
+  ],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791529.6660469,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni",
+    "conta_reazioni"
+  ],
+  "tempo_s": 43.4,
+  "risposta_sistema": "Nei resoconti d’Aula della Camera, dal **13 ottobre 2022 al 3 novembre 2026**, risultano **60.791 registrazioni di applausi attribuiti a un gruppo**. Un applauso con più gruppi indicati viene contato una volta per ciascun gruppo; quindi non è un numero di episodi fisici univoci.\n\nMatrice dei principali gruppi: **riga = gruppo che applaude; colonna = gruppo dell’oratore**.\n\n| Applaude \\ Oratore | M5S | PD-IDP | AVS | FDI | Lega | FI-PPE | Azione | IV-CR | NM-CP |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n| **M5S** | 14.063 | 850 | 478 | 12 | 4 | 5 | 88 | 163 | 1 |\n| **PD-IDP** | 685 | 9.566 | 1.112 | 17 | 11 | 18 | 219 | 281 | 1 |\n| **AVS** | 282 | 1.078 | 5.587 | 5 | 3 | 3 | 91 | 107 | 1 |\n| **FDI** | 15 | 30 | 21 | 4.827 | 534 | 370 | 98 | 37 | 171 |\n| **Lega** | 3 | 11 | 5 | 341 | 3.327 | 216 | 55 | 22 | 104 |\n| **FI-PPE** | 6 | 16 | 3 | 228 | 201 | 2.135 | 64 | 40 | 79 |\n| **Azione** | 32 | 114 | 50 | 12 | 5 | 20 | 1.767 | 57 | 3 |\n| **IV-CR** | 21 | 71 | 25 | 5 | 2 | 18 | 47 | 1.113 | 2 |\n| **NM-CP** | 1 | 4 | 1 | 97 | 66 | 76 | 19 | 11 | 808 |\n\nLe combinazioni incrociate più frequenti, escluse quelle dello stesso gruppo, sono:\n\n- **PD-IDP → AVS:** 1.112; **AVS → PD-IDP:** 1.078.\n- **M5S → PD-IDP:** 850; **PD-IDP → M5S:** 685.\n- **FDI → Lega:** 534; **Lega → FDI:** 341.\n- **FDI → FI-PPE:** 370; **FI-PPE → FDI:** 228.\n- **Lega → FI-PPE:** 216; **FI-PPE → Lega:** 201.\n- **FDI → Noi Moderati:** 171.\n- **PD-IDP → Italia Viva:** 281; **Italia Viva → PD-IDP:** 71.\n- **Azione → PD-IDP:** 114; **PD-IDP → Azione:** 219.\n\nLa matrice completa ha **171 coppie gruppo-che-reagisce / gruppo-dell’oratore**: oltre ai gruppi in tabella comprende le componenti del Misto, gruppi esistiti solo in una parte della legislatura e i casi in cui il gruppo dell’oratore non è attribuibile. Tra le componenti, ad esempio, la componente **Misto – +Europa – Stati Uniti d’Europa** applaude interventi PD-IDP 25 volte, di Italia Viva 20 e di M5S 7; gli interventi della stessa componente ricevono 210 applausi dalla componente stessa.\n\nAttenzione: il dato segnala che la didascalia dell’applauso è inserita **all’interno dell’intervento** di quel gruppo; non prova necessariamente che l’applauso fosse politicamente rivolto all’oratore. Inoltre gli applausi senza un gruppo esplicitamente nominato non sono assegnabili nella matrice.",
+  "errori": [],
+  "note_domanda": "Gli applausi «dai banchi della maggioranza» non nominano un gruppo e non vanno attribuiti a caso. La diagonale (un gruppo che applaude sé stesso) va distinta. Il gruppo di chi parla si prende da group_at alla data, non da speech.as_group.",
+  "riferimento": {
+    "risposta": "Nei resoconti d'Aula della Camera ci sono 49.003 applausi; 45.886 nominano almeno un gruppo risolto. Ogni gruppo applaude soprattutto i propri oratori: M5S 13.912 su 15.617, PD-IDP 9.451 su 11.815, FdI 5.649 su 7.517, AVS 5.549 su 7.198, Lega 3.333 su 5.012, FI-PPE 2.263 su 3.597. Fuori dalla diagonale, gli applausi incrociati seguono gli schieramenti: PD-IDP applaude soprattutto AVS (988) e M5S (638), M5S applaude PD-IDP (847) e AVS (457), AVS applaude PD-IDP (1.065) e M5S (278); FdI applaude Lega (553) e FI (532), Lega applaude FdI (820) e FI (330), FI applaude FdI (684) e Lega (215). Le righe complete per gruppo che applaude, con il conteggio verso ogni gruppo dell'oratore, sono in «risultato».",
+    "stato": "calcolata",
+    "limiti": "Un applauso conta una volta per ogni coppia (gruppo che applaude, gruppo dell'oratore): «Applausi dei gruppi PD-IDP e AVS» conta per entrambi. Gruppo che applaude da reaction_from (kind = group, grp risolto alla data); gruppo dell'oratore da group_at(speech.person, data), non dal testo as_group. Esclusi 3.117 applausi senza gruppo risolto (2.599 sono solo «Applausi», gli altri nominano singoli deputati o «i banchi della maggioranza»). «(oratore senza gruppo)» = membri del governo non deputati e Presidenza. Componenti del Misto separate."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 0,
+    "trappola": null,
+    "tempo_s": 43.4
+  },
+  "stamattina": {
+    "correttezza": 0
+  },
+  "causa_probabile": "strumento_sbagliato_o_argomenti",
+  "note": "Dà la matrice con diagonale distinta, ma diverse celle si discostano: Lega→FdI 341 contro 813, FI→FdI 228 contro 680, FdI→FI 370 contro 532; il centrosinistra torna (PD→AVS 1.112 contro 993). Stamattina 0."
+}

@@ -1,0 +1,43 @@
+{
+  "id": "DOC-003",
+  "trappola": false,
+  "domanda": "un esempio di legge approvata da tutti da far vedere in classe",
+  "categoria": "voti",
+  "tipo_risposta": "elenco",
+  "ramo": "entrambi",
+  "difficolta": "facile",
+  "garanzie": [],
+  "endpoint": "agente",
+  "gruppo": "pilota",
+  "inizio": 1793791849.6804428,
+  "endpoint_usato": "/api/agente",
+  "strumenti": [
+    "elenco_votazioni",
+    "cerca_atti",
+    "atto",
+    "cerca_atti",
+    "atto",
+    "cerca_atti",
+    "atto"
+  ],
+  "tempo_s": 28.4,
+  "risposta_sistema": "Un buon esempio per la classe è la **legge n. 70 del 17 maggio 2024**, sulle misure di prevenzione e contrasto del bullismo e del cyberbullismo. È una proposta di iniziativa parlamentare ed è diventata legge dopo il passaggio fra Camera e Senato: la scheda ufficiale indica anche la pubblicazione in *Gazzetta Ufficiale* n. 125 del 30 maggio 2024. [Scheda Camera del provvedimento C. 536-891-910-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;536-B)\n\nÈ adatta perché riguarda direttamente la vita scolastica e permette di mostrare che una legge può nascere da proposte di deputati di schieramenti diversi: il testo unificato riuniva, fra le altre, proposte di Devis Dori, Pittalis e Maschio.\n\nUna precisazione importante: non ho potuto verificare qui i numeri delle votazioni finali nei due rami. Quindi non posso affermare con precisione che sia stata approvata **all’unanimità**; posso dire soltanto che è una legge effettivamente approvata e pubblicata. Per controllare se i voti favorevoli furono tutti quelli espressi, guarda l’iter e le votazioni nelle schede ufficiali della Camera e del Senato, partendo dalla [scheda Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;536-B).",
+  "errori": [],
+  "note_domanda": "Es. femminicidio alla Camera (237 sì, 0 no). Dire che è unanimità dei presenti.",
+  "riferimento": {
+    "risposta": "Un esempio è la legge 181/2025 sul delitto di femminicidio (S. 1433, C. 2528): il Senato l'ha approvata il 23/7/2025 con 161 sì, 0 no e 0 astenuti, la Camera in via definitiva il 25/11/2025 con 237 sì, 0 no e 0 astenuti. È l'unanimità dei votanti, non di tutti i parlamentari: alla Camera 89 deputati risultano assenti e 72 in missione. Altri esempi alla Camera, senza voti contrari né astenuti: la legge costituzionale 1/2023 che modifica l'art. 33 della Costituzione sullo sport (20/9/2023, 312 sì), la legge 158/2023 che istituisce il Museo della Shoah a Roma (18/10/2023, 283 sì) e molte ratifiche di accordi internazionali. In tutta la legislatura sono 110 su 522 i voti finali palesi della Camera senza contrari né astenuti, e 61 su 264 al Senato.",
+    "stato": "calcolata",
+    "limiti": "«Approvata da tutti» letto come voto finale palese senza contrari né astenuti (unanimità dei votanti). La lista della Camera (prime 15 per numero di sì) prende i voti legati a un atto della Camera con numero di legge: 77 dei 110 voti finali palesi senza contrari né astenuti; gli altri non hanno atto in vote_act o l'atto non ha numero di legge."
+  },
+  "punteggi": {
+    "correttezza": 1,
+    "fonti": 1,
+    "trappola": null,
+    "tempo_s": 28.4
+  },
+  "stamattina": {
+    "correttezza": 1
+  },
+  "causa_probabile": "ragionamento_o_prompt",
+  "note": "Propone la legge 70/2024 sul bullismo, che nel DB è davvero passata senza contrari (Camera 262-0-0 e 232-0-0, Senato 124-0-0), ma dice di non aver potuto verificare i voti e non conferma l'unanimità dei votanti. Come stamattina (1)."
+}

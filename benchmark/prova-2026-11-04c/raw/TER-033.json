@@ -1,0 +1,218 @@
+{
+ "id": "TER-033",
+ "trappola": false,
+ "domanda": "Su quali temi il Ministero del Lavoro riceve più interrogazioni: sicurezza sul lavoro, pensioni o ammortizzatori sociali?",
+ "categoria": "temi",
+ "tipo_risposta": "classifica",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791638.318625,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": "sicurezza sul lavoro",
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "lavoro",
+    "became_law": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 13/10/2022 al 04/11/2026; filtri: rivolti_al_ministero lavoro; tema «sicurezza sul lavoro»: atti con almeno uno di 1 concetti dei thesauri (COMMISSIONE CONSULTIVA PERMANENTE PER LA SALUTE E SICUREZZA SUL LAVORO). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": "pension",
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "lavoro",
+    "became_law": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 13/10/2022 al 04/11/2026; filtri: rivolti_al_ministero lavoro; tema «pension»: atti con almeno uno di 68 concetti dei thesauri (ASSEGNI PENSIONABILI, ASSICURAZIONI E PENSIONI PRIVATE, Autorità europea delle assicurazioni e delle pensioni aziendali e professionali, CASELLARIO CENTRALE DELLE PENSIONI, CASSA PER LE PENSIONI AGLI INSEGNANTI DI ASILO E DI SCUOLE ELEMENTARI PARIFICATE, CASSA PER LE PENSIONI AGLI UFFICIALI GIUDIZIARI E AGLI AIUTANTI UFFICIALI GIUDIZIARI, CASSA PER LE PENSIONI AI DIPENDENTI DEGLI ENTI LOCALI ( CPDEL ), CASSA PER LE PENSIONI AI SANITARI ( CPS ), CESSAZIONE O SOSPENSIONE DEL RAPPORTO DI PUBBLICO IMPIEGO, COMITATO AMMINISTRATORE DELLA GESTIONE PENSIONISTICA DEI LAVORATORI AUTONOMI, COMMISSIONE DI VIGILANZA SUI FONDI PENSIONE ( COVIP ), CONVITTI COLLEGI PENSIONATI STUDENTESCHI…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 180, \"rows_total\": 6, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"tipo\": \"committee_question\", \"atti\": 71, \"dal\": \"2023-01-09\", \"al\": \"2026-09-15\"}, {\"ramo\": \"camera\", \"tipo\": \"written_question\", \"atti\": 56, \"dal\": \"2022-12-12\", \"al\": \"2026-09-09\"}, {\"ramo\": \"senato\", \"tipo\": \"written_question\", \"atti\": 19, \"dal\": \"2023-01-12\", \"al\": \"2026-07-16\"}, {\"ramo\": \"camera\", \"tipo\": \"interpellation\", \"atti\": 13, \"dal\": \"2023-01-27\", \"al\": \"2026-05-07\"}, {\"ramo\": \"senato\", \"tipo\": \"oral_question\", \"atti\": 11, \"dal\": \"2022-11-17\", \"al\": \"2026-05-27\"}, {\"ramo\": \"camera\", \"tipo\": \"oral_question\", \"atti\": 10, \"dal\": \"2022-11-29\", \"al\": \"2026-07-07\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": "ammortizzatori sociali",
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "lavoro",
+    "became_law": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 13/10/2022 al 04/11/2026; filtri: rivolti_al_ministero lavoro; tema «ammortizzatori sociali»: atti con almeno uno di 1 concetti dei thesauri (AMMORTIZZATORI SOCIALI). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": "\"sicurezza sul lavoro\"",
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "lavoro",
+    "became_law": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 13/10/2022 al 04/11/2026; filtri: parole_del_titolo \\\"sicurezza sul lavoro\\\", rivolti_al_ministero lavoro. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": "pension",
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "lavoro",
+    "became_law": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 13/10/2022 al 04/11/2026; filtri: parole_del_titolo pension, rivolti_al_ministero lavoro. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": "\"ammortizzatori sociali\"",
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "lavoro",
+    "became_law": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo",
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 13/10/2022 al 04/11/2026; filtri: parole_del_titolo \\\"ammortizzatori sociali\\\", rivolti_al_ministero lavoro. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 0, \"rows_total\": 0, \"offset\": 0, \"rows\": []}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": null,
+    "initiative": null,
+    "q": null,
+    "subject": "pension",
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": "lavoro",
+    "became_law": null,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": false,
+    "group_by": [
+     "ramo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Camera e Senato, presentati dal 13/10/2022 al 04/11/2026; filtri: rivolti_al_ministero lavoro; tema «pension»: atti con almeno uno di 68 concetti dei thesauri (ASSEGNI PENSIONABILI, ASSICURAZIONI E PENSIONI PRIVATE, Autorità europea delle assicurazioni e delle pensioni aziendali e professionali, CASELLARIO CENTRALE DELLE PENSIONI, CASSA PER LE PENSIONI AGLI INSEGNANTI DI ASILO E DI SCUOLE ELEMENTARI PARIFICATE, CASSA PER LE PENSIONI AGLI UFFICIALI GIUDIZIARI E AGLI AIUTANTI UFFICIALI GIUDIZIARI, CASSA PER LE PENSIONI AI DIPENDENTI DEGLI ENTI LOCALI ( CPDEL ), CASSA PER LE PENSIONI AI SANITARI ( CPS ), CESSAZIONE O SOSPENSIONE DEL RAPPORTO DI PUBBLICO IMPIEGO, COMITATO AMMINISTRATORE DELLA GESTIONE PENSIONISTICA DEI LAVORATORI AUTONOMI, COMMISSIONE DI VIGILANZA SUI FONDI PENSIONE ( COVIP ), CONVITTI COLLEGI PENSIONATI STUDENTESCHI…). Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 180, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"ramo\": \"camera\", \"atti\": 150, \"dal\": \"2022-11-29\", \"al\": \"2026-09-15\"}, {\"ramo\": \"senato\", \"atti\": 30, \"dal\": \"2022-11-17\", \"al\": \"2026-07-16\"}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti",
+  "conta_atti"
+ ],
+ "tempo_s": 24.5,
+ "risposta_sistema": "Il tema più frequente è **le pensioni**: **180 atti di sindacato ispettivo rivolti al Ministero del Lavoro** nella XIX legislatura — **150 alla Camera** e **30 al Senato**.\n\nPer confronto, con la classificazione tematica disponibile:\n- **sicurezza sul lavoro**: 0;\n- **ammortizzatori sociali**: 0.\n\nIl confronto è fatto sugli atti rivolti al Ministero del Lavoro e indicizzati nei thesauri tematici, dal 13 ottobre 2022 al 4 novembre 2026. Per “pensioni” la classificazione comprende 68 concetti collegati; per gli altri due temi i descrittori disponibili sono più circoscritti. Dunque il risultato mostra soprattutto che le pensioni sono di gran lunga il tema più intercettato dalla classificazione, non che non esistano interrogazioni su sicurezza o ammortizzatori formulate con termini diversi.",
+ "eventi": {
+  "status": 1,
+  "tool": 14,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

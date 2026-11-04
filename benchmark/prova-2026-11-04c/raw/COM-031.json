@@ -1,0 +1,85 @@
+{
+ "id": "COM-031",
+ "domanda": "Il Bollettino delle commissioni del 30 ottobre 2026 è definitivo o ancora provvisorio?",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "sitting.provisional: 352 sedute provvisorie, tutte resoconti stenografici di commissione. Le risposte su sedute provvisorie vanno marcate.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792154.3570838,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": null,
+    "body": "commissioni",
+    "start": "2026-10-30",
+    "end": "2026-10-30",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": null,
+    "body": null,
+    "seat": null,
+    "stage": null,
+    "q": null,
+    "start": "2026-10-30",
+    "end": "2026-10-30",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 5, \"items\": [{\"uri\": \"it:camera:19:sed0736:tit00010\", \"title\": \"Missioni.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0736&tipo=stenografico\", \"acts\": [], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0736:tit00020\", \"title\": \"Modifica nella composizione di gruppi parlamentari.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0736&tipo=stenografico\", \"acts\": [], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0736:tit00030\", \"title\": \"Annuncio dell'elezione del nuovo presidente della Commissione parlamentare di controllo sull'attività degli enti gestori di forme obbligatorie di previdenza e assistenza sociale.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0736&tipo=stenografico\", \"acts\": [], \"speakers\": [], \"speakers_total\": 0}, {\"uri\": \"it:camera:19:sed0736:tit00040\", \"title\": \"Svolgimento di una interpellanza urgente.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0736&tipo=stenografico\", \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:308853\", \"name\": \"Marianna Ricciardi\", \"group\": \"M5S\"}, {\"uri\": \"it:person:camera:307332\", \"name\": \"Marcello Gemmato\", \"group\": \"FDI\"}], \"speakers_total\": 2}, {\"uri\": \"it:camera:19:sed0736:tit00050\", \"title\": \"Ordine del giorno della prossima seduta.\", \"stage\": null, \"sitting\": \"it:camera:19:sed0736\", \"date\": \"2026-10-30\", \"chamber\": \"camera\", \"body_name\": null, \"seat\": null, \"number\": 736, \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0736&tipo=stenografico\", \"acts\": [], \"speakers\": [], \"speakers_total\": 0}], \"more\": false}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": null,
+    "start": "2026-10-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 84, \"items\": [{\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0737&tipo=stenografico\"}, {\"uri\": \"it:camera:19:sed0736\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 736, \"date\": \"2026-10-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"url\": \"https://www.camera.it/leg19/410?idSeduta=0736&tipo=stenografico\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 30, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c07:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c07:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c27:sede"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": null,
+    "start": "2026-10-30",
+    "end": "2026-10-30",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  }
+ ],
+ "strumenti": [
+  "elenco_sedute",
+  "argomenti_sedute",
+  "elenco_sedute",
+  "elenco_sedute"
+ ],
+ "tempo_s": 16.0,
+ "risposta_sistema": "Non risulta alcuna seduta di commissione né alla Camera né al Senato il **30 ottobre 2026** nei dati disponibili, aggiornati fino al 3 novembre. Perciò non posso classificare un eventuale Bollettino di quella data come definitivo o provvisorio: il documento non è presente nei dati consultabili.\n\nAlla Camera risulta invece una seduta d’Aula il 30 ottobre, indicata come svolta nel [resoconto ufficiale della seduta n. 736](https://www.camera.it/leg19/410?idSeduta=0736&tipo=stenografico).",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

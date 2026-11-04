@@ -1,0 +1,346 @@
+{
+ "id": "COMU-038",
+ "domanda": "Mi fai un confronto tra quanto parla in Aula la maggioranza e quanto l'opposizione, per mese, nel 2026? Per una infografica.",
+ "categoria": "statistiche",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Misto per componente: alcune componenti non sono né maggioranza né opposizione in modo stabile.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792444.854918,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese",
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"errore\": \"il conteggio ha superato 25 secondi: restringi il periodo, il ramo o i filtri\"}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-11-04",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "mese",
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Senato, sedute d'Aula, dal 01/01/2026 al 04/11/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 6707, \"parole\": 1967803}, \"rows_total\": 25, \"offset\": 0, \"rows\": [{\"mese\": \"2026-04\", \"schieramento\": \"opposizione\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 1080, \"parole\": 214600}, {\"mese\": \"2026-09\", \"schieramento\": \"opposizione\", \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\", \"interventi\": 816, \"parole\": 226595}, {\"mese\": \"2026-06\", \"schieramento\": \"opposizione\", \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\", \"interventi\": 749, \"parole\": 177738}, {\"mese\": \"2026-10\", \"schieramento\": \"opposizione\", \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\", \"interventi\": 483, \"parole\": 121285}, {\"mese\": \"2026-07\", \"schieramento\": \"opposizione\", \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\", \"interventi\": 471, \"parole\": 158406}, {\"mese\": \"2026-03\", \"schieramento\": \"opposizione\", \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\", \"interventi\": 400, \"parole\": 119276}, {\"mese\": \"2026-01\", \"schieramento\": \"opposizione\", \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\", \"interventi\": 354, \"parole\": 113849}, {\"mese\": \"2026-04\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 288, \"parole\": 100214}, {\"mese\": \"2026-01\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-01-07\", \"al\": \"2026-01-29\", \"interventi\": 250, \"parole\": 79049}, {\"mese\": \"2026-03\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\", \"interventi\": 244, \"parole\": 80709}, {\"mese\": \"2026-07\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\", \"interventi\": 224, \"parole\": 86130}, {\"mese\": \"2026-02\", \"schieramento\": \"opposizione\", \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\", \"interventi\": 221, \"parole\": 73527}, {\"mese\": \"2026-06\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\", \"interventi\": 220, \"parole\": 80176}, {\"mese\": \"2026-10\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\", \"interventi\": 204, \"parole\": 71853}, {\"mese\": \"2026-09\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\", \"interventi\": 190, \"parole\": 57721}, {\"mese\": \"2026-05\", \"schieramento\": \"opposizione\", \"dal\": \"2026-05-12\", \"al\": \"2026-05-19\", \"interventi\": 132, \"parole\": 52414}, {\"mese\": \"2026-02\", \"schieramento\": \"maggioranza\", \"dal\": \"2026-02-04\", \"al\": \"2026-02-25\", \"interventi\": 125,"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-01-01",
+    "end": "2026-01-31",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/01/2026 al 31/01/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 829, \"parole\": 361817}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-01-13\", \"al\": \"2026-01-30\", \"interventi\": 587, \"parole\": 243661}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-01-13\", \"al\": \"2026-01-29\", \"interventi\": 229, \"parole\": 116230}, {\"schieramento\": \"misto\", \"dal\": \"2026-01-27\", \"al\": \"2026-01-29\", \"interventi\": 13, \"parole\": 1926}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-02-01",
+    "end": "2026-02-28",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/02/2026 al 28/02/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 959, \"parole\": 425526}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-02-02\", \"al\": \"2026-02-27\", \"interventi\": 657, \"parole\": 295859}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-02-02\", \"al\": \"2026-02-25\", \"interventi\": 287, \"parole\": 124498}, {\"schieramento\": \"misto\", \"dal\": \"2026-02-04\", \"al\": \"2026-02-18\", \"interventi\": 15, \"parole\": 5169}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-03-01",
+    "end": "2026-03-31",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/03/2026 al 31/03/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 791, \"parole\": 338842}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-03-02\", \"al\": \"2026-03-31\", \"interventi\": 489, \"parole\": 218117}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-03-02\", \"al\": \"2026-03-31\", \"interventi\": 269, \"parole\": 115399}, {\"schieramento\": \"misto\", \"dal\": \"2026-03-03\", \"al\": \"2026-03-31\", \"interventi\": 33, \"parole\": 5326}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-04-01",
+    "end": "2026-04-30",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/04/2026 al 30/04/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 1535, \"parole\": 650059}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 1216, \"parole\": 484419}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 284, \"parole\": 154105}, {\"schieramento\": \"misto\", \"dal\": \"2026-04-01\", \"al\": \"2026-04-30\", \"interventi\": 35, \"parole\": 11535}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-05-01",
+    "end": "2026-05-31",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/05/2026 al 31/05/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 772, \"parole\": 403556}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\", \"interventi\": 535, \"parole\": 275772}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-05-05\", \"al\": \"2026-05-28\", \"interventi\": 230, \"parole\": 125641}, {\"schieramento\": \"misto\", \"dal\": \"2026-05-06\", \"al\": \"2026-05-13\", \"interventi\": 7, \"parole\": 2143}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-06-01",
+    "end": "2026-06-30",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/06/2026 al 30/06/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 1039, \"parole\": 470129}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\", \"interventi\": 799, \"parole\": 346265}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\", \"interventi\": 225, \"parole\": 120385}, {\"schieramento\": \"misto\", \"dal\": \"2026-06-03\", \"al\": \"2026-06-30\", \"interventi\": 15, \"parole\": 3479}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-07-01",
+    "end": "2026-07-31",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/07/2026 al 31/07/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 1603, \"parole\": 548510}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\", \"interventi\": 1238, \"parole\": 391037}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-07-01\", \"al\": \"2026-07-30\", \"interventi\": 350, \"parole\": 153878}, {\"schieramento\": \"misto\", \"dal\": \"2026-07-07\", \"al\": \"2026-07-22\", \"interventi\": 15, \"parole\": 3595}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-08-01",
+    "end": "2026-08-31",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/08/2026 al 31/08/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 709, \"parole\": 269627}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\", \"interventi\": 452, \"parole\": 176080}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\", \"interventi\": 240, \"parole\": 89803}, {\"schieramento\": \"misto\", \"dal\": \"2026-08-03\", \"al\": \"2026-08-06\", \"interventi\": 17, \"parole\": 3744}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-09-01",
+    "end": "2026-09-30",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/09/2026 al 30/09/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 564, \"parole\": 296699}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\", \"interventi\": 392, \"parole\": 201107}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-09-09\", \"al\": \"2026-09-30\", \"interventi\": 161, \"parole\": 92990}, {\"schieramento\": \"misto\", \"dal\": \"2026-09-09\", \"al\": \"2026-09-28\", \"interventi\": 11, \"parole\": 2602}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-10-01",
+    "end": "2026-10-31",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/10/2026 al 31/10/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 1152, \"parole\": 551111}, \"rows_total\": 3, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-10-01\", \"al\": \"2026-10-30\", \"interventi\": 881, \"parole\": 400873}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-10-01\", \"al\": \"2026-10-28\", \"interventi\": 265, \"parole\": 148725}, {\"schieramento\": \"misto\", \"dal\": \"2026-10-08\", \"al\": \"2026-10-20\", \"interventi\": 6, \"parole\": 1513}]}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": "parlamentare",
+    "start": "2026-11-01",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "schieramento"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 01/11/2026 al 03/11/2026; filtri: ruolo parlamentare. Schieramento: maggioranza e opposizione dai voti di fiducia di ogni gruppo alla data; le componenti del Misto sono contate a parte («misto»), da dire nella risposta. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 97, \"parole\": 45333}, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"schieramento\": \"opposizione\", \"dal\": \"2026-11-03\", \"al\": \"2026-11-03\", \"interventi\": 81, \"parole\": 37551}, {\"schieramento\": \"maggioranza\", \"dal\": \"2026-11-03\", \"al\": \"2026-11-03\", \"interventi\": 16, \"parole\": 7782}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi"
+ ],
+ "tempo_s": 59.3,
+ "risposta_sistema": "Per un’infografica userei le **parole pronunciate** come misura principale, affiancando i **turni di parola**. In Aula, nel 2026, l’opposizione ha parlato più della maggioranza in ogni mese con sedute registrate, sia alla Camera sia al Senato.\n\n**Camera — parole (interventi)**\n\n| Mese | Maggioranza | Opposizione |\n|---|---:|---:|\n| Gennaio | 116.230 (229) | 243.661 (587) |\n| Febbraio | 124.498 (287) | 295.859 (657) |\n| Marzo | 115.399 (269) | 218.117 (489) |\n| Aprile | 154.105 (284) | 484.419 (1.216) |\n| Maggio | 125.641 (230) | 275.772 (535) |\n| Giugno | 120.385 (225) | 346.265 (799) |\n| Luglio | 153.878 (350) | 391.037 (1.238) |\n| Agosto | 89.803 (240) | 176.080 (452) |\n| Settembre | 92.990 (161) | 201.107 (392) |\n| Ottobre | 148.725 (265) | 400.873 (881) |\n| 1–3 novembre | 7.782 (16) | 37.551 (81) |\n\nPicchi: opposizione ad **aprile** per interventi (1.216) e a **ottobre** per parole (400.873); maggioranza ad **agosto** per numero di interventi (240) e ad **aprile** per parole (154.105).\n\n**Senato — parole (interventi)**\n\n| Mese | Maggioranza | Opposizione |\n|---|---:|---:|\n| Gennaio | 79.049 (250) | 113.849 (354) |\n| Febbraio | 41.759 (125) | 73.527 (221) |\n| Marzo | 80.709 (244) | 119.276 (400) |\n| Aprile | 100.214 (288) | 214.600 (1.080) |\n| Maggio | 27.840 (78) | 52.414 (132) |\n| Giugno | 80.176 (220) | 177.738 (749) |\n| Luglio | 86.130 (224) | 158.406 (471) |\n| Agosto | 31.085 (62) | 49.801 (110) |\n| Settembre | 57.721 (190) | 226.595 (816) |\n| Ottobre | 71.853 (204) | 121.285 (483) |\n\nPicchi: opposizione a **aprile** per interventi (1.080) e a **settembre** per parole (226.595); maggioranza ad **aprile** (288 interventi e 100.214 parole).\n\nDati fino all’ultima seduta disponibile, **3 novembre 2026**. Il conteggio include soltanto gli interventi con ruolo di parlamentare nei resoconti stenografici d’Aula: esclude quindi Presidenza, Governo, relatori e altri ruoli. Maggioranza e opposizione sono classificate in base ai voti di fiducia dei gruppi alla data; le componenti del gruppo Misto sono tenute fuori da entrambe le serie.\n\nFonte: resoconti stenografici d’Aula di Camera e Senato.",
+ "eventi": {
+  "status": 1,
+  "tool": 26,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

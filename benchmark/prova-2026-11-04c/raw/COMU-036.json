@@ -1,0 +1,130 @@
+{
+ "id": "COMU-036",
+ "domanda": "Quante audizioni ha fatto la Camera sulla legge annuale per la concorrenza 2026 e chi è stato sentito?",
+ "categoria": "audizioni",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "AC 3120.",
+ "trappola": false,
+ "endpoint": "agente",
+ "gruppo": "nuove",
+ "inizio": 1793792521.435658,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"legge annuale per il mercato e la concorrenza\" 2026",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3120\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3120\", \"kind\": \"bill\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"date\": \"2026-09-28\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120\", \"initiative\": \"Governo\"}]}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "X Commissione",
+    "seat": null,
+    "stage": null,
+    "q": "3120",
+    "start": "2026-09-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "Attività produttive",
+    "seat": null,
+    "stage": null,
+    "q": "concorrenza",
+    "start": "2026-09-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:bol20261028:c10:sede00010:tit00010\", \"title\": \"Legge annuale per il mercato e la concorrenza per il 2026.\", \"stage\": \"Seguito dell'esame e rinvio\", \"sitting\": \"it:camera:19:bol20261028:c10:sede00010\", \"date\": \"2026-10-28\", \"chamber\": \"camera\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"seat\": \"SEDE REFERENTE\", \"number\": 10, \"status\": \"held\", \"url\": null, \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"group\": \"LEGA\"}], \"speakers_total\": 2}, {\"uri\": \"it:camera:19:bol20261027:c10:sede00030:tit00010\", \"title\": \"Legge annuale per il mercato e la concorrenza per il 2026.\", \"stage\": \"Esame e rinvio\", \"sitting\": \"it:camera:19:bol20261027:c10:sede00030\", \"date\": \"2026-10-27\", \"chamber\": \"camera\", \"body_name\": \"Attività produttive, commercio e turismo (X)\", \"seat\": \"SEDE REFERENTE\", \"number\": 30, \"status\": \"held\", \"url\": null, \"acts\": [{\"ref\": \"ac:3120\", \"uri\": \"it:camera:19:ac:3120\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"status\": \"In corso di esame in Commissione\", \"law\": null}], \"speakers\": [{\"name\": null}, {\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"group\": \"LEGA\"}], \"speakers_total\": 2}], \"more\": false}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:3120"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:3120\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3120\", \"kind\": \"bill\", \"title\": \"\\\"Legge annuale per il mercato e la concorrenza 2026\\\" (3120)\", \"date\": \"2026-09-28\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"status_date\": \"2026-10-27\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3120\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:39200\", \"name\": \"Adolfo Urso\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro delle Imprese e del made in Italy\"}, {\"person\": {\"uri\": \"it:person:camera:303089\", \"name\": \"Gilberto Pichetto Fratin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=303089&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Ambiente e della sicurezza energetica\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-09-28\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-21\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-27\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3120.19PDL0217530\", \"title\": \"Disegno di Legge presentato il 28 settembre 2026\", \"date\": \"2026-09-28\", \"articles\": 13, \"length\": 121071}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "Attività produttive",
+    "start": "2026-09-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": null,
+    "seat": null,
+    "stage": null,
+    "q": "audizione",
+    "start": "2026-09-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 255, \"items\": [{\"uri\": \"it:camera:19:bol20261029:c71:sede00020:tit00010\", \"title\": \"Audizione di Massimo Lucani.\", \"stage\": null, \"sitting\": \"it:camera:19:bol20261029:c71:sede00020\", \"date\": \"2026-10-29\", \"chamber\": \"camera\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"seat\": \"PROCEDURE INFORMATIVE\", \"number\": 20, \"status\": \"held\", \"url\": null, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:308867\", \"name\": \"Fabio Roscani\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:308867\", \"name\": \"Fabio Roscani\", \"group\": \"FDI\"}, {\"name\": null}, {\"uri\": \"it:person:camera:308831\", \"name\": \"Dario Iaia\", \"group\": \"FDI\"}, {\"uri\": \"it:person:camera:307871\", \"name\": \"Daisy Pirovano\", \"group\": null}], \"speakers_total\": 5}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00020:tit00010\", \"title\": \"Audizione di rappresentanti dell'Associazione Persone in cammino.\", \"stage\": null, \"sitting\": \"it:camera:19:bol20261029:c83:sede00020\", \"date\": \"2026-10-29\", \"chamber\": \"camera\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"seat\": \"PROCEDURE INFORMATIVE\", \"number\": 20, \"status\": \"held\", \"url\": null, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:camera:308764\", \"name\": \"Francesco Maria Salvatore Ciancitto\", \"group\": \"FDI\"}, {\"name\": null}, {\"uri\": \"it:person:camera:37300\", \"name\": \"Lucio Malan\", \"group\": null}, {\"uri\": \"it:person:camera:308764\", \"name\": \"Francesco Maria Salvatore Ciancitto\", \"group\": \"FDI\"}], \"speakers_total\": 4}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00020:tit00010\", \"title\": \"Audizione informale di Dario Scannapieco, amministratore delegato e direttore generale di Cassa Depositi e Prestiti S.p.A., nell'ambito dell'esame della Relazione sullo stato di attuazione del Piano Mattei, aggiornata al 30 giugno 2026, trasmessa ai sensi dell'art. 5 del decreto-legge 15 novembre 2023, n. 161, convertito, con modificazioni, dalla legge 11 gennaio 2024, n. 2 (Doc. CCXXXIII, n. 3).\", \"stage\": null, \"sitting\": \"it:camera:19:bol20261029:c03:sede00020\", \"date\": \"2026-10-29\", \"chamber\": \"camera\", \"body_name\": \"Affari esteri e comunitari (III)\", \"seat\": \"AUDIZIONI INFORMALI\", \"number\": 20, \"status\": \"held\", \"url\": null, \"acts\": [{\"ref\": \"doc:CCXXXIII, n. 3\", \"uri\": null, \"title\": null, \"status\": null, \"law\": null}], \"speakers\": [{\"name\": null}], \"speakers_total\": 1}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00020:tit00020\", \"title\": \"Audizione di Angelo Cassani.\", \"stage\": null, \"sitting\": \"it:camera:19:bol20261029:c71:sede00020\", \"date\": \"2026-10-29\", \"chamber\": \"camera\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"seat\": \"PROCEDURE INFORMATIVE\", \"number\": 20, \"status\": \"held\", \"url\": null, \"acts\": [], \"speakers\": [{\"uri\": \"it:person:ca"
+  },
+  {
+   "name": "argomenti_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": null,
+    "seat": "AUDIZIONI INFORMALI",
+    "stage": null,
+    "q": "\"mercato e la concorrenza\"",
+    "start": "2026-09-28",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": [], \"more\": false}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "argomenti_sedute",
+  "argomenti_sedute",
+  "atto",
+  "elenco_sedute",
+  "argomenti_sedute",
+  "argomenti_sedute"
+ ],
+ "tempo_s": 25.0,
+ "risposta_sistema": "La Camera non ha ancora svolto audizioni sul disegno di legge **C. 3120, “Legge annuale per il mercato e la concorrenza 2026”**: **0 audizioni** e quindi **nessun soggetto sentito**.\n\nL’esame in X Commissione (Attività produttive) è iniziato il 27 ottobre e ha avuto un seguito il 28 ottobre 2026, entrambi in sede referente; l’atto risulta tuttora in esame in Commissione. [Scheda ufficiale C. 3120](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3120)\n\nDati disponibili fino alla seduta del **3 novembre 2026**.",
+ "eventi": {
+  "status": 1,
+  "tool": 14,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

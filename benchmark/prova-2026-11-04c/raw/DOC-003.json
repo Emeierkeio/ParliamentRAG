@@ -1,0 +1,115 @@
+{
+ "id": "DOC-003",
+ "trappola": false,
+ "domanda": "un esempio di legge approvata da tutti da far vedere in classe",
+ "categoria": "voti",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Es. femminicidio alla Camera (237 sì, 0 no). Dire che è unanimità dei presenti.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791849.6804428,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": null,
+    "kind": null,
+    "final": true,
+    "confidence": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 407, \"items\": [{\"uri\": \"it:camera:19:sed0735:v017\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 17, \"date\": \"2026-10-28\", \"title\": \"Votazione finale \", \"kind\": \"final\", \"favor\": 143, \"against\": 113, \"abstain\": 3, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"\\\"Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie\\\" (2700)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_17&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0731:v004\", \"sitting\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"number\": 4, \"date\": \"2026-10-22\", \"title\": \"Votazione finale PDL n. 2904\", \"kind\": \"final\", \"favor\": 220, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"GRIBAUDO ed altri: \\\"Modifica all’articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle pers\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=731_4&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v097\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 97, \"date\": \"2026-10-21\", \"title\": \"Votazione finale PDL n. 0362\", \"kind\": \"final\", \"favor\": 137, \"against\": 0, \"abstain\": 94, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"MOLINARI ed altri: \\\"Istituzione e disciplina delle zone del commercio nei centri storici\\\" (362)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_97&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v055\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 55, \"date\": \"2026-10-21\", \"title\": \"Votazione finale DDL n. 3076\", \"kind\": \"final\", \"favor\": 131, \"against\": 0, \"abstain\": 95, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 1779. - \\\"Disposizioni in materia di protezione civile\\\"<i>(approvato dal Senato)</i> (3076)\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_55&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v005\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 5, \"date\": \"2026-10-21\", \"title\": \"Votazione finale DDL n. 2958\", \"kind\": \"final\", \"favor\": 239, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"confidence\": false, \"act_title\": \"S. 1880. - \\\"Ratifica ed esecuzione dei Trattati di estradizione, trasferimento delle persone condannate e assistenza giudiziaria in materia penale tra la Repubblica italiana e la Repubblica Socialista\", \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_5&tipo=de"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "Museo per la memoria del disastro ferroviario di Viareggio",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2225",
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2225\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2225\", \"kind\": \"bill\", \"title\": \"DEBORAH BERGAMINI ed altri: \\\"Istituzione del Museo per la memoria del disastro ferroviario di Viareggio\\\" (2225)\", \"date\": \"2025-02-05\", \"status\": \"Approvato. Trasmesso al Senato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2225\", \"initiative\": \"Parlamentare\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2958"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2958\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2958\", \"kind\": \"bill\", \"title\": \"S. 1880. - \\\"Ratifica ed esecuzione dei Trattati di estradizione, trasferimento delle persone condannate e assistenza giudiziaria in materia penale tra la Repubblica italiana e la Repubblica Socialista del Vietnam, fatti a Roma il 18 e il 26 luglio 2023\\\" <em>(approvato dal Senato)</em> (2958)\", \"date\": \"2026-06-10\", \"status\": \"Approvato definitivamente, non ancora pubblicato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2958\", \"initiative\": \"Governo\", \"kind_raw\": \"disegno_legge_ordinario\", \"status_date\": \"2026-10-21\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2958\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:308838\", \"name\": \"Antonio Tajani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308838&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro degli Affari esteri e della cooperazione internazionale\"}, {\"person\": {\"uri\": \"it:person:camera:308798\", \"name\": \"Carlo Nordio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308798&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro della Giustizia\"}, {\"person\": {\"uri\": \"it:person:camera:50115\", \"name\": \"Giancarlo Giorgetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50115&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Economia e delle finanze\"}, {\"person\": {\"uri\": \"it:person:camera:309042\", \"name\": \"Matteo Piantedosi\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro dell'Interno\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-06-10\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-07-01\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-07-15\"}, {\"order\": 4, \"title\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"date\": \"2026-09-23\"}, {\"order\": 5, \"title\": \"In discussione\", \"date\": \"2026-10-12\"}, {\"order\": 6, \"title\": \"Approvato definitivamente, non ancora pubblicato\", \"date\": \"2026-10-21\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.2958.19PDL0200360\", \"title\": \"Disegno di legge trasmesso dal Senato il 10 giugno 2026\", \"date\": \"2026-06-10\", \"articles\": 4, \"length\": 3654}], \"joined\": [], \"votes\": [{\"uri\": \"it:camera:19:sed0730:v001\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 1, \"date\": \"2026-"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Ratifica ed esecuzione dei Trattati di estradizione\" Vietnam",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": "1880",
+    "signer": null,
+    "initiative": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1880\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1880\", \"kind\": \"bill\", \"title\": \"Ratifica ed esecuzione dei Trattati di estradizione, trasferimento delle persone condannate e assistenza giudiziaria in materia penale tra la Repubblica italiana e la Repubblica Socialista del Vietnam, fatti a Roma il 18 e il 26 luglio 2023\", \"date\": \"2026-04-22\", \"status\": \"approvato\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55322.htm\", \"initiative\": \"Gov. Meloni-I: Ministro affari esteri e coop. inter.le Tajani ed altri\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1880"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1880\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1880\", \"kind\": \"bill\", \"title\": \"Ratifica ed esecuzione dei Trattati di estradizione, trasferimento delle persone condannate e assistenza giudiziaria in materia penale tra la Repubblica italiana e la Repubblica Socialista del Vietnam, fatti a Roma il 18 e il 26 luglio 2023\", \"date\": \"2026-04-22\", \"status\": \"approvato\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55322.htm\", \"initiative\": \"Gov. Meloni-I: Ministro affari esteri e coop. inter.le Tajani ed altri\", \"kind_raw\": \"ordinaria\", \"description\": \"Ministro degli affari esteri e coop. inter.le Antonio Tajani (Gov. Meloni-I); Ministro dell'economia e finanze Giancarlo Giorgetti (Gov. Meloni-I); Ministro dell'interno Matteo Piantedosi (Gov. Meloni-I); Ministro della giustizia Carlo Nordio (Gov. Meloni-I)\", \"source_uri\": \"http://dati.senato.it/ddl/60073\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01504466\", \"kind\": \"presented\", \"articles\": 4, \"length\": 3990}, {\"code\": \"senato.19.01509212\", \"kind\": \"message\", \"articles\": 4, \"length\": 3076}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "bullismo cyberbullismo",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 5, \"items\": [{\"uri\": \"it:camera:19:ac:2747\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2747\", \"kind\": \"bill\", \"title\": \"SOUMAHORO: \\\"Introduzione dell’articolo 612-<em>bis</em>.1 del codice penale, concernente i reati di bullismo e cyberbullismo, istituzione della Direzione nazionale per i reati di bullismo e cyberbullismo ed estensione del patrocinio a spese dello Stato in favore delle vittime di tali reati\\\" (2747)\", \"date\": \"2025-12-18\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2747\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:536-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"536-891-910-B\", \"kind\": \"bill\", \"title\": \"S. 866. - DORI e D'ORSO; PITTALIS ed altri; MASCHIO ed altri: \\\"Disposizioni e delega al Governo in materia di prevenzione e contrasto del bullismo e del cyberbullismo\\\" <em>(approvata, in un testo unificato, dalla Camera e modificata dal Senato) </em>(536-891-910-B)\", \"date\": \"2024-02-22\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"70\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;536-B\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:1448\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"1448\", \"kind\": \"bill\", \"title\": \"LUPI: \\\"Istituzione di un’applicazione informatica per dispositivi mobili e di un servizio di assistenza in favore dei minorenni vittime di atti di bullismo e cyberbullismo\\\" (1448)\", \"date\": \"2023-10-03\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1448\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:910\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"910\", \"kind\": \"bill\", \"title\": \"MASCHIO ed altri: \\\"Introduzione dell’articolo 612-<em>bis.</em>1 del codice penale, concernente i reati di bullismo e cyberbullismo, modifica dell’articolo 731 del medesimo codice, in materia di inosservanza dell’obbligo di istruzione dei minori, e delega al Governo per l’adozione di disposizioni in materia di prevenzione e contrasto del bullismo e del cyberbullismo\\\" (910)\", \"date\": \"2023-02-22\", \"status\": \"Approvato in testo unificato. Trasmesso al Senato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;910\", \"initiative\": \"Parlamentare\"}, {\"uri\": \"it:camera:19:ac:891\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"891\", \"kind\": \"bill\", \"title\": \"PITTALIS ed altri: \\\"Modifiche alla legge 29 maggio 2017, n. 71, e altre disposizioni per il contrasto dei fenomeni del bullismo e del cyberbullismo\\\" (891)\", \"date\": \"2023-02-16\", \"status\": \"Approvato in testo unificato. Trasmesso al Senato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;891\", \"initi"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:536-B"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:536-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"536-891-910-B\", \"kind\": \"bill\", \"title\": \"S. 866. - DORI e D'ORSO; PITTALIS ed altri; MASCHIO ed altri: \\\"Disposizioni e delega al Governo in materia di prevenzione e contrasto del bullismo e del cyberbullismo\\\" <em>(approvata, in un testo unificato, dalla Camera e modificata dal Senato) </em>(536-891-910-B)\", \"date\": \"2024-02-22\", \"status\": \"Approvato definitivamente. Legge\", \"law_number\": \"70\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;536-B\", \"initiative\": \"Parlamentare\", \"kind_raw\": \"proposta_legge_ordinaria\", \"description\": \"Legge 70 del 17 maggio 2024 pubblicata nella Gazzetta Ufficiale n. 125 del 30 maggio 2024\", \"law_date\": \"2024-05-17\", \"status_date\": \"2024-05-17\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_536-B\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307634\", \"name\": \"Devis Dori\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307634&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308839\", \"name\": \"Alessandro Palombi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308839&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308832\", \"name\": \"Alessia Ambrosi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308832&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308937\", \"name\": \"Alice Buonguerrieri\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308937&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308903\", \"name\": \"Andrea Mascaretti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308903&legislatura=19\"}, \"first\": fal"
+  }
+ ],
+ "strumenti": [
+  "elenco_votazioni",
+  "cerca_atti",
+  "atto",
+  "cerca_atti",
+  "atto",
+  "cerca_atti",
+  "atto"
+ ],
+ "tempo_s": 28.4,
+ "risposta_sistema": "Un buon esempio per la classe è la **legge n. 70 del 17 maggio 2024**, sulle misure di prevenzione e contrasto del bullismo e del cyberbullismo. È una proposta di iniziativa parlamentare ed è diventata legge dopo il passaggio fra Camera e Senato: la scheda ufficiale indica anche la pubblicazione in *Gazzetta Ufficiale* n. 125 del 30 maggio 2024. [Scheda Camera del provvedimento C. 536-891-910-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;536-B)\n\nÈ adatta perché riguarda direttamente la vita scolastica e permette di mostrare che una legge può nascere da proposte di deputati di schieramenti diversi: il testo unificato riuniva, fra le altre, proposte di Devis Dori, Pittalis e Maschio.\n\nUna precisazione importante: non ho potuto verificare qui i numeri delle votazioni finali nei due rami. Quindi non posso affermare con precisione che sia stata approvata **all’unanimità**; posso dire soltanto che è una legge effettivamente approvata e pubblicata. Per controllare se i voti favorevoli furono tutti quelli espressi, guarda l’iter e le votazioni nelle schede ufficiali della Camera e del Senato, partendo dalla [scheda Camera](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;536-B).",
+ "eventi": {
+  "status": 1,
+  "tool": 14,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

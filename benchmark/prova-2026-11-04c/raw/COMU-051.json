@@ -1,0 +1,80 @@
+{
+ "id": "COMU-051",
+ "trappola": false,
+ "domanda": "Quante leggi di iniziativa parlamentare sono diventate legge in questa legislatura rispetto a quelle del governo?",
+ "categoria": "statistiche",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Contare le leggi una volta sola: lo stesso atto ha un numero alla Camera e uno al Senato.",
+ "endpoint": "agente",
+ "gruppo": "pilota",
+ "inizio": 1793791635.322643,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "bill",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": true,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": true,
+    "group_by": [],
+    "sum_chambers": true,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Leggi nate da atti della XIX, Camera e Senato, atti presentati dal 13/10/2022 al 04/11/2026; filtri: tipo bill, diventati_legge sì. Una legge = numero e anno della legge (law_number, law_date), ordinarie e costituzionali a parte: conta una volta anche se l'atto compare in tutti e due i rami o in più atti. Iniziativa per categoria (governo, parlamentare, regione, cnel, popolare), «mista» se gli atti di una legge ne hanno più d'una; conversione_decreto = titolo con «conversione in legge». Esclusi i testi approvati non ancora pubblicati (senza numero di legge).\", \"total\": 366, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"leggi\": 366, \"dal\": \"2022-11-17\", \"al\": \"2026-10-23\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "bill",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "addressee": null,
+    "became_law": true,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": true,
+    "group_by": [
+     "iniziativa"
+    ],
+    "sum_chambers": true,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Leggi nate da atti della XIX, Camera e Senato, atti presentati dal 13/10/2022 al 04/11/2026; filtri: tipo bill, diventati_legge sì. Una legge = numero e anno della legge (law_number, law_date), ordinarie e costituzionali a parte: conta una volta anche se l'atto compare in tutti e due i rami o in più atti. Iniziativa per categoria (governo, parlamentare, regione, cnel, popolare), «mista» se gli atti di una legge ne hanno più d'una; conversione_decreto = titolo con «conversione in legge». Esclusi i testi approvati non ancora pubblicati (senza numero di legge).\", \"total\": 366, \"rows_total\": 5, \"offset\": 0, \"rows\": [{\"iniziativa\": \"governo\", \"leggi\": 274, \"dal\": \"2022-11-17\", \"al\": \"2026-10-23\"}, {\"iniziativa\": \"parlamentare\", \"leggi\": 87, \"dal\": \"2023-02-09\", \"al\": \"2026-10-15\"}, {\"iniziativa\": \"mista\", \"leggi\": 3, \"dal\": \"2023-06-13\", \"al\": \"2025-09-26\"}, {\"iniziativa\": \"popolare\", \"leggi\": 1, \"dal\": \"2025-05-15\", \"al\": \"2025-05-15\"}, {\"iniziativa\": \"regione\", \"leggi\": 1, \"dal\": \"2026-01-26\", \"al\": \"2026-01-26\"}]}"
+  }
+ ],
+ "strumenti": [
+  "conta_atti",
+  "conta_atti"
+ ],
+ "tempo_s": 7.8,
+ "risposta_sistema": "Nella XIX legislatura sono diventate legge **87 leggi di iniziativa parlamentare**, contro **274 di iniziativa del Governo**.\n\nIn tutto le leggi approvate e pubblicate sono **366** (conteggio unico fra Camera e Senato, aggiornato alle leggi pubblicate fino al 23 ottobre 2026). Le altre 5 derivano da iniziativa mista (3), popolare (1) e regionale (1).",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}
