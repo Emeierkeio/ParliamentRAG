@@ -28,7 +28,7 @@ PG_SHM=2g
 
 ## Concorrenza
 
-Un processo uvicorn; ogni risposta della chat occupa un thread per la sua durata (40 al massimo, il predefinito di Starlette) e una connessione a Postgres (100 al massimo). Prova del 4/11: 10 domande insieme, tutte servite, in 6-29 s, con 10 connessioni aperte. I fascicoli girano al più 3 alla volta (`FASCICOLI_INSIEME`); il quarto aspetta il suo turno con l'evento `waiting`. I limiti per visitatore: 10 domande l'ora (`AGENTE_DOMANDE_ORA`) e 120 richieste al minuto alle API; il tetto di spesa giornaliero (`AGENTE_DOLLARI_GIORNO`, 10 $) ferma chat e fascicolo per tutti quando è raggiunto.
+Un processo uvicorn; ogni risposta della chat occupa un thread per la sua durata (40 al massimo, il predefinito di Starlette) e una connessione a Postgres (100 al massimo). Prova del 4/11: 10 domande insieme, tutte servite, in 6-29 s, con 10 connessioni aperte. I fascicoli girano al più 3 alla volta (`FASCICOLI_INSIEME`); il quarto aspetta il suo turno con l'evento `waiting`. I limiti per visitatore: 10 domande l'ora (`AGENTE_DOMANDE_ORA`) e 120 richieste al minuto alle API; il tetto di spesa giornaliero (`AGENTE_DOLLARI_GIORNO`, 25 $) ferma chat e fascicolo per tutti quando è raggiunto.
 
 ## Variabili d'ambiente del servizio web
 
@@ -47,7 +47,7 @@ Tutte quelle che il codice di `api/` legge con `env(...)`. I segreti stanno in `
 | `API_PROXY` | sì | `1`: l'IP per i limiti si legge da `X-Forwarded-For`, che scrive Caddy | `1` (lo mette `docker-compose.vps.yml`) |
 | `LIMITE_SALE` | sì | chiave dell'impronta degli IP per il limite della chat; senza, ne nasce una casuale a ogni avvio e un rilascio azzera i conteggi | 64 caratteri esadecimali casuali, segreto |
 | `AGENTE_DOMANDE_ORA` | no | domande alla chat per IP nell'ora | `10` (predefinito) |
-| `AGENTE_DOLLARI_GIORNO` | no | tetto di spesa giornaliero di chat e traduzioni, in dollari | `10` (predefinito) |
+| `AGENTE_DOLLARI_GIORNO` | no | tetto di spesa giornaliero di chat, fascicoli e traduzioni, in dollari | `25` (predefinito) |
 | `AGENTE_MODELLO` | no | modello della chat | predefinito nel codice |
 | `TRADUZIONI_MODELLO` | no | modello delle traduzioni | predefinito nel codice |
 | `MCP_STRUMENTI_INTERNI` | no | `1` espone su `/mcp` anche gli strumenti interni | `0` (predefinito) |

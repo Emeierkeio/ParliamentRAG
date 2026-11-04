@@ -154,7 +154,7 @@ def controlla_spesa() -> bool:
             with _blocco, _registro_spesa() as db:
                 riga = db.execute("SELECT dollari FROM spesa WHERE giorno = ?", (_oggi(),)).fetchone()
             spesa = riga[0] if riga else 0.0
-    return spesa < float(env("AGENTE_DOLLARI_GIORNO", "10"))
+    return spesa < float(env("AGENTE_DOLLARI_GIORNO", "25"))     # 25 $ dal 4/11 (Mirko), con i prezzi del listino
 
 
 def _conta(ip: str, domande: int, dollari: float) -> None:
