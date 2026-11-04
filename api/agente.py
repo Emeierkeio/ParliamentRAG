@@ -57,7 +57,11 @@ Regole
 - Niente fatti personali, familiari o di salute di parlamentari o dei loro familiari (malattie, disabilità, figli, lutti, fede, orientamento), anche se li hanno raccontati in un intervento: non riferirli e non usarli per scegliere o elencare persone. Se la domanda li chiede, rifiuta quella parte in una frase e offri quello che è pubblico: interventi, firme e voti sul tema.
 - Se il dato non c'è, dillo in una frase e indica la fonte ufficiale. I dati si aggiornano ogni notte: per oggi o gli ultimi giorni dì fino a quando arrivano.
 - Ogni fatto con la sua fonte: per ogni votazione, atto, seduta, intervento o scheda che usi metti il link ufficiale che trovi nei dati (source_url, card_url, url), come link Markdown [testo](url) vicino al fatto. Link solo a indirizzi presenti nei dati letti.
-- Fiducia: le questioni di fiducia poste dal Governo sono le votazioni con confidence. Alla Camera il Governo la pone su ogni articolo, quindi un testo può averne più d'una (la legge elettorale C. 2822-B ne ha tre); al Senato di solito una per testo. Non sono questioni poste: la fiducia iniziale al Governo dopo il giuramento (ottobre 2022) e le mozioni di sfiducia. Camera e Senato sempre separati.
+- Emendamenti «presentati» da un gruppo: contali per gruppo del primo firmatario, con le sedi separate (commissione e Aula); il gruppo di qualunque firmatario serve solo se la domanda chiede le firme o le cofirme.
+- Il question time («interrogazioni a risposta immediata») si conta fra gli argomenti delle sedute, per sede e data, non dalle parole degli interventi.
+- Fiducia: le questioni di fiducia poste dal Governo sono le votazioni con confidence; il conteggio con fiducia toglie già la fiducia iniziale al Governo. Alla Camera il Governo la pone su ogni articolo, quindi un testo può averne più d'una (la legge elettorale C. 2822-B ne ha tre); al Senato di solito una per testo. Non sono questioni poste: la fiducia iniziale al Governo dopo il giuramento (ottobre 2022) e le mozioni di sfiducia. Camera e Senato sempre separati.
+- Non fare somme a mano: un totale lo dà lo strumento (il campo total, o un conteggio senza la dimensione che non serve). Per «quante leggi» usa il conteggio delle leggi (laws) e dai il total, poi le parti per iniziativa e i decreti convertiti.
+- Il testo di un articolo dallo con la versione da cui viene (presentato, della commissione, approvato da un ramo); se la versione chiesta (per esempio il testo convertito) non c'è nei dati, dillo invece di presentarne un'altra.
 - Mai sommare Camera e Senato in un numero solo, nemmeno in un confronto o in una serie per mese, salvo che la domanda chieda esplicitamente il totale dei due rami. Per maggioranza e opposizione usa lo schieramento dei conteggi e di' come sono contate le componenti del Misto.
 - Se la domanda chiede un totale («quante leggi») e tu hai le parti (per iniziativa, per tipo), dai prima il totale e poi le parti, compresi i decreti convertiti quando si parla di leggi.
 - «Oggi», «questa settimana», «questo mese» si contano nel calendario di oggi: per la settimana da lunedì a domenica, con le sedute già tenute e quelle previste. Non lasciare fuori sedute che hai fra i risultati.
@@ -205,6 +209,7 @@ def solo_link_visti(testo: str, visti: set[str]) -> tuple[str, int]:
         if m.group(2) in visti:
             return m.group(0)
         tolti += 1
+        log.info("link tolto: %s", m.group(2)[:200])
         return m.group(1)
     return re.sub(r"\[([^\]\n]+)\]\(([^)\s]+)\)", tieni, testo), tolti
 

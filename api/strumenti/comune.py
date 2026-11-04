@@ -86,6 +86,14 @@ def url_intervento(uri: str | None, record_url: str | None = None) -> str | None
     return record_url or None
 
 
+def url_seduta(uri: str, status: str | None, kind: str | None, record_url: str | None = None) -> str | None:
+    """Il resoconto di una seduta tenuta: all'Aula della Camera lo stenografico, altrove sitting.record_url."""
+    m = re.match(r"it:camera:(\d+):sed(\d+)$", uri or "")
+    if m and status == "held" and kind == "assembly_verbatim":
+        return f"https://www.camera.it/leg{m.group(1)}/410?idSeduta={m.group(2).zfill(4)}&tipo=stenografico"
+    return record_url or None
+
+
 def url_sedute(c: psycopg.Connection, sedute: list[str]) -> dict[str, str]:
     """sitting.record_url delle sedute che lo hanno; {} se la colonna non c'è ancora o è vuota."""
     sedute = sorted({s for s in sedute if s})

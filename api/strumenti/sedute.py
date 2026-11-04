@@ -7,7 +7,7 @@ import datetime as dt
 import psycopg
 
 from ..modelli import ActRef, AgendaItem, Reaction, Sitting, SittingBrief, Speech
-from .comune import brevi
+from .comune import brevi, url_seduta, url_sedute
 from .voti import SQL_VOTO_BREVE, voto_breve
 
 CAMPI_BREVI = "uri, chamber, body, body_name, number, date, kind, status"
@@ -22,8 +22,9 @@ def elenco_sedute(c: psycopg.Connection, chamber: str | None = None, body: str |
         AND (%(dal)s::date IS NULL OR date >= %(dal)s) AND (%(al)s::date IS NULL OR date <= %(al)s)"""
     p = {"ramo": chamber, "org": body, "dal": start, "al": end, "lim": limit, "off": offset}
     totale = c.execute(f"SELECT count(*) AS n FROM sitting WHERE {filtro}", p).fetchone()["n"]
-    righe = c.execute(f"SELECT {CAMPI_BREVI} FROM sitting WHERE {filtro} ORDER BY date DESC, number DESC LIMIT %(lim)s OFFSET %(off)s", p)
-    return totale, [SittingBrief(**r) for r in righe]
+    righe = c.execute(f"SELECT {CAMPI_BREVI} FROM sitting WHERE {filtro} ORDER BY date DESC, number DESC LIMIT %(lim)s OFFSET %(off)s", p).fetchall()
+    link = url_sedute(c, [r["uri"] for r in righe])
+    return totale, [SittingBrief(**r, url=url_seduta(r["uri"], r["status"], r["kind"], link.get(r["uri"]))) for r in righe]
 
 
 def seduta(c: psycopg.Connection, uri: str) -> Sitting | None:
@@ -48,7 +49,8 @@ def seduta(c: psycopg.Connection, uri: str) -> Sitting | None:
             uri=x["uri"], order=x["ord"], person=persone.get(x["person"]), speaker_label=x["speaker_label"], as_group=x["as_group"],
             as_office=x["as_office"], kind=x["kind"], text=x["text"], reactions=reazioni.get(x["uri"], [])))
     voti = [voto_breve(v) for v in c.execute(SQL_VOTO_BREVE + " WHERE v.sitting = %s ORDER BY v.number", (uri,))]
-    return Sitting(**{k: s[k] for k in SittingBrief.model_fields}, seat=s["seat"], presided_by=s["presided_by"],
+    return Sitting(**{k: s[k] for k in SittingBrief.model_fields if k != "url"},
+                   url=url_seduta(s["uri"], s["status"], s["kind"], s.get("record_url")), seat=s["seat"], presided_by=s["presided_by"],
                    start_time=s["start_time"], end_time=s["end_time"],
                    items=[AgendaItem(uri=p["uri"], order=p["ord"], title=p["title"], stage=p["stage"], acts=atti.get(p["uri"], []),
                                      speeches=per_punto.get(p["uri"], [])) for p in punti],
@@ -72,7 +74,8 @@ def argomenti(c: psycopg.Connection, chamber: str | None = None, body: str | Non
         AND (%(dal)s::date IS NULL OR s.date >= %(dal)s) AND (%(al)s::date IS NULL OR s.date <= %(al)s)"""
     p = {"ramo": chamber, "org": body, "sede": seat, "fase": stage, "q": q, "dal": start, "al": end, "lim": limit, "off": offset}
     totale = c.execute(f"SELECT count(*) AS n FROM agenda_item i JOIN sitting s ON s.uri = i.sitting WHERE {filtro}", p).fetchone()["n"]
-    righe = c.execute(f"""SELECT i.uri, i.title, i.stage, s.uri AS sitting, s.date, s.chamber, s.body_name, s.seat, s.number
+    righe = c.execute(f"""SELECT i.uri, i.title, i.stage, s.uri AS sitting, s.date, s.chamber, s.body_name, s.seat, s.number,
+                                 s.status, s.kind
                           FROM agenda_item i JOIN sitting s ON s.uri = i.sitting WHERE {filtro}
                           ORDER BY s.date DESC, s.number DESC, i.ord LIMIT %(lim)s OFFSET %(off)s""", p).fetchall()
     uris = [r["uri"] for r in righe]
@@ -86,11 +89,13 @@ def argomenti(c: psycopg.Connection, chamber: str | None = None, body: str | Non
                           AND s.as_office IS DISTINCT FROM 'PRESIDENTE' GROUP BY 1, 2, 3 ORDER BY 1, 4""", (uris,)):
         oratori.setdefault(x["item"], []).append(x)
     persone = brevi(c, [x["person"] for xs in oratori.values() for x in xs if x["person"]])
+    link = url_sedute(c, [r["sitting"] for r in righe])
     out = []
     for r in righe:
         chi = [persone[x["person"]].model_dump(include={"uri", "name"}) | {"group": (persone[x["person"]].group.short_name if persone[x["person"]].group else None)}
                if x["person"] in persone else {"name": x["speaker_label"]} for x in oratori.get(r["uri"], [])]
-        out.append({**{k: r[k] for k in ("uri", "title", "stage", "sitting", "date", "chamber", "body_name", "seat", "number")},
+        out.append({**{k: r[k] for k in ("uri", "title", "stage", "sitting", "date", "chamber", "body_name", "seat", "number", "status")},
+                    "url": url_seduta(r["sitting"], r["status"], r["kind"], link.get(r["sitting"])),
                     "acts": atti.get(r["uri"], []), "speakers": chi[:30], "speakers_total": len(chi)})
     return {"total": totale, "items": out, "more": offset + len(out) < totale}
 

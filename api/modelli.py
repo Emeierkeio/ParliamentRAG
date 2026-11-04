@@ -103,6 +103,7 @@ class SittingBrief(BaseModel):
     date: dt.date
     kind: str | None = None
     status: str
+    url: str | None = None                     # il resoconto ufficiale, per le sedute tenute che lo hanno
 
 
 class ActRef(BaseModel):

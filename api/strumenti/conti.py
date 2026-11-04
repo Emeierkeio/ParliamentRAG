@@ -171,11 +171,15 @@ def _regex_parole(frase: str) -> str:
 
 # ---------- votazioni ----------
 
-FILTRO_VOTI = """v.legislature = %(leg)s AND (%(ramo)s::text IS NULL OR v.chamber = %(ramo)s)
+# la fiducia iniziale al Governo dopo il giuramento (Camera: mozione di fiducia; Senato: «Questione di fiducia Governo
+# Meloni»): non è una questione posta dal Governo su un testo, e con fiducia=vero non si conta
+SQL_FIDUCIA_INIZIALE = "coalesce(v.description, '') ILIKE '%%mozione di fiducia%%' OR coalesce(v.title, '') ~* 'fiducia governo'"
+FILTRO_VOTI = f"""v.legislature = %(leg)s AND (%(ramo)s::text IS NULL OR v.chamber = %(ramo)s)
   AND (%(tipo)s::text IS NULL OR v.kind = %(tipo)s) AND (%(finale)s::boolean IS NULL OR v.final = %(finale)s)
   AND (%(segreta)s::boolean IS NULL OR coalesce(v.secret, false) = %(segreta)s)
   AND (%(approvata)s::boolean IS NULL OR v.approved = %(approvata)s)
   AND (%(fiducia)s::boolean IS NULL OR coalesce(v.confidence, false) = %(fiducia)s)
+  AND NOT (coalesce(%(fiducia)s::boolean, false) AND ({SQL_FIDUCIA_INIZIALE}))
   AND (%(dal)s::date IS NULL OR v.date >= %(dal)s) AND (%(al)s::date IS NULL OR v.date <= %(al)s)
   AND (%(atto)s::text IS NULL OR EXISTS (SELECT 1 FROM vote_act y WHERE y.vote = v.uri AND y.act = %(atto)s))
   AND (%(q)s::text IS NULL OR to_tsvector('italian', coalesce(v.title, '') || ' ' || coalesce(v.description, ''))
@@ -195,7 +199,9 @@ def _parametri_voti(chamber, kind, final, secret, approved, confidence, act, q, 
 def _descrivi_voti(p: dict) -> str:
     return _filtri(tipo=p["tipo"], finali={True: "sì", False: "no"}.get(p["finale"]),
                    segrete={True: "sì", False: "no"}.get(p["segreta"]), esito={True: "approvate", False: "respinte"}.get(p["approvata"]),
-                   fiducia={True: "sì", False: "no"}.get(p["fiducia"]), atto=p["atto"], parole=p["q"])
+                   fiducia={True: "sì (questioni di fiducia poste dal Governo, una per votazione: alla Camera una per "
+                                  "articolo; esclusa la fiducia iniziale al Governo dell'ottobre 2022)", False: "no"}.get(p["fiducia"]),
+                   atto=p["atto"], parole=p["q"])
 
 
 def conta_votazioni(c: psycopg.Connection, chamber: str | None = None, kind: str | None = None, final: bool | None = None,
