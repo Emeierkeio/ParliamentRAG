@@ -456,7 +456,7 @@
     { n: "parliamentrag_kg.ttl", d: "Il grafo in Turtle: persone, gruppi, commissioni, atti, temi EuroVoc, sedute, dibattiti e interventi con il testo integrale.", u: "https://doi.org/10.5281/zenodo.21560331", f: "Zenodo · RDF · DOI" },
     { n: "Voti individuali", d: "In un file a parte, perché è il più grande: il voto di ogni parlamentare in ogni votazione.", u: "https://doi.org/10.5281/zenodo.21560331", f: "Zenodo · RDF" },
     { n: "emeierkeio/parliamentrag-leg19", d: "Gli stessi dati in tabelle, per chi lavora con pandas, R o un foglio di calcolo.", u: "https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19", f: "Hugging Face · tabelle" },
-    { n: "parliamentrag-iswc / build", d: "Il codice che costruisce il grafo dagli open data di Camera e Senato: chi vuole lo rifà da capo.", u: "https://github.com/Emeierkeio/parliamentrag-iswc/tree/main/build", f: "GitHub · pipeline" },
+    { n: "ParliamentRAG / pipeline", d: "Il codice che ogni notte scarica gli open data di Camera e Senato, li controlla e li carica: chi vuole lo rifà da capo.", u: "https://github.com/Emeierkeio/ParliamentRAG/tree/main/pipeline", f: "GitHub · pipeline" },
   ];
   S.MCP = [["search_parliament", "cerca negli interventi in Aula e negli atti"], ["list_sessions", "elenca le sedute"], ["get_debate", "apre un dibattito"], ["get_session_votes", "le votazioni di una seduta"], ["get_vote_details", "il voto per gruppo e per parlamentare"], ["get_vote_hemicycle", "l'emiciclo di una votazione"], ["get_voted_text", "il testo messo ai voti"], ["verify_answer", "controlla le tre garanzie su una risposta"]];
   function dati(box) {
