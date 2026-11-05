@@ -178,7 +178,11 @@ CRON_TZ=UTC
 30 1 * * *  root  /opt/piattaforma/pipeline/notte.sh
 # controllo esterno: esce con 1 se nelle ultime 26 ore non c'è un giro completo riuscito
 0 9 * * *   root  cd /opt/piattaforma && .venv/bin/python -m pipeline salute || <avviso>
+# fotografia della VPS per il pannello /sistema: giri, quarantena, disco, memoria, container, backup
+*/10 * * * * root  cd /opt/piattaforma && .venv/bin/python -m pipeline sistema > /dev/null
 ```
+
+Il pannello del responsabile è `https://www.parliamentrag.it/sistema`, con lo stesso login delle statistiche: stato del giro notturno e dei passi, freschezza dei dati per ramo, righe e peso del database, errori e tempi della chat, costi OpenAI, disco, memoria, container e backup, con gli avvisi calcolati in cima. Il container web non vede la VPS: `python -m pipeline sistema` (cron ogni 10 minuti) scrive `dati/sistema/stato.json`, montato in sola lettura nel container; chat e costi vengono dalle viste `registro.uso_chat` e `registro.spesa_vettori` di `schema/sito.sql`.
 
 `python -m pipeline salute` serve a un controllo esterno (un altro cron, un servizio di monitoraggio): dice se c'è un giro completo riuscito nelle ultime 26 ore.
 
