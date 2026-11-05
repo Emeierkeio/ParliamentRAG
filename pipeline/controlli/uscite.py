@@ -110,6 +110,11 @@ def _regole(righe: list[dict]) -> list[str]:
 def _regole_anagrafica(nodi: list[dict], archi: list[dict], ambito: dict) -> list[str]:
     errori, noti = [], {n["uri"] for n in nodi}
     for a in archi:
+        if a["type"] == "NAMED":                                # il nome di un gruppo: ha solo «from»
+            if a["from"] not in noti:
+                errori.append(f"nome di un gruppo che non c'è: {a['from']}")
+                break
+            continue
         if a["from"] not in noti or (a["to"] not in noti and not a["to"].startswith("it:leg:")):
             errori.append(f"arco {a['type']} fra nodi che non ci sono: {a['from']} -> {a['to']}")
             break
@@ -118,7 +123,7 @@ def _regole_anagrafica(nodi: list[dict], archi: list[dict], ambito: dict) -> lis
             errori.append(f"{a['type']} senza data di inizio: {a['from']} -> {a['to']}")
             break
         if a.get("start") and a.get("end") and a["end"] < a["start"]:
-            errori.append(f"{a['type']} che finisce prima di iniziare: {a['from']} -> {a['to']}")
+            errori.append(f"{a['type']} che finisce prima di iniziare: {a['from']} -> {a.get('to')}")
             break
     persone = {n["uri"] for n in nodi if n["label"] == "Person"}
     con_mandato = {a["from"] for a in archi if a["type"] == "MANDATE"}
