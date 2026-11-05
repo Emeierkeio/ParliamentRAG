@@ -17,7 +17,7 @@ import subprocess
 import time
 from pathlib import Path
 
-GIRI = 20
+GIRI = 60
 LOG_BACKUP = Path("/var/log/parliamentrag-backup.log")
 
 

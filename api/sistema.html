@@ -1,218 +1,186 @@
 <!doctype html>
 <html lang="it">
 <head>
+<title>Sistema · ParliamentRAG</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Sistema · ParliamentRAG</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='15 15 194 153'%3E%3Cstyle%3Eg%7Bcolor:%2312171a%7D@media (prefers-color-scheme:dark)%7Bg%7Bcolor:%23fff%7D%7D%3C/style%3E%3Cg%3E%3Cpath d='M 35.91 139.73 A 81 81 0 1 1 188.09 139.73' fill='none' stroke='currentColor' stroke-width='32' stroke-linecap='round'/%3E%3Ccircle cx='112' cy='146' r='22' fill='currentColor'/%3E%3C/g%3E%3C/svg%3E">
+<script>
+/* tema del sito (chiaro o scuro), scelto prima del primo disegno */
+(function () { var r = document.documentElement, s; try { s = localStorage.getItem("parliamentrag-scelta"); } catch (e) {}
+  if (!s) s = matchMedia("(prefers-color-scheme: dark)").matches ? "scuro" : "chiaro";
+  if (s === "scuro" || s === "notte" || s === "netto") { r.dataset.scelta = "netto"; r.dataset.tono = "scuro"; } else r.dataset.scelta = "chiaro"; })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--fondo:#f6f7f9;--sup:#fff;--sup2:#f1f2f5;--bordo:#e4e6eb;--t:#14161d;--t2:#3b3f4b;--t3:#666b79;--acc:#2a4bd7;--ok:#1f9d55;--att:#c27c0e;--ko:#c92a2a;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--fondo:#070b22;--sup:#0d1333;--sup2:#141c42;--bordo:rgba(157,184,255,.14);--t:#eceffa;--t2:#c4c9e2;--t3:#959cbf;--acc:#8aa2ff;--ok:#3ccf7e;--att:#e8a25a;--ko:#ff6b6b;color-scheme:dark}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--fondo);color:var(--t);font:15px/1.5 "Schibsted Grotesk",system-ui,sans-serif}
-.dentro{max-width:1180px;margin:0 auto;padding:24px 16px 64px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-.marchio{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-.marchio svg{width:28px;height:22px}
-nav{display:flex;border:1px solid var(--bordo);border-radius:999px;background:var(--sup);overflow:hidden}
-nav a{color:var(--t2);text-decoration:none;padding:7px 14px}
-nav a[aria-current=page]{background:var(--t);color:var(--fondo)}
-h1{font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
-.sotto{color:var(--t3);margin:0 0 20px}
-.cifre{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.cifra{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:14px 16px;min-width:0}
-.cifra small{display:block;color:var(--t3);font-size:13px;overflow:hidden;text-overflow:ellipsis}
-.cifra b{display:block;font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin:2px 0}
-.cifra small:first-child::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--t3)}
-.cifra[data-s=ok] small:first-child::before{background:var(--ok)}
-.cifra[data-s=att] small:first-child::before{background:var(--att)}
-.cifra[data-s=ko] small:first-child::before{background:var(--ko)}
-.blocco{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:16px;min-width:0}
-.blocco h2{font-size:16px;margin:0 0 12px}
-.blocco h3{font-size:14px;margin:16px 0 6px;color:var(--t2)}
-.griglia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}
-.griglia .blocco{margin:0}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th{font-weight:500;color:var(--t3);font-size:12.5px;text-align:left;padding:4px 8px 4px 0}
-td{padding:6px 8px 6px 0;border-top:1px solid var(--bordo);vertical-align:top}
-td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
-td.lungo{max-width:420px;color:var(--t2);font-size:13px;word-break:break-word}
-.e{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12.5px;background:var(--sup2);color:var(--t2)}
-.e.ok{color:var(--ok)}.e.att,.e.parziale,.e.saltato{color:var(--att)}.e.ko,.e.errore,.e.fallito{color:var(--ko)}
-ul.avvisi{list-style:none;margin:0;padding:0}
-ul.avvisi li{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--bordo)}
-ul.avvisi li:first-child{border-top:0}
-ul.avvisi i{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px}
-ul.avvisi li.ko i{background:var(--ko)}ul.avvisi li.att i{background:var(--att)}ul.avvisi li.ok i{background:var(--ok)}
-.barra{height:8px;border-radius:4px;background:var(--sup2);overflow:hidden;margin:4px 0 10px}
-.barra span{display:block;height:100%;background:var(--acc)}
-.barra.att span{background:var(--att)}.barra.ko span{background:var(--ko)}
-.vuoto,.nota{color:var(--t3);font-size:13px}
-pre{white-space:pre-wrap;font-size:12.5px;color:var(--t2);margin:0;background:var(--sup2);border-radius:8px;padding:10px;max-height:220px;overflow:auto}
-button.mostra{border:1px solid var(--bordo);background:var(--sup);color:var(--t2);font:inherit;font-size:13px;border-radius:999px;padding:4px 12px;cursor:pointer;margin-top:8px}
-@media (max-width:900px){.cifre{grid-template-columns:repeat(3,minmax(0,1fr))}.griglia{grid-template-columns:1fr}}
-@media (max-width:560px){.cifre{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:24px}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600&family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/pannello.css">
 </head>
-<body>
-<div class="dentro">
- <header>
-  <div class="marchio"><svg viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="currentColor"/></svg>ParliamentRAG</div>
-  <nav aria-label="Pannelli"><a href="/statistiche">Statistiche</a><a href="/sistema" aria-current="page">Sistema</a></nav>
- </header>
- <h1>Sistema</h1>
- <p class="sotto" id="sotto">Carico i dati…</p>
- <div class="cifre" id="cifre"></div>
- <section class="blocco"><h2>Da guardare</h2><ul class="avvisi" id="avvisi"></ul></section>
- <section class="blocco"><h2>Giro notturno</h2><p class="nota">Parte alle 01:30 UTC (02:30 o 01:30 a Roma, secondo l'ora legale). In caso di errore arriva una mail a segnalazioni@parliamentrag.it.</p>
-  <div id="giro"></div><h3>Ultimi giri</h3><div id="giri"></div></section>
- <div class="griglia">
-  <section class="blocco"><h2>Dati del Parlamento</h2><div id="sedute"></div><h3>Votazioni</h3><div id="voti"></div><h3>Atti</h3><div id="atti"></div></section>
-  <section class="blocco"><h2>Database</h2><div id="db"></div></section>
+<body class="pn">
+<header data-testata></header>
+<main class="pn-pagina" id="contenuto">
+ <div class="pn-testa">
+  <div><h1>Sistema</h1><p id="sotto">Leggo lo stato del sistema…</p></div>
+  <div id="periodo"></div>
  </div>
+ <div class="cifre" id="cifre" aria-live="polite"></div>
+ <section class="pn-blocco"><h2>Da guardare</h2><p class="nota">Problemi e cose da controllare, calcolati dallo stato di adesso.</p><ul class="avvisi" id="avvisi"></ul></section>
+
  <div class="griglia">
-  <section class="blocco"><h2>Chat, ultimi 14 giorni</h2><p class="nota">Solo le chat dal sito e i fascicoli. Tempi in secondi.</p><div id="chat"></div></section>
-  <section class="blocco"><h2>Costi, ultimi 30 giorni</h2><div id="costi"></div></section>
+  <section class="pn-blocco largo"><h2>Ultimo giro notturno</h2><p class="nota">Parte ogni notte alle 01:30 UTC, cioè alle 02:30 di Roma con l'ora solare. Se finisce male arriva una mail a segnalazioni@parliamentrag.it.</p><div id="giro"></div></section>
+  <section class="pn-blocco largo"><h2>Giri nel periodo</h2><p class="nota" id="n-giri"></p><div id="giri"></div></section>
  </div>
- <section class="blocco"><h2>Errori recenti della chat</h2><p class="nota">L'errore tecnico, senza la domanda.</p><div id="errori"></div></section>
+
  <div class="griglia">
-  <section class="blocco"><h2>Macchina</h2><div id="macchina"></div></section>
-  <section class="blocco"><h2>Container e backup</h2><div id="container"></div><h3>Backup notturno</h3><div id="backup"></div></section>
+  <section class="pn-blocco"><h2>Chat nel periodo</h2><p class="nota">Domande dal sito e fascicoli, giorno per giorno.</p>
+   <div class="grafico" id="g-chat"><svg role="img" aria-label="Domande ed errori per giorno"></svg></div><div id="l-chat"></div><div id="chat"></div></section>
+  <section class="pn-blocco"><h2>Costi nel periodo</h2><p class="nota">Chat, fascicoli e traduzioni ai prezzi del listino; i vettori sono una stima dai token. Grafico e dettagli anche in Statistiche.</p><div id="costi"></div></section>
  </div>
-</div>
+ <section class="pn-blocco"><h2>Errori della chat nel periodo</h2><p class="nota">Il messaggio tecnico dell'errore. La domanda non si vede.</p><div id="errori"></div></section>
+
+ <div class="griglia">
+  <section class="pn-blocco"><h2>Quanto sono freschi i dati</h2><p class="nota">L'ultima data presente nel database, per ramo.</p><h3>Sedute</h3><div id="sedute"></div><h3>Votazioni</h3><div id="voti"></div><h3>Atti</h3><div id="atti"></div></section>
+  <section class="pn-blocco"><h2>Database</h2><div id="db"></div></section>
+ </div>
+
+ <div class="griglia">
+  <section class="pn-blocco"><h2>Server</h2><p class="nota">La VPS adesso.</p><div id="macchina"></div></section>
+  <section class="pn-blocco"><h2>Container</h2><div id="container"></div></section>
+  <section class="pn-blocco"><h2>Backup notturno</h2><p class="nota">Le ultime righe del registro del backup (00:45 UTC).</p><div id="backup"></div></section>
+ </div>
+</main>
+<script src="/js/pannello.js"></script>
 <script>
-const $ = (s) => document.querySelector(s);
-const num = (n, c = 0) => Number(n || 0).toLocaleString("it-IT", { maximumFractionDigits: c, minimumFractionDigits: c });
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const usd = (n, c = 2) => Number(n || 0).toLocaleString("it-IT", { style: "currency", currency: "USD", minimumFractionDigits: c, maximumFractionDigits: c });
-const gb = (b) => `${num(b / 1e9, 1)} GB`;
-const giorno = (d) => d ? new Date(String(d).length === 10 ? d + "T12:00:00" : d).toLocaleDateString("it-IT", { day: "numeric", month: "short" }) : "–";
-const quando = (t) => t ? new Date(typeof t === "number" ? t * 1000 : t).toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "–";
-const durata = (s) => s == null ? "–" : s < 90 ? `${Math.round(s)} s` : s < 5400 ? `${Math.round(s / 60)} min` : `${num(s / 3600, 1)} h`;
+const { $, esc, num, usd, gb, data, quando, durata } = P;
 const fa = (t, adesso) => durata(adesso - (typeof t === "number" ? t : Date.parse(t) / 1000)) + " fa";
-const giorniDa = (d) => d ? Math.floor((Date.now() - new Date(d + "T12:00:00")) / 864e5) : null;
+const giorniDa = (d) => d ? Math.floor((Date.now() - new Date(String(d).slice(0, 10) + "T12:00:00")) / 864e5) : null;
 const RAMI = { camera: "Camera", senato: "Senato" };
-const TIPI = { assembly_verbatim: "Aula", assembly_agenda: "Aula, ordine del giorno", committee_summary: "Commissioni, resoconti sommari", committee_verbatim: "Commissioni, stenografici" };
-const tab = (testa, righe) => righe.length ? `<table><tr>${testa.map(([t, n]) => `<th class="${n ? "n" : ""}">${t}</th>`).join("")}</tr>${righe.map((r) => `<tr>${r.map((v, i) => `<td class="${testa[i][1] ? "n" : testa[i][2] || ""}">${v}</td>`).join("")}</tr>`).join("")}</table>` : '<p class="vuoto">Nessun dato.</p>';
-const etichetta = (e) => `<span class="e ${esc(e)}">${esc({ ok: "ok", errore: "errore", saltato: "saltato", parziale: "parziale", in_corso: "in corso" }[e] || e)}</span>`;
-const barra = (f, testo) => `<div>${testo}</div><div class="barra ${f > .9 ? "ko" : f > .8 ? "att" : ""}"><span style="width:${(100 * Math.min(1, f)).toFixed(1)}%"></span></div>`;
+const TIPI = { assembly_verbatim: "Aula, resoconto stenografico", assembly_agenda: "Aula, ordine del giorno", committee_summary: "Commissioni, resoconto sommario", committee_verbatim: "Commissioni, resoconto stenografico" };
+const ESITI = { ok: ["ok", "riuscito"], errore: ["ko", "errore"], saltato: ["att", "saltato"], parziale: ["att", "parziale"], in_corso: ["", "in corso"], interrotto: ["ko", "interrotto"] };
+const esito = (e) => P.stato(...(ESITI[e] || ["", e || "–"]));
+const dataBackup = (r) => Date.parse(r.slice(0, 19).replace(" ", "T") + "Z") / 1000;
+const riempi = (f, titolo, valore) => `<div class="riempi ${f > .9 ? "ko" : f > .8 ? "att" : ""}"><div class="riempi__testa"><b>${titolo}</b><span>${valore}</span></div><div class="riempi__barra"><i style="width:${(100 * Math.min(1, f)).toFixed(1)}%"></i></div></div>`;
 
 function avvisi(d) {
-  const a = [], m = d.macchina || {}, g = (m.giri || {}).ultimo, dati = d.dati || {}, k = d.costi || {}, ad = d.adesso;
-  if (m.mancante) a.push(["ko", "Manca la fotografia della VPS (dati/sistema/stato.json): il cron di «pipeline sistema» non gira."]);
-  else if (m.eta_minuti > 30) a.push(["att", `La fotografia della VPS ha ${m.eta_minuti} minuti: il cron di «pipeline sistema» dovrebbe riscriverla ogni 10.`]);
+  const a = [], m = d.macchina || {}, g = m.giri?.ultimo, dati = d.dati || {}, k = d.costi || {}, ad = d.adesso;
+  if (m.mancante) a.push(["ko", "<b>Manca la fotografia della VPS.</b> Il cron di <code>pipeline sistema</code> non gira: server, giri e backup qui sotto sono vuoti."]);
+  else if (m.eta_minuti > 30) a.push(["att", `<b>Fotografia della VPS vecchia di ${m.eta_minuti} minuti.</b> Il cron dovrebbe riscriverla ogni 10.`]);
   if (g) {
-    if (g.esito !== "ok") a.push([g.esito === "parziale" ? "att" : "ko", `L'ultimo giro (${quando(g.inizio)}) è finito «${g.esito}»: ${num(g.errori)} passi in errore, ${num(g.saltati)} saltati.`]);
-    if (ad - g.inizio > 30 * 3600) a.push(["ko", `L'ultimo giro è partito ${fa(g.inizio, ad)}: stanotte non è partito.`]);
-    for (const p of (m.giri.passi || []).filter((p) => p.esito === "errore")) a.push(["ko", `Passo ${esc(p.nome)} in errore${p.errore ? `: ${esc(p.errore.slice(-160))}` : "."}`]);
+    if (g.esito !== "ok") a.push([g.esito === "parziale" ? "att" : "ko", `<b>Giro del ${quando(g.inizio)}: ${esc(ESITI[g.esito]?.[1] || g.esito)}.</b> ${num(g.errori)} passi in errore e ${num(g.saltati)} saltati, dettagli in «Ultimo giro notturno».`]);
+    if (ad - g.inizio > 30 * 3600) a.push(["ko", `<b>Stanotte il giro non è partito.</b> L'ultimo è di ${fa(g.inizio, ad)}.`]);
   }
-  for (const q of m.quarantena || []) a.push(["att", `In quarantena: ${esc(q.percorso)} (${esc(q.motivo)}).`]);
-  const disco = m.macchina?.disco; if (disco && disco.usato / disco.totale > .8) a.push([disco.usato / disco.totale > .9 ? "ko" : "att", `Disco della VPS al ${num(100 * disco.usato / disco.totale)}%: liberi ${gb(disco.libero)}.`]);
-  const mem = m.macchina?.memoria; if (mem && mem.swap_totale && (mem.swap_totale - mem.swap_libero) / mem.swap_totale > .5) a.push(["att", `Swap usato oltre metà (${gb(mem.swap_totale - mem.swap_libero)}).`]);
-  for (const c of (m.container || []).filter((c) => c.nome.startsWith("piattaforma-") && c.attivo !== "running")) a.push(["ko", `Il container ${esc(c.nome)} non è acceso (${esc(c.stato)}).`]);
-  if (m.backup?.fallito) a.push(["ko", "Il backup notturno ha una riga «FALLITO» nell'ultimo giro."]);
-  const ub = (m.backup?.righe || []).at(-1); if (ub && ad - Date.parse(ub.slice(0, 19).replace(" ", "T") + "Z") / 1000 > 30 * 3600) a.push(["att", `L'ultimo backup risale a ${fa(Date.parse(ub.slice(0, 19).replace(" ", "T") + "Z") / 1000, ad)}.`]);
+  for (const q of m.quarantena || []) a.push(["att", `<b>File in quarantena:</b> ${esc(q.percorso)}. Motivo: ${esc(q.motivo)}`]);
+  const disco = m.macchina?.disco; if (disco && disco.usato / disco.totale > .8) a.push([disco.usato / disco.totale > .9 ? "ko" : "att", `<b>Disco della VPS pieno ${String(Math.round(100 * disco.usato / disco.totale)).startsWith("8") ? "all'" : "al "}${num(100 * disco.usato / disco.totale)}%.</b> Restano ${gb(disco.libero)}.`]);
+  const mem = m.macchina?.memoria; if (mem && mem.swap_totale && (mem.swap_totale - mem.swap_libero) / mem.swap_totale > .5) a.push(["att", `<b>Swap oltre la metà:</b> ${gb(mem.swap_totale - mem.swap_libero)} in uso. La memoria non basta.`]);
+  for (const c of (m.container || []).filter((c) => c.nome.startsWith("piattaforma-") && c.attivo !== "running")) a.push(["ko", `<b>Container spento:</b> ${esc(c.nome)} (${esc(c.stato)}).`]);
+  if (m.backup?.fallito) a.push(["ko", "<b>Backup fallito</b> nell'ultimo giro: vedi le righe del registro in fondo."]);
+  const ub = (m.backup?.righe || []).at(-1); if (ub && ad - dataBackup(ub) > 30 * 3600) a.push(["att", `<b>Nessun backup recente.</b> L'ultimo è di ${fa(dataBackup(ub), ad)}.`]);
   for (const r of ["camera", "senato"]) {
     const s = (dati.sedute || []).find((x) => x.ramo === r && x.tipo === "assembly_verbatim"), v = (dati.voti || []).find((x) => x.ramo === r);
-    if (s && v && giorniDa(s.ultima_tenuta) - giorniDa(v.ultima) > 3) a.push(["att", `${RAMI[r]}: i voti arrivano al ${giorno(v.ultima)}, i resoconti d'Aula solo al ${giorno(s.ultima_tenuta)}.`]);
+    if (s && v && giorniDa(s.ultima_tenuta) - giorniDa(v.ultima) > 3) a.push(["att", `<b>${RAMI[r]}: mancano resoconti d'Aula.</b> I voti arrivano al ${data(v.ultima)}, i resoconti solo al ${data(s.ultima_tenuta)}.`]);
   }
-  if (dati.errore) a.push(["ko", `Postgres non risponde (${esc(dati.errore)}).`]);
-  if (dati.vettori?.aperti && ad - Date.parse(dati.vettori.ultimo_invio) / 1000 > 26 * 3600) a.push(["att", `${num(dati.vettori.aperti)} batch di vettori aperti da più di un giorno.`]);
-  if (k.oggi > .8 * k.tetto) a.push([k.oggi >= k.tetto ? "ko" : "att", `Spesa di oggi ${usd(k.oggi)} su un tetto di ${usd(k.tetto, 0)}${k.oggi >= k.tetto ? ": la chat è ferma fino a domani" : ""}.`]);
-  const oggi = (d.chat?.per_giorno || []).at(-1); if (oggi && oggi.domande >= 10 && oggi.errori / oggi.domande > .05) a.push(["att", `Oggi il ${num(100 * oggi.errori / oggi.domande)}% delle domande è finito con un errore.`]);
-  if (d.chat?.oltre_2_minuti) a.push(["att", `${num(d.chat.oltre_2_minuti)} risposte oltre i 2 minuti negli ultimi 14 giorni.`]);
-  $("#avvisi").innerHTML = (a.length ? a : [["ok", "Niente da segnalare."]]).map(([s, t]) => `<li class="${s}"><i></i><span>${t}</span></li>`).join("");
+  if (dati.errore) a.push(["ko", `<b>Il database non risponde</b> (${esc(dati.errore)}).`]);
+  if (dati.vettori?.aperti && ad - Date.parse(dati.vettori.ultimo_invio) / 1000 > 26 * 3600) a.push(["att", `<b>${num(dati.vettori.aperti)} batch di vettori aperti da più di un giorno.</b> OpenAI non li ha ancora restituiti.`]);
+  if (k.oggi > .8 * k.tetto) a.push([k.oggi >= k.tetto ? "ko" : "att", `<b>Spesa di oggi ${usd(k.oggi)} su ${usd(k.tetto, 0)} di tetto.</b>${k.oggi >= k.tetto ? " La chat è ferma fino a domani." : ""}`]);
+  const og = (d.chat?.per_giorno || []).find((x) => String(x.giorno) === P.oggi()); if (og && og.domande >= 10 && og.errori / og.domande > .05) a.push(["att", `<b>Oggi il ${num(100 * og.errori / og.domande)}% delle domande è finito con un errore.</b>`]);
+  if (d.chat?.oltre_2_minuti) a.push(["att", `<b>${num(d.chat.oltre_2_minuti)} risposte hanno superato i 2 minuti</b> nel periodo scelto.`]);
+  $("#avvisi").innerHTML = (a.length ? a : [["ok", "<b>Tutto in ordine.</b>"]]).map(([s, t]) => `<li class="${s}"><i></i><span>${t}</span></li>`).join("");
   return a;
 }
 
 function cifre(d, a) {
   const m = d.macchina || {}, g = m.giri?.ultimo, dati = d.dati || {}, k = d.costi || {}, disco = m.macchina?.disco;
-  const cam = (dati.sedute || []).find((x) => x.ramo === "camera" && x.tipo === "assembly_verbatim"), sen = (dati.sedute || []).find((x) => x.ramo === "senato" && x.tipo === "assembly_verbatim");
-  const ub = (m.backup?.righe || []).at(-1);
-  const [commit, , ...msg] = (m.codice?.commit || "").split(" ");
+  const sed = (r) => (dati.sedute || []).find((x) => x.ramo === r && x.tipo === "assembly_verbatim");
+  const ub = (m.backup?.righe || []).at(-1), [commit] = (m.codice?.commit || "").split(" ");
   const c = [
-    ["Servizio", dati.errore ? "ko" : "ok", dati.errore ? "Postgres giù" : "online", commit ? `versione ${esc(commit)}` : ""],
-    ["Giro notturno", !g ? "ko" : g.esito === "ok" ? "ok" : g.esito === "parziale" ? "att" : "ko", g ? esc(g.esito) : "–", g ? `${quando(g.inizio)}, ${durata(g.fine - g.inizio)}` : ""],
-    ["Ultima seduta", cam && giorniDa(cam.ultima_tenuta) <= 7 ? "ok" : "att", cam ? giorno(cam.ultima_tenuta) : "–", sen ? `Senato ${giorno(sen.ultima_tenuta)}` : ""],
-    ["Spesa oggi", k.oggi > .8 * k.tetto ? "att" : "ok", usd(k.oggi), `tetto ${usd(k.tetto, 0)} · ${num(d.costi?.oggi_domande)} domande`],
-    ["Disco VPS", !disco ? "" : disco.usato / disco.totale > .9 ? "ko" : disco.usato / disco.totale > .8 ? "att" : "ok", disco ? `${num(100 * disco.usato / disco.totale)}%` : "–", disco ? `liberi ${gb(disco.libero)}` : ""],
-    ["Backup", m.backup?.fallito ? "ko" : ub ? "ok" : "", ub ? (ub.includes("rc=0") ? "ok" : "da vedere") : "–", ub ? quando(ub.slice(0, 19).replace(" ", "T") + "Z") : ""],
+    ["Servizio", dati.errore ? "ko" : "ok", dati.errore ? "fermo" : "attivo", commit ? `versione ${esc(commit)}` : ""],
+    ["Giro notturno", !g ? "ko" : g.esito === "ok" ? "ok" : g.esito === "parziale" ? "att" : "ko", g ? esc(ESITI[g.esito]?.[1] || g.esito) : "–", g ? `${quando(g.inizio)}, durata ${durata(g.fine - g.inizio)}` : ""],
+    ["Ultima seduta d'Aula", sed("camera") && giorniDa(sed("camera").ultima_tenuta) <= 7 ? "ok" : "att", sed("camera") ? data(sed("camera").ultima_tenuta) : "–", `Camera · Senato ${sed("senato") ? data(sed("senato").ultima_tenuta) : "–"}`],
+    ["Spesa di oggi", k.oggi >= k.tetto ? "ko" : k.oggi > .8 * k.tetto ? "att" : "ok", usd(k.oggi), `su ${usd(k.tetto, 0)} di tetto · ${num(k.oggi_domande)} domande`],
+    ["Disco della VPS", !disco ? "" : disco.usato / disco.totale > .9 ? "ko" : disco.usato / disco.totale > .8 ? "att" : "ok", disco ? `${num(100 * disco.usato / disco.totale)}%` : "–", disco ? `restano ${gb(disco.libero)}` : ""],
+    ["Backup", m.backup?.fallito ? "ko" : ub ? "ok" : "", m.backup?.fallito ? "fallito" : ub ? "riuscito" : "–", ub ? quando(dataBackup(ub)) : ""],
   ];
-  $("#cifre").innerHTML = c.map(([n, s, b, sub]) => `<div class="cifra" data-s="${s}"><small>${n}</small><b>${b}</b><small>${sub}</small></div>`).join("");
+  $("#cifre").innerHTML = c.map(([n, s, b, sub]) => `<div class="cifra" data-s="${s}"><small>${n}</small><span class="cifra__n cifra__n--medio">${b}</span><small>${sub}</small></div>`).join("");
   const ko = a.filter(([s]) => s === "ko").length, att = a.filter(([s]) => s === "att").length;
-  $("#sotto").textContent = `Aggiornato alle ${new Date(d.adesso * 1000).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}; fotografia della VPS di ${m.eta_minuti ?? "?"} minuti fa. ` + (ko || att ? `${ko} problemi, ${att} cose da guardare.` : "Tutto in ordine.");
+  $("#sotto").textContent = `Aggiornato alle ${new Date(d.adesso * 1000).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}. Server e giri: fotografia di ${m.eta_minuti ?? "?"} minuti fa. `
+    + (ko || att ? `${ko ? `${ko} ${ko === 1 ? "problema" : "problemi"}` : ""}${ko && att ? " e " : ""}${att ? `${att} ${att === 1 ? "cosa" : "cose"} da guardare` : ""}.` : "Tutto in ordine.");
 }
 
-function giro(m) {
-  const g = m.giri || {}, passi = g.passi || [];
-  if (!g.ultimo) { $("#giro").innerHTML = '<p class="vuoto">Nessun giro registrato.</p>'; $("#giri").innerHTML = ""; return; }
+function giro(m, d) {
+  const g = m.giri || {}, passi = g.passi || [], u = g.ultimo;
+  if (!u) { $("#giro").innerHTML = '<p class="vuoto">Nessun giro registrato.</p>'; $("#giri").innerHTML = ""; return; }
   const strani = passi.filter((p) => p.esito !== "ok" || p.avviso), lenti = [...passi].sort((a, b) => (b.secondi || 0) - (a.secondi || 0)).slice(0, 6);
-  const righe = (ps) => tab([["Passo"], ["Esito"], ["Durata", 1], ["Note", 0, "lungo"]], ps.map((p) => [esc(p.nome), etichetta(p.esito), durata(p.secondi), esc(p.errore || p.avviso || "")]));
-  $("#giro").innerHTML = `<p>Giro ${esc(g.ultimo.id)}: ${etichetta(g.ultimo.esito)} · ${num(g.ultimo.ok)} passi ok su ${num(g.ultimo.passi)} · ${durata(g.ultimo.fine - g.ultimo.inizio)}</p>`
-    + `<h3>Errori, passi saltati e avvisi</h3>${strani.length ? righe(strani) : '<p class="vuoto">Nessuno.</p>'}<h3>I passi più lunghi</h3>${righe(lenti)}`
-    + `<button class="mostra" id="tutti">Tutti i ${num(passi.length)} passi</button><div id="tutti_passi" hidden>${righe(passi)}</div>`;
-  $("#tutti").onclick = () => { $("#tutti_passi").hidden = !$("#tutti_passi").hidden; };
-  $("#giri").innerHTML = tab([["Inizio"], ["Tipo"], ["Esito"], ["Durata", 1], ["Ok", 1], ["Errori", 1], ["Saltati", 1]],
-    (g.elenco || []).map((x) => [quando(x.inizio), esc(x.tipo), etichetta(x.esito), durata(x.fine ? x.fine - x.inizio : null), num(x.ok), num(x.errori), num(x.saltati)]));
+  const righe = (ps) => P.tab([["Passo"], ["Esito"], ["Durata", "n"], ["Nota", "lungo"]], ps.map((p) => [`<code>${esc(p.nome)}</code>`, esito(p.esito), durata(p.secondi), esc(p.errore || p.avviso || "")]), "Nessuno.");
+  $("#giro").innerHTML = `<p>${esito(u.esito)} · ${quando(u.inizio)} · durata ${durata(u.fine - u.inizio)} · ${num(u.ok)} passi riusciti su ${num(u.passi)}</p>`
+    + `<h3>Passi in errore, saltati o con un avviso</h3>${righe(strani)}<h3>I passi più lunghi</h3>${righe(lenti)}`
+    + `<button class="mostra" id="tutti" aria-expanded="false">Mostra tutti i ${num(passi.length)} passi</button><div id="tutti_passi" hidden>${righe(passi)}</div>`;
+  $("#tutti").onclick = () => { const h = !$("#tutti_passi").hidden; $("#tutti_passi").hidden = h; $("#tutti").setAttribute("aria-expanded", String(!h)); $("#tutti").textContent = h ? `Mostra tutti i ${num(passi.length)} passi` : "Nascondi"; };
+  const TIPO = { giro: "completo", riprendi: "ripresa", passo: "passi singoli" };
+  const nel = (g.elenco || []).filter((x) => { const k = new Date(x.inizio * 1000).toISOString().slice(0, 10); return k >= String(d.dal) && k <= String(d.al); });
+  $("#n-giri").textContent = `${P.descrivi(String(d.dal), String(d.al)).replace(/^./, (c) => c.toUpperCase())}: ${num(nel.length)} ${nel.length === 1 ? "giro" : "giri"}. «Ripresa» rifà solo i passi falliti di un giro.`;
+  $("#giri").innerHTML = P.tab([["Inizio"], ["Tipo"], ["Esito"], ["Durata", "n"], ["Riusciti", "n"], ["Errori", "n"], ["Saltati", "n"]],
+    nel.map((x) => [quando(x.inizio), TIPO[x.tipo] || esc(x.tipo), esito(x.esito), durata(x.fine ? x.fine - x.inizio : null), num(x.ok), num(x.errori), num(x.saltati)]));
 }
 
 function dati(d) {
-  if (d.errore) { $("#sedute").innerHTML = `<p class="vuoto">Postgres non risponde: ${esc(d.errore)}</p>`; return; }
-  $("#sedute").innerHTML = tab([["Ramo"], ["Tipo"], ["Ultima tenuta"], ["Prevista"], ["Sedute", 1]],
-    (d.sedute || []).map((s) => [RAMI[s.ramo] || esc(s.ramo), TIPI[s.tipo] || esc(s.tipo), giorno(s.ultima_tenuta), s.prossima ? giorno(s.prossima) : "–", num(s.sedute)]));
-  $("#voti").innerHTML = tab([["Ramo"], ["Ultima votazione"], ["Negli ultimi 30 giorni", 1]], (d.voti || []).map((v) => [RAMI[v.ramo], giorno(v.ultima), num(v.ultimi_30_giorni)]));
-  $("#atti").innerHTML = tab([["Ramo"], ["Ultimo presentato"], ["Ultimo cambio di stato"], ["Ultima legge"]], (d.atti || []).map((a) => [RAMI[a.ramo], giorno(a.ultimo_presentato), giorno(a.ultimo_cambio), giorno(a.ultima_legge)]));
+  if (d.errore) { $("#sedute").innerHTML = `<p class="vuoto">Il database non risponde: ${esc(d.errore)}</p>`; return; }
+  $("#sedute").innerHTML = P.tab([["Ramo"], ["Tipo"], ["Ultima tenuta", "n"], ["Prossima prevista", "n"], ["Sedute", "n"]],
+    (d.sedute || []).map((s) => [RAMI[s.ramo] || esc(s.ramo), TIPI[s.tipo] || esc(s.tipo), data(s.ultima_tenuta), s.prossima ? data(s.prossima) : "–", num(s.sedute)]));
+  $("#voti").innerHTML = P.tab([["Ramo"], ["Ultima votazione", "n"], ["Votazioni negli ultimi 30 giorni", "n"]], (d.voti || []).map((v) => [RAMI[v.ramo], data(v.ultima), num(v.ultimi_30_giorni)]));
+  $("#atti").innerHTML = P.tab([["Ramo"], ["Ultimo presentato", "n"], ["Ultimo cambio di stato", "n"], ["Ultima legge", "n"]], (d.atti || []).map((a) => [RAMI[a.ramo], data(a.ultimo_presentato), data(a.ultimo_cambio), data(a.ultima_legge)]));
   const r = d.righe || {}, v = d.vettori || {};
-  const NOMI = { person: "Persone", sitting: "Sedute", agenda_item: "Punti all'ordine del giorno", speech: "Interventi", vote: "Votazioni", ballot: "Voti dei singoli", act: "Atti", act_text: "Testi degli atti", amendment: "Emendamenti", document: "Documenti", reaction: "Reazioni in Aula", video: "Video", passage: "Brani", passage_vector: "Brani con vettore" };
-  $("#db").innerHTML = `<p>Peso del database: <b>${gb(d.peso)}</b> · ultimo caricamento ${quando(d.caricato)}</p>`
-    + tab([["Tabella"], ["Righe (stima)", 1]], Object.keys(NOMI).filter((k) => k in r).map((k) => [NOMI[k], num(r[k])]))
-    + (r.passage ? barra(r.passage_vector / r.passage, `Brani con vettore: ${num(100 * r.passage_vector / r.passage)}%`) : "")
-    + `<p class="nota">Batch dei vettori: ${num(v.aperti)} aperti, ${num(v.con_errore)} con errore · ultimo invio ${quando(v.ultimo_invio)} · ultima raccolta ${quando(v.ultima_raccolta)}</p>`;
+  const NOMI = { person: "Persone", sitting: "Sedute", agenda_item: "Punti all'ordine del giorno", speech: "Interventi", vote: "Votazioni", ballot: "Voti dei singoli parlamentari", act: "Atti", act_text: "Testi degli atti", amendment: "Emendamenti", document: "Documenti", reaction: "Reazioni in Aula", video: "Video", passage: "Brani per la ricerca", passage_vector: "Brani con il vettore" };
+  $("#db").innerHTML = `<div class="cifre"><div class="cifra"><small>Peso</small><span class="cifra__n cifra__n--medio">${gb(d.peso)}</span></div><div class="cifra"><small>Ultimo caricamento</small><span class="cifra__n cifra__n--medio">${quando(d.caricato)}</span></div></div>`
+    + (r.passage ? riempi(r.passage_vector / r.passage, "Brani pronti per la ricerca per significato", `${num(100 * r.passage_vector / r.passage, 1)}%`) : "")
+    + P.tab([["Tabella"], ["Righe (stima)", "n"]], Object.keys(NOMI).filter((k) => k in r).map((k) => [NOMI[k], num(r[k])]))
+    + `<p class="nota" style="margin-top:12px">Vettori: ${num(v.aperti)} batch in attesa da OpenAI, ${num(v.con_errore)} con errore. Ultimo invio ${quando(v.ultimo_invio)}, ultima raccolta ${quando(v.ultima_raccolta)}.</p>`;
 }
 
-function chat(c, k) {
-  $("#chat").innerHTML = tab([["Giorno"], ["Domande", 1], ["Errori", 1], ["Mediana", 1], ["9 su 10 entro", 1], ["Spesa", 1]],
-    (c.per_giorno || []).slice().reverse().map((g) => [giorno(g.giorno), num(g.domande), num(g.errori), num(g.mediana, 1), num(g.p90, 1), usd(g.dollari)]));
-  $("#errori").innerHTML = tab([["Quando"], ["Uso"], ["Durata", 1], ["Errore", 0, "lungo"]],
-    (c.errori || []).map((e) => [quando(e.creata), esc(e.modello === "fascicolo" ? "fascicolo" : "chat"), durata(e.ms / 1000), esc(e.errore_testo)]));
-  const v = k.vettori || {}, ch = k.chat || {};
-  $("#costi").innerHTML = tab([["Voce"], ["Spesa", 1]], [
-    ["Chat, fascicoli e traduzioni", usd(k.periodo)], ["Vettori della ricerca (stima)", usd(v.dollari)], ["<b>Totale</b>", `<b>${usd((k.periodo || 0) + (v.dollari || 0))}</b>`],
-    ["Per domanda", usd(ch.domande ? ch.dollari / ch.domande : 0, 3)], ["Da sempre", usd((k.sempre || 0) + (v.dollari_sempre || 0))]])
-    + `<h3>Per uso</h3>` + tab([["Uso"], ["Domande", 1], ["Spesa", 1], ["A domanda", 1]], (k.modelli || []).map((m) => [esc(m.voce), num(m.domande), usd(m.dollari), `${num(m.centesimi, 1)} ¢`]))
-    + `<p class="nota">Limiti: ${num(d_limiti.domande_ora)} domande l'ora per visitatore, ${usd(d_limiti.dollari_giorno, 0)} al giorno. Dettagli in <a href="/statistiche">Statistiche</a>.</p>`;
+function chat(c, k, d) {
+  const per = Object.fromEntries((c.per_giorno || []).map((g) => [String(g.giorno), g]));
+  const col = P.giorni(String(d.dal), String(d.al)).map((g) => ({ k: g, etichetta: data(g), titolo: data(g, true) }));
+  const serie = [{ nome: "Risposte riuscite", colore: "var(--s1)", v: (g) => (per[g]?.domande || 0) - (per[g]?.errori || 0) }, { nome: "Finite con un errore", colore: "var(--no)", v: (g) => per[g]?.errori }];
+  P.barre($("#g-chat"), col, serie); $("#l-chat").innerHTML = P.legenda(serie);
+  $("#chat").innerHTML = `<h3>Giorno per giorno</h3>` + P.tab([["Giorno"], ["Domande", "n"], ["Errori", "n"], ["Tempo tipico", "n"], ["9 su 10 entro", "n"], ["Spesa", "n"]],
+    (c.per_giorno || []).slice().reverse().map((g) => [data(g.giorno), num(g.domande), num(g.errori), `${num(g.mediana, 1)} s`, `${num(g.p90, 1)} s`, usd(g.dollari)]), "Nessuna domanda nel periodo.");
+  $("#errori").innerHTML = P.tab([["Quando"], ["Dove"], ["Dopo", "n"], ["Errore", "lungo"]],
+    (c.errori || []).map((e) => [quando(e.creata), e.modello === "fascicolo" ? "fascicolo" : "chat", durata(e.ms / 1000), esc(e.errore_testo)]), "Nessun errore nel periodo.");
+  const v = k.vettori || {}, ch = k.chat || {}, l = window.LIMITI || {};
+  $("#costi").innerHTML = `<div class="cifre"><div class="cifra"><small>Totale nel periodo</small><span class="cifra__n cifra__n--medio">${usd((k.periodo || 0) + (v.dollari || 0))}</span></div><div class="cifra"><small>Una domanda, in media</small><span class="cifra__n cifra__n--medio">${usd(ch.domande ? ch.dollari / ch.domande : 0, 3)}</span></div></div>`
+    + P.tab([["Voce"], ["Spesa", "n"]], [["Chat, fascicoli e traduzioni", usd(k.periodo)], ["Vettori della ricerca (stima)", usd(v.dollari)], ["Da sempre, tutto compreso", usd((k.sempre || 0) + (v.dollari_sempre || 0))]])
+    + `<h3>Per uso</h3>` + P.tab([["Uso"], ["Domande", "n"], ["Spesa", "n"], ["Una domanda", "n"]], (k.modelli || []).map((m) => [esc(m.voce), num(m.domande), usd(m.dollari), `${num(m.centesimi, 1)} centesimi`]))
+    + `<p class="nota" style="margin-top:12px">Limiti della chat: ${num(l.domande_ora)} domande l'ora per visitatore, ${usd(l.dollari_giorno, 0)} di spesa al giorno.</p>`;
 }
 
 function macchina(m) {
   const x = m.macchina || {}, d = x.disco, mem = x.memoria;
-  $("#macchina").innerHTML = !d ? '<p class="vuoto">Nessun dato.</p>' : barra(d.usato / d.totale, `Disco: ${gb(d.usato)} su ${gb(d.totale)}, liberi ${gb(d.libero)}`)
-    + (mem ? barra(1 - mem.disponibile / mem.totale, `Memoria: ${gb(mem.totale - mem.disponibile)} in uso su ${gb(mem.totale)}`)
-      + (mem.swap_totale ? barra((mem.swap_totale - mem.swap_libero) / mem.swap_totale, `Swap: ${gb(mem.swap_totale - mem.swap_libero)} su ${gb(mem.swap_totale)}`) : "") : "")
-    + (x.carico ? `<p>Carico medio (1, 5, 15 min): ${x.carico.map((c) => num(c, 2)).join(" · ")} su ${num(x.cpu)} CPU</p>` : "")
-    + (x.acceso_da ? `<p>Accesa da ${durata(x.acceso_da)}</p>` : "")
-    + `<p class="nota">Codice: ${esc(m.codice?.commit || "–")}</p>`;
-  $("#container").innerHTML = tab([["Container"], ["Stato"]], (m.container || []).map((c) => [esc(c.nome), `${etichetta(c.attivo === "running" ? "ok" : c.nome.startsWith("piattaforma-") ? "errore" : c.attivo)} ${esc(c.stato)}`]));
+  $("#macchina").innerHTML = !d ? '<p class="vuoto">Nessun dato.</p>' : riempi(d.usato / d.totale, "Disco", `${gb(d.usato)} su ${gb(d.totale)}`)
+    + (mem ? riempi(1 - mem.disponibile / mem.totale, "Memoria", `${gb(mem.totale - mem.disponibile)} su ${gb(mem.totale)}`)
+      + (mem.swap_totale ? riempi((mem.swap_totale - mem.swap_libero) / mem.swap_totale, "Swap", `${gb(mem.swap_totale - mem.swap_libero)} su ${gb(mem.swap_totale)}`) : "") : "")
+    + P.tab([["Misura"], ["Valore", "n"]], [
+      ...(x.carico ? [["Carico medio, ultimo minuto", `${num(x.carico[0], 2)} su ${num(x.cpu)} CPU`], ["Carico medio, ultimi 15 minuti", num(x.carico[2], 2)]] : []),
+      ...(x.acceso_da ? [["Acceso da", durata(x.acceso_da)]] : []), ["Versione del codice", `<code>${esc((m.codice?.commit || "–").split(" ")[0])}</code>`]]);
+  $("#container").innerHTML = P.tab([["Nome"], ["Stato"]], (m.container || []).map((c) => [esc(c.nome), `${P.stato(c.attivo === "running" ? "ok" : c.nome.startsWith("piattaforma-") ? "ko" : "", c.attivo === "running" ? "acceso" : "spento")} <small style="color:var(--t3)">${esc(c.stato)}</small>`]), "Nessun container.");
   $("#backup").innerHTML = (m.backup?.righe || []).length ? `<pre>${esc(m.backup.righe.join("\n"))}</pre>` : '<p class="vuoto">Nessun registro del backup.</p>';
 }
 
-let d_limiti = {};
-async function carica() {
-  const r = await fetch("/api/sistema", { credentials: "same-origin" });
-  if (!r.ok) { $("#sotto").textContent = "Non riesco a leggere lo stato del sistema."; return; }
-  const d = await r.json();
-  d_limiti = d.limiti || {};
+let ultimo = null;
+function disegna(d) {
+  window.LIMITI = d.limiti || {};
   const a = avvisi(d);
-  cifre(d, a);
-  giro(d.macchina || {});
-  dati(d.dati || {});
-  chat(d.chat || {}, d.costi || {});
-  macchina(d.macchina || {});
+  cifre(d, a); giro(d.macchina || {}, d); dati(d.dati || {}); chat(d.chat || {}, d.costi || {}, d); macchina(d.macchina || {});
 }
-carica();
-setInterval(() => { if (!document.hidden) carica(); }, 60000);
+async function carica(dal, al) {
+  try { ultimo = await P.leggi(`/api/sistema?dal=${dal}&al=${al}`); disegna(ultimo); }
+  catch (e) { if (e.message !== "accesso scaduto") $("#sotto").textContent = "Non riesco a leggere lo stato del sistema. Riprova fra poco."; }
+}
+P.testata("sistema");
+P.ridisegna = () => ultimo && disegna(ultimo);
+const periodo = P.periodo($("#periodo"), 14, carica);
+addEventListener("resize", () => { clearTimeout(window._r); window._r = setTimeout(P.ridisegna, 150); });
+setInterval(() => { if (!document.hidden) { const { dal, al } = periodo.get(); carica(dal, al); } }, 60000);
 </script>
 </body>
 </html>

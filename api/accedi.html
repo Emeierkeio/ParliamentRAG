@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="it">
+<head>
+<title>Accesso · ParliamentRAG</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='15 15 194 153'%3E%3Cstyle%3Eg%7Bcolor:%2312171a%7D@media (prefers-color-scheme:dark)%7Bg%7Bcolor:%23fff%7D%7D%3C/style%3E%3Cg%3E%3Cpath d='M 35.91 139.73 A 81 81 0 1 1 188.09 139.73' fill='none' stroke='currentColor' stroke-width='32' stroke-linecap='round'/%3E%3Ccircle cx='112' cy='146' r='22' fill='currentColor'/%3E%3C/g%3E%3C/svg%3E">
+<script>
+/* tema del sito (chiaro o scuro), scelto prima del primo disegno */
+(function () { var r = document.documentElement, s; try { s = localStorage.getItem("parliamentrag-scelta"); } catch (e) {}
+  if (!s) s = matchMedia("(prefers-color-scheme: dark)").matches ? "scuro" : "chiaro";
+  if (s === "scuro" || s === "notte" || s === "netto") { r.dataset.scelta = "netto"; r.dataset.tono = "scuro"; } else r.dataset.scelta = "chiaro"; })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600&family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/pannello.css">
+</head>
+<body class="pn">
+<main class="accesso">
+ <form id="accesso" novalidate>
+  <a class="marchio" href="/"><svg viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22"/></svg>ParliamentRAG</a>
+  <h1>Accesso riservato</h1>
+  <p>Statistiche di visita e stato del sistema.</p>
+  <label>Utente<input name="utente" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus></label>
+  <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+  <p class="pn-errore" id="errore" role="alert" aria-live="polite"></p>
+  <button type="submit">Accedi</button>
+ </form>
+</main>
+<script>
+const f = document.getElementById("accesso"), err = document.getElementById("errore");
+const dopo = (() => { const d = new URLSearchParams(location.search).get("dopo"); return d === "/statistiche" || d === "/sistema" ? d : "/sistema"; })();
+f.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  if (!f.utente.value.trim() || !f.password.value) { err.textContent = "Scrivi utente e password."; return; }
+  const b = f.querySelector("button"); b.disabled = true; b.textContent = "Controllo…"; err.textContent = "";
+  try {
+    const r = await fetch("/api/accedi", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin",
+      body: JSON.stringify({ utente: f.utente.value.trim(), password: f.password.value }) });
+    if (r.ok) { location.replace(dopo); return; }
+    const j = await r.json().catch(() => ({}));
+    err.textContent = r.status === 401 ? "Utente o password sbagliati." : (j.detail ? j.detail.charAt(0).toUpperCase() + j.detail.slice(1) + "." : "Accesso non riuscito, riprova.");
+    f.password.value = ""; f.password.focus();
+  } catch { err.textContent = "Il server non risponde. Riprova fra poco."; }
+  b.disabled = false; b.textContent = "Accedi";
+});
+</script>
+</body>
+</html>

@@ -1,102 +1,76 @@
 <!doctype html>
 <html lang="it">
 <head>
+<title>Statistiche · ParliamentRAG</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Statistiche · ParliamentRAG</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='15 15 194 153'%3E%3Cstyle%3Eg%7Bcolor:%2312171a%7D@media (prefers-color-scheme:dark)%7Bg%7Bcolor:%23fff%7D%7D%3C/style%3E%3Cg%3E%3Cpath d='M 35.91 139.73 A 81 81 0 1 1 188.09 139.73' fill='none' stroke='currentColor' stroke-width='32' stroke-linecap='round'/%3E%3Ccircle cx='112' cy='146' r='22' fill='currentColor'/%3E%3C/g%3E%3C/svg%3E">
+<script>
+/* tema del sito (chiaro o scuro), scelto prima del primo disegno */
+(function () { var r = document.documentElement, s; try { s = localStorage.getItem("parliamentrag-scelta"); } catch (e) {}
+  if (!s) s = matchMedia("(prefers-color-scheme: dark)").matches ? "scuro" : "chiaro";
+  if (s === "scuro" || s === "notte" || s === "netto") { r.dataset.scelta = "netto"; r.dataset.tono = "scuro"; } else r.dataset.scelta = "chiaro"; })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--fondo:#f6f7f9;--sup:#fff;--sup2:#f1f2f5;--bordo:#e4e6eb;--t:#14161d;--t2:#3b3f4b;--t3:#666b79;--acc:#2a4bd7;--acc2:#9aabf0;--acc3:#d9822b;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--fondo:#070b22;--sup:#0d1333;--sup2:#141c42;--bordo:rgba(157,184,255,.14);--t:#eceffa;--t2:#c4c9e2;--t3:#959cbf;--acc:#8aa2ff;--acc2:#3c4f9e;--acc3:#e8a25a;color-scheme:dark}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--fondo);color:var(--t);font:15px/1.5 "Schibsted Grotesk",system-ui,sans-serif}
-.dentro{max-width:1120px;margin:0 auto;padding:24px 16px 64px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-.marchio{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-.marchio svg{width:28px;height:22px}
-h1{font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
-.sotto{color:var(--t3);margin:0 0 20px}
-.periodo{display:flex;border:1px solid var(--bordo);border-radius:999px;background:var(--sup);overflow:hidden}
-.periodo button{border:0;background:none;font:inherit;color:var(--t2);padding:7px 14px;cursor:pointer}
-.periodo button[aria-pressed=true]{background:var(--t);color:var(--fondo)}
-.cifre{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.cifra{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:14px 16px}
-.cifra small{color:var(--t3);font-size:13px}
-.cifra b{display:block;font-size:28px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.cifre--costi{grid-template-columns:repeat(4,minmax(0,1fr))}
-.cifra b.piccolo{font-size:22px}
-.cifra--ora small::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#1f9d55;margin-right:6px;vertical-align:0}
-.blocco{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:16px}
-.blocco h2{font-size:16px;margin:0 0 12px}
-.griglia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.griglia .blocco{margin:0}
-svg.andamento{width:100%;height:220px;display:block}
-.legenda{display:flex;gap:16px;font-size:13px;color:var(--t3);margin-top:8px}
-.legenda i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
-table{width:100%;border-collapse:collapse;font-size:14px}
-td{padding:6px 0;border-top:1px solid var(--bordo);vertical-align:middle}
-td.n{text-align:right;font-variant-numeric:tabular-nums;color:var(--t2);width:72px}
-.voce{position:relative;padding-left:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0}
-.voce span{position:absolute;inset:3px auto 3px 0;background:var(--sup2);border-radius:4px;z-index:0}
-.voce em{position:relative;font-style:normal;z-index:1}
-.vuoto{color:var(--t3);font-size:14px}
-.blocco p.nota{color:var(--t3);font-size:13px;margin:-6px 0 10px}
-.fonte{color:var(--t3);font-size:12.5px;margin:8px 0 0}
-.fonte a{color:inherit}
-svg.mappa{display:block;width:100%;max-width:300px;height:auto;margin:0 auto 12px}
-svg.mappa path{stroke:var(--sup);stroke-width:.8}
-@media (max-width:760px){.cifre{grid-template-columns:repeat(2,minmax(0,1fr))}.cifra--ora{grid-column:1/-1}.griglia{grid-template-columns:1fr}h1{font-size:24px}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600&family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/pannello.css">
 </head>
-<body>
-<div class="dentro">
- <header>
-  <div class="marchio"><svg viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="currentColor"/></svg>ParliamentRAG</div>
-  <div class="periodo" role="group" aria-label="Periodo"><button data-g="7">7 giorni</button><button data-g="30" aria-pressed="true">30 giorni</button><button data-g="90">90 giorni</button><button data-g="365">12 mesi</button></div>
- </header>
- <h1>Statistiche di visita</h1>
- <p class="sotto" id="sotto">Senza cookie e senza IP: un visitatore è contato una volta al giorno.</p>
- <div class="cifre" id="cifre"></div>
- <section class="blocco"><h2>Andamento</h2><svg class="andamento" id="andamento" role="img" aria-label="Visitatori e domande per giorno"></svg>
-  <div class="legenda"><span><i style="background:var(--acc)"></i>Visitatori</span><span><i style="background:var(--acc2)"></i>Domande alla chat e fascicoli</span></div></section>
- <section class="blocco"><h2>Ultime 24 ore</h2><svg class="andamento" id="orario" role="img" aria-label="Visitatori e domande per ora"></svg>
-  <div class="legenda"><span><i style="background:var(--acc)"></i>Visitatori</span><span><i style="background:var(--acc3)"></i>di cui con il browser non in italiano</span><span><i style="background:var(--acc2)"></i>Domande alla chat e fascicoli</span></div></section>
- <section class="blocco"><h2>Costi OpenAI</h2><p class="nota" id="costi_nota"></p><div class="cifre cifre--costi" id="costi_cifre"></div>
-  <svg class="andamento" id="costi_giorni" role="img" aria-label="Spesa per giorno"></svg>
-  <div class="legenda"><span><i style="background:var(--acc)"></i>Chat, fascicoli e traduzioni</span><span><i style="background:var(--acc3)"></i>Vettori della ricerca (stima)</span></div></section>
+<body class="pn">
+<header data-testata></header>
+<main class="pn-pagina" id="contenuto">
+ <div class="pn-testa">
+  <div><h1>Statistiche di visita</h1><p id="sotto">Senza cookie e senza IP: ogni visitatore conta una volta al giorno.</p></div>
+  <div id="periodo"></div>
+ </div>
+ <div class="cifre" id="cifre" aria-live="polite"></div>
+
  <div class="griglia">
-  <section class="blocco"><h2>Spesa per uso</h2><p class="nota">Solo le chat dal sito e i fascicoli, senza le traduzioni.</p><div id="modelli"></div></section>
-  <section class="blocco"><h2>La chat in numeri</h2><div id="chat"></div></section>
-  <section class="blocco"><h2>Pagine più viste</h2><div id="pagine"></div></section>
-  <section class="blocco"><h2>Da dove arrivano</h2><div id="provenienze"></div></section>
-  <section class="blocco"><h2>Dispositivi</h2><div id="dispositivi"></div></section>
-  <section class="blocco"><h2>Browser</h2><div id="browser"></div></section>
-  <section class="blocco"><h2>Lingua del browser</h2><div id="lingue"></div></section>
-  <section class="blocco"><h2>Paesi</h2><div id="paesi"></div></section>
-  <section class="blocco"><h2>Regioni italiane</h2><p class="nota">Dall'indirizzo IP: da rete mobile l'operatore spesso risulta a Milano o a Roma.</p><svg class="mappa" id="mappa" role="img" aria-label="Visitatori per regione"></svg><div id="regioni"></div></section>
-  <section class="blocco"><h2>Da quale pagina fanno domande alla chat</h2><p class="nota">L'ultima pagina vista prima di ogni domanda.</p><div id="arrivi_chat"></div></section>
-  <section class="blocco"><h2>Pagine di uscita</h2><p class="nota">L'ultima pagina vista da ogni visitatore nel giorno.</p><div id="uscite"></div></section>
-  <section class="blocco"><h2>Strumenti usati dalla chat</h2><p class="nota">Solo le chat dal sito.</p><div id="strumenti"></div></section>
-  <section class="blocco"><h2>Cosa cerca la chat</h2><p class="nota">Le parole che la chat passa agli strumenti di ricerca, non le domande.</p><div id="ricerche"></div></section>
+  <section class="pn-blocco" id="b-giorni"><h2>Visite per giorno</h2><p class="nota">Visitatori unici di ogni giorno e domande fatte alla chat, fascicoli compresi.</p>
+   <div class="grafico" id="g-giorni"><svg role="img" aria-label="Visitatori e domande per giorno"></svg></div><div id="l-giorni"></div></section>
+  <section class="pn-blocco"><h2>Visite per ora</h2><p class="nota" id="n-ore"></p>
+   <div class="grafico" id="g-ore"><svg role="img" aria-label="Visitatori e domande per ora"></svg></div><div id="l-ore"></div></section>
+ </div>
+
+ <section class="pn-blocco"><h2>Spesa OpenAI</h2><p class="nota" id="n-costi"></p>
+  <div class="cifre" id="c-costi"></div>
+  <div class="grafico" id="g-costi"><svg role="img" aria-label="Spesa per giorno"></svg></div><div id="l-costi"></div></section>
+
+ <div class="griglia">
+  <section class="pn-blocco"><h2>Spesa per uso</h2><p class="nota">Chat del sito e fascicoli. Le traduzioni sono contate solo nel totale.</p><div id="modelli"></div></section>
+  <section class="pn-blocco"><h2>La chat</h2><p class="nota">Solo le domande fatte dal sito.</p><div id="chat"></div></section>
+  <section class="pn-blocco"><h2>Pagine più viste</h2><div id="pagine"></div></section>
+  <section class="pn-blocco"><h2>Da dove arrivano</h2><p class="nota">Il sito da cui si arriva, quando non è il nostro.</p><div id="provenienze"></div></section>
+  <section class="pn-blocco"><h2>Dispositivi</h2><div id="dispositivi"></div></section>
+  <section class="pn-blocco"><h2>Browser</h2><div id="browser"></div></section>
+  <section class="pn-blocco"><h2>Lingua del browser</h2><div id="lingue"></div></section>
+  <section class="pn-blocco"><h2>Paesi</h2><div id="paesi"></div></section>
+  <section class="pn-blocco"><h2>Regioni italiane</h2><p class="nota">Ricavate dall'indirizzo IP. Da rete mobile l'operatore risulta spesso a Milano o a Roma.</p><svg class="mappa" id="mappa" role="img" aria-label="Visitatori per regione"></svg><div id="regioni"></div></section>
+  <section class="pn-blocco"><h2>Pagina vista prima di una domanda</h2><p class="nota">Da dove parte chi scrive alla chat.</p><div id="arrivi_chat"></div></section>
+  <section class="pn-blocco"><h2>Pagina di uscita</h2><p class="nota">L'ultima pagina vista da ogni visitatore nel giorno.</p><div id="uscite"></div></section>
+  <section class="pn-blocco"><h2>Strumenti usati dalla chat</h2><p class="nota">Quante volte la chat ha chiamato ogni strumento.</p><div id="strumenti"></div></section>
+  <section class="pn-blocco"><h2>Parole cercate dalla chat</h2><p class="nota">Le ricerche che la chat passa agli strumenti. Le domande degli utenti non si vedono.</p><div id="ricerche"></div></section>
  </div>
  <p class="fonte">Paesi e regioni: <a href="https://db-ip.com" target="_blank" rel="noopener">IP Geolocation by DB-IP</a> (CC BY 4.0). Confini delle regioni: ISTAT, via <a href="https://github.com/openpolis/geojson-italy" target="_blank" rel="noopener">openpolis/geojson-italy</a> (CC BY 4.0).</p>
-</div>
+</main>
+<script src="/js/pannello.js"></script>
 <script>
-const $ = (s) => document.querySelector(s);
-const num = (n) => Number(n || 0).toLocaleString("it-IT");
-const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const data = (d) => new Date(d + "T12:00:00").toLocaleDateString("it-IT", { day: "numeric", month: "short" });
-
-// regioni in italiano: il file DB-IP le dà in inglese
+const { $, esc, num, usd, data } = P;
+// il file DB-IP dà le regioni in inglese
 const REGIONI = { Abruzzo: "Abruzzo", "Aosta Valley": "Valle d'Aosta", Apulia: "Puglia", Basilicate: "Basilicata", Calabria: "Calabria",
   Campania: "Campania", "Emilia-Romagna": "Emilia-Romagna", "Friuli Venezia Giulia": "Friuli-Venezia Giulia", Lazio: "Lazio",
   Liguria: "Liguria", Lombardy: "Lombardia", "The Marches": "Marche", Molise: "Molise", Piedmont: "Piemonte", Sardinia: "Sardegna",
   Sicily: "Sicilia", "Trentino-Alto Adige": "Trentino-Alto Adige", Tuscany: "Toscana", Umbria: "Umbria", Veneto: "Veneto" };
 const PAESI = (() => { try { return new Intl.DisplayNames(["it"], { type: "region" }); } catch { return null; } })();
 const MAPPA = /*MAPPA*/null;                        // il servizio mette qui api/regioni-italia.json
+const NOMI = { paesi: (v) => (PAESI && /^[A-Z]{2}$/.test(v) ? PAESI.of(v) : v), regioni: (v) => REGIONI[v] || v,
+  dispositivi: (v) => ({ telefono: "Telefono", tablet: "Tablet", computer: "Computer" })[v] || v };
+const COLONNE = { arrivi_chat: [["domande", "Domande"], ["visitatori", "Visitatori"]], uscite: [["visitatori", "Visitatori"]],
+  strumenti: [["chiamate", "Chiamate"]], ricerche: [["chiamate", "Volte"]] };
+const VISITE = [["visitatori", "Visitatori"], ["pagine", "Pagine"]];
+const colore = (v) => `var(${v})`;
 
 function mappa(righe) {
   const el = $("#mappa");
@@ -106,120 +80,87 @@ function mappa(righe) {
   el.setAttribute("viewBox", `0 0 ${MAPPA.larghezza} ${MAPPA.altezza}`);
   el.innerHTML = Object.entries(MAPPA.regioni).map(([nome, d]) => {
     const breve = nome.split("/")[0], v = per[breve] || 0;
-    const colore = v ? `color-mix(in srgb, var(--acc) ${Math.round(25 + 75 * v / max)}%, var(--sup2))` : "var(--sup2)";
-    return `<path d="${d}" fill="${colore}"><title>${esc(breve)}: ${num(v)} visitatori</title></path>`;
+    const c = v ? `color-mix(in srgb, var(--s1) ${Math.round(25 + 75 * v / max)}%, var(--sup2))` : "var(--sup2)";
+    return `<path d="${d}" fill="${c}"><title>${esc(breve)}: ${num(v)} visitatori</title></path>`;
   }).join("");
 }
 
-const NOMI = { paesi: (v) => (PAESI && /^[A-Z]{2}$/.test(v) ? PAESI.of(v) : v), regioni: (v) => REGIONI[v] || v };
-// colonne di ogni tabella: la prima fa la barra
-const COLONNE = { arrivi_chat: [["domande", "Domande"], ["visitatori", "Visitatori"]], uscite: [["visitatori", "Visitatori"]],
-  strumenti: [["chiamate", "Chiamate"]], ricerche: [["chiamate", "Volte"]] };
-
-function tabella(el, righe, colonne = [["visitatori", "Visitatori"], ["pagine", "Pagine"]], nome = (v) => v) {
-  if (!righe || !righe.length) { el.innerHTML = '<p class="vuoto">Ancora nessun dato.</p>'; return; }
-  const max = Math.max(...righe.map((r) => r[colonne[0][0]])) || 1;
-  el.innerHTML = `<table><tr><td></td>${colonne.map(([, t]) => `<td class="n"><small>${t}</small></td>`).join("")}</tr>${righe.map((r) =>
-    `<tr><td class="voce"><span style="width:${(100 * r[colonne[0][0]] / max).toFixed(1)}%"></span><em>${esc(nome(r.voce))}</em></td>${colonne.map(([k]) => `<td class="n">${num(r[k])}</td>`).join("")}</tr>`).join("")}</table>`;
+function giorni(d) {
+  const per = Object.fromEntries(d.per_giorno.map((g) => [String(g.giorno), g])), uno = d.dal === d.al;
+  $("#b-giorni").hidden = uno;                       // un giorno solo: basta il grafico per ora
+  if (uno) return;
+  const col = P.giorni(String(d.dal), String(d.al)).map((k) => ({ k, etichetta: data(k), titolo: data(k, true) }));
+  const serie = [{ nome: "Visitatori", colore: colore("--s1"), v: (k) => per[k]?.visitatori },
+    { nome: "Domande e fascicoli", colore: colore("--t"), punto: true, v: (k) => (per[k]?.domande || 0) + (per[k]?.fascicoli || 0) }];
+  P.barre($("#g-giorni"), col, serie); $("#l-giorni").innerHTML = P.legenda(serie);
 }
 
-function grafico(el, colonne, righe, chiave) {
-  const W = el.clientWidth || 900, H = 220, P = { l: 36, r: 8, t: 10, b: 24 };
-  const per = Object.fromEntries(righe.map((g) => [g[chiave], g]));
-  const q = (g) => (g.domande || 0) + (g.fascicoli || 0);
-  const max = Math.max(1, ...colonne.map((c) => Math.max((per[c.k] || {}).visitatori || 0, q(per[c.k] || {}))));
-  const x = (i) => P.l + (i + .5) * (W - P.l - P.r) / colonne.length, y = (v) => H - P.b - v * (H - P.t - P.b) / max;
-  const bw = Math.max(2, (W - P.l - P.r) / colonne.length * .62);
-  let s = `<line x1="${P.l}" x2="${W - P.r}" y1="${H - P.b}" y2="${H - P.b}" stroke="var(--bordo)"/>`;
-  [...new Set([0, .5, 1].map((f) => Math.round(max * f)))].forEach((v) => { s += `<text x="${P.l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--t3)">${num(v)}</text>`; });
-  colonne.forEach((c, i) => {
-    const g = per[c.k] || {}, v = g.visitatori || 0, d = q(g);
-    const e = g.altre_lingue || 0;
-    s += `<g><title>${c.titolo}: ${num(v)} visitatori${"altre_lingue" in g ? ` (${num(e)} con il browser non in italiano)` : ""}, ${num(g.pagine)} pagine, ${num(d)} domande</title><rect x="${x(i) - bw / 2}" y="${P.t}" width="${bw}" height="${H - P.t - P.b}" fill="transparent"/>`
-      + `<rect x="${x(i) - bw / 2}" y="${y(v)}" width="${bw}" height="${H - P.b - y(v)}" rx="2" fill="var(--acc)"/>`
-      + (e ? `<rect x="${x(i) - bw / 2}" y="${y(e)}" width="${bw}" height="${H - P.b - y(e)}" rx="2" fill="var(--acc3)"/>` : "")
-      + (d ? `<circle cx="${x(i)}" cy="${y(d)}" r="3" fill="var(--acc2)" stroke="var(--sup)"/>` : "") + "</g>";
-  });
-  const passo = Math.ceil(colonne.length / Math.max(2, Math.floor((W - P.l) / 70)));
-  colonne.forEach((c, i) => { if (i % passo === 0) s += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--t3)">${c.etichetta}</text>`; });
-  el.setAttribute("viewBox", `0 0 ${W} ${H}`); el.innerHTML = s;
-}
-
-const dollari = (n, cifre = 2) => Number(n || 0).toLocaleString("it-IT", { style: "currency", currency: "USD", minimumFractionDigits: cifre, maximumFractionDigits: cifre });
-
-function costi(k, dal, al) {
-  const v = k.vettori || {}, ch = k.chat || {};
-  $("#costi_nota").textContent = `Chat, fascicoli e traduzioni con i prezzi del listino, contati dal ${k.dal ? data(k.dal) : "primo giorno"}; i vettori sono stimati dai token dei batch (${v.modello || "modello"}, Batch API).`;
-  $("#costi_cifre").innerHTML = [
-    ["Nel periodo", dollari(k.periodo + (v.dollari || 0)), `di cui vettori ${dollari(v.dollari)}`],
-    ["Oggi", dollari(k.oggi), `tetto della chat ${dollari(k.tetto, 0)} (${Math.round(100 * k.oggi / (k.tetto || 1))}%)`],
-    ["Per domanda", dollari(ch.domande ? ch.dollari / ch.domande : 0, 3), `${num(ch.domande)} domande nel periodo`],
-    ["Da sempre", dollari(k.sempre + (v.dollari_sempre || 0)), `${dollari(k.sempre)} chat e testi, ${dollari(v.dollari_sempre)} vettori`],
-  ].map(([n, b, s]) => `<div class="cifra"><small>${n}</small><b class="piccolo">${b}</b><small>${s}</small></div>`).join("");
-  // barre impilate per giorno: API sotto, vettori sopra
-  const el = $("#costi_giorni"), W = el.clientWidth || 900, H = 220, P = { l: 44, r: 8, t: 10, b: 24 };
-  const per = Object.fromEntries((k.per_giorno || []).map((g) => [g.giorno, g])), c = [];
-  for (let d = new Date(dal + "T12:00:00"); d <= new Date(al + "T12:00:00"); d.setDate(d.getDate() + 1)) c.push(d.toISOString().slice(0, 10));
-  const max = Math.max(.01, ...c.map((g) => ((per[g] || {}).api || 0) + ((per[g] || {}).vettori || 0)));
-  const x = (i) => P.l + (i + .5) * (W - P.l - P.r) / c.length, y = (v) => H - P.b - v * (H - P.t - P.b) / max;
-  const bw = Math.max(2, (W - P.l - P.r) / c.length * .62);
-  let s = `<line x1="${P.l}" x2="${W - P.r}" y1="${H - P.b}" y2="${H - P.b}" stroke="var(--bordo)"/>`;
-  [0, max / 2, max].forEach((v) => { s += `<text x="${P.l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--t3)">${dollari(v, v < 10 ? 2 : 0)}</text>`; });
-  c.forEach((g, i) => {
-    const a = (per[g] || {}).api || 0, w = (per[g] || {}).vettori || 0;
-    s += `<g><title>${data(g)}: ${dollari(a)} chat e testi, ${dollari(w)} vettori</title><rect x="${x(i) - bw / 2}" y="${P.t}" width="${bw}" height="${H - P.t - P.b}" fill="transparent"/>`
-      + `<rect x="${x(i) - bw / 2}" y="${y(a)}" width="${bw}" height="${H - P.b - y(a)}" rx="2" fill="var(--acc)"/>`
-      + (w ? `<rect x="${x(i) - bw / 2}" y="${y(a + w)}" width="${bw}" height="${y(a) - y(a + w)}" rx="2" fill="var(--acc3)"/>` : "") + "</g>";
-  });
-  const passo = Math.ceil(c.length / Math.max(2, Math.floor((W - P.l) / 70)));
-  c.forEach((g, i) => { if (i % passo === 0) s += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--t3)">${data(g)}</text>`; });
-  el.setAttribute("viewBox", `0 0 ${W} ${H}`); el.innerHTML = s;
-  // spesa per uso
-  const m = k.modelli || [];
-  $("#modelli").innerHTML = m.length ? `<table><tr><td></td><td class="n"><small>Domande</small></td><td class="n"><small>Spesa</small></td><td class="n"><small>A domanda</small></td></tr>${m.map((r) =>
-    `<tr><td class="voce"><span style="width:${(100 * r.dollari / Math.max(...m.map((q) => q.dollari), .01)).toFixed(1)}%"></span><em>${esc(r.voce)}</em></td><td class="n">${num(r.domande)}</td><td class="n">${dollari(r.dollari)}</td><td class="n">${num(r.centesimi)} ¢</td></tr>`).join("")}</table>` : '<p class="vuoto">Ancora nessun dato.</p>';
-  const righe = ch.domande ? [["Conversazioni", num(ch.conversazioni)], ["Domande (chat e fascicoli)", num(ch.domande)], ["Domande per conversazione", num(ch.turni_medi)],
-    ["Tempo di risposta, mediana", `${num(Math.round(ch.secondi_mediana))} s`], ["Tempo di risposta, 9 su 10 entro", `${num(Math.round(ch.secondi_p90))} s`],
-    ["Risposte finite con un errore", `${num(ch.errori)} (${num(Math.round(100 * ch.errori / ch.domande))}%)`], ["Domande dal sito in inglese", num(ch.inglese)],
-    ["Batch di vettori nel periodo", `${num(v.batch)}${v.aperti ? `, ${num(v.aperti)} ancora aperti` : ""}`], ["Token dei vettori nel periodo", num(v.token)]] : [];
-  $("#chat").innerHTML = righe.length ? `<table>${righe.map(([a, b]) => `<tr><td>${a}</td><td class="n" style="width:auto">${b}</td></tr>`).join("")}</table>` : '<p class="vuoto">Ancora nessun dato.</p>';
-}
-
-function andamento(giorni, dal, al) {
-  const c = []; for (let d = new Date(dal + "T12:00:00"); d <= new Date(al + "T12:00:00"); d.setDate(d.getDate() + 1)) { const k = d.toISOString().slice(0, 10); c.push({ k, etichetta: data(k), titolo: data(k) }); }
-  grafico($("#andamento"), c, giorni, "giorno");
-}
-
-function orario(ore, adesso) {
-  // 24 colonne fino all'ora in corso, con le ore di Roma che manda il servizio ("2026-11-04T21")
-  const fine = Date.UTC(+adesso.slice(0, 4), +adesso.slice(5, 7) - 1, +adesso.slice(8, 10), +adesso.slice(11, 13)), c = [];
-  for (let i = 23; i >= 0; i--) {
-    const k = new Date(fine - i * 3600e3).toISOString().slice(0, 13), h = k.slice(11, 13);
-    c.push({ k, etichetta: `${h}:00`, titolo: `${data(k.slice(0, 10))}, ${h}:00–${h}:59` });
+function ore(d) {
+  const per = Object.fromEntries((d.per_ora || []).map((o) => [o.ora, o])), col = [];
+  if (d.per_ora_tipo === "linea") {
+    const fine = String(d.al) === P.oggi() ? d.adesso : `${d.al}T23`, uno = d.dal === d.al;
+    for (const g of P.giorni(String(d.dal), String(d.al))) for (let h = 0; h < 24; h++) {
+      const k = `${g}T${String(h).padStart(2, "0")}`; if (k > fine) break;
+      col.push({ k, etichetta: uno || h ? `${String(h).padStart(2, "0")}:00` : data(g), titolo: `${data(g)}, ${String(h).padStart(2, "0")}:00–${String(h).padStart(2, "0")}:59` });
+    }
+    $("#n-ore").textContent = d.dal === d.al ? `Ora per ora, ${P.descrivi(d.dal, d.al)}. Ora di Roma.` : "Ora per ora nel periodo. Ora di Roma.";
+  } else {
+    for (let h = 0; h < 24; h++) { const k = String(h).padStart(2, "0"); col.push({ k, etichetta: `${k}:00`, titolo: `Dalle ${k}:00 alle ${k}:59` }); }
+    $("#n-ore").textContent = "Somma del periodo per fascia oraria: a che ora arrivano le visite. Ora di Roma.";
   }
-  grafico($("#orario"), c, ore, "ora");
+  const serie = [{ nome: "Browser in italiano", colore: colore("--s1"), v: (k) => (per[k]?.visitatori || 0) - (per[k]?.altre_lingue || 0) },
+    { nome: "Browser in altre lingue", colore: colore("--s2"), v: (k) => per[k]?.altre_lingue },
+    { nome: "Domande e fascicoli", colore: colore("--t"), punto: true, v: (k) => (per[k]?.domande || 0) + (per[k]?.fascicoli || 0) }];
+  P.barre($("#g-ore"), col, serie); $("#l-ore").innerHTML = P.legenda(serie);
 }
 
-async function carica(g) {
-  document.querySelectorAll(".periodo button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.g === String(g))));
-  const r = await fetch(`/api/statistiche?giorni=${g}`, { credentials: "same-origin" });
-  if (!r.ok) { $("#sotto").textContent = "Non riesco a leggere le statistiche."; return; }
-  const d = await r.json(), t = d.totali;
-  $("#sotto").textContent = `Dal ${data(d.dal)} al ${data(d.al)}. Senza cookie e senza IP: un visitatore è contato una volta al giorno.`;
-  $("#cifre").innerHTML = `<div class="cifra cifra--ora" title="Pagine del sito aperte e in primo piano negli ultimi 2 minuti"><small>Attivi ora</small><b>${num(d.attivi)}</b></div>`
-    + [["Visitatori", t.visitatori], ["Pagine viste", t.pagine], ["Domande alla chat", t.domande], ["Fascicoli", t.fascicoli]]
-    .map(([n, v]) => `<div class="cifra"><small>${n}</small><b>${num(v)}</b></div>`).join("");
-  andamento(d.per_giorno, d.dal, d.al);
-  orario(d.per_ora || [], d.adesso);
-  if (d.costi) costi(d.costi, d.dal, d.al);
+function costi(k, d) {
+  const v = k.vettori || {}, ch = k.chat || {}, tot = (k.periodo || 0) + (v.dollari || 0);
+  $("#n-costi").textContent = `${P.descrivi(d.dal, d.al).replace(/^./, (c) => c.toUpperCase())}. Chat, fascicoli e traduzioni ai prezzi del listino, contati dal ${k.dal ? data(k.dal, true) : "primo giorno"}. I vettori della ricerca sono una stima dai token inviati (${v.modello || "modello"}, Batch API).`;
+  $("#c-costi").innerHTML = [
+    ["Totale nel periodo", usd(tot), ""],
+    ["Chat, fascicoli e traduzioni", usd(k.periodo), ""],
+    ["Vettori della ricerca", usd(v.dollari), `${num(v.token)} token in ${num(v.batch)} batch`],
+    ["Costo medio di una domanda", usd(ch.domande ? ch.dollari / ch.domande : 0, 3), `su ${num(ch.domande)} domande`],
+    ["Oggi", usd(k.oggi), `${num(Math.round(100 * k.oggi / (k.tetto || 1)))}% del tetto giornaliero di ${usd(k.tetto, 0)}`],
+    ["Da sempre", usd((k.sempre || 0) + (v.dollari_sempre || 0)), `vettori compresi`],
+  ].map(([n, b, s]) => `<div class="cifra"><small>${n}</small><span class="cifra__n cifra__n--medio">${b}</span>${s ? `<small>${s}</small>` : ""}</div>`).join("");
+  const per = Object.fromEntries((k.per_giorno || []).map((g) => [g.giorno, g]));
+  const col = P.giorni(String(d.dal), String(d.al)).map((g) => ({ k: g, etichetta: data(g), titolo: data(g, true) }));
+  const serie = [{ nome: "Chat, fascicoli e traduzioni", colore: colore("--s1"), v: (g) => per[g]?.api }, { nome: "Vettori (stima)", colore: colore("--s2"), v: (g) => per[g]?.vettori }];
+  P.barre($("#g-costi"), col, serie, (x) => usd(x, x && x < 1 ? 2 : 0)); $("#l-costi").innerHTML = P.legenda(serie);
+  const m = k.modelli || [];
+  $("#modelli").innerHTML = P.tab([["Uso"], ["Domande", "n"], ["Spesa", "n"], ["Una domanda", "n"]],
+    m.map((r) => [esc(r.voce), num(r.domande), usd(r.dollari), `${num(r.centesimi, 1)} centesimi`]));
+  $("#chat").innerHTML = ch.domande ? P.tab([["Misura"], ["Valore", "n"]], [
+    ["Conversazioni", num(ch.conversazioni)], ["Domande, fascicoli compresi", num(ch.domande)], ["Domande per conversazione, in media", num(ch.turni_medi, 1)],
+    ["Tempo di risposta tipico (mediana)", `${num(Math.round(ch.secondi_mediana))} s`], ["9 risposte su 10 arrivano entro", `${num(Math.round(ch.secondi_p90))} s`],
+    ["Risposte finite con un errore", `${num(ch.errori)} (${num(Math.round(100 * ch.errori / ch.domande))}%)`], ["Domande in inglese", num(ch.inglese)]]) : '<p class="vuoto">Nessuna domanda nel periodo.</p>';
+}
+
+let ultimo = null;
+function disegna(d) {
+  const t = d.totali;
+  $("#sotto").textContent = `${P.descrivi(String(d.dal), String(d.al)).replace(/^./, (c) => c.toUpperCase())}. Senza cookie e senza IP: ogni visitatore conta una volta al giorno.`;
+  $("#cifre").innerHTML = `<div class="cifra cifra--vivo" title="Pagine del sito aperte e in primo piano negli ultimi 2 minuti"><small>Sul sito adesso</small><span class="cifra__n">${num(d.attivi)}</span><small>pagine aperte negli ultimi 2 minuti</small></div>`
+    + [["Visitatori", t.visitatori, "unici per giorno"], ["Pagine viste", t.pagine, ""], ["Domande alla chat", t.domande, ""], ["Fascicoli", t.fascicoli, ""]]
+      .map(([n, v, s]) => `<div class="cifra"><small>${n}</small><span class="cifra__n">${num(v)}</span>${s ? `<small>${s}</small>` : ""}</div>`).join("");
+  giorni(d); ore(d);
+  if (d.costi) costi(d.costi, d);
   for (const k of ["pagine", "provenienze", "dispositivi", "browser", "lingue", "paesi", "regioni", "arrivi_chat", "uscite", "strumenti", "ricerche"])
-    tabella($("#" + k), d[k], COLONNE[k], NOMI[k]);
+    P.classifica($("#" + k), d[k], COLONNE[k] || VISITE, NOMI[k]);
   mappa(d.regioni);
 }
-let periodo = 30;
-document.querySelectorAll(".periodo button").forEach((b) => b.addEventListener("click", () => carica(periodo = b.dataset.g)));
-carica(periodo);
-setInterval(() => { if (!document.hidden) carica(periodo); }, 60000);   // gli attivi e le ultime ore si aggiornano da soli
+async function carica(dal, al) {
+  try { ultimo = await P.leggi(`/api/statistiche?dal=${dal}&al=${al}`); disegna(ultimo); }
+  catch (e) { if (e.message !== "accesso scaduto") $("#sotto").textContent = "Non riesco a leggere le statistiche. Riprova fra poco."; }
+}
+P.testata("statistiche");
+P.ridisegna = () => ultimo && disegna(ultimo);
+const periodo = P.periodo($("#periodo"), 30, carica);
+addEventListener("resize", () => { clearTimeout(window._r); window._r = setTimeout(P.ridisegna, 150); });
+// «sul sito adesso» e le ultime ore cambiano: si rilegge ogni minuto se il periodo arriva a oggi
+setInterval(() => { const { dal, al } = periodo.get(); if (!document.hidden && al === P.oggi()) carica(dal, al); }, 60000);
 </script>
 </body>
 </html>

@@ -1,0 +1,121 @@
+/* Pannelli riservati (/statistiche, /sistema, /accedi): i token e la testata vengono da app.css, qui solo i componenti.
+   Tutta la larghezza dello schermo: sono pagine di lavoro, piene di tabelle e grafici. */
+.pn{--s1:var(--acc);--s2:var(--av);--s3:var(--t3);--s1-f:var(--acc-f)}
+[data-tono=scuro] .pn,[data-tono=scuro].pn{--s1:var(--logo-p);--s1-f:rgba(122,166,210,.16)}
+.pn .barra{max-width:none;padding:12px 32px;display:flex!important;align-items:center;gap:16px}
+.pn .barra .nav{margin-left:24px}
+.pn .nav>a{font-weight:500}
+.pn-destra{margin-left:auto;display:flex;align-items:center;gap:8px}
+.pn-destra a,.pn-destra button{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border:1px solid var(--bordo);border-radius:var(--raggio-btn);background:var(--sup);color:var(--t2);text-decoration:none;font-size:14px;cursor:pointer}
+.pn-destra a:hover,.pn-destra button:hover{color:var(--t);border-color:var(--bordo2)}
+.pn-pagina{max-width:1800px;margin:0 auto;padding:28px 32px 80px}
+@media (max-width:760px){.pn .barra{padding:10px 16px}.pn-pagina{padding:20px 16px 64px}}
+
+/* intestazione della pagina: titolo a sinistra, periodo a destra */
+.pn-testa{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;margin-bottom:20px}
+.pn-testa h1{font-family:var(--f-titolo);font-weight:var(--peso-titolo);letter-spacing:var(--track-titolo);font-size:clamp(28px,2.6vw,40px);line-height:1.05;margin:0 0 6px}
+.pn-testa p{margin:0;color:var(--t3);font-size:14.5px;max-width:80ch}
+
+/* periodo: scorciatoie e date libere */
+.periodo{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.periodo__rapidi{display:flex;border:1px solid var(--bordo);border-radius:var(--raggio-btn);background:var(--sup);padding:3px;gap:2px}
+.periodo__rapidi button{border:0;background:none;color:var(--t2);font-size:14px;padding:6px 12px;border-radius:var(--raggio-btn);cursor:pointer;white-space:nowrap}
+.periodo__rapidi button:hover{color:var(--t);background:var(--sup2)}
+.periodo__rapidi button[aria-pressed=true]{background:var(--btn);color:var(--su-btn)}
+.periodo__date{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--t3)}
+.periodo__date input{height:36px;padding:0 10px;border:1px solid var(--bordo);border-radius:10px;background:var(--sup);color:var(--t);font-size:14px;font-variant-numeric:tabular-nums}
+.periodo__date input:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+
+/* cifre in alto */
+.cifre{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:16px}
+.cifra{background:var(--sup);border:1px solid var(--bordo);border-radius:var(--raggio);padding:16px 18px;display:grid;gap:2px;align-content:start;box-shadow:var(--ombra)}
+.cifra small{color:var(--t3);font-size:13px;line-height:1.35}
+.cifra__n{font-size:30px;font-weight:600;letter-spacing:-.025em;line-height:1.2;color:var(--t)}
+.cifra__n--medio{font-size:24px}
+.cifra[data-s]{position:relative;padding-left:30px}
+.cifra[data-s]::before{content:"";position:absolute;left:14px;top:22px;width:8px;height:8px;border-radius:50%;background:var(--bordo2)}
+.cifra[data-s=ok]::before{background:var(--ok)}.cifra[data-s=att]::before{background:var(--av)}.cifra[data-s=ko]::before{background:var(--no)}
+.cifra--vivo small:first-child::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px}
+
+/* blocchi */
+.pn-blocco{background:var(--sup);border:1px solid var(--bordo);border-radius:var(--raggio);padding:20px 22px;margin-bottom:16px;min-width:0;box-shadow:var(--ombra)}
+.pn-blocco h2{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
+.pn-blocco h3{font-size:14px;font-weight:600;margin:20px 0 6px;color:var(--t2)}
+.pn-blocco .nota{color:var(--t3);font-size:13.5px;margin:0 0 14px;line-height:1.45}
+.pn-blocco h2+.nota{margin-top:2px}
+.pn-blocco h2:only-child,.pn-blocco h2+:not(.nota){margin-bottom:12px}
+.griglia{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px;margin-bottom:16px}
+.griglia .pn-blocco{margin:0}
+.largo{grid-column:1/-1}
+.vuoto{color:var(--t3);font-size:14px;margin:4px 0}
+.fonte{color:var(--t3);font-size:12.5px;margin:20px 0 0}.fonte a{color:inherit}
+
+/* grafici: barre con assi, legenda e fumetto */
+.grafico{position:relative}
+.grafico svg{display:block;width:100%;height:240px;overflow:visible}
+.grafico svg text{font-family:var(--f-ui);font-size:11.5px;fill:var(--t3);font-variant-numeric:tabular-nums}
+.grafico .griglia-y{stroke:var(--bordo);stroke-dasharray:2 3}
+.grafico .asse{stroke:var(--bordo2)}
+.grafico .col:hover .sfondo{fill:var(--sup2)}
+.pn-legenda{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--t2);margin-top:10px}
+.pn-legenda span{display:inline-flex;align-items:center;gap:6px}
+.pn-legenda i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.pn-legenda i.punto{border-radius:50%}
+.fumetto{position:fixed;z-index:60;pointer-events:none;background:var(--t);color:var(--fondo);font-size:13px;line-height:1.45;padding:8px 10px;border-radius:8px;max-width:280px;box-shadow:0 8px 24px -8px rgba(0,0,0,.35)}
+.fumetto b{font-weight:600}
+.fumetto[hidden]{display:none}
+
+/* tabelle */
+.pn table{width:100%;border-collapse:collapse;font-size:14px}
+.pn th{font-size:12.5px;font-weight:500;color:var(--t3);text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid var(--bordo2);white-space:nowrap}
+.pn td{padding:8px 10px 8px 0;border-bottom:1px solid var(--bordo);vertical-align:top}
+.pn tr:last-child td{border-bottom:0}
+.pn th.n,.pn td.n{text-align:right;white-space:nowrap;padding-right:0;padding-left:10px}
+.pn td.lungo{color:var(--t2);font-size:13px;word-break:break-word;min-width:260px;width:60%}
+.pn th+th{padding-left:10px}
+.pn td.voce{position:relative;max-width:0;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pn td.voce span{position:absolute;inset:4px auto 4px 0;background:var(--s1-f);border-radius:4px}
+.pn td.voce em{position:relative;font-style:normal;padding-left:8px}
+.scorri{overflow-x:auto}
+.mostra{margin-top:12px;height:34px;padding:0 12px;border:1px solid var(--bordo);border-radius:var(--raggio-btn);background:var(--sup);color:var(--t2);font-size:13.5px;cursor:pointer}
+.mostra:hover{color:var(--t);border-color:var(--bordo2)}
+.pn pre{margin:0;font:12.5px/1.55 "IBM Plex Mono",ui-monospace,monospace;color:var(--t2);white-space:pre-wrap;word-break:break-word;background:var(--sup2);border-radius:10px;padding:12px 14px}
+
+/* stato: pallino + parola */
+.stato{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap}
+.stato::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--t3)}
+.stato.ok::before{background:var(--ok)}.stato.att::before{background:var(--av)}.stato.ko::before{background:var(--no)}
+
+/* avvisi in cima */
+.avvisi{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.avvisi li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px 14px;border-radius:10px;font-size:14.5px;line-height:1.45}
+.avvisi li b{font-weight:600}
+.avvisi li.ko{background:var(--no-f)}.avvisi li.att{background:var(--av-f)}.avvisi li.ok{background:var(--ok-f)}
+.avvisi li i{width:8px;height:8px;border-radius:50%;margin-top:7px}
+.avvisi li.ko i{background:var(--no)}.avvisi li.att i{background:var(--av)}.avvisi li.ok i{background:var(--ok)}
+
+/* barre di riempimento (disco, memoria) */
+.riempi{margin:0 0 14px}
+.riempi__testa{display:flex;justify-content:space-between;gap:12px;font-size:14px;margin-bottom:6px}
+.riempi__testa span{color:var(--t3);font-variant-numeric:tabular-nums}
+.riempi__barra{height:8px;border-radius:4px;background:var(--sup3);overflow:hidden}
+.riempi__barra i{display:block;height:100%;border-radius:4px;background:var(--ok)}
+.riempi.att .riempi__barra i{background:var(--av)}.riempi.ko .riempi__barra i{background:var(--no)}
+
+/* mappa delle regioni */
+svg.mappa{display:block;width:100%;max-width:320px;height:auto;margin:0 auto 14px}
+svg.mappa path{stroke:var(--sup);stroke-width:.8}
+
+/* accesso */
+.accesso{min-height:100vh;display:grid;place-items:center;padding:24px}
+.accesso form{width:min(100%,400px);background:var(--sup);border:1px solid var(--bordo);border-radius:var(--raggio);padding:32px;box-shadow:var(--ombra);display:grid;gap:16px}
+.accesso .marchio{margin-bottom:8px}
+.accesso h1{font-family:var(--f-titolo);font-weight:var(--peso-titolo);letter-spacing:var(--track-titolo);font-size:28px;line-height:1.1;margin:0}
+.accesso p{margin:-8px 0 0;color:var(--t3);font-size:14.5px}
+.accesso label{display:grid;gap:6px;font-size:14px;font-weight:500;color:var(--t2)}
+.accesso input{height:44px;padding:0 12px;border:1px solid var(--bordo2);border-radius:10px;background:var(--fondo);color:var(--t);font-size:16px}
+.accesso input:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.accesso button{height:46px;border:0;border-radius:var(--raggio-btn);background:var(--btn);color:var(--su-btn);font-size:15px;font-weight:600;cursor:pointer;margin-top:4px}
+.accesso button:disabled{opacity:.6;cursor:wait}
+.accesso .pn-errore{margin:0;min-height:20px;font-size:14px;color:var(--no)}
+.accesso .pn-errore:empty{display:none}

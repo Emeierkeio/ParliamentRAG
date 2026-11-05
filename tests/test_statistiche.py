@@ -35,10 +35,33 @@ class TestStatistiche(unittest.TestCase):
         from fastapi import HTTPException
         from starlette.requests import Request
         req = Request({"type": "http", "headers": [], "client": ("127.0.0.1", 1)})
-        with mock.patch.object(S, "env", lambda nome, pred=None: ""):
+        with mock.patch.object(S.accesso, "env", lambda nome, pred=None: ""):
             with self.assertRaises(HTTPException) as e:
                 S._login(req)
             self.assertEqual(e.exception.status_code, 404)
+
+    def test_accesso_col_cookie_firmato(self):
+        import time
+        from fastapi import HTTPException
+        from starlette.requests import Request
+        A = S.accesso
+        cred = {"STATISTICHE_UTENTE": "u", "STATISTICHE_PASSWORD": "p"}
+        req = lambda cookie: Request({"type": "http", "headers": [(b"cookie", cookie.encode())], "client": ("127.0.0.1", 1),  # noqa: E731
+                                      "path": "/sistema", "query_string": b"", "scheme": "http", "server": ("x", 80)})
+        with mock.patch.object(A, "env", lambda nome, pred=None: cred.get(nome, pred)):
+            scad = int(time.time()) + 60
+            self.assertTrue(A.dentro(req(f"pannello={scad}.{A._firma(scad)}")))
+            self.assertFalse(A.dentro(req(f"pannello={scad}.firma-sbagliata")))
+            self.assertFalse(A.dentro(req(f"pannello={scad - 120}.{A._firma(scad - 120)}")))      # scaduto
+            with self.assertRaises(HTTPException) as e:
+                A.richiedi(req(""), pagina=True)
+            self.assertEqual((e.exception.status_code, e.exception.headers["Location"]), (303, "/accedi?dopo=/sistema"))
+
+    def test_periodo(self):
+        oggi = dt.date.today()
+        self.assertEqual(S.periodo(7), (oggi - dt.timedelta(days=6), oggi))
+        self.assertEqual(S.periodo(30, oggi, oggi + dt.timedelta(days=5)), (oggi, oggi))       # mai oltre oggi
+        self.assertEqual(S.periodo(30, oggi, oggi - dt.timedelta(days=2)), (oggi - dt.timedelta(days=2),) * 2)
 
 
 if __name__ == "__main__":

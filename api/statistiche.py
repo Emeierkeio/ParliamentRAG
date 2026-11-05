@@ -12,14 +12,12 @@ pagina aperta e in primo piano chiama una volta al minuto: le impronte restano i
 
 from __future__ import annotations
 
-import base64
 import datetime as dt
 import hashlib
 import hmac
 import logging
 import random
 import re
-import secrets
 import threading
 import time
 from pathlib import Path
@@ -32,7 +30,7 @@ from pydantic import BaseModel, Field
 
 from pipeline.ambiente import env
 
-from . import agente
+from . import accesso, agente
 from .db import connessione_sito
 
 # i vettori della ricerca per significato, come in pipeline/vettori.py (che il container web non ha): da tenere allineati
@@ -166,37 +164,40 @@ def attivi_ora() -> int:
     return sum(1 for t in list(_presenze.values()) if adesso - t <= PRESENZA_S)
 
 
-def _login(req: Request) -> None:
-    utente, password = env("STATISTICHE_UTENTE", ""), env("STATISTICHE_PASSWORD", "")
-    if not utente or not password:
-        raise HTTPException(404)
-    a = req.headers.get("authorization", "")
-    try:
-        u, _, pw = base64.b64decode(a.removeprefix("Basic ")).decode().partition(":") if a.startswith("Basic ") else ("", "", "")
-    except ValueError:
-        u, pw = "", ""
-    if not (secrets.compare_digest(u, utente) and secrets.compare_digest(pw, password)):
-        raise HTTPException(401, "serve il login", headers={"WWW-Authenticate": 'Basic realm="Statistiche ParliamentRAG"'})
+def _login(req: Request, pagina: bool = False) -> None:
+    accesso.richiedi(req, pagina)
 
 
 @router.get("/statistiche", response_class=HTMLResponse, include_in_schema=False)
 def pannello(req: Request) -> HTMLResponse:
-    _login(req)
+    _login(req, pagina=True)
     pagina = PAGINA.read_text(encoding="utf-8").replace("/*MAPPA*/null", MAPPA.read_text(encoding="utf-8"))
     return HTMLResponse(pagina, headers={"Cache-Control": "no-store", "X-Robots-Tag": "noindex"})
 
 
-def _costi(c: psycopg.Connection, dal: dt.date) -> dict:
+def periodo(giorni: int = 30, dal: dt.date | None = None, al: dt.date | None = None) -> tuple[dt.date, dt.date]:
+    """Il periodo chiesto dal pannello: dal/al se ci sono, se no gli ultimi `giorni`; mai oltre oggi né prima dei giorni tenuti."""
+    oggi = dt.date.today()
+    al = min(al or oggi, oggi)
+    dal = dal or al - dt.timedelta(days=max(1, giorni) - 1)
+    return max(min(dal, al), oggi - dt.timedelta(days=GIORNI_TENUTI - 1)), al
+
+
+ROMA = "(creata AT TIME ZONE 'Europe/Rome')::date"     # il giorno italiano di una riga del registro
+
+
+def _costi(c: psycopg.Connection, dal: dt.date, al: dt.date | None = None) -> dict:
     """Spesa OpenAI e numeri della chat: sito.spesa (ogni chiamata: chat, fascicoli, traduzioni), le viste registro.uso_chat
     e registro.spesa_vettori (schema/sito.sql). I vettori sono una stima dai token, con il prezzo della Batch API."""
     esiste = lambda v: c.execute("SELECT to_regclass(%s) IS NOT NULL AS c", (v,)).fetchone()["c"]   # noqa: E731
+    al = al or dt.date.today()
     spesa = c.execute("""
-        SELECT coalesce(sum(dollari) FILTER (WHERE giorno >= %s), 0)::float AS periodo,
+        SELECT coalesce(sum(dollari) FILTER (WHERE giorno BETWEEN %s AND %s), 0)::float AS periodo,
                coalesce(sum(dollari) FILTER (WHERE giorno = current_date), 0)::float AS oggi,
                coalesce(sum(dollari), 0)::float AS sempre, min(giorno) AS dal
-        FROM sito.spesa""", (dal,)).fetchone()
+        FROM sito.spesa""", (dal, al)).fetchone()
     per_giorno = {r["giorno"].isoformat(): {"api": float(r["d"])} for r in c.execute(
-        "SELECT giorno, sum(dollari) AS d FROM sito.spesa WHERE giorno >= %s GROUP BY 1", (dal,))}
+        "SELECT giorno, sum(dollari) AS d FROM sito.spesa WHERE giorno BETWEEN %s AND %s GROUP BY 1", (dal, al))}
     chat, modelli, vettori = {}, [], {}
     if esiste("registro.uso_chat"):
         # solo le chat del sito (con conversazione) e i fascicoli; le prove dell'API restano fuori
@@ -208,19 +209,20 @@ def _costi(c: psycopg.Connection, dal: dt.date) -> dict:
                    (percentile_cont(.9) WITHIN GROUP (ORDER BY ms) / 1000)::float AS secondi_p90,
                    count(*) FILTER (WHERE errore) AS errori, count(*) FILTER (WHERE lingua = 'en') AS inglese,
                    coalesce(sum(dollari), 0)::float AS dollari
-            FROM registro.uso_chat WHERE creata >= %s AND {sito}""", (dal,)).fetchone())
+            FROM registro.uso_chat WHERE {ROMA} BETWEEN %s AND %s AND {sito}""", (dal, al)).fetchone())
         modelli = [dict(r) for r in c.execute(f"""
             SELECT CASE WHEN modello = 'fascicolo' THEN 'Fascicoli' ELSE 'Chat (' || modello || ')' END AS voce,
                    count(*) AS domande, round(sum(dollari)::numeric, 2)::float AS dollari,
                    round((avg(dollari) * 100)::numeric, 1)::float AS centesimi
-            FROM registro.uso_chat WHERE creata >= %s AND {sito} GROUP BY 1 ORDER BY 3 DESC""", (dal,))]
+            FROM registro.uso_chat WHERE {ROMA} BETWEEN %s AND %s AND {sito} GROUP BY 1 ORDER BY 3 DESC""", (dal, al))]
     if esiste("registro.spesa_vettori"):
         prezzo = DOLLARI_PER_MILIONE / 1e6
-        for r in c.execute("SELECT giorno, token FROM registro.spesa_vettori WHERE giorno >= %s", (dal,)):
+        for r in c.execute("SELECT giorno, token FROM registro.spesa_vettori WHERE giorno BETWEEN %s AND %s", (dal, al)):
             per_giorno.setdefault(r["giorno"].isoformat(), {})["vettori"] = float(r["token"]) * prezzo
-        v = c.execute("""SELECT coalesce(sum(token) FILTER (WHERE giorno >= %s), 0) AS periodo, coalesce(sum(token), 0) AS sempre,
-                                coalesce(sum(batch) FILTER (WHERE giorno >= %s), 0) AS batch, coalesce(sum(aperti), 0) AS aperti
-                         FROM registro.spesa_vettori""", (dal, dal)).fetchone()
+        v = c.execute("""SELECT coalesce(sum(token) FILTER (WHERE giorno BETWEEN %(dal)s AND %(al)s), 0) AS periodo,
+                                coalesce(sum(token), 0) AS sempre, coalesce(sum(aperti), 0) AS aperti,
+                                coalesce(sum(batch) FILTER (WHERE giorno BETWEEN %(dal)s AND %(al)s), 0) AS batch
+                         FROM registro.spesa_vettori""", {"dal": dal, "al": al}).fetchone()
         vettori = {"modello": MODELLO_VETTORI, "token": int(v["periodo"]), "batch": int(v["batch"]), "aperti": int(v["aperti"]),
                    "dollari": float(v["periodo"]) * prezzo, "dollari_sempre": float(v["sempre"]) * prezzo}
     return {**dict(spesa), "tetto": float(env("AGENTE_DOLLARI_GIORNO", "25")), "chat": chat, "modelli": modelli,
@@ -228,10 +230,10 @@ def _costi(c: psycopg.Connection, dal: dt.date) -> dict:
 
 
 @router.get("/api/statistiche", include_in_schema=False)
-def dati(req: Request, giorni: int = 30) -> dict:
+def dati(req: Request, giorni: int = 30, dal: dt.date | None = None, al: dt.date | None = None) -> dict:
     _login(req)
-    giorni = max(1, min(giorni, GIORNI_TENUTI))
-    dal = dt.date.today() - dt.timedelta(days=giorni - 1)
+    dal, al = periodo(giorni, dal, al)
+    giorni = (al - dal).days + 1
     with connessione_sito() as c:
         if c is None:
             raise HTTPException(503, "statistiche non configurate")
@@ -239,27 +241,29 @@ def dati(req: Request, giorni: int = 30) -> dict:
             SELECT giorno, count(DISTINCT visitatore) FILTER (WHERE evento = 'pagina') AS visitatori,
                    count(*) FILTER (WHERE evento = 'pagina') AS pagine,
                    count(*) FILTER (WHERE evento = 'domanda') AS domande, count(*) FILTER (WHERE evento = 'fascicolo') AS fascicoli
-            FROM sito.visita WHERE giorno >= %s GROUP BY 1 ORDER BY 1""", (dal,)).fetchall()
-        per_ora = c.execute("""
-            SELECT to_char(date_trunc('hour', ts AT TIME ZONE 'Europe/Rome'), 'YYYY-MM-DD"T"HH24') AS ora,
-                   count(DISTINCT visitatore) FILTER (WHERE evento = 'pagina') AS visitatori,
+            FROM sito.visita WHERE giorno BETWEEN %s AND %s GROUP BY 1 ORDER BY 1""", (dal, al)).fetchall()
+        # per ora: fino a 7 giorni ora per ora; oltre, il profilo della giornata (le 24 ore sommate su tutto il periodo)
+        linea = giorni <= 7
+        per_ora = c.execute(f"""
+            SELECT to_char(date_trunc('hour', ts AT TIME ZONE 'Europe/Rome'), '{'YYYY-MM-DD"T"HH24' if linea else 'HH24'}') AS ora,
+                   count(DISTINCT (giorno, visitatore)) FILTER (WHERE evento = 'pagina') AS visitatori,
                    count(*) FILTER (WHERE evento = 'pagina') AS pagine,
                    count(*) FILTER (WHERE evento = 'domanda') AS domande, count(*) FILTER (WHERE evento = 'fascicolo') AS fascicoli,
-                   count(DISTINCT visitatore) FILTER (WHERE evento = 'pagina' AND lingua IS DISTINCT FROM 'it') AS altre_lingue
-            FROM sito.visita WHERE ts >= now() - interval '24 hours' GROUP BY 1 ORDER BY 1""").fetchall()
+                   count(DISTINCT (giorno, visitatore)) FILTER (WHERE evento = 'pagina' AND lingua IS DISTINCT FROM 'it') AS altre_lingue
+            FROM sito.visita WHERE giorno BETWEEN %s AND %s GROUP BY 1 ORDER BY 1""", (dal, al)).fetchall()
         adesso = c.execute("SELECT to_char(now() AT TIME ZONE 'Europe/Rome', 'YYYY-MM-DD\"T\"HH24') AS adesso").fetchone()["adesso"]
         totali = c.execute("""
             SELECT count(DISTINCT (giorno, visitatore)) FILTER (WHERE evento = 'pagina') AS visitatori,
                    count(*) FILTER (WHERE evento = 'pagina') AS pagine,
                    count(*) FILTER (WHERE evento = 'domanda') AS domande, count(*) FILTER (WHERE evento = 'fascicolo') AS fascicoli
-            FROM sito.visita WHERE giorno >= %s""", (dal,)).fetchone()
+            FROM sito.visita WHERE giorno BETWEEN %s AND %s""", (dal, al)).fetchone()
 
         def classifica(colonna: str, n: int = 12, filtro: str = "true") -> list[dict]:
             return [dict(r) for r in c.execute(f"""
                 SELECT coalesce({colonna}, 'non indicato') AS voce, count(DISTINCT (giorno, visitatore)) AS visitatori,
                        count(*) AS pagine
-                FROM sito.visita WHERE giorno >= %s AND evento = 'pagina' AND {filtro}
-                GROUP BY 1 ORDER BY 2 DESC, 3 DESC LIMIT {n}""", (dal,))]
+                FROM sito.visita WHERE giorno BETWEEN %s AND %s AND evento = 'pagina' AND {filtro}
+                GROUP BY 1 ORDER BY 2 DESC, 3 DESC LIMIT {n}""", (dal, al))]
 
         # percorsi: la pagina vista per ultima prima di ogni domanda alla chat, e l'ultima pagina del giorno di ogni visitatore
         arrivi_chat = [dict(r) for r in c.execute("""
@@ -268,23 +272,23 @@ def dati(req: Request, giorni: int = 30) -> dict:
             FROM sito.visita d LEFT JOIN LATERAL (
               SELECT percorso FROM sito.visita p WHERE p.visitatore = d.visitatore AND p.giorno = d.giorno AND p.evento = 'pagina'
                 AND p.ts <= d.ts ORDER BY p.ts DESC LIMIT 1) p ON true
-            WHERE d.giorno >= %s AND d.evento = 'domanda' GROUP BY 1 ORDER BY 3 DESC LIMIT 10""", (dal,))]
+            WHERE d.giorno BETWEEN %s AND %s AND d.evento = 'domanda' GROUP BY 1 ORDER BY 3 DESC LIMIT 10""", (dal, al))]
         uscite = [dict(r) for r in c.execute("""
             SELECT coalesce(percorso, 'non indicato') AS voce, count(*) AS visitatori FROM (
-              SELECT DISTINCT ON (giorno, visitatore) percorso FROM sito.visita WHERE giorno >= %s AND evento = 'pagina'
+              SELECT DISTINCT ON (giorno, visitatore) percorso FROM sito.visita WHERE giorno BETWEEN %s AND %s AND evento = 'pagina'
               ORDER BY giorno, visitatore, ts DESC) u
-            GROUP BY 1 ORDER BY 2 DESC LIMIT 10""", (dal,))]
+            GROUP BY 1 ORDER BY 2 DESC LIMIT 10""", (dal, al))]
         # strumenti e ricerche della chat: la vista registro.uso_strumenti (schema/sito.sql), senza domande né risposte
         strumenti, ricerche = [], []
         if c.execute("SELECT to_regclass('registro.uso_strumenti') IS NOT NULL AS c").fetchone()["c"]:
-            strumenti = [dict(r) for r in c.execute("""
+            strumenti = [dict(r) for r in c.execute(f"""
                 SELECT strumento AS voce, count(*) AS chiamate FROM registro.uso_strumenti
-                WHERE creata >= %s GROUP BY 1 ORDER BY 2 DESC LIMIT 15""", (dal,))]
-            ricerche = [dict(r) for r in c.execute("""
+                WHERE {ROMA} BETWEEN %s AND %s GROUP BY 1 ORDER BY 2 DESC LIMIT 15""", (dal, al))]
+            ricerche = [dict(r) for r in c.execute(f"""
                 SELECT lower(ricerca) AS voce, count(*) AS chiamate FROM registro.uso_strumenti
-                WHERE creata >= %s AND ricerca IS NOT NULL AND ricerca <> '' GROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 20""", (dal,))]
-        costi = _costi(c, dal)
-        return {"dal": dal, "al": dt.date.today(), "giorni": giorni, "totali": dict(totali), "costi": costi,
+                WHERE {ROMA} BETWEEN %s AND %s AND ricerca IS NOT NULL AND ricerca <> '' GROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 20""", (dal, al))]
+        costi = _costi(c, dal, al)
+        return {"dal": dal, "al": al, "giorni": giorni, "per_ora_tipo": "linea" if linea else "profilo", "totali": dict(totali), "costi": costi,
                 "per_giorno": [dict(r) for r in per_giorno],
                 "per_ora": [dict(r) for r in per_ora], "adesso": adesso, "attivi": attivi_ora(), "pagine": classifica("percorso", 15),
                 "provenienze": classifica("provenienza"), "dispositivi": classifica("dispositivo"),
