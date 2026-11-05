@@ -500,6 +500,10 @@ def bozza_zenodo(cartella: Path, date: dict) -> str:
         ultima = next(d for d in trovate if d.get("submitted"))
         nuova = _zenodo("POST", f"/deposit/depositions/{ultima['id']}/actions/newversion", token)
         aperta = _zenodo("GET", nuova["links"]["latest_draft"], token)
+    else:                                               # nell'elenco manca il link al bucket: serve la scheda intera
+        aperta = _zenodo("GET", f"/deposit/depositions/{aperta['id']}", token)
+    if "bucket" not in aperta["links"]:
+        raise RuntimeError(f"bozza {aperta['id']} senza bucket: file lasciati come sono")
     for f in aperta.get("files", []):
         _zenodo("DELETE", f"/deposit/depositions/{aperta['id']}/files/{f['id']}", token)
     for nome in ("parliamentrag_kg.ttl.gz", "parliamentrag_votes.nt.gz"):
