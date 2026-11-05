@@ -68,10 +68,10 @@ function avvisi(d) {
   if (m.mancante) a.push(["ko", "<b>Manca la fotografia della VPS.</b> Il cron di <code>pipeline sistema</code> non gira: server, giri e backup qui sotto sono vuoti."]);
   else if (m.eta_minuti > 30) a.push(["att", `<b>Fotografia della VPS vecchia di ${m.eta_minuti} minuti.</b> Il cron dovrebbe riscriverla ogni 10.`]);
   if (g) {
-    if (g.esito !== "ok") a.push([g.esito === "parziale" ? "att" : "ko", `<b>Giro del ${quando(g.inizio)}: ${esc(ESITI[g.esito]?.[1] || g.esito)}.</b> ${num(g.errori)} passi in errore e ${num(g.saltati)} saltati, dettagli in «Ultimo giro notturno».`]);
+    if (g.esito !== "ok") a.push([g.esito === "parziale" ? "att" : "ko", `<b>Giro del ${quando(g.inizio)}: ${esc(ESITI[g.esito]?.[1] || g.esito)}.</b> ${num(g.errori)} ${g.errori === 1 ? "passo" : "passi"} in errore e ${num(g.saltati)} ${g.saltati === 1 ? "saltato" : "saltati"}: dettagli in «Ultimo giro notturno».`]);
     if (ad - g.inizio > 30 * 3600) a.push(["ko", `<b>Stanotte il giro non è partito.</b> L'ultimo è di ${fa(g.inizio, ad)}.`]);
   }
-  for (const q of m.quarantena || []) a.push(["att", `<b>File in quarantena:</b> ${esc(q.percorso)}. Motivo: ${esc(q.motivo)}`]);
+  for (const q of m.quarantena || []) a.push(["att", `<b>File in quarantena dal ${quando(q.quando)}:</b> ${esc(q.percorso)} non è stato caricato (fase «${esc(q.fase)}», errore: ${esc(q.motivo)}). Si riprova da solo al prossimo giro.`]);
   const disco = m.macchina?.disco; if (disco && disco.usato / disco.totale > .8) a.push([disco.usato / disco.totale > .9 ? "ko" : "att", `<b>Disco della VPS pieno ${String(Math.round(100 * disco.usato / disco.totale)).startsWith("8") ? "all'" : "al "}${num(100 * disco.usato / disco.totale)}%.</b> Restano ${gb(disco.libero)}.`]);
   const mem = m.macchina?.memoria; if (mem && mem.swap_totale && (mem.swap_totale - mem.swap_libero) / mem.swap_totale > .5) a.push(["att", `<b>Swap oltre la metà:</b> ${gb(mem.swap_totale - mem.swap_libero)} in uso. La memoria non basta.`]);
   for (const c of (m.container || []).filter((c) => c.nome.startsWith("piattaforma-") && c.attivo !== "running")) a.push(["ko", `<b>Container spento:</b> ${esc(c.nome)} (${esc(c.stato)}).`]);
