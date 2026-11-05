@@ -402,7 +402,16 @@ def indice_deputati(c: psycopg.Connection) -> dict:
     return {"dataAsOf": aggiornato_al(c, "camera"), "deputati": deputati}
 
 
+def _posti_senato() -> dict:
+    """Il posto in Aula di ogni senatore, dalla pianta di senato.it («Dove siedono i senatori»): nel v3 non c'è."""
+    try:
+        return json.loads((SITO / "dati" / "senato" / "posti.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {"posti": {}}
+
+
 def elenco_senatori(c: psycopg.Connection) -> dict:
+    posti = _posti_senato()
     righe = c.execute(SQL_IN_CARICA, {"ramo": "senato", "leg": LEGISLATURA, "uri": None}).fetchall()
     cariche = _cariche_gruppo(c, [r["uri"] for r in righe], "senato")
     per_persona: dict[str, list[dict]] = {}
@@ -417,10 +426,10 @@ def elenco_senatori(c: psycopg.Connection) -> dict:
                          "group": g, "groupName": nome_gruppo(r["gruppo"]),
                          "component": COMPONENTI.get(r["componente"], r["componente"]) if g == "Misto" and r["componente"] else None,
                          "role": _ruolo_gruppo(per_persona.get(r["uri"], []), r["g_uri"]),
-                         "photo": f"/dati/foto/senatori/{did}.jpg", "order": i, "seat": None})   # il posto in Aula non sta nel v3
+                         "photo": f"/dati/foto/senatori/{did}.jpg", "order": i, "seat": posti["posti"].get(did)})
     return {"dataAsOf": aggiornato_al(c, "senato"), "legislature": LEGISLATURA, "chamber": "senato",
             "groups": [{"acronym": k, "name": v} for k, v in gruppi.items()], "deputies": senatori,
-            "seatsSource": None, "seatsAsOf": None}
+            "seatsSource": posti.get("source"), "seatsAsOf": posti.get("fetched")}
 
 
 # ---------- anagrafica e atti di sindacato ispettivo, nel formato di dati.camera.it ----------

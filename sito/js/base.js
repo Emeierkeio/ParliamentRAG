@@ -141,7 +141,7 @@
   };
   B.emicicloSenato = (iv, etichetta, perGruppo, solo) => {
     const S = B.SEN; if (!S) return "";
-    const voti = {}; (iv || []).forEach((x) => { const id = x.sid || ((/senatore\/(\d+)/.exec(x.senato_id || x.id || "") || [])[1]); if (id) voti[id] = x.outcome; });
+    const voti = {}; (iv || []).forEach((x) => { const id = x.sid || ((/(?:senatore\/|^)(\d+)$/.exec(x.senato_id || x.id || "") || [])[1]); if (id) voti[id] = x.outcome; });
     const [, , W, H] = S.pianta.plan.viewBox, r = S.pianta.plan.seatRadius;
     const c = S.pianta.seats.map((st) => {
       const x = S.perPosto[st.posto], g = x ? B.sigla(x.group) : "", fuori = solo && g !== solo;
