@@ -57,6 +57,10 @@ def main(argv: list[str]) -> int:
     if cmd == "avvisa":
         from .avvisi import avvisa
         return avvisa(cartella, float(_opzione(argv, "--dal", "0")), int(_opzione(argv, "--uscita", "0")), _opzione(argv, "--log"))
+    if cmd == "sistema":
+        from .sistema import scrivi
+        print(scrivi(cartella))
+        return 0
     if cmd == "stato":
         st = Stato(cartella / "stato.sqlite")
         g = argv[1] if len(argv) > 1 else st.ultimo_giro()

@@ -34,6 +34,10 @@ from pipeline.ambiente import env
 
 from . import agente
 from .db import connessione_sito
+
+# i vettori della ricerca per significato, come in pipeline/vettori.py (che il container web non ha): da tenere allineati
+MODELLO_VETTORI = "text-embedding-3-large"
+DOLLARI_PER_MILIONE = 0.065
 from .rete import ip
 
 router = APIRouter()
@@ -182,6 +186,47 @@ def pannello(req: Request) -> HTMLResponse:
     return HTMLResponse(pagina, headers={"Cache-Control": "no-store", "X-Robots-Tag": "noindex"})
 
 
+def _costi(c: psycopg.Connection, dal: dt.date) -> dict:
+    """Spesa OpenAI e numeri della chat: sito.spesa (ogni chiamata: chat, fascicoli, traduzioni), le viste registro.uso_chat
+    e registro.spesa_vettori (schema/sito.sql). I vettori sono una stima dai token, con il prezzo della Batch API."""
+    esiste = lambda v: c.execute("SELECT to_regclass(%s) IS NOT NULL AS c", (v,)).fetchone()["c"]   # noqa: E731
+    spesa = c.execute("""
+        SELECT coalesce(sum(dollari) FILTER (WHERE giorno >= %s), 0)::float AS periodo,
+               coalesce(sum(dollari) FILTER (WHERE giorno = current_date), 0)::float AS oggi,
+               coalesce(sum(dollari), 0)::float AS sempre, min(giorno) AS dal
+        FROM sito.spesa""", (dal,)).fetchone()
+    per_giorno = {r["giorno"].isoformat(): {"api": float(r["d"])} for r in c.execute(
+        "SELECT giorno, sum(dollari) AS d FROM sito.spesa WHERE giorno >= %s GROUP BY 1", (dal,))}
+    chat, modelli, vettori = {}, [], {}
+    if esiste("registro.uso_chat"):
+        # solo le chat del sito (con conversazione) e i fascicoli; le prove dell'API restano fuori
+        sito = "(conversazione IS NOT NULL OR modello = 'fascicolo')"
+        chat = dict(c.execute(f"""
+            SELECT count(*) AS domande, count(DISTINCT conversazione) AS conversazioni,
+                   round(count(conversazione)::numeric / nullif(count(DISTINCT conversazione), 0), 1)::float AS turni_medi,
+                   (percentile_cont(.5) WITHIN GROUP (ORDER BY ms) / 1000)::float AS secondi_mediana,
+                   (percentile_cont(.9) WITHIN GROUP (ORDER BY ms) / 1000)::float AS secondi_p90,
+                   count(*) FILTER (WHERE errore) AS errori, count(*) FILTER (WHERE lingua = 'en') AS inglese,
+                   coalesce(sum(dollari), 0)::float AS dollari
+            FROM registro.uso_chat WHERE creata >= %s AND {sito}""", (dal,)).fetchone())
+        modelli = [dict(r) for r in c.execute(f"""
+            SELECT CASE WHEN modello = 'fascicolo' THEN 'Fascicoli' ELSE 'Chat (' || modello || ')' END AS voce,
+                   count(*) AS domande, round(sum(dollari)::numeric, 2)::float AS dollari,
+                   round((avg(dollari) * 100)::numeric, 1)::float AS centesimi
+            FROM registro.uso_chat WHERE creata >= %s AND {sito} GROUP BY 1 ORDER BY 3 DESC""", (dal,))]
+    if esiste("registro.spesa_vettori"):
+        prezzo = DOLLARI_PER_MILIONE / 1e6
+        for r in c.execute("SELECT giorno, token FROM registro.spesa_vettori WHERE giorno >= %s", (dal,)):
+            per_giorno.setdefault(r["giorno"].isoformat(), {})["vettori"] = float(r["token"]) * prezzo
+        v = c.execute("""SELECT coalesce(sum(token) FILTER (WHERE giorno >= %s), 0) AS periodo, coalesce(sum(token), 0) AS sempre,
+                                coalesce(sum(batch) FILTER (WHERE giorno >= %s), 0) AS batch, coalesce(sum(aperti), 0) AS aperti
+                         FROM registro.spesa_vettori""", (dal, dal)).fetchone()
+        vettori = {"modello": MODELLO_VETTORI, "token": int(v["periodo"]), "batch": int(v["batch"]), "aperti": int(v["aperti"]),
+                   "dollari": float(v["periodo"]) * prezzo, "dollari_sempre": float(v["sempre"]) * prezzo}
+    return {**dict(spesa), "tetto": float(env("AGENTE_DOLLARI_GIORNO", "25")), "chat": chat, "modelli": modelli,
+            "vettori": vettori, "per_giorno": [{"giorno": k, **v} for k, v in sorted(per_giorno.items())]}
+
+
 @router.get("/api/statistiche", include_in_schema=False)
 def dati(req: Request, giorni: int = 30) -> dict:
     _login(req)
@@ -238,7 +283,8 @@ def dati(req: Request, giorni: int = 30) -> dict:
             ricerche = [dict(r) for r in c.execute("""
                 SELECT lower(ricerca) AS voce, count(*) AS chiamate FROM registro.uso_strumenti
                 WHERE creata >= %s AND ricerca IS NOT NULL AND ricerca <> '' GROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 20""", (dal,))]
-        return {"dal": dal, "al": dt.date.today(), "giorni": giorni, "totali": dict(totali),
+        costi = _costi(c, dal)
+        return {"dal": dal, "al": dt.date.today(), "giorni": giorni, "totali": dict(totali), "costi": costi,
                 "per_giorno": [dict(r) for r in per_giorno],
                 "per_ora": [dict(r) for r in per_ora], "adesso": adesso, "attivi": attivi_ora(), "pagine": classifica("percorso", 15),
                 "provenienze": classifica("provenienza"), "dispositivi": classifica("dispositivo"),

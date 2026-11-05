@@ -65,7 +65,16 @@ DO $$ BEGIN
              left(coalesce(s->'argomenti'->>'q', s->'argomenti'->>'testo'), 200) AS ricerca
       FROM registro.chat c, jsonb_array_elements(coalesce(c.strumenti, '[]'::jsonb)) s
       WHERE c.conversazione IS NOT NULL;
+    -- tempi, costo ed esito di ogni domanda, senza domanda né risposta; turno vuoto = prova dell'API
+    CREATE OR REPLACE VIEW registro.uso_chat AS
+      SELECT creata, conversazione, turno, lingua, modello, dollari, ms, errore IS NOT NULL AS errore,
+             left(errore, 200) AS errore_testo FROM registro.chat;   -- l'errore tecnico (eccezione, timeout), non la domanda
+    -- i vettori della ricerca per significato: batch e token per giorno (vector_batch sta nello schema del v3)
+    CREATE OR REPLACE VIEW registro.spesa_vettori AS
+      SELECT (sent_at AT TIME ZONE 'Europe/Rome')::date AS giorno, count(*) AS batch, coalesce(sum(tokens), 0) AS token,
+             count(*) FILTER (WHERE status <> 'completed') AS aperti
+      FROM public.vector_batch GROUP BY 1;
     GRANT USAGE ON SCHEMA registro TO sito;
-    GRANT SELECT ON registro.uso_strumenti TO sito;
+    GRANT SELECT ON registro.uso_strumenti, registro.uso_chat, registro.spesa_vettori TO sito;
   END IF;
 END $$;

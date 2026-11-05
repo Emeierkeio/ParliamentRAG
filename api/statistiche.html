@@ -26,6 +26,8 @@ h1{font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
 .cifra{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:14px 16px}
 .cifra small{color:var(--t3);font-size:13px}
 .cifra b{display:block;font-size:28px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.cifre--costi{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cifra b.piccolo{font-size:22px}
 .cifra--ora small::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#1f9d55;margin-right:6px;vertical-align:0}
 .blocco{background:var(--sup);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:16px}
 .blocco h2{font-size:16px;margin:0 0 12px}
@@ -62,7 +64,12 @@ svg.mappa path{stroke:var(--sup);stroke-width:.8}
   <div class="legenda"><span><i style="background:var(--acc)"></i>Visitatori</span><span><i style="background:var(--acc2)"></i>Domande alla chat e fascicoli</span></div></section>
  <section class="blocco"><h2>Ultime 24 ore</h2><svg class="andamento" id="orario" role="img" aria-label="Visitatori e domande per ora"></svg>
   <div class="legenda"><span><i style="background:var(--acc)"></i>Visitatori</span><span><i style="background:var(--acc3)"></i>di cui con il browser non in italiano</span><span><i style="background:var(--acc2)"></i>Domande alla chat e fascicoli</span></div></section>
+ <section class="blocco"><h2>Costi OpenAI</h2><p class="nota" id="costi_nota"></p><div class="cifre cifre--costi" id="costi_cifre"></div>
+  <svg class="andamento" id="costi_giorni" role="img" aria-label="Spesa per giorno"></svg>
+  <div class="legenda"><span><i style="background:var(--acc)"></i>Chat, fascicoli e traduzioni</span><span><i style="background:var(--acc3)"></i>Vettori della ricerca (stima)</span></div></section>
  <div class="griglia">
+  <section class="blocco"><h2>Spesa per uso</h2><p class="nota">Solo le chat dal sito e i fascicoli, senza le traduzioni.</p><div id="modelli"></div></section>
+  <section class="blocco"><h2>La chat in numeri</h2><div id="chat"></div></section>
   <section class="blocco"><h2>Pagine più viste</h2><div id="pagine"></div></section>
   <section class="blocco"><h2>Da dove arrivano</h2><div id="provenienze"></div></section>
   <section class="blocco"><h2>Dispositivi</h2><div id="dispositivi"></div></section>
@@ -138,6 +145,46 @@ function grafico(el, colonne, righe, chiave) {
   el.setAttribute("viewBox", `0 0 ${W} ${H}`); el.innerHTML = s;
 }
 
+const dollari = (n, cifre = 2) => Number(n || 0).toLocaleString("it-IT", { style: "currency", currency: "USD", minimumFractionDigits: cifre, maximumFractionDigits: cifre });
+
+function costi(k, dal, al) {
+  const v = k.vettori || {}, ch = k.chat || {};
+  $("#costi_nota").textContent = `Chat, fascicoli e traduzioni con i prezzi del listino, contati dal ${k.dal ? data(k.dal) : "primo giorno"}; i vettori sono stimati dai token dei batch (${v.modello || "modello"}, Batch API).`;
+  $("#costi_cifre").innerHTML = [
+    ["Nel periodo", dollari(k.periodo + (v.dollari || 0)), `di cui vettori ${dollari(v.dollari)}`],
+    ["Oggi", dollari(k.oggi), `tetto della chat ${dollari(k.tetto, 0)} (${Math.round(100 * k.oggi / (k.tetto || 1))}%)`],
+    ["Per domanda", dollari(ch.domande ? ch.dollari / ch.domande : 0, 3), `${num(ch.domande)} domande nel periodo`],
+    ["Da sempre", dollari(k.sempre + (v.dollari_sempre || 0)), `${dollari(k.sempre)} chat e testi, ${dollari(v.dollari_sempre)} vettori`],
+  ].map(([n, b, s]) => `<div class="cifra"><small>${n}</small><b class="piccolo">${b}</b><small>${s}</small></div>`).join("");
+  // barre impilate per giorno: API sotto, vettori sopra
+  const el = $("#costi_giorni"), W = el.clientWidth || 900, H = 220, P = { l: 44, r: 8, t: 10, b: 24 };
+  const per = Object.fromEntries((k.per_giorno || []).map((g) => [g.giorno, g])), c = [];
+  for (let d = new Date(dal + "T12:00:00"); d <= new Date(al + "T12:00:00"); d.setDate(d.getDate() + 1)) c.push(d.toISOString().slice(0, 10));
+  const max = Math.max(.01, ...c.map((g) => ((per[g] || {}).api || 0) + ((per[g] || {}).vettori || 0)));
+  const x = (i) => P.l + (i + .5) * (W - P.l - P.r) / c.length, y = (v) => H - P.b - v * (H - P.t - P.b) / max;
+  const bw = Math.max(2, (W - P.l - P.r) / c.length * .62);
+  let s = `<line x1="${P.l}" x2="${W - P.r}" y1="${H - P.b}" y2="${H - P.b}" stroke="var(--bordo)"/>`;
+  [0, max / 2, max].forEach((v) => { s += `<text x="${P.l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--t3)">${dollari(v, v < 10 ? 2 : 0)}</text>`; });
+  c.forEach((g, i) => {
+    const a = (per[g] || {}).api || 0, w = (per[g] || {}).vettori || 0;
+    s += `<g><title>${data(g)}: ${dollari(a)} chat e testi, ${dollari(w)} vettori</title><rect x="${x(i) - bw / 2}" y="${P.t}" width="${bw}" height="${H - P.t - P.b}" fill="transparent"/>`
+      + `<rect x="${x(i) - bw / 2}" y="${y(a)}" width="${bw}" height="${H - P.b - y(a)}" rx="2" fill="var(--acc)"/>`
+      + (w ? `<rect x="${x(i) - bw / 2}" y="${y(a + w)}" width="${bw}" height="${y(a) - y(a + w)}" rx="2" fill="var(--acc3)"/>` : "") + "</g>";
+  });
+  const passo = Math.ceil(c.length / Math.max(2, Math.floor((W - P.l) / 70)));
+  c.forEach((g, i) => { if (i % passo === 0) s += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--t3)">${data(g)}</text>`; });
+  el.setAttribute("viewBox", `0 0 ${W} ${H}`); el.innerHTML = s;
+  // spesa per uso
+  const m = k.modelli || [];
+  $("#modelli").innerHTML = m.length ? `<table><tr><td></td><td class="n"><small>Domande</small></td><td class="n"><small>Spesa</small></td><td class="n"><small>A domanda</small></td></tr>${m.map((r) =>
+    `<tr><td class="voce"><span style="width:${(100 * r.dollari / Math.max(...m.map((q) => q.dollari), .01)).toFixed(1)}%"></span><em>${esc(r.voce)}</em></td><td class="n">${num(r.domande)}</td><td class="n">${dollari(r.dollari)}</td><td class="n">${num(r.centesimi)} ¢</td></tr>`).join("")}</table>` : '<p class="vuoto">Ancora nessun dato.</p>';
+  const righe = ch.domande ? [["Conversazioni", num(ch.conversazioni)], ["Domande (chat e fascicoli)", num(ch.domande)], ["Domande per conversazione", num(ch.turni_medi)],
+    ["Tempo di risposta, mediana", `${num(Math.round(ch.secondi_mediana))} s`], ["Tempo di risposta, 9 su 10 entro", `${num(Math.round(ch.secondi_p90))} s`],
+    ["Risposte finite con un errore", `${num(ch.errori)} (${num(Math.round(100 * ch.errori / ch.domande))}%)`], ["Domande dal sito in inglese", num(ch.inglese)],
+    ["Batch di vettori nel periodo", `${num(v.batch)}${v.aperti ? `, ${num(v.aperti)} ancora aperti` : ""}`], ["Token dei vettori nel periodo", num(v.token)]] : [];
+  $("#chat").innerHTML = righe.length ? `<table>${righe.map(([a, b]) => `<tr><td>${a}</td><td class="n" style="width:auto">${b}</td></tr>`).join("")}</table>` : '<p class="vuoto">Ancora nessun dato.</p>';
+}
+
 function andamento(giorni, dal, al) {
   const c = []; for (let d = new Date(dal + "T12:00:00"); d <= new Date(al + "T12:00:00"); d.setDate(d.getDate() + 1)) { const k = d.toISOString().slice(0, 10); c.push({ k, etichetta: data(k), titolo: data(k) }); }
   grafico($("#andamento"), c, giorni, "giorno");
@@ -164,6 +211,7 @@ async function carica(g) {
     .map(([n, v]) => `<div class="cifra"><small>${n}</small><b>${num(v)}</b></div>`).join("");
   andamento(d.per_giorno, d.dal, d.al);
   orario(d.per_ora || [], d.adesso);
+  if (d.costi) costi(d.costi, d.dal, d.al);
   for (const k of ["pagine", "provenienze", "dispositivi", "browser", "lingue", "paesi", "regioni", "arrivi_chat", "uscite", "strumenti", "ricerche"])
     tabella($("#" + k), d[k], COLONNE[k], NOMI[k]);
   mappa(d.regioni);

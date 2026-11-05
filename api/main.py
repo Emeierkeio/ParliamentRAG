@@ -26,7 +26,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from . import modelli as M
 from pipeline.ambiente import QUI
 
-from . import agente, mcp, sito, sito_emendamenti, sito_parlamentari, statistiche
+from . import agente, mcp, sistema, sito, sito_emendamenti, sito_parlamentari, statistiche
 from .db import connessione, per_richiesta
 from .rete import ip as _ip
 from .strumenti import atti, persone, ricerca, sedute, voti
@@ -289,6 +289,7 @@ def scalda_schede() -> None:
 
 app.include_router(sito.router)
 app.include_router(statistiche.router)
+app.include_router(sistema.router)
 app.include_router(sito_parlamentari.router)
 app.include_router(sito_emendamenti.router)
 # le pagine per ultime: le rotte sopra hanno la precedenza
