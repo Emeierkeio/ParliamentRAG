@@ -372,7 +372,10 @@
       // regola: un tema con almeno 3 dibattiti va al fascicolo, con i passaggi del metodo; il resto all'agente
       let d = null;
       // una domanda che continua la precedente («e cosa hanno detto?») resta all'agente, che ha il contesto
-      const seguito = storia.length && (/^\s*(e|ma|invece|e invece|and|but)\b/i.test(q) || CH.parole(q).length <= 1);
+      // anche quando rimanda a ciò che si è appena detto («dimmi quella del 2025», «e lui?»): il fascicolo non vede la conversazione
+      const seguito = storia.length && (/^\s*(e|ma|invece|e invece|and|but)\b/i.test(q) || CH.parole(q).length <= 1
+        || /\b(quell[oaie]|quei|quegli|stess[oaie]|precedente|sopra|appena|anche|ancora|altr[oaie]|lui|lei|loro|that|those|same|previous|again|also|them)\b/.test(B.norm(q))
+        || /^\s*(dimmi|dammi|mostrami|fammi|spiega|spiegami|approfondisci|continua|tell me|show me|explain)\b/i.test(q) && CH.parole(q).length <= 4);
       // numeri, classifiche, elenchi di atti e voti vanno all'agente, che ha gli strumenti di conteggio; il fascicolo è per le posizioni
       // e così i voti, le date precise, gli applausi e chi è intervenuto: fatti di una seduta, non posizioni su un tema
       const numerica = /\b(quant[aeio]\w*|numero|percentual\w*|indice|coesion\w*|classific\w*|matrice|conta\w*|conteggi\w*|elenc\w*|come (?:vota|votano|hanno votato|ha votato)|quali (?:interrogazioni|interpellanze|mozioni|atti|leggi|emendamenti|proposte|disegni)|how many|how much|count|ranking|list)\b/.test(B.norm(q))
