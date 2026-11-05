@@ -83,7 +83,7 @@
         ${d.description ? `<p style="margin:0;font-size:14px;color:var(--t2)" data-tr>${e(B.taglia(d.description, 220))}</p>` : ""}
         ${((sig) => { // atto, legge e pagina del voto come righe da toccare, non icone sparse
           const r = [];
-          if (atto && atto.url) r.push(`<a class="colleg" href="${e(B.interno(atto.url, `${sig} ${atto.number} · ${atto.title}`))}">${B.ico("atto")}<span><b>${sig} ${e(atto.number || "")}</b><small data-tr>${e(B.taglia(atto.subject || atto.title, 110))}</small></span>${B.ico("dx")}</a>`);
+          if (atto && atto.url) r.push(`<a class="colleg" href="${e(B.interno(atto.url, `${/^Doc\./.test(atto.number || "") ? "" : sig + " "}${atto.number} · ${atto.title}`))}">${B.ico("atto")}<span><b>${/^Doc\./.test(atto.number || "") ? "" : sig + " "}${e(atto.number || "")}</b><small data-tr>${e(B.taglia(atto.subject || atto.title, 110))}</small></span>${B.ico("dx")}</a>`);
           if (legge) r.push(`<a class="colleg" href="${e(legge.eli || legge.normattiva_url)}" target="_blank" rel="noopener">${B.ico("legge")}<span><b>${e(legge.label)}</b><small>${TT("Testo pubblicato su Normattiva", "Published text on Normattiva")}</small></span>${B.ico("esterno")}</a>`);
           if (!location.hash.includes(voto.id)) r.push(`<a class="colleg" href="#/strumenti/voto/${encodeURIComponent(voto.id)}">${B.ico("voto")}<span><b>${TT("La votazione", "The vote")}</b><small>${TT("L'Aula seggio per seggio e il voto dei gruppi", "The floor seat by seat and how groups voted")}</small></span>${B.ico("dx")}</a>`);
           return r.length ? `<div class="collegati">${r.join("")}</div>` : "";

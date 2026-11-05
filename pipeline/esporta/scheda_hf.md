@@ -68,7 +68,7 @@ All content is in Italian.
 | `mandates` | {{N_MANDATES}} | Terms of office in each house, with constituency |
 | `organizations` | {{N_ORGANIZATIONS}} | Parliamentary groups, Mixed Group components, the floor and the committees |
 | `memberships` | {{N_MEMBERSHIPS}} | Person–organization spells with role and dates |
-| `acts` | {{N_ACTS}} | Bills, motions, resolutions, orders of the day, questions and other acts, with status and resulting law |
+| `acts` | {{N_ACTS}} | Bills, motions, resolutions, orders of the day, questions and parliamentary documents debated or voted (Doc.: DEF, inquiry proposals, Rules changes), with status and resulting law |
 | `act_sponsors` | {{N_ACT_SPONSORS}} | Signatories of each act (`first` = first signatory) |
 | `act_joints` | {{N_ACT_JOINTS}} | Acts examined jointly with a main act (abbinati) |
 | `act_subjects` | {{N_ACT_SUBJECTS}} | Act → EuroVoc concept, with Italian and English labels |

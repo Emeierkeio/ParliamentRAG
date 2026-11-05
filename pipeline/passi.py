@@ -8,7 +8,7 @@ import json
 import re
 import time
 
-from . import vettori
+from . import documenti, vettori
 from .carica import postgres
 from .controlli import uscite as controlli_uscite
 from .fonti import eurovoc
@@ -341,6 +341,7 @@ PASSI = [
                                                           "trasforma_senato_testi"], timeout_minuti=30, critico=True),
     # il caricamento ha il suo tempo ([carica] tempo_minuti, 150): si ferma da solo fra un file e l'altro e riprende al giro dopo
     Passo("carica_postgres", postgres.carica, dopo=["controlla_uscite"], timeout_minuti=200, critico=True, usa_db=True),
+    Passo("documenti_parlamentari", documenti.passo, dopo=["carica_postgres"], timeout_minuti=15, tentativi=1, usa_db=True),
     Passo("raccogli_vettori", vettori.passo_raccogli, timeout_minuti=60, tentativi=2, usa_db=True),
     Passo("taglia_brani", vettori.passo_taglia, dopo=["carica_postgres"], timeout_minuti=60, usa_db=True),
     Passo("invia_vettori", vettori.passo_invia, dopo=["taglia_brani", "raccogli_vettori"], timeout_minuti=60, tentativi=2, usa_db=True),
