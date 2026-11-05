@@ -61,7 +61,8 @@ const TIPI = { assembly_verbatim: "Aula, resoconto stenografico", assembly_agend
 const ESITI = { ok: ["ok", "riuscito"], errore: ["ko", "errore"], saltato: ["att", "saltato"], parziale: ["att", "parziale"], in_corso: ["", "in corso"], interrotto: ["ko", "interrotto"] };
 const esito = (e) => P.stato(...(ESITI[e] || ["", e || "–"]));
 const dataBackup = (r) => Date.parse(r.slice(0, 19).replace(" ", "T") + "Z") / 1000;
-const riempi = (f, titolo, valore) => `<div class="riempi ${f > .9 ? "ko" : f > .8 ? "att" : ""}"><div class="riempi__testa"><b>${titolo}</b><span>${valore}</span></div><div class="riempi__barra"><i style="width:${(100 * Math.min(1, f)).toFixed(1)}%"></i></div></div>`;
+// disco e memoria: pieni è male; una copertura (neutro) no
+const riempi = (f, titolo, valore, neutro) => `<div class="riempi ${neutro ? "neutro" : f > .9 ? "ko" : f > .8 ? "att" : ""}"><div class="riempi__testa"><b>${titolo}</b><span>${valore}</span></div><div class="riempi__barra"><i style="width:${(100 * Math.min(1, f)).toFixed(1)}%"></i></div></div>`;
 
 function avvisi(d) {
   const a = [], m = d.macchina || {}, g = m.giri?.ultimo, dati = d.dati || {}, k = d.costi || {}, ad = d.adesso;
@@ -133,7 +134,8 @@ function dati(d) {
   const r = d.righe || {}, v = d.vettori || {};
   const NOMI = { person: "Persone", sitting: "Sedute", agenda_item: "Punti all'ordine del giorno", speech: "Interventi", vote: "Votazioni", ballot: "Voti dei singoli parlamentari", act: "Atti", act_text: "Testi degli atti", amendment: "Emendamenti", document: "Documenti", reaction: "Reazioni in Aula", video: "Video", passage: "Brani per la ricerca", passage_vector: "Brani con il vettore" };
   $("#db").innerHTML = `<div class="cifre"><div class="cifra"><small>Peso</small><span class="cifra__n cifra__n--medio">${gb(d.peso)}</span></div><div class="cifra"><small>Ultimo caricamento</small><span class="cifra__n cifra__n--medio">${quando(d.caricato)}</span></div></div>`
-    + (r.passage ? riempi(r.passage_vector / r.passage, "Brani pronti per la ricerca per significato", `${num(100 * r.passage_vector / r.passage, 1)}%`) : "")
+    + (r.passage ? riempi(r.passage_vector / r.passage, "Brani pronti per la ricerca per significato", `${num(100 * r.passage_vector / r.passage)}%, mancano ${num(r.passage - r.passage_vector)}`, true)
+      + `<p class="nota">I vettori dei brani nuovi si calcolano ogni notte, fino a 5 $ a notte: i brani rimasti indietro arrivano nelle notti dopo.</p>` : "")
     + P.tab([["Tabella"], ["Righe (stima)", "n"]], Object.keys(NOMI).filter((k) => k in r).map((k) => [NOMI[k], num(r[k])]))
     + `<p class="nota" style="margin-top:12px">Vettori: ${num(v.aperti)} batch in attesa da OpenAI, ${num(v.con_errore)} con errore. Ultimo invio ${quando(v.ultimo_invio)}, ultima raccolta ${quando(v.ultima_raccolta)}.</p>`;
 }

@@ -70,9 +70,9 @@
 .pn th{font-size:12.5px;font-weight:500;color:var(--t3);text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid var(--bordo2);white-space:nowrap}
 .pn td{padding:8px 10px 8px 0;border-bottom:1px solid var(--bordo);vertical-align:top}
 .pn tr:last-child td{border-bottom:0}
-.pn th.n,.pn td.n{text-align:right;white-space:nowrap;padding-right:0;padding-left:10px}
+.pn th.n,.pn td.n{text-align:right;white-space:nowrap}
 .pn td.lungo{color:var(--t2);font-size:13px;word-break:break-word;min-width:260px;width:60%}
-.pn th+th{padding-left:10px}
+.pn th+th,.pn td+td{padding-left:16px}
 .pn td.voce{position:relative;max-width:0;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pn td.voce span{position:absolute;inset:4px auto 4px 0;background:var(--s1-f);border-radius:4px}
 .pn td.voce em{position:relative;font-style:normal;padding-left:8px}
@@ -97,10 +97,10 @@
 /* barre di riempimento (disco, memoria) */
 .riempi{margin:0 0 14px}
 .riempi__testa{display:flex;justify-content:space-between;gap:12px;font-size:14px;margin-bottom:6px}
-.riempi__testa span{color:var(--t3);font-variant-numeric:tabular-nums}
+.riempi__testa span{color:var(--t3)}
 .riempi__barra{height:8px;border-radius:4px;background:var(--sup3);overflow:hidden}
 .riempi__barra i{display:block;height:100%;border-radius:4px;background:var(--ok)}
-.riempi.att .riempi__barra i{background:var(--av)}.riempi.ko .riempi__barra i{background:var(--no)}
+.riempi.att .riempi__barra i{background:var(--av)}.riempi.neutro .riempi__barra i{background:var(--s1)}.riempi.ko .riempi__barra i{background:var(--no)}
 
 /* mappa delle regioni */
 svg.mappa{display:block;width:100%;max-width:320px;height:auto;margin:0 auto 14px}
