@@ -3,6 +3,7 @@
 giro      un giro completo; si rifiuta (uscita 3) se un giro completo è riuscito nelle ultime 20 ore, salvo --forza
 salute    uscita 0 se c'è un giro completo riuscito nelle ultime 26 ore, 1 se no (per un controllo esterno)
 avvisa    dopo un giro (pipeline/notte.sh): una mail a segnalazioni@parliamentrag.it se l'esito non è ok
+esporta   [--hf] [--zenodo] [--senza-caricare]: tabelle per Hugging Face, RDF per Zenodo (pipeline/esporta)
 """
 
 from __future__ import annotations
@@ -61,6 +62,9 @@ def main(argv: list[str]) -> int:
         from .sistema import scrivi
         print(scrivi(cartella))
         return 0
+    if cmd == "esporta":
+        from .esporta import main as esporta
+        return esporta(argv[1:])
     if cmd == "stato":
         st = Stato(cartella / "stato.sqlite")
         g = argv[1] if len(argv) > 1 else st.ultimo_giro()

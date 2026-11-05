@@ -1,0 +1,24 @@
+{
+  "title": "ParliamentRAG Knowledge Graph - Italian Parliament (Chamber of Deputies and Senate), 19th Legislature (RDF export)",
+  "description": "<p>RDF export of the ParliamentRAG database for both houses of the Italian Parliament, the Chamber of Deputies and the Senate, in the 19th legislature. Data as of: Chamber {{DATI_CAMERA}}, Senate {{DATI_SENATO}} (last sitting held).</p><p>Contents: people (deputies, senators, government members) with their mandates, groups, Mixed Group components and committees; sittings of the floor and of the committees with their agenda items and the full text of every speech; acts (bills, motions, resolutions, orders of the day, questions) with signatories, joint examination, status, resulting law and EuroVoc subjects; {{AMENDMENTS}} amendments with text, outcome and signatories; roll-call votes and {{INDIVIDUAL_VOTES}} individual votes.</p><p>Two files, both gzip-compressed:</p><ul><li><b>parliamentrag_kg.ttl.gz</b> (Turtle): everything except individual votes, {{TRIPLES}} triples;</li><li><b>parliamentrag_votes.nt.gz</b> (N-Triples): the vote cast by each member in every roll-call vote of both houses.</li></ul><p>Resources live under https://w3id.org/parliamentrag/, with owl:sameAs links to the official URIs of dati.camera.it and dati.senato.it and to Wikidata. Vocabularies: FOAF, W3C ORG, SKOS (EuroVoc), Dublin Core, schema.org, OCD (dati.camera.it), OSR (dati.senato.it), plus a small project namespace (https://w3id.org/parliamentrag/ontology#) declared with comments in the dump itself. Since this version the export is produced from the ParliamentRAG v3 database that serves www.parliamentrag.it, by the code in pipeline/esporta of github.com/Emeierkeio/ParliamentRAG; earlier versions came from the Neo4j graph of the ISWC 2026 system and used a different schema. Embeddings, user conversations and AI-written summaries are not part of the export.</p><p>Source data: open data of the Chamber of Deputies (dati.camera.it, documenti.camera.it, CC BY-SA 4.0), of the Senate (dati.senato.it, senato.it, CC BY 3.0) and the EuroVoc thesaurus of the EU Publications Office. The derived graph is released under CC BY-SA 4.0, as the ShareAlike clause of the Chamber data requires.</p><p>Companion system described in: Tritella, Pozzi, Palmonari, \"Who Speaks Matters: Authority-Aware Multi-View RAG over Italian Parliamentary Proceedings\", The Semantic Web - ISWC 2026, doi:10.1007/978-3-032-42029-9_24.</p>",
+  "license": "cc-by-sa-4.0",
+  "keywords": [
+    "knowledge graph",
+    "RDF",
+    "linked data",
+    "parliamentary proceedings",
+    "Italian Parliament",
+    "Italian Chamber of Deputies",
+    "Italian Senate",
+    "retrieval-augmented generation",
+    "amendments",
+    "EuroVoc"
+  ],
+  "related_identifiers": [
+    {"identifier": "10.1007/978-3-032-42029-9_24", "relation": "isSupplementTo", "resource_type": "publication-conferencepaper", "scheme": "doi"},
+    {"identifier": "https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19", "relation": "isVariantFormOf", "resource_type": "dataset", "scheme": "url"},
+    {"identifier": "https://github.com/Emeierkeio/ParliamentRAG", "relation": "isCompiledBy", "resource_type": "software", "scheme": "url"},
+    {"identifier": "http://dati.camera.it", "relation": "isDerivedFrom", "resource_type": "dataset", "scheme": "url"},
+    {"identifier": "http://dati.senato.it", "relation": "isDerivedFrom", "resource_type": "dataset", "scheme": "url"}
+  ]
+}

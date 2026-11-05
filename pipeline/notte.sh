@@ -4,7 +4,9 @@
 #   - un log per giro, con la data: $LOG_DIR/giro-AAAAMMGG-HHMMSS.log (predefinito dati/log), tenuti 60 giorni;
 #   - «python -m pipeline giro» rifiuta il giro se uno completo è riuscito nelle ultime 20 ore (--forza per lanciarlo);
 #   - prima del giro, il file DB-IP dei paesi del mese (deploy/vps/geoip.sh), per le statistiche di visita;
-#   - a fine giro, se l'esito non è ok, una mail a segnalazioni@parliamentrag.it (python -m pipeline avvisa, BREVO_API_KEY).
+#   - a fine giro, se l'esito non è ok, una mail a segnalazioni@parliamentrag.it (python -m pipeline avvisa, BREVO_API_KEY);
+#   - se il giro è riuscito, le tabelle su Hugging Face e, il primo del mese, la bozza della nuova versione su Zenodo
+#     (python -m pipeline esporta, HF_TOKEN e ZENODO_TOKEN): un export non riuscito resta nel log e non cambia l'uscita.
 #
 #   pipeline/notte.sh [--forza]
 set -u
@@ -30,6 +32,12 @@ echo "$(date -u '+%F %T') UTC: inizio, log in $LOG" >> "$LOG_DIR/notte.log"
 
 "$PY" -m pipeline giro "$@" >> "$LOG" 2>&1
 USCITA=$?
+
+if [ "$USCITA" -eq 0 ]; then
+  ESPORTA=(--hf)
+  [ "$(date -u +%d)" = "01" ] && ESPORTA+=(--zenodo)
+  "$PY" -m pipeline esporta "${ESPORTA[@]}" >> "$LOG" 2>&1 || echo "export non riuscito (python -m pipeline esporta ${ESPORTA[*]})" >> "$LOG"
+fi
 
 "$PY" -m pipeline avvisa --dal "$DAL" --uscita "$USCITA" --log "$LOG" >> "$LOG" 2>&1
 echo "$(date -u '+%F %T') UTC: fine, uscita $USCITA" >> "$LOG_DIR/notte.log"

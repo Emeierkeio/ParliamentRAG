@@ -10,3 +10,19 @@ playwright==1.63.0
 greenlet==3.5.6
 pyee==13.0.1
 typing-extensions==4.16.0
+# export aperto (pipeline/esporta): Parquet per Hugging Face e caricamento del dataset
+pyarrow==26.0.1
+huggingface_hub==2.4.0
+filelock==4.2.9
+fsspec==2026.9.0
+hf-xet==1.8.0
+httpx2==2.16.0
+httpcore2==2.16.0
+truststore==0.10.5
+packaging==26.3
+PyYAML==6.0.3
+tqdm==4.70.1
+click==8.5.0
+anyio==4.15.1
+h11==0.16.0
+idna==3.20

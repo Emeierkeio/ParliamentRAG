@@ -190,6 +190,10 @@ Il processo di ogni passo ha un gruppo di processi suo: alla scadenza si fermano
 
 Il cron vecchio (`/etc/cron.d/parliamentrag-nightly`, `make update-data`) lo sospende `docs/vps/neo4j.sh spegni`.
 
+## Dati aperti: Hugging Face e Zenodo
+
+Dopo un giro riuscito `notte.sh` lancia `python -m pipeline esporta --hf`: 14 tabelle Parquet in `dati/esporta/hf` (circa 200 MB, un minuto e mezzo), caricate su https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19 con la scheda rigenerata dai conteggi. Il primo del mese aggiunge `--zenodo`: il grafo in `dati/esporta/rdf` (`parliamentrag_kg.ttl.gz` e `parliamentrag_votes.nt.gz`, circa 470 MB, tre minuti) e una nuova versione del record Zenodo (concept DOI 10.5281/zenodo.21560331) lasciata come bozza. La bozza si guarda e si pubblica a mano dal browser: un DOI pubblicato non si cancella più. Servono `HF_TOKEN` e `ZENODO_TOKEN` in `.env`; un export non riuscito resta nel log del giro e non cambia l'esito. `--senza-caricare` scrive i file e si ferma.
+
 ## Backup
 
 `/opt/parliamentrag-backup/backup.sh` (00:45 UTC, restic su Storage Box) oggi salva il Postgres dell'archivio e Neo4j. Va aggiunto il dump del database `parliamentrag` del contenitore `testi` (`pg_dump -Fc`, circa 6 GB, una copia per notte, le ultime due), e con Neo4j spento la sua parte va saltata (riga in `docs/vps/README.md`).
