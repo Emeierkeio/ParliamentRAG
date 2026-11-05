@@ -211,4 +211,13 @@
     svg.addEventListener("mouseover", (ev) => { const g = ev.target.closest(".kg-n"); svg.querySelectorAll(".kg-e").forEach((x) => x.classList.toggle("acc", !!g && (x.dataset.a === g.dataset.n || x.dataset.b === g.dataset.n))); svg.classList.toggle("fuoco", !!g); });
     $("#didascalia").innerHTML = `<span><b>${CLASSI.length}</b> tipi di nodo</span><span><b>${PROP.length}</b> relazioni</span><span><b>863.834</b> triple nell'export</span><span>CC BY-SA 4.0</span>`;
   }
+
+  // «Ne hanno parlato»: i loghi scorrono in un nastro continuo; la seconda copia serve solo a chiudere il giro
+  const stampa = $("#riconoscimenti .stampa");
+  if (stampa && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    [...stampa.children].forEach((li) => {
+      const c = li.cloneNode(true); c.setAttribute("aria-hidden", "true"); c.querySelector("a")?.setAttribute("tabindex", "-1"); stampa.appendChild(c);
+    });
+    stampa.parentElement.classList.add("scorre");
+  }
 })();
