@@ -7,7 +7,7 @@ import datetime as dt
 import psycopg
 
 from ..modelli import ActRef, Ballot, Group, GroupVote, Vote, VoteBrief
-from .comune import brevi
+from .comune import SQL_VOTO_PER_PAROLE, brevi
 
 SQL_VOTO_BREVE = """SELECT v.uri, v.sitting, v.chamber, v.number, v.date, v.title, v.kind, v.favor, v.against, v.abstain,
                            v.approved, v.secret, v.confidence, v.source_url FROM vote v"""
@@ -21,7 +21,7 @@ def voto_breve(r: dict) -> VoteBrief:
 def elenco_votazioni(c: psycopg.Connection, chamber: str | None = None, act: str | None = None, kind: str | None = None,
                      start: dt.date | None = None, end: dt.date | None = None, final: bool | None = None,
                      limit: int = 50, offset: int = 0, confidence: bool | None = None, q: str | None = None) -> tuple[int, list[VoteBrief]]:
-    """Votazioni dalla più recente; `act` è l'uri dell'atto votato, `q` le parole del titolo e della descrizione del voto. Alla Camera la fiducia si vota sugli articoli
+    """Votazioni dalla più recente; `act` è l'uri dell'atto votato, `q` le parole del voto o dell'atto votato. Alla Camera la fiducia si vota sugli articoli
     (kind article, confidence vero): `kind="confidence"` vale come `confidence=True`, così vale per tutti e due i rami."""
     if kind == "confidence":
         kind, confidence = None, True
@@ -30,8 +30,7 @@ def elenco_votazioni(c: psycopg.Connection, chamber: str | None = None, act: str
         AND (%(dal)s::date IS NULL OR v.date >= %(dal)s) AND (%(al)s::date IS NULL OR v.date <= %(al)s)
         AND (%(finale)s::boolean IS NULL OR v.final = %(finale)s)
         AND (%(atto)s::text IS NULL OR EXISTS (SELECT 1 FROM vote_act x WHERE x.vote = v.uri AND x.act = %(atto)s))
-        AND (%(q)s::text IS NULL OR to_tsvector('italian', coalesce(v.title, '') || ' ' || coalesce(v.description, ''))
-             @@ websearch_to_tsquery('italian', %(q)s))"""
+        AND (%(q)s::text IS NULL OR """ + SQL_VOTO_PER_PAROLE + ")"
     p = {"ramo": chamber, "tipo": kind, "dal": start, "al": end, "finale": final, "atto": act, "fiducia": confidence, "q": q,
          "lim": limit, "off": offset}
     totale = c.execute(f"SELECT count(*) AS n FROM vote v WHERE {filtro}", p).fetchone()["n"]

@@ -51,6 +51,14 @@ def brevi(c: psycopg.Connection, uris: list[str], d: dt.date | None = None) -> d
     return {r["chiesto"]: breve(r) for r in c.execute(SQL_BREVI, {"uris": uris, "leg": LEGISLATURA, "d": d})}
 
 
+# le parole di una votazione: titolo e descrizione, ma anche titolo e testo dell'atto votato. Alla Camera la descrizione di
+# una mozione ha solo i firmatari: il tema sta nell'atto
+SQL_VOTO_PER_PAROLE = """(to_tsvector('italian', coalesce(v.title, '') || ' ' || coalesce(v.description, '')) @@ websearch_to_tsquery('italian', %(q)s)
+  OR v.uri IN (SELECT x.vote FROM vote_act x JOIN act a ON a.uri = x.act
+               WHERE to_tsvector('italian', coalesce(a.text, '')) @@ websearch_to_tsquery('italian', %(q)s)
+                  OR to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s)))"""
+
+
 def stessa_persona(c: psycopg.Connection, uri: str) -> list[str]:
     """Tutte le schede della stessa persona, compresa `uri`."""
     righe = c.execute("""SELECT %(u)s AS u UNION SELECT same_as FROM person_same_as WHERE person = %(u)s

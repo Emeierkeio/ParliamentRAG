@@ -108,7 +108,7 @@ class Seduta(Parametri):
 
 
 class ElencoVotazioni(Parametri):
-    q: str | None = Field(None, description="parole del titolo e della descrizione del voto (spesso il titolo dell'atto); sintassi di ricerca web")
+    q: str | None = Field(None, description="parole del voto o dell'atto votato (titolo e testo); sintassi di ricerca web")
     chamber: Ramo | None = None
     act: str | None = Field(None, description="uri dell'atto votato")
     kind: str | None = Field(None, description="final, article, amendment, agenda_order, motion, resolution, confidence…")
@@ -184,7 +184,7 @@ class FiltriVoti(Parametri):
     approved: bool | None = Field(None, description="vero: approvate; falso: respinte")
     confidence: bool | None = Field(None, description="vero: solo le questioni di fiducia")
     act: str | None = Field(None, description="uri dell'atto votato")
-    q: str | None = Field(None, description="parole del titolo o della descrizione della votazione")
+    q: str | None = Field(None, description="parole del voto o dell'atto votato (titolo e testo)")
     start: dt.date | None = None
     end: dt.date | None = None
 

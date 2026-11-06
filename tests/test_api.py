@@ -34,6 +34,12 @@ class TestApi(unittest.TestCase):
         self.assertLessEqual(sum(x.members for x in misto.components), misto.members)
         self.assertEqual(sum(g.members for g in k.groups) + k.not_in_group, k.members)
 
+    def test_voti_per_parole_anche_dal_testo_dell_atto(self):
+        # alla Camera la descrizione di una mozione ha solo i firmatari: il tema sta nel testo dell'atto
+        n, vs = voti.elenco_votazioni(C, chamber="camera", kind="motion", q="Israele", limit=100)
+        self.assertGreater(n, 0)
+        self.assertIn("it:camera:19:sed0483:v005", [v.uri for v in vs])
+
     def test_voto_tutti_i_gruppi_hanno_nome(self):
         _, vs = voti.elenco_votazioni(C, chamber="camera", final=True, limit=1)
         v = voti.votazione(C, vs[0].uri)

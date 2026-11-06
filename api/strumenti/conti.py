@@ -15,7 +15,7 @@ from itertools import combinations
 
 import psycopg
 
-from .comune import LEGISLATURA, brevi, stessa_persona
+from .comune import LEGISLATURA, SQL_VOTO_PER_PAROLE, brevi, stessa_persona
 
 TEMPO = 25                        # secondi per query: i conti su tutta la legislatura leggono milioni di schede
 RIGHE_MAX = 200
@@ -182,8 +182,7 @@ FILTRO_VOTI = f"""v.legislature = %(leg)s AND (%(ramo)s::text IS NULL OR v.chamb
   AND NOT (coalesce(%(fiducia)s::boolean, false) AND ({SQL_FIDUCIA_INIZIALE}))
   AND (%(dal)s::date IS NULL OR v.date >= %(dal)s) AND (%(al)s::date IS NULL OR v.date <= %(al)s)
   AND (%(atto)s::text IS NULL OR EXISTS (SELECT 1 FROM vote_act y WHERE y.vote = v.uri AND y.act = %(atto)s))
-  AND (%(q)s::text IS NULL OR to_tsvector('italian', coalesce(v.title, '') || ' ' || coalesce(v.description, ''))
-       @@ websearch_to_tsquery('italian', %(q)s))"""
+  AND (%(q)s::text IS NULL OR {SQL_VOTO_PER_PAROLE})"""
 
 DIM_VOTI = {"ramo": "v.chamber", "tipo": "v.kind",
             "esito": "CASE WHEN v.approved THEN 'approvata' WHEN NOT v.approved THEN 'respinta' ELSE 'non indicato' END",
