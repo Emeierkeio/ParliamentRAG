@@ -20,8 +20,8 @@ def voto_breve(r: dict) -> VoteBrief:
 
 def elenco_votazioni(c: psycopg.Connection, chamber: str | None = None, act: str | None = None, kind: str | None = None,
                      start: dt.date | None = None, end: dt.date | None = None, final: bool | None = None,
-                     limit: int = 50, offset: int = 0, confidence: bool | None = None) -> tuple[int, list[VoteBrief]]:
-    """Votazioni dalla più recente; `act` è l'uri dell'atto votato. Alla Camera la fiducia si vota sugli articoli
+                     limit: int = 50, offset: int = 0, confidence: bool | None = None, q: str | None = None) -> tuple[int, list[VoteBrief]]:
+    """Votazioni dalla più recente; `act` è l'uri dell'atto votato, `q` le parole del titolo e della descrizione del voto. Alla Camera la fiducia si vota sugli articoli
     (kind article, confidence vero): `kind="confidence"` vale come `confidence=True`, così vale per tutti e due i rami."""
     if kind == "confidence":
         kind, confidence = None, True
@@ -29,8 +29,10 @@ def elenco_votazioni(c: psycopg.Connection, chamber: str | None = None, act: str
         AND (%(fiducia)s::boolean IS NULL OR coalesce(v.confidence, false) = %(fiducia)s)
         AND (%(dal)s::date IS NULL OR v.date >= %(dal)s) AND (%(al)s::date IS NULL OR v.date <= %(al)s)
         AND (%(finale)s::boolean IS NULL OR v.final = %(finale)s)
-        AND (%(atto)s::text IS NULL OR EXISTS (SELECT 1 FROM vote_act x WHERE x.vote = v.uri AND x.act = %(atto)s))"""
-    p = {"ramo": chamber, "tipo": kind, "dal": start, "al": end, "finale": final, "atto": act, "fiducia": confidence,
+        AND (%(atto)s::text IS NULL OR EXISTS (SELECT 1 FROM vote_act x WHERE x.vote = v.uri AND x.act = %(atto)s))
+        AND (%(q)s::text IS NULL OR to_tsvector('italian', coalesce(v.title, '') || ' ' || coalesce(v.description, ''))
+             @@ websearch_to_tsquery('italian', %(q)s))"""
+    p = {"ramo": chamber, "tipo": kind, "dal": start, "al": end, "finale": final, "atto": act, "fiducia": confidence, "q": q,
          "lim": limit, "off": offset}
     totale = c.execute(f"SELECT count(*) AS n FROM vote v WHERE {filtro}", p).fetchone()["n"]
     righe = c.execute(f"{SQL_VOTO_BREVE} WHERE {filtro} ORDER BY v.date DESC, v.number DESC LIMIT %(lim)s OFFSET %(off)s", p).fetchall()

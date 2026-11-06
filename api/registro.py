@@ -108,6 +108,7 @@ class Seduta(Parametri):
 
 
 class ElencoVotazioni(Parametri):
+    q: str | None = Field(None, description="parole del titolo e della descrizione del voto (spesso il titolo dell'atto); sintassi di ricerca web")
     chamber: Ramo | None = None
     act: str | None = Field(None, description="uri dell'atto votato")
     kind: str | None = Field(None, description="final, article, amendment, agenda_order, motion, resolution, confidence…")
@@ -358,8 +359,8 @@ STRUMENTI: list[Strumento] = [
               "(reactions: applausi, proteste, «si levano in piedi»), votazioni.", Seduta, _seduta),
     Strumento("organo", "Commissioni, giunte e altri organi per nome, con presidente, vicepresidenti, segretari alla data (e il loro "
               "gruppo) e il numero dei membri.", Organo, lambda c, p: persone.organo(c, p.q, p.chamber, p.date, p.titles)),
-    Strumento("elenco_votazioni", "Votazioni elettroniche, dalla più recente, per ramo, atto, tipo e date.", ElencoVotazioni,
-              lambda c, p: voti.elenco_votazioni(c, p.chamber, p.act, p.kind, p.start, p.end, p.final, p.limit, p.offset, p.confidence)),
+    Strumento("elenco_votazioni", "Votazioni elettroniche, dalla più recente, per parole, ramo, atto, tipo e date.", ElencoVotazioni,
+              lambda c, p: voti.elenco_votazioni(c, p.chamber, p.act, p.kind, p.start, p.end, p.final, p.limit, p.offset, p.confidence, p.q)),
     Strumento("votazione", "Una votazione: totali, esito, atto, voto di ogni gruppo (il Misto per componente) e, se chiesto, di ogni parlamentare. "
               "Un gruppo con split vero si è diviso: dillo con i numeri di ogni scelta, mai una posizione unica.",
               Votazione, lambda c, p: voti.votazione(c, p.uri, p.with_ballots)),

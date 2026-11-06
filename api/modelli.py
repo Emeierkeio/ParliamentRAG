@@ -285,5 +285,7 @@ class SpeechHit(BaseModel):
     kind: str | None = None
     snippet: str                               # con «[[» e «]]» intorno alle parole trovate
     url: str | None = None                     # il resoconto ufficiale
+    government: bool = False                   # parla da membro del Governo: non è la voce del suo partito
+    office: str | None = None                  # la carica di governo, com'è scritta nel resoconto
     video: str | None = None                   # la WebTV della Camera, che parte dall'inizio dell'intervento (secondo video_start_s)
     video_start_s: int | None = None
