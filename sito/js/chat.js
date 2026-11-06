@@ -355,7 +355,7 @@
     if (!document.body.dataset.vista) { aperta(null); CH.idChat = null; storia.length = 0; delete CH.ultimaPersona; CH.proponi(null); $("#conversazione").innerHTML = ""; }
     if (!CH.idChat) CH.idChat = nuovoId();
     aperta({ id: CH.idChat, attesa: q });
-    const qx = (ctx ? `${q}\n\n(Domanda fatta dalla pagina «${ctx.testo}»: usala come contesto.)` : q) + (window.LANG === "en" ? "\n\n(Answer in English. Keep quotes in the original Italian.)" : "");
+    const qx = (ctx ? `${q}\n\n(Domanda fatta dalla pagina «${ctx.testo}»: usala come contesto.)` : q);
     document.body.dataset.vista = "conversazione"; location.hash !== "#/chiedi" && history.replaceState(null, "", "#/chiedi");
     const n = ++nTurno, box = $("#conversazione");
     const el = document.createElement("article"); el.className = "turno"; el.id = `turno-${n}`;
