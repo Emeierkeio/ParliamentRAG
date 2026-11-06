@@ -397,8 +397,12 @@ def fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, misure: dic
     pool = ThreadPoolExecutor(max_workers=1)
     try:
         yield from _fascicolo(domanda, pesi, lingua, ip, en, misure, pool, tempi)
+    except GeneratorExit:                           # il browser ha chiuso la connessione: non è un errore, ma il registro lo dice
+        misure["esito"] = "chiuso dal client"
+        raise
     except Exception as e:                          # noqa: BLE001
         log.exception("fascicolo non riuscito")
+        misure["esito"] = "errore"
         misure["errore"] = f"{type(e).__name__}: {str(e)[:200]}"
         codice = "quota_exhausted" if isinstance(e, modello.ModelloNonDisponibile) and "tetto" in str(e) else "pipeline_error"
         messaggio = ("la chat ha raggiunto il tetto di spesa di oggi: riprova domani" if codice == "quota_exhausted"
@@ -436,13 +440,13 @@ def _fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, en: bool, 
                 log.info("fascicolo fermato: tema fuori dominio (%s brani sopra %s)", pertinenza.get("chunks_above_floor"),
                          pertinenza.get("floor"))
                 yield evento({"type": "complete", "metadata": {"evidence": 0, "out_of_domain": True}})
-                misure["risposta"] = None
+                misure.update(risposta=None, esito="fuori dominio")
                 return
             ev, per_id = evidenze(ris.get("evidenze") or [])
             yield passo(2, f"Trovate {len(ev)} evidenze", f"Found {len(ev)} evidence pieces")
             if not ev:
                 yield evento({"type": "complete", "metadata": {"evidence": 0}})
-                misure["risposta"] = None
+                misure.update(risposta=None, esito="nessuna evidenza")
                 return
 
             yield passo(3)
@@ -482,7 +486,9 @@ def _fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, en: bool, 
             stat = gen.get("topic_statistics")
             if stat:
                 yield evento(statistiche(stat, schede))
+            t = time.monotonic()
             testo, buoni, tolte = verifica_citazioni(c, gen.get("text", ""), per_id)
+            tempi["verifica"] = time.monotonic() - t
             citazioni = gen.get("citations", [])
             tracciate = {x.get("evidence_id") for x in citazioni}
             citazioni += [{"evidence_id": i, "quote_text": per_id[i]["quote_text"]} for i in buoni - tracciate]
@@ -499,7 +505,7 @@ def _fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, en: bool, 
             tempi["traduzione"] = time.monotonic() - t
         for i in range(0, len(testo), PEZZO):
             yield evento({"type": "chunk", "data": testo[i:i + PEZZO]})
-        misure.update(risposta=testo, citazioni=len(dettagli), tolte=tolte,
+        misure.update(risposta=testo, citazioni=len(dettagli), tolte=tolte, esito="completo",
                       gruppi=sorted({d["group"] for d in dettagli}),
                       integrita=(gen.get("metadata") or {}).get("citation_integrity", {}).get("verbatim"))
         yield evento({"type": "complete", "metadata": {
@@ -518,7 +524,7 @@ def registra(eventi: Iterator[str], domanda: str, lingua: str, misure: dict) -> 
         getattr(eventi, "close", lambda: None)()
         conversazioni.salva({"conversazione": None, "turno": None, "lingua": lingua, "domanda": domanda,
                              "risposta": misure.get("risposta"),
-                             "strumenti": [{"nome": "fascicolo", "argomenti": {"tempi": {k: round(v, 1) for k, v in (misure.get("tempi") or {}).items()}},
+                             "strumenti": [{"nome": "fascicolo", "argomenti": {"esito": misure.get("esito"), "tempi": {k: round(v, 1) for k, v in (misure.get("tempi") or {}).items()}},
                                             "risultati": misure.get("citazioni")}],
                              "errore": misure.get("errore"), "ms": misure.get("ms", 0),
                              "dollari": round(misure.get("dollari", 0.0), 5), "modello": misure.get("modello")})
