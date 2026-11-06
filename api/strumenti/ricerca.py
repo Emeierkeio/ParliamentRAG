@@ -26,7 +26,7 @@ def cerca_interventi(c: psycopg.Connection, q: str, chamber: str | None = None, 
                          AND o.target LIKE 'it:gov:%%' AND o.start_date <= st.date AND (o.end_date IS NULL OR o.end_date >= st.date))
                  AND (s.as_office ~* %(carica)s OR (s.as_group IS NULL AND st.kind = 'assembly_verbatim')) AS governo,
                coalesce(CASE WHEN s.as_office ~* %(carica)s THEN s.as_office END,
-                        substring(s.text from '^, *([^.]{3,90})\.')) AS carica,
+                        substring(s.text from '^, *([^.]{3,90})[.]')) AS carica,
                st.uri AS st_uri, st.chamber, st.body, st.body_name, st.number, st.date, st.kind AS st_kind, st.status,
                ts_headline('italian', s.text, q.q, 'StartSel=[[, StopSel=]], MaxWords=40, MinWords=15, MaxFragments=2') AS snippet
         FROM speech s CROSS JOIN q JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting

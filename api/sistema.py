@@ -40,15 +40,19 @@ def _stato() -> dict:
 _conto_brani: tuple[float, dict] = (0.0, {})
 
 
-def _brani(c: psycopg.Connection) -> dict:
+def _brani() -> dict:
     """I brani diversi e quelli senza vettore: lo stesso testo in più fonti ha un vettore solo, quindi le righe di passage
     non si confrontano con quelle dei vettori. Costa qualche secondo e cambia di notte: si rifà ogni dieci minuti."""
     global _conto_brani
     if time.monotonic() - _conto_brani[0] > 600 or not _conto_brani[1]:
-        _conto_brani = (time.monotonic(), dict(c.execute("""
-            SELECT count(DISTINCT p.hash) AS brani,
-                   count(DISTINCT p.hash) FILTER (WHERE NOT EXISTS (SELECT 1 FROM passage_vector v WHERE v.hash = p.hash)) AS mancanti
-            FROM passage p""").fetchone()))
+        try:
+            with connessione() as propria:      # una connessione sua: se scade il tempo, il resto del pannello si legge lo stesso
+                _conto_brani = (time.monotonic(), dict(propria.execute("""
+                    SELECT count(DISTINCT p.hash) AS brani,
+                           count(DISTINCT p.hash) FILTER (WHERE NOT EXISTS (SELECT 1 FROM passage_vector v WHERE v.hash = p.hash)) AS mancanti
+                    FROM passage p""").fetchone()))
+        except psycopg.Error:
+            return _conto_brani[1]
     return _conto_brani[1]
 
 
@@ -74,7 +78,7 @@ def _dati() -> dict:
             vettori = dict(c.execute("""
                 SELECT count(*) FILTER (WHERE status <> 'completed') AS aperti, count(*) FILTER (WHERE error IS NOT NULL) AS con_errore,
                        max(sent_at) AS ultimo_invio, max(collected_at) AS ultima_raccolta FROM vector_batch""").fetchone())
-            vettori.update(_brani(c))
+            vettori.update(_brani())
     except psycopg.Error as e:
         return {"errore": type(e).__name__}
     return {"sedute": sedute, "voti": voti, "atti": atti, "caricato": caricato, "righe": righe, "peso": peso, "vettori": vettori}
