@@ -37,6 +37,21 @@ def _stato() -> dict:
     return d
 
 
+_conto_brani: tuple[float, dict] = (0.0, {})
+
+
+def _brani(c: psycopg.Connection) -> dict:
+    """I brani diversi e quelli senza vettore: lo stesso testo in più fonti ha un vettore solo, quindi le righe di passage
+    non si confrontano con quelle dei vettori. Costa qualche secondo e cambia di notte: si rifà ogni dieci minuti."""
+    global _conto_brani
+    if time.monotonic() - _conto_brani[0] > 600 or not _conto_brani[1]:
+        _conto_brani = (time.monotonic(), dict(c.execute("""
+            SELECT count(DISTINCT p.hash) AS brani,
+                   count(DISTINCT p.hash) FILTER (WHERE NOT EXISTS (SELECT 1 FROM passage_vector v WHERE v.hash = p.hash)) AS mancanti
+            FROM passage p""").fetchone()))
+    return _conto_brani[1]
+
+
 def _dati() -> dict:
     """Freschezza e dimensioni del v3: date massime per ramo e conteggi stimati dal catalogo (veloci, non esatti)."""
     try:
@@ -59,6 +74,7 @@ def _dati() -> dict:
             vettori = dict(c.execute("""
                 SELECT count(*) FILTER (WHERE status <> 'completed') AS aperti, count(*) FILTER (WHERE error IS NOT NULL) AS con_errore,
                        max(sent_at) AS ultimo_invio, max(collected_at) AS ultima_raccolta FROM vector_batch""").fetchone())
+            vettori.update(_brani(c))
     except psycopg.Error as e:
         return {"errore": type(e).__name__}
     return {"sedute": sedute, "voti": voti, "atti": atti, "caricato": caricato, "righe": righe, "peso": peso, "vettori": vettori}

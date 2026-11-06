@@ -66,9 +66,31 @@
 
   /* ---------- tabelle ---------- */
   // tab([["Passo"], ["Durata", "n"], ["Note", "lungo"]], righe di celle già in HTML)
-  P.tab = (testa, righe, vuoto = "Nessun dato nel periodo.") => righe.length
-    ? `<div class="scorri"><table><thead><tr>${testa.map(([t, c]) => `<th class="${c || ""}">${t}</th>`).join("")}</tr></thead><tbody>${righe.map((r) => `<tr>${r.map((v, i) => `<td class="${testa[i][1] || ""}">${v}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`
-    : `<p class="vuoto">${vuoto}</p>`;
+  // oltre PER_PAGINA righe si impagina: nel documento c'è solo la pagina aperta, e il ridisegno ogni minuto non la cambia
+  const PER_PAGINA = 10, pagine = new Map();
+  const tabella = (testa, righe) => `<div class="scorri"><table><thead><tr>${testa.map(([t, c]) => `<th class="${c || ""}">${t}</th>`).join("")}</tr></thead><tbody>${righe.map((r) => `<tr>${r.map((v, i) => `<td class="${testa[i][1] || ""}">${v}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const pagina = (t) => {
+    const totale = Math.ceil(t.righe.length / PER_PAGINA);
+    t.n = Math.min(t.n, totale - 1);
+    return tabella(t.testa, t.righe.slice(t.n * PER_PAGINA, (t.n + 1) * PER_PAGINA))
+      + `<nav class="pagine" aria-label="Pagine della tabella"><button class="mostra" data-vai="-1"${t.n ? "" : " disabled"}>Precedenti</button>`
+      + `<span>Pagina ${t.n + 1} di ${totale} · ${t.righe.length} righe</span><button class="mostra" data-vai="1"${t.n < totale - 1 ? "" : " disabled"}>Successive</button></nav>`;
+  };
+  P.tab = (testa, righe, vuoto = "Nessun dato nel periodo.") => {
+    if (!righe.length) return `<p class="vuoto">${vuoto}</p>`;
+    if (righe.length <= PER_PAGINA) return tabella(testa, righe);
+    const chiave = `${testa.map(([t]) => t).join("|")}|${righe.length}`;     // cambia col periodo: si riparte dalla prima pagina
+    const t = pagine.get(chiave) || { n: 0 };
+    pagine.set(chiave, Object.assign(t, { testa, righe }));
+    return `<div data-tabella="${P.esc(chiave)}">${pagina(t)}</div>`;
+  };
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-vai]"), box = b?.closest("[data-tabella]"), t = box && pagine.get(box.dataset.tabella);
+    if (!t) return;
+    t.n += Number(b.dataset.vai);
+    box.innerHTML = pagina(t);
+    box.querySelector(`[data-vai="${b.dataset.vai}"]:not([disabled])`)?.focus();
+  });
   // classifica con la barra nella prima colonna: colonne = [[chiave, titolo], …], la prima fa la barra
   P.classifica = (el, righe, colonne, nome = (v) => v) => {
     if (!righe || !righe.length) { el.innerHTML = '<p class="vuoto">Nessun dato nel periodo.</p>'; return; }

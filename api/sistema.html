@@ -82,6 +82,11 @@ function avvisi(d) {
     const s = (dati.sedute || []).find((x) => x.ramo === r && x.tipo === "assembly_verbatim"), v = (dati.voti || []).find((x) => x.ramo === r);
     if (s && v && giorniDa(s.ultima_tenuta) - giorniDa(v.ultima) > 3) a.push(["att", `<b>${RAMI[r]}: mancano resoconti d'Aula.</b> I voti arrivano al ${data(v.ultima)}, i resoconti solo al ${data(s.ultima_tenuta)}.`]);
   }
+  // un passo può finire «ok» senza portare niente di nuovo: le commissioni ferme mentre l'Aula lavora si vedono qui
+  for (const r of ["camera", "senato"]) {
+    const s = (dati.sedute || []).find((x) => x.ramo === r && x.tipo === "committee_summary"), v = (dati.voti || []).find((x) => x.ramo === r);
+    if (s && v && giorniDa(s.ultima_tenuta) - giorniDa(v.ultima) > 3) a.push(["att", `<b>${RAMI[r]}: resoconti delle commissioni fermi.</b> I voti arrivano al ${data(v.ultima)}, le commissioni solo al ${data(s.ultima_tenuta)}.`]);
+  }
   if (dati.errore) a.push(["ko", `<b>Il database non risponde</b> (${esc(dati.errore)}).`]);
   if (dati.vettori?.aperti && ad - Date.parse(dati.vettori.ultimo_invio) / 1000 > 26 * 3600) a.push(["att", `<b>${num(dati.vettori.aperti)} batch di vettori aperti da più di un giorno.</b> OpenAI non li ha ancora restituiti.`]);
   if (k.oggi > .8 * k.tetto) a.push([k.oggi >= k.tetto ? "ko" : "att", `<b>Spesa di oggi ${usd(k.oggi)} su ${usd(k.tetto, 0)} di tetto.</b>${k.oggi >= k.tetto ? " La chat è ferma fino a domani." : ""}`]);
@@ -134,8 +139,8 @@ function dati(d) {
   const r = d.righe || {}, v = d.vettori || {};
   const NOMI = { person: "Persone", sitting: "Sedute", agenda_item: "Punti all'ordine del giorno", speech: "Interventi", vote: "Votazioni", ballot: "Voti dei singoli parlamentari", act: "Atti", act_text: "Testi degli atti", amendment: "Emendamenti", document: "Documenti", reaction: "Reazioni in Aula", video: "Video", passage: "Brani per la ricerca", passage_vector: "Brani con il vettore" };
   $("#db").innerHTML = `<div class="cifre"><div class="cifra"><small>Peso</small><span class="cifra__n cifra__n--medio">${gb(d.peso)}</span></div><div class="cifra"><small>Ultimo caricamento</small><span class="cifra__n cifra__n--medio">${quando(d.caricato)}</span></div></div>`
-    + (r.passage ? riempi(r.passage_vector / r.passage, "Brani pronti per la ricerca per significato", `${num(100 * r.passage_vector / r.passage)}%, mancano ${num(r.passage - r.passage_vector)}`, true)
-      + `<p class="nota">I vettori dei brani nuovi si calcolano ogni notte, fino a 5 $ a notte: i brani rimasti indietro arrivano nelle notti dopo.</p>` : "")
+    + (v.brani ? riempi(1 - v.mancanti / v.brani, "Brani pronti per la ricerca per significato", `${num(100 * (1 - v.mancanti / v.brani), 1)}%, mancano ${num(v.mancanti)}`, true)
+      + `<p class="nota">Lo stesso testo si calcola una volta sola: si contano i brani diversi. I vettori dei brani nuovi si calcolano ogni notte, fino a 5 $ a notte, e arrivano la notte dopo.</p>` : "")
     + P.tab([["Tabella"], ["Righe (stima)", "n"]], Object.keys(NOMI).filter((k) => k in r).map((k) => [NOMI[k], num(r[k])]))
     + `<p class="nota" style="margin-top:12px">Vettori: ${num(v.aperti)} batch in attesa da OpenAI, ${num(v.con_errore)} con errore. Ultimo invio ${quando(v.ultimo_invio)}, ultima raccolta ${quando(v.ultima_raccolta)}.</p>`;
 }

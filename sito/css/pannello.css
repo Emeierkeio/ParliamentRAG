@@ -79,6 +79,9 @@
 .scorri{overflow-x:auto}
 .mostra{margin-top:12px;height:34px;padding:0 12px;border:1px solid var(--bordo);border-radius:var(--raggio-btn);background:var(--sup);color:var(--t2);font-size:13.5px;cursor:pointer}
 .mostra:hover{color:var(--t);border-color:var(--bordo2)}
+.mostra:disabled{opacity:.45;cursor:default;color:var(--t2);border-color:var(--bordo)}
+.pagine{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;font-size:13.5px;color:var(--t2)}
+.pagine .mostra{margin-top:0}
 .pn pre{margin:0;font:12.5px/1.55 "IBM Plex Mono",ui-monospace,monospace;color:var(--t2);white-space:pre-wrap;word-break:break-word;background:var(--sup2);border-radius:10px;padding:12px 14px}
 
 /* stato: pallino + parola */
