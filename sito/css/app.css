@@ -213,6 +213,7 @@ details.come summary::-webkit-details-marker{display:none}
 .prosa{font-size:17px;line-height:1.7}
 .prosa p{margin:0 0 12px}.prosa p:last-child{margin:0}
 .prosa strong{font-weight:600}
+.prosa .tab{margin:4px 0 16px}.prosa .tab:last-child{margin-bottom:0}.prosa td{font-size:15px}
 .prosa .cursore::after{content:"▍";color:var(--acc);animation:lampeggia 1s steps(1) infinite;margin-left:2px}
 @keyframes lampeggia{50%{opacity:0}}
 .rif{font-family:var(--f-ui);font-weight:500;font-size:11.5px;color:var(--acc);background:var(--acc-f);border-radius:5px;padding:0 5px;margin-left:2px;cursor:pointer;vertical-align:2px;border:0;line-height:1.6}

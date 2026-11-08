@@ -15,8 +15,18 @@
   const prosa = (t, nT) => e(CH.pulisci(t)).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*\w])\*(\S(?:[^*\n]*?\S)?)\*(?![*\w])/g, "$1<em>$2</em>")
     .replace(/\[([^\]\n]+)\]\(((?:https?:\/\/|#\/)[^\s)]+)\)/g, (m, tx, u) => `<a href="${u}"${u.startsWith("#") ? "" : ' target="_blank" rel="noopener"'}>${tx}</a>`)
     .replace(/«([^«»\n]{3,}?)»/g, "<q>$1</q>").replace(/\[(\d+(?:\s*,\s*\d+)*)\]/g, (m, ns) => ns.split(/\s*,\s*/).map((n) => `<button class="rif" data-fonte="${nT}-${n}" aria-label="Fonte ${n}">${n}</button>`).join(""))
-    .split(/\n{2,}/).map((p) => p.split(/\n/).reduce((acc, l) => { const el = /^\s*[-•]\s/.test(l); const ult = acc[acc.length - 1]; if (ult && ult.el === el) ult.r.push(l); else acc.push({ el, r: [l] }); return acc; }, [])
-      .map((g) => g.el ? `<ul>${g.r.map((l) => `<li>${l.replace(/^\s*[-•]\s*/, "")}</li>`).join("")}</ul>` : `<p>${g.r.join("<br>")}</p>`).join("")).join("");
+    .split(/\n{2,}/).map((p) => p.split(/\n/).reduce((acc, l) => { const el = /^\s*[-•]\s/.test(l) ? "li" : /^\s*\|/.test(l) ? "tb" : "p"; const ult = acc[acc.length - 1]; if (ult && ult.el === el) ult.r.push(l); else acc.push({ el, r: [l] }); return acc; }, [])
+      .map((g) => g.el === "li" ? `<ul>${g.r.map((l) => `<li>${l.replace(/^\s*[-•]\s*/, "")}</li>`).join("")}</ul>` : g.el === "tb" ? tabella(g.r) : `<p>${g.r.join("<br>")}</p>`).join("")).join("");
+  // tabella markdown: la riga di trattini dà l'allineamento, «---:» è una colonna di numeri
+  function tabella(righe) {
+    const celle = (l) => l.trim().replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
+    const sep = righe.findIndex((l) => /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(l));
+    const num = sep < 0 ? [] : celle(righe[sep]).map((c) => /-:$/.test(c));
+    const cl = (i) => num[i] ? ' class="n"' : "";
+    const testa = sep === 1 ? `<thead><tr>${celle(righe[0]).map((c, i) => `<th${cl(i)}>${c}</th>`).join("")}</tr></thead>` : "";
+    const corpo = righe.filter((l, i) => i !== sep && !(sep === 1 && i === 0));
+    return `<div class="tab"><table>${testa}<tbody>${corpo.map((l) => `<tr>${celle(l).map((c, i) => `<td${cl(i)}>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  }
 
   // il testo arriva già controllato e si scrive una parola alla volta: al massimo tre secondi circa
   const scrivi = (el, t, nT) => new Promise((ok) => {
