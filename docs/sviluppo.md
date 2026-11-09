@@ -98,6 +98,9 @@ Fatto, tutto per la Camera XIX:
 - votazioni elettroniche e voto di ogni deputato, con il gruppo attribuito dalla Camera in quel voto; un controllo blocca il giro se i voti dei singoli non tornano con i totali;
 - emendamenti (dagli XML di documenti.camera.it, riscaricati solo se cambiati) e testi degli atti, articolo per articolo.
 
+Camera e Senato, dai sommari delle commissioni:
+- termini per gli emendamenti (`amendment_deadline`, relazione HAS_DEADLINE dall'atto): data, ora, tipo (emendamenti, subemendamenti, ordini del giorno, riesame delle inammissibilità), evento (fissato, prorogato, scaduto) e la frase del sommario. Le regole di `pipeline/trasforma/termini_emendamenti.py` propongono, una seconda lettura con `gpt-5.6-luna` sulla Batch API conferma (`pipeline/termini.py`, risposte in `deadline_check`, chieste una volta per frase): entra solo il termine su cui le due letture danno la stessa data. Passo `termini_emendamenti` dopo il caricamento; `python -m pipeline.termini giro|raccogli|stato`. Li leggono lo strumento `agenda` della chat, `get_parliament_agenda` dell'MCP e la pagina Agenda del sito.
+
 Senato XIX, con gli stessi record della Camera:
 - anagrafica da dati.senato.it: senatori eletti, a vita e di diritto, gruppi col nome in vigore e i precedenti come alias, commissioni col nome alla data; ogni senatore che è stato deputato o membro del governo si lega alla sua scheda della Camera (`person_same_as`);
 - disegni di legge con firmatari (senatori e deputati) e votazioni elettroniche con il voto di ogni senatore; il gruppo nel voto si ricava dall'anagrafica alla data. Al massimo 60 sedute di voti per notte, con 5 secondi fra le richieste: senato.it blocca l'IP dopo circa 400 richieste ravvicinate;

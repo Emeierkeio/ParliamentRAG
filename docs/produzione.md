@@ -192,7 +192,7 @@ Il cron vecchio (`/etc/cron.d/parliamentrag-nightly`, `make update-data`) lo sos
 
 ## Dati aperti: Hugging Face e Zenodo
 
-Dopo un giro riuscito `notte.sh` lancia `python -m pipeline esporta --hf`: 14 tabelle Parquet in `dati/esporta/hf` (circa 200 MB, un minuto e mezzo), caricate su https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19 con la scheda rigenerata dai conteggi. Il primo del mese aggiunge `--zenodo`: il grafo in `dati/esporta/rdf` (`parliamentrag_kg.ttl.gz` e `parliamentrag_votes.nt.gz`, circa 470 MB, tre minuti) e una nuova versione del record Zenodo (concept DOI 10.5281/zenodo.21560331) lasciata come bozza. La bozza si guarda e si pubblica a mano dal browser: un DOI pubblicato non si cancella più. Servono `HF_TOKEN` e `ZENODO_TOKEN` in `.env`; un export non riuscito resta nel log del giro e non cambia l'esito. `--senza-caricare` scrive i file e si ferma.
+Dopo un giro riuscito `notte.sh` lancia `python -m pipeline esporta --hf`: 15 tabelle Parquet in `dati/esporta/hf` (circa 200 MB, un minuto e mezzo), caricate su https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19 con la scheda rigenerata dai conteggi. Il primo del mese aggiunge `--zenodo`: il grafo in `dati/esporta/rdf` (`parliamentrag_kg.ttl.gz` e `parliamentrag_votes.nt.gz`, circa 470 MB, tre minuti) e una nuova versione del record Zenodo (concept DOI 10.5281/zenodo.21560331) lasciata come bozza. La bozza si guarda e si pubblica a mano dal browser: un DOI pubblicato non si cancella più. Servono `HF_TOKEN` e `ZENODO_TOKEN` in `.env`; un export non riuscito resta nel log del giro e non cambia l'esito. `--senza-caricare` scrive i file e si ferma.
 
 ## Backup
 

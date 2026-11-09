@@ -66,6 +66,7 @@ XIX legislature (from 13 October 2022), both chambers. Counts from the database 
 | Individual votes | 9,658,504 |
 | Acts (bills, questions, motions, resolutions, agenda orders) | 50,307 |
 | Amendments | 229,617 |
+| Amendment deadlines in committee (9 November 2026) | 1,392 |
 | Documents (research dossiers, written evidence, committee annexes) | 19,322 |
 | People | 938 |
 
@@ -82,7 +83,7 @@ Sources, all official:
 
 ## Data model
 
-The model is a property graph stored in PostgreSQL 16: nodes and edges become tables with typed columns (`schema/v3.sql`). An RDF view through R2RML mappings is planned. Four choices shape the model.
+The model is a property graph stored in PostgreSQL 16: nodes and edges become tables with typed columns (`schema/v3.sql`). An RDF view through R2RML mappings is planned. Five choices shape the model.
 
 **One identity per entity.** A person has one row across legislatures and chambers. A senator who sat in the Chamber, or a minister who is not a member, links to every record with `person_same_as`. Speeches, votes and signatures count under the person, whatever the source called them.
 
@@ -92,11 +93,13 @@ The model is a property graph stored in PostgreSQL 16: nodes and edges become ta
 
 **Provenance down to the character.** Every row keeps its source, source key and content hash. Speech segments, reactions from the floor ("Applausi dei deputati del gruppo…") and search passages keep start and end offsets into the canonical text. You can rebuild any quote from the official text.
 
+**Derived facts carry their evidence.** Some facts exist only as prose in the committee summaries, such as the deadline for tabling amendments ("il termine per la presentazione delle proposte emendative è fissato alle ore 12 di lunedì 9 novembre"). `amendment_deadline` (`Act -HAS_DEADLINE-> AmendmentDeadline`) holds them with the date, the time, the event (set, moved, expired), the sitting and the sentence they come from. Fixed rules read the sentence (`pipeline/trasforma/termini_emendamenti.py`); a second reading by a language model through the Batch API must give the same date, or the deadline stays out (`pipeline/termini.py`). Measured by hand on unseen sentences, the rules alone get the date right 92 to 95 times in 100.
+
 The schema of the graph: node types grouped by area, with the relations between them. Counts from the load of 1 November 2026.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/grafo-scuro.png">
-  <img alt="Schema of the graph: people and bodies, sittings and business, votes, acts, with node types such as Person, Group, Body, Sitting, AgendaItem, Speech, Vote, Act, Amendment, Document and their relations." src="docs/assets/grafo-chiaro.png">
+  <img alt="Schema of the graph: people and bodies, sittings and business, votes, acts, with node types such as Person, Group, Body, Sitting, AgendaItem, Speech, Vote, Act, Amendment, AmendmentDeadline, Document and their relations." src="docs/assets/grafo-chiaro.png">
 </picture>
 
 Core tables:
@@ -105,7 +108,7 @@ Core tables:
 |---|---|
 | Sittings and records | `sitting`, `agenda_item`, `agenda_item_act`, `speech`, `segment`, `reaction`, `reaction_from`, `speech_mention` |
 | People and institutions | `person`, `person_same_as`, `grp`, `grp_alias`, `body`, `mandate`, `membership`, `seat`, `office`, `government`, `ministry` |
-| Legislation and oversight | `act`, `act_step`, `act_version`, `act_sponsor`, `act_assignment`, `act_rapporteur`, `act_joint`, `act_transmission`, `act_text`, `act_article`, `act_citation`, `act_subject`, `act_addressee`, `amendment`, `amendment_signer` |
+| Legislation and oversight | `act`, `act_step`, `act_version`, `act_sponsor`, `act_assignment`, `act_rapporteur`, `act_joint`, `act_transmission`, `act_text`, `act_article`, `act_citation`, `act_subject`, `act_addressee`, `amendment`, `amendment_signer`, `amendment_deadline`, `deadline_check` |
 | Votes | `vote`, `vote_act`, `ballot` |
 | Documents and video | `document`, `video`, `video_segment` |
 | Subjects | `entity`, `concept`, `concept_match` |
@@ -156,7 +159,7 @@ When a check fails, you see the failure next to the answer. The system keeps the
 
 **REST API** (`api/main.py`, FastAPI): people, composition of a chamber, sittings, votes with individual ballots, acts and amendments, search in speeches, under `/v1`. It reads PostgreSQL with a read-only role, an 8-second statement timeout and a rate limit per address. No route accepts free queries. Documentation at `/v1/docs`.
 
-**MCP server** (`POST /mcp`): seven tools for AI assistants (claude.ai, ChatGPT, Claude Desktop): `search_parliament`, `get_debate`, `list_sessions`, `get_session_votes`, `get_vote_details`, `get_voted_text`, `get_vote_hemicycle`. Every result links to the official record.
+**MCP server** (`POST /mcp`): eight tools for AI assistants (claude.ai, ChatGPT, Claude Desktop): `search_parliament`, `get_debate`, `list_sessions`, `get_session_votes`, `get_vote_details`, `get_voted_text`, `get_vote_hemicycle`, `get_parliament_agenda` (sittings, amendment deadlines, bills, final votes and laws, day by day). Every result links to the official record.
 
 **Agent** (`POST /v1/chat`): a language model that chooses among the typed tools of `api/strumenti/` and answers in Italian or English, with limits on steps, questions per hour and daily spend outside the model. `GET /v1/uso` tells the interface how many questions remain in the current hour.
 
