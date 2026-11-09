@@ -167,6 +167,7 @@
     const url = (a && a.url) || urlH || (ramo === "camera" ? `https://www.camera.it/leg19/126?tab=1&leg=19&idDocumento=${num}` : "");
     // il titolo della fonte porta tag HTML, il numero del Senato davanti, virgolette e il numero ripetuto in coda:
     // «S. 1241. - "Misure…" <em>(approvato dal Senato) </em>(2365)»
+    const grezzo = B.frase((a && a.act_title) || titoloH.replace(/^\s*[CS]\.\s*[\w-]+\s*·\s*/, "") || etichetta);   // per la ricerca degli interventi, com'era
     const titolo = B.frase(String((a && a.act_title) || titoloH.replace(/^\s*[CS]\.\s*[\w-]+\s*·\s*/, "") || etichetta)
       .replace(/<[^>]+>/g, "").replace(/^\s*S\.\s*\d+[\w-]*\.?\s*-\s*/, "").replace(/\s*\(\d+[\w-]*\)\s*$/, "").replace(/["“”]/g, "").replace(/\s+/g, " ").trim()) || etichetta;
     // «DISEGNO_LEGGE_ORDINARIO» → «Disegno di legge ordinario»
@@ -177,7 +178,7 @@
       <div class="fonte-az">${url ? `<a class="bt bt--primario" href="${e(url)}" target="_blank" rel="noopener">${B.ico("esterno")}${TT("Raggiungi la fonte", "Go to the source")}</a>` : ""}<span class="fonte-dom">${e(url ? new URL(url).hostname.replace(/^www\./, "www.") : "")}</span></div></section>
       <section class="blocco" style="margin-top:16px"><h3>${TT("Interventi in Aula su questo atto", "Floor speeches on this act")}</h3><div id="atto-int">${carica(TT("Cerco gli interventi", "Looking for speeches"))}</div></section>`;
     try {
-      const r = await B.mcp("search_parliament", { query: titolo, doc_type: "speech", max_results: 6, ...(ramo ? { chamber: ramo } : {}) });
+      const r = await B.mcp("search_parliament", { query: grezzo, doc_type: "speech", max_results: 6, ...(ramo ? { chamber: ramo } : {}) });
       const xs = r.dati.results || [];
       $("#atto-int").innerHTML = xs.length ? `<ul class="lista">${xs.map((x) => `<li><span class="meta">${B.ramo(x.chamber)} · ${B.data(x.date)} · ${TT("seduta", "sitting")} ${x.session_number}</span><span>${e(B.nome(`${x.first_name} ${x.last_name}`))} ${B.sig(B.sigla(x.group, x.misto_component))}</span><span class="estratto">«${e(B.taglia(x.text, 300))}»</span>${B.link(`#/strumenti/seduta/${x.chamber === "senato" ? "sen_" : ""}leg19_sed${x.session_number}`, TT("Apri la seduta", "Open the sitting"))}</li>`).join("")}</ul>` : `<p style="color:var(--t3)">${TT("Nessun intervento trovato.", "No speeches found.")}</p>`;
     } catch (err) { $("#atto-int").innerHTML = errore(err); }
