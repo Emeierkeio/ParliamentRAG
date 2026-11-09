@@ -467,6 +467,34 @@ CREATE TABLE IF NOT EXISTS amendment_signer (
 );
 CREATE INDEX IF NOT EXISTS amendment_signer_person ON amendment_signer (person);
 
+-- HAS_DEADLINE: i termini per emendamenti, subemendamenti e ordini del giorno fissati nelle commissioni, letti nei
+-- sommari (pipeline/termini.py). Si riscrive a ogni giro; entra solo un termine che regole e modello leggono uguale.
+CREATE TABLE IF NOT EXISTS amendment_deadline (
+  uri text PRIMARY KEY,                             -- it:camera:19:termine:3f2a…: l'impronta di paragrafo e frase
+  chamber text NOT NULL,
+  act text,                                         -- il primo atto dell'argomento con un uri; NULL se non ce n'è
+  act_refs text[] NOT NULL DEFAULT '{}',            -- tutti gli atti dell'argomento, come li scrive la fonte (ac:3120, ddl:2074)
+  body text, body_name text,                        -- l'organo che fissa o ricorda il termine
+  sitting text NOT NULL, sitting_date date NOT NULL, speech text NOT NULL,   -- dove è scritto
+  kind text NOT NULL,                               -- emendamenti | subemendamenti | emendamenti e ordini del giorno | riesame delle inammissibilità | segnalazione degli emendamenti
+  event text NOT NULL,                              -- fixed | extended | expired
+  due_date date NOT NULL, due_time time,
+  presented int,                                    -- le proposte arrivate, quando il sommario le conta
+  sentence text NOT NULL,                           -- la frase del sommario: non è parola di un parlamentare
+  checked_by text NOT NULL                          -- il modello della seconda lettura
+);
+CREATE INDEX IF NOT EXISTS amendment_deadline_due ON amendment_deadline (due_date);
+CREATE INDEX IF NOT EXISTS amendment_deadline_act ON amendment_deadline (act);
+CREATE TABLE IF NOT EXISTS deadline_check (         -- la seconda lettura (Batch API): una risposta per frase, chiesta una volta
+  hash text PRIMARY KEY,                            -- = la parte finale dell'uri del termine
+  batch text,
+  status text NOT NULL,                             -- inviato | fatto | errore
+  answer jsonb,                                     -- {decided, date, time, event}
+  tokens int,
+  asked_at timestamptz NOT NULL DEFAULT now(),
+  answered_at timestamptz
+);
+
 -- testi dei progetti di legge, per versione (il codice dello stampato: leg.19.pdl.camera.3148.19PDL0218420).
 -- Tabelle a parte e non colonne di act_version: gli atti si ricaricano interi quando cambia l'iter, i testi no.
 CREATE TABLE IF NOT EXISTS act_text (

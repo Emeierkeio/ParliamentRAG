@@ -14,6 +14,10 @@ massimo_richieste_giro = 350  # pagine di senato.it in un giro, sommate fra i pa
 [vettori]
 dollari_per_notte = 5         # tetto della Batch API di OpenAI per i vettori in 24 ore (stima dai caratteri)
 
+[termini]
+attesa_minuti = 20            # quanto si aspettano le risposte della seconda lettura; le altre si raccolgono la notte dopo
+frasi_per_notte = 3000         # tetto delle frasi nuove inviate in un giro (circa 1 $ per mille)
+
 [fonti.camera_resoconti]
 legislatura = 19
 url = "https://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=assemblea&tipoDoc=formato_xml&tipologia=stenografico&idNumero={num:04d}&idLegislatura={legislatura}"

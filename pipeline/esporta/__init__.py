@@ -105,6 +105,11 @@ TABELLE: dict[str, tuple[str, dict[str, str]]] = {
                (SELECT string_agg(s.person, ' ' ORDER BY s.ord) FROM amendment_signer s WHERE s.amendment = e.uri) AS signers
         FROM amendment e JOIN act a ON a.uri = e.act WHERE a.legislature = {LEG} ORDER BY e.act, e.uri""",
                    {"sitting_number": "i", "sitting_date": "d", "presented": "d"}),
+    "amendment_deadlines": (f"""
+        SELECT d.uri AS id, d.chamber, d.act, array_to_string(d.act_refs, ' ') AS act_refs, d.body, d.body_name, d.sitting,
+               d.sitting_date, d.kind, d.event, d.due_date, to_char(d.due_time, 'HH24:MI') AS due_time, d.presented, d.sentence
+        FROM amendment_deadline d WHERE d.uri LIKE '%:{LEG}:termine:%' ORDER BY d.due_date, d.uri""",
+                            {"sitting_date": "d", "due_date": "d", "presented": "i"}),
 }
 
 
@@ -215,6 +220,7 @@ ONTOLOGIA = {
     "Vote": ("class", "A roll-call vote.", None),
     "IndividualVote": ("class", "The vote cast by one member in one roll-call vote.", None),
     "Amendment": ("class", "An amendment to the text of an act, in committee or on the floor.", "osr:Emendamento"),
+    "AmendmentDeadline": ("class", "A deadline for tabling amendments to an act in committee, read from the committee summary record.", None),
     "chamber": ("data", "camera (Chamber of Deputies) or senato (Senate).", None),
     "kind": ("data", "The kind of resource as classified by the source or by the loader.", None),
     "number": ("data", "Number of the sitting, the vote, the act or the amendment.", None),
@@ -243,6 +249,11 @@ ONTOLOGIA = {
     "coSignatoryOf": ("object", "The member co-signed the act or amendment.", None),
     "jointWith": ("object", "The main act this act is examined jointly with (abbinato).", None),
     "amends": ("object", "The act whose text the amendment changes.", None),
+    "hasDeadline": ("object", "A deadline for tabling amendments to the act.", None),
+    "setIn": ("object", "The sitting whose summary record reports the deadline.", None),
+    "dueDate": ("data", "Day the deadline expires.", None), "dueTime": ("data", "Time the deadline expires, when stated.", None),
+    "event": ("data", "What the record says of the deadline: fixed, extended (moved to a new date) or expired.", None),
+    "evidence": ("data", "The sentence of the summary record the fact is read from (written by the clerks, not by a member).", None),
     "voter": ("object", "The member who cast the individual vote.", None),
     "onVote": ("object", "The roll-call vote the individual vote belongs to.", None),
 }
@@ -443,6 +454,18 @@ def grafo_rdf(cartella: Path) -> dict:
         g.t(s, "pr:text", lett(r["text"], lingua="it") if r["text"] else None)
         for i, p in enumerate((r["signers"] or "").split()):
             g.t(iri(p), "pr:primarySignatoryOf" if i == 0 else "pr:coSignatoryOf", s)
+    for r in tabella("amendment_deadlines"):
+        s = iri(r["id"])
+        g.t(s, "rdf:type", "pr:AmendmentDeadline")
+        if r["act"]:
+            g.t(iri(r["act"]), "pr:hasDeadline", s)
+        g.t(s, "pr:setIn", iri(r["sitting"]))
+        g.t(s, "pr:body", iri(r["body"]) if r["body"] else None)
+        g.t(s, "pr:kind", _v(r, "kind"))
+        g.t(s, "pr:event", _v(r, "event"))
+        g.t(s, "pr:dueDate", _v(r, "due_date", "date"))
+        g.t(s, "pr:dueTime", _v(r, "due_time"))
+        g.t(s, "pr:evidence", lett(r["sentence"], lingua="it"))
     triple = g.chiudi()
     print(f"grafo: {triple} triple", flush=True)
 

@@ -45,11 +45,13 @@ configs:
     data_files: act_subjects.parquet
   - config_name: amendments
     data_files: amendments.parquet
+  - config_name: amendment_deadlines
+    data_files: amendment_deadlines.parquet
 ---
 
 # ParliamentRAG — Italian Parliament, 19th legislature
 
-The work of both houses of the Italian Parliament, the Chamber of Deputies (Camera dei deputati) and the Senate (Senato della Repubblica), in the 19th legislature: sittings of the floor and of the committees, full speech transcripts, roll-call votes with every individual ballot, acts with their signatories and EuroVoc subjects, amendments, and the members with their mandates, groups and committees.
+The work of both houses of the Italian Parliament, the Chamber of Deputies (Camera dei deputati) and the Senate (Senato della Repubblica), in the 19th legislature: sittings of the floor and of the committees, full speech transcripts, roll-call votes with every individual ballot, acts with their signatories and EuroVoc subjects, amendments and the deadlines for tabling them in committee, and the members with their mandates, groups and committees.
 
 Data as of: Chamber {{DATI_CAMERA}}, Senate {{DATI_SENATO}} (last sitting held). Exported on {{GENERATED}}. The tables are refreshed every night from the same database that serves [www.parliamentrag.it](https://www.parliamentrag.it), which is loaded from the official open data of the two houses ([dati.camera.it](https://dati.camera.it), [dati.senato.it](https://dati.senato.it)) and from their records. The export code is public: [pipeline/esporta](https://github.com/Emeierkeio/ParliamentRAG/tree/main/pipeline/esporta). A monthly RDF version is archived on Zenodo: [10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331).
 
@@ -73,10 +75,13 @@ All content is in Italian.
 | `act_joints` | {{N_ACT_JOINTS}} | Acts examined jointly with a main act (abbinati) |
 | `act_subjects` | {{N_ACT_SUBJECTS}} | Act → EuroVoc concept, with Italian and English labels |
 | `amendments` | {{N_AMENDMENTS}} | Amendments in committee and on the floor: text, article, venue, outcome, signatories |
+| `amendment_deadlines` | {{N_AMENDMENT_DEADLINES}} | Deadlines for tabling amendments in committee: act, committee, due date and time, event (fixed, extended, expired) and the sentence of the summary record they are read from |
 
 Identifiers are shared across tables: `id` of `sessions` is `session` elsewhere, `id` of `votes` is `vote`, persons are `person` (e.g. `it:person:camera:302940`, `it:person:senato:32`; `source_uri` gives the official dati.camera.it or dati.senato.it URI, `same_as` the same person in the other house). The `chamber` column is `camera` or `senato`.
 
 Ballot results in `individual_votes` are `favor`, `against`, `abstain`, `absent`, `mission`, `chair`, `present_not_voting` and, for secret ballots, `voted` (who voted for or against is not public).
+
+Amendment deadlines are read from the committee summary records by fixed rules and kept only when a second reading by a language model gives the same date. `sentence` is the evidence; `event` is `fixed`, `extended` (moved to a new date) or `expired`. The same deadline can appear more than once, when several sittings mention it.
 
 Committee sittings often have no verbatim record: their speeches come from the official summary (`kind = summary`, from the Chamber's Bollettino or the Senate's summary record), not from a transcript.
 
