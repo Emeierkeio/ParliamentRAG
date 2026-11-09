@@ -83,7 +83,7 @@ ULTIMO_PASSO = ("Non puoi più consultare i dati. Rispondi ora con quello che ha
                 "dì cosa hai trovato e cosa manca, e dove guardare nelle fonti ufficiali.")
 
 # il passo che il sito mostra mentre lo strumento lavora
-ETICHETTE = {"cerca_persone": "Cerco i parlamentari", "scheda_persona": "Leggo la scheda del parlamentare",
+ETICHETTE = {"agenda": "Leggo l'agenda del Parlamento", "cerca_persone": "Cerco i parlamentari", "scheda_persona": "Leggo la scheda del parlamentare",
              "composizione": "Conto i parlamentari per gruppo", "elenco_sedute": "Cerco nelle sedute", "seduta": "Leggo la seduta", "argomenti_sedute": "Cerco negli ordini del giorno", "conta_sedute": "Conto le sedute",
              "elenco_votazioni": "Cerco le votazioni", "votazione": "Leggo la votazione", "cerca_atti": "Cerco negli atti",
              "atto": "Leggo l'atto", "articolo": "Leggo l'articolo", "emendamenti": "Leggo gli emendamenti", "cerca_interventi": "Cerco negli interventi",

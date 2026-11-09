@@ -13,7 +13,7 @@ from typing import Literal
 import psycopg
 from pydantic import BaseModel, ConfigDict, Field
 
-from .strumenti import atti, citazioni, conti, persone, ricerca, sedute, significato, voti
+from .strumenti import agenda, atti, citazioni, conti, persone, ricerca, sedute, significato, voti
 
 Ramo = Literal["camera", "senato"]
 Iniziativa = Field(None, description="categoria (governo, parlamentare, regione, cnel, popolare, mista) o parole del presentatore "
@@ -312,6 +312,14 @@ class CambiGruppo(Parametri):
     offset: int = Field(0, ge=0)
 
 
+class Agenda(Parametri):
+    start: dt.date = Field(description="primo giorno")
+    end: dt.date | None = Field(None, description="ultimo giorno (al più 62 giorni dopo start); vuoto: solo start")
+    chamber: Ramo | None = None
+    types: list[Literal["aula", "commissioni", "termini", "atti", "voti", "leggi"]] | None = Field(
+        None, description="quali eventi; vuoto: tutti. termini = scadenze per emendamenti, subemendamenti e ordini del giorno")
+
+
 class VerificaCitazioni(Parametri):
     text: str = Field(max_length=20000, description="la risposta con le citazioni tra «…»")
 
@@ -417,6 +425,11 @@ STRUMENTI: list[Strumento] = [
               "totale delle persone e dei passaggi per ramo.",
               CambiGruppo, lambda c, p: conti.cambi_gruppo(c, p.chamber, p.start, p.end, p.person, p.group, p.components, p.limit,
                                                             p.offset)),
+    Strumento("agenda", "AGENDA. Cosa succede in Parlamento giorno per giorno fra due date: sedute d'Aula previste e tenute, sedute "
+              "di commissione, termini per gli emendamenti in commissione (con la frase del sommario degli uffici, che non va citata come "
+              "parola di un parlamentare), progetti di legge presentati, votazioni finali, leggi pubblicate. «Cosa scade oggi o questa "
+              "settimana»: types=[\"termini\"]. Un termine superato da una proroga ha superseded=true.", Agenda,
+              lambda c, p: agenda.agenda(c, p.start, p.end or p.start, p.chamber, p.types)),
     Strumento("verifica_citazioni", "Controlla che ogni citazione tra «…» di una risposta sia copiata esattamente da un intervento, e di chi è.",
               VerificaCitazioni, lambda c, p: citazioni.verifica(c, p.text)),
 ]

@@ -15,6 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@600&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/app.css">
 <link rel="stylesheet" href="/css/emendamenti.css">
+<link rel="stylesheet" href="/css/agenda.css">
 <style>
  /* viste: home, conversazione, strumento */
  #conversazione,#pagina{display:none}
@@ -80,7 +81,7 @@
    <div class="giostra__frecce"><button class="ic-a" data-giostra="-1" aria-label="Precedenti" data-tip="Precedenti"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button class="ic-a" data-giostra="1" aria-label="Successivi" data-tip="Successivi"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div>
  </div></section>
 
- <section class="sez" id="grafo-s" aria-labelledby="t-grafo"><div class="dentro"><h2 id="t-grafo">Il Parlamento in un knowledge graph<span class="info" tabindex="0" role="note" aria-label="Lo schema con cui descriviamo il Parlamento: persone, gruppi, commissioni, atti, sedute, interventi e voti, con le relazioni fra loro. Non dipende dalla legislatura e oggi contiene la XIX di Camera e Senato. I numeri contano i record caricati il 1° novembre 2026. Clicca un nodo per vedere le sue proprietà, quanto spesso sono valorizzate e da quale fonte arrivano; clicca il nome di una relazione per le proprietà dell'arco." data-tip="Lo schema con cui descriviamo il Parlamento: persone, gruppi, commissioni, atti, sedute, interventi e voti, con le relazioni fra loro. Non dipende dalla legislatura e oggi contiene la XIX di Camera e Senato. I numeri contano i record caricati il 1° novembre 2026. Clicca un nodo per vedere le sue proprietà, quanto spesso sono valorizzate e da quale fonte arrivano; clicca il nome di una relazione per le proprietà dell'arco."><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span></h2>
+ <section class="sez" id="grafo-s" aria-labelledby="t-grafo"><div class="dentro"><h2 id="t-grafo">Il Parlamento in un knowledge graph<span class="info" tabindex="0" role="note" aria-label="Lo schema con cui descriviamo il Parlamento: persone, gruppi, commissioni, atti, sedute, interventi, voti e termini per gli emendamenti, con le relazioni fra loro. Non dipende dalla legislatura e oggi contiene la XIX di Camera e Senato. I numeri contano i record caricati il 1° novembre 2026; i termini per gli emendamenti, il 9 novembre. Clicca un nodo per vedere le sue proprietà, quanto spesso sono valorizzate e da quale fonte arrivano; clicca il nome di una relazione per le proprietà dell'arco." data-tip="Lo schema con cui descriviamo il Parlamento: persone, gruppi, commissioni, atti, sedute, interventi, voti e termini per gli emendamenti, con le relazioni fra loro. Non dipende dalla legislatura e oggi contiene la XIX di Camera e Senato. I numeri contano i record caricati il 1° novembre 2026; i termini per gli emendamenti, il 9 novembre. Clicca un nodo per vedere le sue proprietà, quanto spesso sono valorizzate e da quale fonte arrivano; clicca il nome di una relazione per le proprietà dell'arco."><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span></h2>
   <div class="g3-cifre" id="g3-cifre"></div>
   <div class="g3-banco">
    <div class="g3-mappa">
@@ -191,7 +192,7 @@
 <script src="/js/colori.js"></script>
 <script src="/dati/aula.js"></script>
 <script src="/js/base.js"></script>
-<script src="/js/strumenti.js"></script><script src="/js/emendamenti.js"></script>
+<script src="/js/strumenti.js"></script><script src="/js/emendamenti.js"></script><script src="/js/agenda.js"></script>
 <script src="/js/chat.js"></script>
 <script src="/js/home.js"></script><script src="/js/grafo-v3.js"></script>
 <script src="/js/app.js"></script>

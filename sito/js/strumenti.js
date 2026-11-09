@@ -10,6 +10,7 @@
     { k: "autorevolezza", a: "Cerca", b: "Chi segue un tema, con i criteri", i: "bilancia", t: "Autorevolezza", d: "Chi segue un tema in Parlamento, secondo sei criteri pubblici." },
     { k: "atti", a: "Cerca", b: "Interventi, mozioni, interrogazioni", i: "cerca", t: "Ricerca", d: "Interventi in Aula e atti: mozioni, interrogazioni, ordini del giorno." },
     { k: "sedute", a: "Parlamento", b: "Cosa è successo, giorno per giorno", i: "sed", t: "Sedute", d: "Cosa è successo in Aula, giorno per giorno." },
+    { k: "agenda", a: "Parlamento", b: "Sedute, scadenze e leggi in calendario", i: "cal", t: "Agenda", d: "Il calendario del Parlamento: sedute, termini per gli emendamenti, progetti di legge, voti finali e leggi." },
   ];
   const CRITERI = [
     { t: "Interventi in Aula", p: .25, d: "Quanto, e quanto di recente, ha parlato del tema in Aula." },
@@ -37,6 +38,9 @@
     return `<div class="avvio" data-campo="${e(campo)}"><p class="avvio__frase">${e(frase)}</p>${esempi.length ? `<div class="avvio__es"><span>${TT("Prova con", "Try")}</span>${esempi.map((x) => `<button type="button" data-es="${e(x)}">${e(x)}</button>`).join("")}</div>` : ""}</div>`;
   }
   S.avvio = avvio;
+  S.testa = testa;
+  S.carica = carica;
+  S.errore = errore;
   document.addEventListener("click", (ev) => {
     const b = ev.target.closest(".avvio [data-es]"); if (!b) return;
     const c = document.getElementById(b.closest(".avvio").dataset.campo); if (!c) return;
@@ -458,7 +462,7 @@
     { n: "emeierkeio/parliamentrag-leg19", d: "Gli stessi dati in tabelle, per chi lavora con pandas, R o un foglio di calcolo.", u: "https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19", f: "Hugging Face · tabelle" },
     { n: "ParliamentRAG / pipeline", d: "Il codice che ogni notte scarica gli open data di Camera e Senato, li controlla e li carica: chi vuole lo rifà da capo.", u: "https://github.com/Emeierkeio/ParliamentRAG/tree/main/pipeline", f: "GitHub · pipeline" },
   ];
-  S.MCP = [["search_parliament", "cerca negli interventi in Aula e negli atti"], ["list_sessions", "elenca le sedute"], ["get_debate", "apre un dibattito"], ["get_session_votes", "le votazioni di una seduta"], ["get_vote_details", "il voto per gruppo e per parlamentare"], ["get_vote_hemicycle", "l'emiciclo di una votazione"], ["get_voted_text", "il testo messo ai voti"], ["verify_answer", "controlla le tre garanzie su una risposta"]];
+  S.MCP = [["search_parliament", "cerca negli interventi in Aula e negli atti"], ["list_sessions", "elenca le sedute"], ["get_debate", "apre un dibattito"], ["get_session_votes", "le votazioni di una seduta"], ["get_vote_details", "il voto per gruppo e per parlamentare"], ["get_vote_hemicycle", "l'emiciclo di una votazione"], ["get_voted_text", "il testo messo ai voti"], ["get_parliament_agenda", "l'agenda: sedute, termini per gli emendamenti, leggi"], ["verify_answer", "controlla le tre garanzie su una risposta"]];
   function dati(box) {
     box.innerHTML = testa("dati", "Il grafo è di tutti", "La XIX legislatura di Camera e Senato come grafo RDF, con licenza CC BY-SA 4.0: puoi copiarlo, modificarlo e ridistribuirlo, anche per uso commerciale, citando la fonte e usando la stessa licenza.") +
       `<div class="file">${S.FILE.map((f) => `<a href="${f.u}" target="_blank" rel="noopener"><small>${e(f.f)}</small><b>${e(f.n)}</b><span>${e(f.d)}</span></a>`).join("")}</div>
@@ -473,7 +477,7 @@
     $("#lato-str").innerHTML = lato({ deputato: "gruppi", senatore: "gruppi", voto: "voti", seduta: "sedute", atto: "proposte", fonte: "atti" }[k] || k);
     const box = $("#pagina-c");
     document.body.dataset.vista = "strumento"; window.scrollTo(0, 0);
-    const f = { gruppi, deputato, senatore, voti, voto, emendamenti, proposte, autorevolezza, atti, sedute: seduteP, seduta, aula, dati, atto, fonte }[k] || gruppi;
+    const f = { gruppi, deputato, senatore, voti, voto, emendamenti, proposte, autorevolezza, atti, sedute: seduteP, seduta, aula, dati, atto, fonte, agenda: (b, a) => window.AGENDA(b, a) }[k] || gruppi;
     // la frase dell'apertura fa da sottotitolo: sale sotto il titolo, sopra la ricerca
     const sali = () => { const fr = box.querySelector(".avvio .avvio__frase"), ts = box.querySelector(".testa-str > div"); if (fr && ts) { fr.className = "testa-str__sotto"; ts.append(fr); } };
     Promise.resolve(f(box, arg ? decodeURIComponent(arg) : (k === "atti" ? q : undefined))).finally(sali); sali();

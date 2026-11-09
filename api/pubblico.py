@@ -1,4 +1,4 @@
-"""I sette strumenti pubblici del server MCP di produzione (mcp.parliamentrag.it) sul Postgres v3: stessi nomi, stessi
+"""Gli strumenti pubblici del server MCP di produzione (mcp.parliamentrag.it) sul Postgres v3: stessi nomi, stessi
 argomenti, stessi campi nelle risposte, perché i client già collegati (connettore di claude.ai, ChatGPT, Claude Desktop)
 continuino a funzionare dopo il cambio di DNS. In entrata valgono gli id vecchi (leg19_sed736, camera_leg19_sed734_v001)
 e gli uri v3; in uscita si danno gli id vecchi. Quello che v3 non sa calcolare resta null o vuoto, mai inventato."""
@@ -15,7 +15,7 @@ from pydantic import Field
 from pipeline.ambiente import env
 
 from .registro import Parametri, Strumento
-from .strumenti import atti, citazioni, comune, ricerca, voti
+from .strumenti import agenda, atti, citazioni, comune, ricerca, voti
 from .strumenti.comune import LEGISLATURA, brevi
 
 
@@ -303,6 +303,15 @@ class ListSessions(Parametri):
     to_date: str | None = Field(None, description="Optional YYYY-MM-DD upper bound.")
     chamber: str = Field("both", description='"both" (default), "camera" or "senato".')
     session_id: str | None = Field(None, description='Optional: only this sitting (e.g. "leg19_sed148", "sen_leg19_sed469").')
+
+
+class ParliamentAgenda(Parametri):
+    start_date: str = Field(description="First day, YYYY-MM-DD.")
+    end_date: str | None = Field(None, description="Last day, YYYY-MM-DD (at most 62 days after start_date); default: start_date.")
+    chamber: str = Field("both", description='"both" (default), "camera" or "senato".')
+    types: list[str] | None = Field(None, description='Which events (default all): "aula" (plenary sittings, planned and held), '
+                                    '"commissioni" (committee sittings), "termini" (amendment deadlines), "atti" (bills filed), '
+                                    '"voti" (final votes), "leggi" (laws published).')
 
 
 class SessionId(Parametri):
@@ -805,6 +814,19 @@ def get_vote_hemicycle(c: psycopg.Connection, p: Hemicycle):
             "seat_map": None, "image_png_url": None, "image_svg_url": None, "chart_note": nota}
 
 
+def get_parliament_agenda(c: psycopg.Connection, p: ParliamentAgenda) -> dict:
+    inizio = _data(p.start_date)
+    if inizio is None:
+        raise NonTrovato("start_date must be YYYY-MM-DD")
+    fuori = agenda.agenda(c, inizio, _data(p.end_date) or inizio, _ramo(p.chamber), p.types)
+    for giorno in fuori["days"].values():         # gli id che get_session_votes e get_vote_details accettano
+        for x in giorno.get("aula", []):
+            x["session_id"] = id_vecchio(x["uri"])
+        for x in giorno.get("voti", []):
+            x["vote_id"] = id_vecchio(x["uri"])
+    return fuori
+
+
 # ---------- registro ----------
 
 def _d(t: str) -> str:
@@ -842,12 +864,19 @@ STRUMENTI: list[Strumento] = [
         breakdown and a counts-consistency check. This server draws no chart: image_png_url and image_svg_url are null,
         report the numbers in words or in a table. For secret ballots it returns the aggregate totals with an explanation."""),
         Hemicycle, get_vote_hemicycle),
+    Strumento("get_parliament_agenda", _d("""What happens in Parliament day by day between two dates: plenary sittings
+        (planned ones from the Chamber's order of business, and held ones), committee sittings, amendment deadlines in
+        committee, bills filed, final votes and laws published. Amendment deadlines come from the committees' summary
+        records, read by fixed rules and confirmed by a second reading: each carries the sentence of the record (written by
+        the clerks, not words of a member of Parliament), its date and time, and `superseded` when a later sitting moved it.
+        For "what expires today / this week" ask types ["termini"]."""), ParliamentAgenda, get_parliament_agenda),
 ]
 PER_NOME = {s.nome: s for s in STRUMENTI}
 TITOLI = {"search_parliament": "Search parliamentary records",
           "list_sessions": "List plenary sittings", "get_session_votes": "List roll-call votes of a sitting",
           "get_vote_details": "Get roll-call vote details", "get_voted_text": "Get the voted amendment/article text",
-          "get_debate": "Get debate details", "get_vote_hemicycle": "Vote hemicycle: numbers"}
+          "get_debate": "Get debate details", "get_vote_hemicycle": "Vote hemicycle: numbers",
+          "get_parliament_agenda": "Parliament agenda: sittings, deadlines, bills, votes"}
 
 
 def esegui(c: psycopg.Connection, nome: str, argomenti: dict) -> object:

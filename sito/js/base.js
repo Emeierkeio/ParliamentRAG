@@ -98,7 +98,7 @@
 
   /* ---------- icone (tratto 1,7, 24×24) ---------- */
   const I = { legge: '<path d="M12 4v16M6 20h12M5 8h14"/><path d="m5 8-2.5 6a2.5 2.5 0 0 0 5 0zM19 8l-2.5 6a2.5 2.5 0 0 0 5 0z"/>', sx: '<path d="M15 6l-6 6 6 6"/>', dx: '<path d="m9 6 6 6-6 6"/>', cerca: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>', voto: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8.5 12.5 2.5 2.5 5-6"/>',
-    sed: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', aula: '<path d="M4 18a8 8 0 0 1 16 0M8 18a4 4 0 0 1 8 0"/>',
+    sed: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', cal: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8 14h2M12 14h2M16 14h0M8 17h2"/>', aula: '<path d="M4 18a8 8 0 0 1 16 0M8 18a4 4 0 0 1 8 0"/>',
     pers: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>', scudo: '<path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/>',
     atto: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/>', gruppi: '<circle cx="7" cy="12" r="3"/><circle cx="17" cy="12" r="3"/>',
     emend: '<path d="M7 3h7l4 4v14H7z"/><path d="M10 13h5M12.5 10.5v5"/>', bilancia: '<path d="M12 4v16M5 20h14M6 8h12M6 8l-3 6h6zM18 8l-3 6h6z"/>',

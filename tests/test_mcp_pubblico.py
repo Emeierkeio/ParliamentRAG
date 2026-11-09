@@ -92,10 +92,11 @@ class TestProtocollo(unittest.TestCase):
         with _env():
             nomi = [t["name"] for t in self.r("tools/list")["result"]["tools"]]
         self.assertEqual(nomi, ["search_parliament", "list_sessions", "get_session_votes", "get_vote_details",
-                                "get_voted_text", "get_debate", "get_vote_hemicycle"])
+                                "get_voted_text", "get_debate", "get_vote_hemicycle", "get_parliament_agenda"])   # l'agenda dal 9/11
         with _env(MCP_STRUMENTI_INTERNI="1"):
             nomi = {t["name"] for t in self.r("tools/list")["result"]["tools"]}
         self.assertIn("verifica_citazioni", nomi)
+        self.assertIn("agenda", nomi)
         self.assertIn("get_debate", nomi)
 
     def test_argomenti_come_in_produzione(self):
