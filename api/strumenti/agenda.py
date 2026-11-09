@@ -25,7 +25,7 @@ def termini(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | 
     """I termini con scadenza fra `start` e `end`, uno per atto, organo, tipo e data, con l'evento più recente."""
     righe = c.execute("""
         SELECT d.uri, d.chamber, d.act, d.act_refs, d.body, d.body_name, d.sitting, d.sitting_date, d.speech, d.kind, d.event,
-               d.due_date, to_char(d.due_time, 'HH24:MI') AS due_time, d.presented, d.sentence, a.title AS act_title, a.number AS act_number,
+               d.due_date, to_char(d.due_time, 'HH24:MI') AS due_time, d.presented, d.sentence, a.title AS act_title, a.number AS act_number, a.card_url AS act_url,
                EXISTS (SELECT 1 FROM amendment_deadline n                     -- spostato dopo a un'altra data
                        WHERE n.chamber = d.chamber AND n.body IS NOT DISTINCT FROM d.body AND n.act_refs = d.act_refs AND n.kind = d.kind
                          AND n.event = 'extended' AND n.due_date <> d.due_date AND n.sitting_date > d.sitting_date

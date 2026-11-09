@@ -1,5 +1,6 @@
 /* Agenda del Parlamento: sedute d'Aula, commissioni, termini per gli emendamenti, progetti di legge, voti finali e leggi,
-   per settimana o per mese. Interroga lo strumento pubblico get_parliament_agenda (api/strumenti/agenda.py). */
+   in un calendario per mese o per settimana. In ogni giorno solo titoli brevi; il clic apre il dettaglio in una finestra.
+   Interroga lo strumento pubblico get_parliament_agenda (api/strumenti/agenda.py). */
 (function () {
   const e = B.esc, $ = B.$;
   const TIPI = [
@@ -13,8 +14,9 @@
   const GIORNI = TT("lun mar mer gio ven sab dom", "Mon Tue Wed Thu Fri Sat Sun").split(" ");
   const MESI = TT("gennaio febbraio marzo aprile maggio giugno luglio agosto settembre ottobre novembre dicembre",
     "January February March April May June July August September October November December").split(" ");
+  const MASSIMO = 4;                       // titoli visibili in una casella del mese; gli altri dietro «+N»
   const cache = new Map();
-  const st = { vista: "settimana", inizio: null, scelto: null, ramo: "both", attivi: new Set(TIPI.map((t) => t[0])) };
+  const st = { vista: "mese", inizio: null, ramo: "both", attivi: new Set(TIPI.map((t) => t[0])), dati: null };
 
   // date locali, mai in UTC: «2026-11-09» è il 9 novembre ovunque sia chi guarda
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -22,11 +24,21 @@
   const piu = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
   const lunedi = (d) => piu(d, -((d.getDay() + 6) % 7));
   const oggi = () => iso(new Date());
-  const giornoLungo = (s) => { const d = daIso(s); return `${GIORNI[(d.getDay() + 6) % 7]} ${d.getDate()} ${MESI[d.getMonth()]}`; };
+  const giornoLungo = (s) => { const d = daIso(s); return `${GIORNI[(d.getDay() + 6) % 7]} ${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()}`; };
   const ramo = (r) => (r === "senato" ? TT("Senato", "Senate") : TT("Camera", "Chamber"));
   // in Aula i primi punti sono spesso di servizio: si mostra il primo di merito
   const SERVIZIO = /^(missioni|comunicazioni|preavviso|annunzi|ordine del giorno della prossima|trasmissione|modifica nella composizione|sull'ordine dei lavori|in morte|commemorazione|sui lavori|calendario dei lavori|dimissioni|congedi)/i;
   const merito = (xs) => (xs || []).filter((t) => !SERVIZIO.test(t));
+  // i titoli della fonte portano tag HTML («<em>(approvato dal Senato)</em>»), virgolette e il numero ripetuto in coda
+  const pulito = (t) => String(t || "").replace(/<[^>]+>/g, "").replace(/^S\.\s*\d+\.?\s*-\s*/, "").replace(/\s*\(\d+[\w-]*\)\s*$/, "")
+    .replace(/["“”]/g, "").replace(/\s+/g, " ").trim();
+  // la scheda del sito per l'atto del termine: dall'uri (it:camera:19:ac:3120) o dal riferimento della fonte (ddl:2074)
+  function scheda(t) {
+    const r = (t.act || "").match(/:(ac|ddl):([\w-]+)$/) || (t.act_refs || []).map((x) => x.match(/^(ac|ddl):([\w-]+)$/)).find(Boolean);
+    if (!r) return null;
+    const titolo = [atto(t), pulito(t.act_title)].filter(Boolean).join(" · ");
+    return `#/strumenti/atto/${r[1] === "ac" ? "camera" : "senato"}-${r[2]}?t=${encodeURIComponent(titolo)}${t.act_url ? `&u=${encodeURIComponent(t.act_url)}` : ""}`;
+  }
 
   function intervallo() {
     if (st.vista === "settimana") return [st.inizio, piu(st.inizio, 6)];
@@ -43,74 +55,107 @@
     return cache.get(k);
   }
 
-  /* ---------- una voce per tipo ---------- */
+  /* ---------- gli eventi di un giorno, con il titolo breve ---------- */
   const atto = (t) => t.act_number ? `${t.chamber === "senato" ? "S." : "C."} ${t.act_number}` : (t.act_refs || []).map((r) => r.replace(/^ac:/, "C. ").replace(/^ddl:/, "S. ")).slice(0, 2).join(", ");
   const TIPO_T = { "emendamenti": TT("emendamenti", "amendments"), "subemendamenti": TT("subemendamenti", "sub-amendments"),
     "emendamenti e ordini del giorno": TT("emendamenti e ordini del giorno", "amendments and agenda motions"),
     "riesame delle inammissibilità": TT("richieste di riesame", "requests for review"), "segnalazione degli emendamenti": TT("emendamenti segnalati", "flagged amendments") };
-  function termine(t, i) {
-    const passato = t.due_date < oggi() || t.event === "expired";
-    const stato = t.superseded ? `<span class="ag-pill ag-pill--off">${TT("spostato", "moved")}</span>` : passato ? `<span class="ag-pill ag-pill--off">${TT("scaduto", "expired")}</span>` : "";
-    return `<li class="ag-v ag-v--termini${t.superseded ? " ag-v--superato" : ""}"><button type="button" class="ag-apri" data-termine="${i}" aria-expanded="false">
-      <span class="ag-v__ora">${t.due_time ? e(t.due_time) : TT("in giornata", "during the day")}</span>
-      <b>${TT("Termine per", "Deadline for")} ${e(TIPO_T[t.kind] || t.kind)}${stato}</b>
-      <span class="ag-v__t">${e([atto(t), t.act_title && B.taglia(t.act_title, 90)].filter(Boolean).join(" · ") || TT("Atto non indicato", "Act not stated"))}</span>
-      <span class="ag-v__m">${ramo(t.chamber)} · ${e(t.body_name || "")}${t.presented ? ` · ${t.presented} ${TT("proposte presentate", "proposals filed")}` : ""}</span></button>
-      <div class="ag-fonte" hidden><p>«${e(t.sentence)}»</p><p class="ag-nota">${TT("Sommario della seduta del", "Summary record of the sitting of")} ${B.data(t.sitting_date)}${t.mentions > 1 ? `, ${TT("ricordato in", "mentioned in")} ${t.mentions} ${TT("sedute", "sittings")}` : ""}. ${TT("Testo degli uffici, non parole di un parlamentare. Data letta da regole fisse e confermata da una seconda lettura.", "Written by the clerks, not words of a member. Date read by fixed rules and confirmed by a second reading.")}</p></div></li>`;
-  }
-  const aula = (s) => `<li class="ag-v ag-v--aula"><a href="#/strumenti/seduta/${e(s.session_id)}">
-      <span class="ag-v__ora">${s.start_time ? e(s.start_time) : ""}</span>
-      <b>${TT("Aula", "Floor")} ${ramo(s.chamber)} · ${TT("seduta", "sitting")} ${s.number}${s.status === "planned" ? `<span class="ag-pill">${TT("prevista", "planned")}</span>` : ""}</b>
-      <span class="ag-v__t">${e(B.taglia(merito(s.items)[0] || TT("Comunicazioni e adempimenti", "Announcements and formalities"), 90))}</span>
-      <span class="ag-v__m">${s.items_total > 1 ? `${s.items_total} ${TT("argomenti", "items")}` : ""}${s.items_total > 1 && s.votes ? " · " : ""}${s.votes ? `${s.votes} ${TT("votazioni", "votes")}` : ""}</span></a></li>`;
-  const voto = (v) => `<li class="ag-v ag-v--voti"><a href="#/strumenti/voto/${e(v.vote_id)}">
-      <b>${TT("Voto finale", "Final vote")} · ${ramo(v.chamber)}<span class="ag-pill ag-pill--${v.approved ? "ok" : "no"}">${v.approved ? TT("approvato", "passed") : TT("respinto", "rejected")}</span></b>
-      <span class="ag-v__t">${e(B.taglia((v.act_title || v.title || "").replace(/^S\.\s*\d+\.?\s*-\s*/, "").replace(/^"|"$/g, ""), 90))}</span>
-      <span class="ag-v__m">${v.favor ?? "–"} ${TT("sì", "yes")} · ${v.against ?? "–"} no${v.abstain ? ` · ${v.abstain} ${TT("astenuti", "abstained")}` : ""}${v.confidence ? ` · ${TT("fiducia", "confidence")}` : ""}</span></a></li>`;
-  const legge = (l) => `<li class="ag-v ag-v--leggi"><span class="ag-v__blocco"><b>${TT("Legge", "Law")} ${l.law_number ? `n. ${e(l.law_number)}` : ""}</b><span class="ag-v__t">${e(B.taglia(l.title || "", 130))}</span></span></li>`;
-  const gruppo = (k, xs, testo, riga) => `<li class="ag-v ag-v--${k}"><details><summary><b>${xs.length} ${testo}</b>${B.ico("dx")}</summary><ul class="ag-sotto">${xs.map(riga).join("")}</ul></details></li>`;
-  const pdl = (a) => `<li><span>${ramo(a.chamber).charAt(0)}. ${e(a.number)}</span> ${a.card_url ? `<a href="${e(a.card_url)}" target="_blank" rel="noopener">${e(B.taglia(a.title || "", 110))}</a>` : e(B.taglia(a.title || "", 110))}${a.initiative ? ` <small>${e(a.initiative)}</small>` : ""}</li>`;
-  const comm = (c) => `<li><span>${ramo(c.chamber)}</span> ${e(c.body_name || "")}${c.sittings > 1 ? ` <small>× ${c.sittings}</small>` : ""}${(c.seats || []).length ? ` <small>${e(c.seats.join(", ").toLowerCase())}</small>` : ""}</li>`;
 
-  let termini = [];
-  function giorno(d, g) {
-    const parti = [];
+  function eventi(g) {
     const on = (k) => st.attivi.has(k) && (g[k] || []).length;
-    if (on("termini")) parti.push(...g.termini.map((t) => { termini.push(t); return termine(t, termini.length - 1); }));
-    if (on("aula")) parti.push(...g.aula.map(aula));
-    if (on("voti")) parti.push(...g.voti.map(voto));
-    if (on("leggi")) parti.push(...g.leggi.map(legge));
-    if (on("atti")) parti.push(gruppo("atti", g.atti, g.atti.length === 1 ? TT("progetto di legge presentato", "bill filed") : TT("progetti di legge presentati", "bills filed"), pdl));
-    if (on("commissioni")) parti.push(gruppo("commissioni", g.commissioni, g.commissioni.length === 1 ? TT("organo riunito", "committee met") : TT("organi riuniti", "committees met"), comm));
-    return parti;
+    const xs = [];
+    if (on("termini")) g.termini.forEach((t) => xs.push({ tipo: "termini", ora: t.due_time, x: t, off: t.superseded,
+      titolo: `${TT("Termine", "Deadline")} ${atto(t) || TIPO_T[t.kind] || ""}` }));
+    if (on("aula")) g.aula.forEach((s) => xs.push({ tipo: "aula", ora: s.start_time, x: s,
+      titolo: `${TT("Aula", "Floor")} ${ramo(s.chamber)}${s.status === "planned" ? ` · ${TT("prevista", "planned")}` : ""}` }));
+    if (on("voti")) g.voti.forEach((v) => xs.push({ tipo: "voti", x: v, esito: v.approved ? "ok" : "no", titolo: `${TT("Voto finale", "Final vote")}: ${pulito(v.act_title || v.title)}` }));
+    if (on("leggi")) g.leggi.forEach((l) => xs.push({ tipo: "leggi", x: l, titolo: `${TT("Legge", "Law")} ${l.law_number ? `n. ${l.law_number}` : ""} · ${pulito(l.title)}` }));
+    if (on("atti")) xs.push({ tipo: "atti", x: g.atti, titolo: `${g.atti.length} ${g.atti.length === 1 ? TT("progetto di legge", "bill") : TT("progetti di legge", "bills")}` });
+    if (on("commissioni")) xs.push({ tipo: "commissioni", x: g.commissioni, titolo: `${g.commissioni.length} ${g.commissioni.length === 1 ? TT("commissione", "committee") : TT("commissioni", "committees")}` });
+    const peso = { termini: 0, aula: 1, voti: 2, leggi: 3, atti: 4, commissioni: 5 };
+    return xs.sort((a, b) => peso[a.tipo] - peso[b.tipo] || String(a.ora || "99").localeCompare(String(b.ora || "99")));
   }
 
-  function settimana(dati) {
-    const [da] = intervallo();
-    let html = "";
-    for (let i = 0; i < 7; i++) {
-      const d = iso(piu(da, i)), parti = giorno(d, (dati.days || {})[d] || {});
-      html += `<section class="ag-g${d === oggi() ? " ag-g--oggi" : ""}${parti.length ? "" : " ag-g--vuoto"}" aria-label="${e(giornoLungo(d))}"><h3><span>${GIORNI[i]}</span> ${daIso(d).getDate()}${d === oggi() ? `<span class="ag-pill ag-pill--acc">${TT("oggi", "today")}</span>` : ""}</h3>${parti.length ? `<ul>${parti.join("")}</ul>` : `<p class="ag-niente">${TT("Niente in calendario", "Nothing scheduled")}</p>`}</section>`;
+  /* ---------- il dettaglio di un evento ---------- */
+  function dettaglio(ev) {
+    const x = ev.x;
+    if (ev.tipo === "termini") {
+      const passato = x.due_date < oggi() || x.event === "expired";
+      return `<p class="ag-d__tipo ag-t--termini">${TT("Termine per", "Deadline for")} ${e(TIPO_T[x.kind] || x.kind)}</p>
+        <h3>${e([atto(x), x.act_title && pulito(x.act_title)].filter(Boolean).join(" · ") || TT("Atto non indicato", "Act not stated"))}</h3>
+        <dl class="ag-d__dati"><dt>${TT("Scade", "Due")}</dt><dd>${e(giornoLungo(x.due_date))}${x.due_time ? `, ${TT("ore", "at")} ${e(x.due_time)}` : ""}${x.superseded ? ` <span class="ag-pill ag-pill--off">${TT("spostato più tardi", "moved later")}</span>` : passato ? ` <span class="ag-pill ag-pill--off">${TT("scaduto", "expired")}</span>` : ""}</dd>
+        <dt>${TT("Dove", "Where")}</dt><dd>${ramo(x.chamber)} · ${e((x.bodies || [x.body_name]).filter(Boolean).join(", "))}</dd>
+        ${x.presented ? `<dt>${TT("Proposte", "Proposals")}</dt><dd>${x.presented} ${TT("presentate", "filed")}</dd>` : ""}</dl>
+        <blockquote class="ag-d__fonte">«${e(x.sentence)}»</blockquote>
+        <p class="ag-nota">${TT("Sommario della seduta del", "Summary record of the sitting of")} ${B.data(x.sitting_date)}${x.mentions > 1 ? `, ${TT("ricordato in", "mentioned in")} ${x.mentions} ${TT("sedute", "sittings")}` : ""}.</p>
+        ${scheda(x) || x.act_url ? `<div class="ag-d__azioni">${scheda(x) ? `<a class="bt bt--primario ag-d__vai" href="${e(scheda(x))}">${TT("Apri il provvedimento", "Open the bill")}</a>` : ""}${x.act_url ? `<a class="bt bt--linea ag-d__vai" href="${e(x.act_url)}" target="_blank" rel="noopener">${B.ico("esterno")}${x.chamber === "senato" ? TT("Scheda sul sito del Senato", "Page on the Senate website") : TT("Scheda sul sito della Camera", "Page on the Chamber website")}</a>` : ""}</div>` : ""}`;
     }
-    return `<div class="ag-sett">${html}</div>`;
+    if (ev.tipo === "aula") {
+      const temi = merito(x.items);
+      return `<p class="ag-d__tipo ag-t--aula">${TT("Aula", "Floor")} ${ramo(x.chamber)} · ${TT("seduta", "sitting")} ${x.number}${x.status === "planned" ? ` <span class="ag-pill">${TT("prevista", "planned")}</span>` : ""}</p>
+        <h3>${x.start_time ? `${TT("Ore", "At")} ${e(x.start_time)}` : e(giornoLungo(x.date))}${x.votes ? ` · ${x.votes} ${TT("votazioni", "votes")}` : ""}</h3>
+        ${temi.length ? `<ul class="ag-d__lista">${temi.map((t) => `<li>${e(B.taglia(t, 220))}</li>`).join("")}</ul>` : `<p class="ag-nota">${TT("Comunicazioni e adempimenti", "Announcements and formalities")}</p>`}
+        ${x.items_total > temi.length && x.items_total > (x.items || []).length ? `<p class="ag-nota">${TT("e altri argomenti", "and more items")}</p>` : ""}
+        ${x.session_id && x.status !== "planned" ? `<a class="bt bt--linea ag-d__vai" href="#/strumenti/seduta/${e(x.session_id)}">${TT("Apri la seduta", "Open the sitting")}</a>` : ""}`;
+    }
+    if (ev.tipo === "voti") return `<p class="ag-d__tipo ag-t--voti">${TT("Voto finale", "Final vote")} · ${ramo(x.chamber)} <span class="ag-pill ag-pill--${x.approved ? "ok" : "no"}">${x.approved ? TT("approvato", "passed") : TT("respinto", "rejected")}</span></p>
+        <h3>${e(pulito(x.act_title || x.title))}</h3>
+        <dl class="ag-d__dati"><dt>${TT("Sì", "Yes")}</dt><dd>${x.favor ?? "–"}</dd><dt>No</dt><dd>${x.against ?? "–"}</dd>${x.abstain ? `<dt>${TT("Astenuti", "Abstained")}</dt><dd>${x.abstain}</dd>` : ""}${x.confidence ? `<dt>${TT("Fiducia", "Confidence")}</dt><dd>${TT("sì", "yes")}</dd>` : ""}</dl>
+        ${x.vote_id ? `<a class="bt bt--linea ag-d__vai" href="#/strumenti/voto/${e(x.vote_id)}">${TT("Apri la votazione", "Open the vote")}</a>` : ""}`;
+    if (ev.tipo === "leggi") return `<p class="ag-d__tipo ag-t--leggi">${TT("Legge", "Law")}${x.law_number ? ` n. ${e(x.law_number)}` : ""}</p><h3>${e(pulito(x.title))}</h3>`;
+    if (ev.tipo === "atti") return `<p class="ag-d__tipo ag-t--atti">${x.length} ${TT("progetti di legge presentati", "bills filed")}</p>
+        <ul class="ag-d__lista">${x.map((a) => `<li><b>${ramo(a.chamber).charAt(0)}. ${e(a.number)}</b> ${a.card_url ? `<a href="${e(a.card_url)}" target="_blank" rel="noopener">${e(B.taglia(a.title || "", 160))}</a>` : e(B.taglia(a.title || "", 160))}${a.initiative ? ` <small>${e(a.initiative)}</small>` : ""}</li>`).join("")}</ul>`;
+    return `<p class="ag-d__tipo ag-t--commissioni">${x.length} ${TT("organi riuniti", "committees met")}</p>
+        <ul class="ag-d__lista">${x.map((c) => `<li><b>${ramo(c.chamber)}</b> · ${e(c.body_name || "")}${c.sittings > 1 ? ` <small>× ${c.sittings}</small>` : ""}${(c.items || []).length ? `<br><small>${e(c.items.slice(0, 3).map((t) => B.taglia(t, 90)).join(" · "))}</small>` : ""}</li>`).join("")}</ul>`;
   }
 
-  function mese(dati) {
-    const [da, a] = intervallo(), m = st.inizio.getMonth();
-    let celle = GIORNI.map((g) => `<div class="ag-mese__testa" aria-hidden="true">${g}</div>`).join("");
+  /* ---------- la griglia ---------- */
+  let indice = [];                          // gli eventi disegnati, per il clic
+  const chip = (ev) => { indice.push(ev); return `<button type="button" class="ag-ev ag-t--${ev.tipo}${ev.off ? " ag-ev--off" : ""}${ev.esito ? ` ag-ev--${ev.esito}` : ""}" data-ev="${indice.length - 1}" title="${e(ev.titolo)}"><i aria-hidden="true"></i>${ev.ora ? `<time>${e(ev.ora)}</time>` : ""}<span>${e(ev.titolo)}</span></button>`; };
+
+  function griglia(dati) {
+    const [da, a] = intervallo(), m = st.inizio.getMonth(), sett = st.vista === "settimana";
+    indice = [];
+    let celle = GIORNI.map((g) => `<div class="ag-cal__testa" aria-hidden="true">${g}</div>`).join("");
     for (let d = da; d <= a; d = piu(d, 1)) {
-      const k = iso(d), g = (dati.days || {})[k] || {};
-      const conti = TIPI.filter(([t]) => st.attivi.has(t) && (g[t] || []).length).map(([t, n]) => `<span class="ag-c ag-c--${t}" title="${e(n)}"><i></i>${g[t].length}</span>`);
-      celle += `<button type="button" class="ag-cella${d.getMonth() !== m ? " ag-cella--fuori" : ""}${k === oggi() ? " ag-cella--oggi" : ""}${k === st.scelto ? " ag-cella--scelta" : ""}" data-giorno="${k}" aria-label="${e(giornoLungo(k))}: ${conti.length ? e(TIPI.filter(([t]) => st.attivi.has(t) && (g[t] || []).length).map(([t, n]) => `${g[t].length} ${n}`).join(", ")) : TT("niente", "nothing")}"><span class="ag-cella__n">${d.getDate()}</span>${conti.join("")}</button>`;
+      const k = iso(d), evs = eventi((dati.days || {})[k] || {}), fuori = !sett && d.getMonth() !== m;
+      const visti = sett ? evs : evs.slice(0, evs.length > MASSIMO ? MASSIMO - 1 : MASSIMO), altri = evs.length - visti.length;
+      celle += `<div class="ag-cella${fuori ? " ag-cella--fuori" : ""}${k === oggi() ? " ag-cella--oggi" : ""}${(d.getDay() + 6) % 7 > 4 ? " ag-cella--festa" : ""}">
+        <button type="button" class="ag-cella__n" data-giorno="${k}" aria-label="${e(giornoLungo(k))}: ${evs.length} ${TT("eventi", "events")}">${d.getDate()}${d.getDate() === 1 && !sett ? `<span class="ag-mese1"> ${MESI[d.getMonth()].slice(0, 3)}</span>` : ""}</button>
+        <div class="ag-cella__ev">${visti.map(chip).join("")}${altri > 0 ? `<button type="button" class="ag-altri" data-giorno="${k}">+${altri} ${TT("altri", "more")}</button>` : ""}</div>
+        <div class="ag-cella__punti" aria-hidden="true">${[...new Set(evs.map((x) => x.tipo))].map((t) => `<i class="ag-t--${t}"></i>`).join("")}</div></div>`;
     }
-    const scelto = st.scelto && (dati.days || {})[st.scelto] ? giorno(st.scelto, dati.days[st.scelto]) : [];
-    return `<div class="ag-mese">${celle}</div>${st.scelto ? `<section class="ag-g ag-g--dettaglio"><h3>${e(giornoLungo(st.scelto))}</h3>${scelto.length ? `<ul>${scelto.join("")}</ul>` : `<p class="ag-niente">${TT("Niente in calendario", "Nothing scheduled")}</p>`}</section>` : `<p class="ag-niente">${TT("Scegli un giorno per vedere il dettaglio.", "Pick a day to see the details.")}</p>`}`;
+    return `<div class="ag-cal ag-cal--${st.vista}">${celle}</div>`;
+  }
+
+  /* ---------- la finestra del dettaglio ---------- */
+  function apri(html, titolo) {
+    let d = $("#ag-dlg");
+    if (!d) {
+      document.body.insertAdjacentHTML("beforeend", `<dialog id="ag-dlg" class="ag-dlg" aria-labelledby="ag-dlg-t"><div class="ag-dlg__testa"><p id="ag-dlg-t"></p><button type="button" class="ic-a" data-chiudi aria-label="${TT("Chiudi", "Close")}" data-tip="${TT("Chiudi", "Close")}"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="ag-dlg__corpo"></div></dialog>`);
+      d = $("#ag-dlg");
+      d.addEventListener("click", (ev) => {
+        if (ev.target === d || ev.target.closest("[data-chiudi]")) { d.close(); return; }
+        const x = ev.target.closest("[data-ev]"); if (x) { const k = +x.dataset.ev; apri(dettaglio(indice[k]), giornoLungo(x.dataset.giorno || "")); }
+        if (ev.target.closest("a[href^='#']")) d.close();
+      });
+    }
+    d.querySelector("#ag-dlg-t").textContent = titolo;
+    d.querySelector(".ag-dlg__corpo").innerHTML = html;
+    if (!d.open) d.showModal();
+  }
+  // il giorno intero: tutti gli eventi, ciascuno apribile
+  function giorno(k) {
+    const evs = eventi((st.dati.days || {})[k] || {});
+    const html = evs.length ? `<ul class="ag-giorno">${evs.map((ev) => { indice.push(ev); return `<li><button type="button" class="ag-ev ag-ev--lungo ag-t--${ev.tipo}${ev.off ? " ag-ev--off" : ""}" data-ev="${indice.length - 1}" data-giorno="${k}"><i aria-hidden="true"></i>${ev.ora ? `<time>${e(ev.ora)}</time>` : ""}<span>${e(ev.titolo)}</span>${B.ico("dx")}</button></li>`; }).join("")}</ul>`
+      : `<p class="ag-nota">${TT("Niente in calendario", "Nothing scheduled")}</p>`;
+    apri(html, giornoLungo(k));
   }
 
   function titoloPeriodo() {
     const [da, a] = intervallo();
     if (st.vista === "mese") return `${MESI[st.inizio.getMonth()]} ${st.inizio.getFullYear()}`;
-    return da.getMonth() === a.getMonth() ? `${da.getDate()}–${a.getDate()} ${MESI[a.getMonth()]} ${a.getFullYear()}` : `${da.getDate()} ${MESI[da.getMonth()]} – ${a.getDate()} ${MESI[a.getMonth()]} ${a.getFullYear()}`;
+    return da.getMonth() === a.getMonth() ? `${da.getDate()}–${a.getDate()} ${MESI[a.getMonth()]} ${a.getFullYear()}` : `${da.getDate()} ${MESI[da.getMonth()].slice(0, 3)} – ${a.getDate()} ${MESI[a.getMonth()].slice(0, 3)} ${a.getFullYear()}`;
   }
 
   async function disegna() {
@@ -119,10 +164,9 @@
     box.setAttribute("aria-busy", "true");
     const [da, a] = intervallo();
     try {
-      const dati = await leggi(da, a);
-      termini = [];
-      box.innerHTML = st.vista === "settimana" ? settimana(dati) : mese(dati);
-      const c = dati.counts || {};
+      st.dati = await leggi(da, a);
+      box.innerHTML = griglia(st.dati);
+      const c = st.dati.counts || {};
       $("#ag-conto").textContent = TIPI.filter(([t]) => st.attivi.has(t) && c[t]).map(([t, n]) => `${c[t]} ${n.toLowerCase()}`).join(" · ") || TT("Niente in questo periodo con i filtri scelti.", "Nothing in this period with the chosen filters.");
     } catch (err) { box.innerHTML = ST.errore(err); }
     box.removeAttribute("aria-busy");
@@ -130,16 +174,15 @@
 
   window.AGENDA = (box, arg) => {
     const base = /^\d{4}-\d{2}-\d{2}$/.test(arg || "") ? daIso(arg) : new Date();
-    st.inizio = lunedi(base); st.scelto = iso(base); st.vista = matchMedia("(max-width: 760px)").matches ? "settimana" : st.vista;
+    st.inizio = st.vista === "settimana" ? lunedi(base) : new Date(base.getFullYear(), base.getMonth(), 1);
     box.innerHTML = ST.testa("agenda", null, null, TT("Cosa scade questa settimana in Parlamento?", "What is due in Parliament this week?"))
-      + ST.avvio(TT("Il calendario del Parlamento: sedute d'Aula previste e tenute, commissioni, termini per presentare gli emendamenti, progetti di legge presentati, voti finali e leggi.", "Parliament's calendar: planned and held floor sittings, committees, deadlines for amendments, bills filed, final votes and laws."), [], "")
+      + ST.avvio(TT("Il calendario del Parlamento: sedute d'Aula, commissioni, termini per presentare gli emendamenti, progetti di legge, voti finali e leggi. Clicca un evento per il dettaglio.", "Parliament's calendar: floor sittings, committees, deadlines for amendments, bills, final votes and laws. Click an event for the details."), [], "")
       + `<div class="ag-barra">
-          <div class="ag-nav"><button type="button" class="ic-a" data-ag="-1" aria-label="${TT("Periodo precedente", "Previous period")}" data-tip="${TT("Precedente", "Previous")}">${B.ico("sx")}</button><button type="button" class="bt bt--linea ag-oggi" data-ag="0">${TT("Oggi", "Today")}</button><button type="button" class="ic-a" data-ag="1" aria-label="${TT("Periodo successivo", "Next period")}" data-tip="${TT("Successivo", "Next")}">${B.ico("dx")}</button><h2 id="ag-periodo" aria-live="polite"></h2></div>
-          <div class="ag-scelte"><div class="ag-vista" role="group" aria-label="${TT("Vista", "View")}"><button type="button" data-vista="settimana" aria-pressed="${st.vista === "settimana"}">${TT("Settimana", "Week")}</button><button type="button" data-vista="mese" aria-pressed="${st.vista === "mese"}">${TT("Mese", "Month")}</button></div>
-          <label class="vh" for="ag-ramo">${TT("Ramo", "Chamber")}</label><select id="ag-ramo"><option value="both">${TT("Camera e Senato", "Chamber and Senate")}</option><option value="camera">Camera</option><option value="senato">Senato</option></select></div>
+          <div class="ag-nav"><button type="button" class="bt bt--linea ag-oggi" data-ag="0">${TT("Oggi", "Today")}</button><button type="button" class="ic-a" data-ag="-1" aria-label="${TT("Periodo precedente", "Previous period")}" data-tip="${TT("Precedente", "Previous")}">${B.ico("sx")}</button><button type="button" class="ic-a" data-ag="1" aria-label="${TT("Periodo successivo", "Next period")}" data-tip="${TT("Successivo", "Next")}">${B.ico("dx")}</button><h2 id="ag-periodo" aria-live="polite"></h2></div>
+          <div class="ag-scelte"><label class="vh" for="ag-ramo">${TT("Ramo", "Chamber")}</label><select id="ag-ramo"><option value="both">${TT("Camera e Senato", "Chamber and Senate")}</option><option value="camera">Camera</option><option value="senato">Senato</option></select>
+          <div class="ag-vista" role="group" aria-label="${TT("Vista", "View")}"><button type="button" data-vista="mese" aria-pressed="${st.vista === "mese"}">${TT("Mese", "Month")}</button><button type="button" data-vista="settimana" aria-pressed="${st.vista === "settimana"}">${TT("Settimana", "Week")}</button></div></div>
         </div>
-        <div class="ag-tipi" role="group" aria-label="${TT("Cosa mostrare", "What to show")}">${TIPI.map(([k, n]) => `<button type="button" class="ag-tipo ag-tipo--${k}" data-tipo="${k}" aria-pressed="${st.attivi.has(k)}"><i></i>${e(n)}</button>`).join("")}</div>
-        <p class="ag-conto" id="ag-conto"></p>
+        <div class="ag-tipi" role="group" aria-label="${TT("Cosa mostrare", "What to show")}">${TIPI.map(([k, n]) => `<button type="button" class="ag-tipo ag-t--${k}" data-tipo="${k}" aria-pressed="${st.attivi.has(k)}"><i></i>${e(n)}</button>`).join("")}<span class="ag-conto" id="ag-conto"></span></div>
         <div id="ag-corpo">${ST.carica(TT("Leggo l'agenda", "Loading the agenda"))}</div>
         <p class="ag-piede">${TT("Le sedute d'Aula previste vengono dall'ordine del giorno della Camera. I termini per gli emendamenti vengono dai sommari delle commissioni: si vedono dal giorno dopo la seduta in cui sono fissati, e mancano quelli decisi senza che il sommario li riporti.", "Planned floor sittings come from the Chamber's order of business. Amendment deadlines come from committee summary records: they appear the day after the sitting that sets them, and those the record does not report are missing.")}</p>`;
     $("#ag-ramo").value = st.ramo;
@@ -147,14 +190,15 @@
       const n = ev.target.closest("[data-ag]"), v = ev.target.closest("[data-vista]");
       if (n) {
         const k = +n.dataset.ag;
-        if (k === 0) { st.inizio = lunedi(new Date()); st.scelto = oggi(); }
+        if (k === 0) st.inizio = st.vista === "settimana" ? lunedi(new Date()) : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
         else if (st.vista === "settimana") st.inizio = piu(st.inizio, 7 * k);
-        else { st.inizio = new Date(st.inizio.getFullYear(), st.inizio.getMonth() + k, 1); st.scelto = null; }
+        else st.inizio = new Date(st.inizio.getFullYear(), st.inizio.getMonth() + k, 1);
       }
-      if (v) {
+      if (v && v.dataset.vista !== st.vista) {
         st.vista = v.dataset.vista;
         box.querySelectorAll("[data-vista]").forEach((b) => b.setAttribute("aria-pressed", String(b === v)));
-        st.inizio = st.vista === "settimana" ? lunedi(st.scelto ? daIso(st.scelto) : st.inizio) : new Date((st.scelto ? daIso(st.scelto) : st.inizio).getFullYear(), (st.scelto ? daIso(st.scelto) : st.inizio).getMonth(), 1);
+        const rif = st.vista === "settimana" ? (st.inizio.getMonth() === new Date().getMonth() ? new Date() : st.inizio) : st.inizio;
+        st.inizio = st.vista === "settimana" ? lunedi(rif) : new Date(rif.getFullYear(), rif.getMonth(), 1);
       }
       if (n || v) disegna();
     });
@@ -167,10 +211,10 @@
       disegna();
     });
     $("#ag-corpo").addEventListener("click", (ev) => {
-      const c = ev.target.closest("[data-giorno]");
-      if (c) { st.scelto = c.dataset.giorno; disegna(); return; }
-      const t = ev.target.closest("[data-termine]");
-      if (t) { const f = t.parentElement.querySelector(".ag-fonte"), aperto = t.getAttribute("aria-expanded") === "true"; t.setAttribute("aria-expanded", String(!aperto)); f.hidden = aperto; }
+      const x = ev.target.closest("[data-ev]");
+      if (x) { const c = x.closest(".ag-cella"); apri(dettaglio(indice[+x.dataset.ev]), giornoLungo(c.querySelector("[data-giorno]").dataset.giorno)); return; }
+      const g = ev.target.closest("[data-giorno]") || (matchMedia("(max-width: 640px)").matches && ev.target.closest(".ag-cella")?.querySelector("[data-giorno]"));
+      if (g) giorno(g.dataset.giorno);
     });
     disegna();
   };
