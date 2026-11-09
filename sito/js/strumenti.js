@@ -165,10 +165,15 @@
       a = (r.dati.results || []).find((x) => String(x.act_number).toLowerCase() === String(num).toLowerCase()) || null;
     } catch (err) { /* resta la pagina con i dati del link */ }
     const url = (a && a.url) || urlH || (ramo === "camera" ? `https://www.camera.it/leg19/126?tab=1&leg=19&idDocumento=${num}` : "");
-    const titolo = B.frase((a && a.act_title) || titoloH.replace(/^\s*[CS]\.\s*[\w-]+\s*·\s*/, "") || etichetta);
+    // il titolo della fonte porta tag HTML, il numero del Senato davanti, virgolette e il numero ripetuto in coda:
+    // «S. 1241. - "Misure…" <em>(approvato dal Senato) </em>(2365)»
+    const titolo = B.frase(String((a && a.act_title) || titoloH.replace(/^\s*[CS]\.\s*[\w-]+\s*·\s*/, "") || etichetta)
+      .replace(/<[^>]+>/g, "").replace(/^\s*S\.\s*\d+[\w-]*\.?\s*-\s*/, "").replace(/\s*\(\d+[\w-]*\)\s*$/, "").replace(/["“”]/g, "").replace(/\s+/g, " ").trim()) || etichetta;
+    // «DISEGNO_LEGGE_ORDINARIO» → «Disegno di legge ordinario»
+    const tipoAtto = a && a.act_type ? B.frase(String(a.act_type).toLowerCase().replace(/_/g, " ").replace(/\b(disegno|proposta) legge\b/, "$1 di legge")).replace(/^./, (c) => c.toUpperCase()) : "";
     const firma = a && a.last_name ? `${B.nome(`${a.first_name} ${a.last_name}`)}` : "";
     $("#atto-c").innerHTML = `<section class="blocco atto-p"><h2 class="atto-t" translate="no">${e(titolo)}</h2>
-      <dl class="kv">${a && a.act_type ? `<div><dt>${TT("Tipo", "Type")}</dt><dd>${e(a.act_type)}</dd></div>` : ""}<div><dt>${TT("Numero", "Number")}</dt><dd>${e(etichetta)}</dd></div>${a && a.date ? `<div><dt>${TT("Presentato", "Introduced")}</dt><dd>${B.data(a.date)}</dd></div>` : ""}${firma ? `<div><dt>${TT("Prima firma", "First signatory")}</dt><dd>${e(firma)} ${a.group ? B.sig(B.sigla(a.group, a.misto_component)) : ""}</dd></div>` : ""}${a && a.law ? `<div><dt>${TT("Legge", "Law")}</dt><dd>${e(a.law.label)}</dd></div>` : ""}</dl>
+      <dl class="kv">${tipoAtto ? `<div><dt>${TT("Tipo", "Type")}</dt><dd>${e(tipoAtto)}</dd></div>` : ""}<div><dt>${TT("Numero", "Number")}</dt><dd>${e(etichetta)}</dd></div>${a && a.date ? `<div><dt>${TT("Presentato", "Introduced")}</dt><dd>${B.data(a.date)}</dd></div>` : ""}${firma ? `<div><dt>${TT("Prima firma", "First signatory")}</dt><dd>${e(firma)} ${a.group ? B.sig(B.sigla(a.group, a.misto_component)) : ""}</dd></div>` : ""}${a && a.law ? `<div><dt>${TT("Legge", "Law")}</dt><dd>${e(a.law.label)}</dd></div>` : ""}</dl>
       <div class="fonte-az">${url ? `<a class="bt bt--primario" href="${e(url)}" target="_blank" rel="noopener">${B.ico("esterno")}${TT("Raggiungi la fonte", "Go to the source")}</a>` : ""}<span class="fonte-dom">${e(url ? new URL(url).hostname.replace(/^www\./, "www.") : "")}</span></div></section>
       <section class="blocco" style="margin-top:16px"><h3>${TT("Interventi in Aula su questo atto", "Floor speeches on this act")}</h3><div id="atto-int">${carica(TT("Cerco gli interventi", "Looking for speeches"))}</div></section>`;
     try {
