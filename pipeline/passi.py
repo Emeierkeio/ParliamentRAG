@@ -8,7 +8,7 @@ import json
 import re
 import time
 
-from . import documenti, termini, vettori
+from . import documenti, fatti, termini, vettori
 from .carica import postgres
 from .controlli import uscite as controlli_uscite
 from .fonti import eurovoc
@@ -344,6 +344,8 @@ PASSI = [
     Passo("documenti_parlamentari", documenti.passo, dopo=["carica_postgres"], timeout_minuti=15, tentativi=1, usa_db=True),
     # dai sommari caricati: regole e seconda lettura con la Batch API (si aspetta al più [termini] attesa_minuti)
     Passo("termini_emendamenti", termini.passo, dopo=["carica_postgres"], timeout_minuti=40, tentativi=1, usa_db=True),
+    # fatti delle commissioni dai sommari (audizioni, pareri, iter…): una lettura per argomento con la Batch API
+    Passo("fatti_sommari", fatti.passo, dopo=["carica_postgres"], timeout_minuti=40, tentativi=1, usa_db=True),
     Passo("raccogli_vettori", vettori.passo_raccogli, timeout_minuti=60, tentativi=2, usa_db=True),
     Passo("taglia_brani", vettori.passo_taglia, dopo=["carica_postgres"], timeout_minuti=60, usa_db=True),
     Passo("invia_vettori", vettori.passo_invia, dopo=["taglia_brani", "raccogli_vettori"], timeout_minuti=60, tentativi=2, usa_db=True),

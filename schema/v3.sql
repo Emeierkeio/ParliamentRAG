@@ -485,6 +485,30 @@ CREATE TABLE IF NOT EXISTS amendment_deadline (
 );
 CREATE INDEX IF NOT EXISTS amendment_deadline_due ON amendment_deadline (due_date);
 CREATE INDEX IF NOT EXISTS amendment_deadline_act ON amendment_deadline (act);
+-- HAS_FACT: i fatti delle commissioni letti nei sommari da un modello (pipeline/fatti.py), ognuno con la frase da cui viene,
+-- controllata parola per parola. Si riscrivono per argomento.
+CREATE TABLE IF NOT EXISTS committee_fact (
+  uri text PRIMARY KEY,                             -- it:camera:19:fatto:<impronta dell'argomento>:<n>
+  kind text NOT NULL,                               -- hearing | opinion | amendment_opinion | step | answer
+  chamber text NOT NULL,
+  sitting text NOT NULL, sitting_date date NOT NULL, body text, body_name text,
+  item text NOT NULL, speech text NOT NULL,         -- l'argomento e il paragrafo del sommario
+  act text,                                         -- l'atto, se è fra quelli dell'argomento
+  act_refs text[] NOT NULL DEFAULT '{}',            -- gli atti come li scrive il sommario, normalizzati (ac:3120, ddl:2074, aic:5-01234, ag:312)
+  subject text,                                     -- chi è audito, la commissione che dà il parere, governo o relatore, chi risponde
+  outcome text,                                     -- favorevole, contrario, testo base adottato, soddisfatto …
+  amendments text[] NOT NULL DEFAULT '{}',          -- i numeri degli emendamenti come sono scritti
+  amendments_found int,                             -- quanti di quei numeri esistono in amendment per l'atto
+  evidence text NOT NULL,                           -- la frase del sommario, scritta dagli uffici
+  checked_by text NOT NULL                          -- il modello che l'ha letta
+);
+CREATE INDEX IF NOT EXISTS committee_fact_act ON committee_fact (act);
+CREATE INDEX IF NOT EXISTS committee_fact_kind ON committee_fact (kind, sitting_date);
+CREATE INDEX IF NOT EXISTS committee_fact_item ON committee_fact (item);
+CREATE TABLE IF NOT EXISTS summary_check (           -- le letture dei sommari (Batch API): una risposta per argomento e testo
+  hash text PRIMARY KEY, item text NOT NULL, batch text, status text NOT NULL,   -- inviato | fatto | errore
+  answer jsonb, tokens int, asked_at timestamptz NOT NULL DEFAULT now(), answered_at timestamptz
+);
 CREATE TABLE IF NOT EXISTS deadline_check (         -- la seconda lettura (Batch API): una risposta per frase, chiesta una volta
   hash text PRIMARY KEY,                            -- = la parte finale dell'uri del termine
   batch text,

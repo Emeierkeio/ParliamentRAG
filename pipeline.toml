@@ -18,6 +18,11 @@ dollari_per_notte = 5         # tetto della Batch API di OpenAI per i vettori in
 attesa_minuti = 20            # quanto si aspettano le risposte della seconda lettura; le altre si raccolgono la notte dopo
 frasi_per_notte = 3000         # tetto delle frasi nuove inviate in un giro (circa 1 $ per mille)
 
+[fatti]
+giorni = 95                    # si leggono gli argomenti delle sedute di questi ultimi giorni (nuovi o cambiati)
+attesa_minuti = 20
+argomenti_per_notte = 4000     # tetto delle richieste in un giro (circa 0,6 $ per mille)
+
 [fonti.camera_resoconti]
 legislatura = 19
 url = "https://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=assemblea&tipoDoc=formato_xml&tipologia=stenografico&idNumero={num:04d}&idLegislatura={legislatura}"
