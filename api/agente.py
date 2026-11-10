@@ -219,6 +219,32 @@ def chiama_openai(modello: str, istruzioni: str, voci: list, chiave: str, strume
     raise RuntimeError("non raggiungibile")
 
 
+TEMI = ("Il soggetto è un'azienda, un marchio, un'associazione o un ente. Chiama proponi_temi con i temi parlamentari che "
+        "probabilmente lo riguardano (parole precise come le userebbe il Parlamento, frasi tra virgolette unite da or, mai parole "
+        "generiche come «alimenti» o «bevande» da sole) e le sue associazioni di categoria.")
+
+
+def temi_per(soggetto: str, ip: str) -> dict | None:
+    """Dopo il fascicolo su un soggetto: i temi da proporre per il dossier, con una sola chiamata che può usare solo
+    proponi_temi. Non conta come domanda, la spesa sì."""
+    if controlla_limiti(ip) or not controlla_spesa():
+        return None
+    modello = env("AGENTE_MODELLO", "gpt-5.6-terra")
+    s = registro.PER_NOME["proponi_temi"]
+    corpo = json.dumps({"model": modello, "instructions": TEMI, "input": [{"role": "user", "content": soggetto[:200]}],
+                        "tools": [{"type": "function", "name": s.nome, "description": s.descrizione, "parameters": s.schema()}],
+                        "tool_choice": {"type": "function", "name": s.nome}, "reasoning": {"effort": "low"}, "store": False}).encode()
+    req = urllib.request.Request(OPENAI, corpo, {"Content-Type": "application/json", "Authorization": f"Bearer {env('OPENAI_API_KEY')}"})
+    with urllib.request.urlopen(req, timeout=90) as r:
+        out = json.loads(r.read())
+    _conta(ip, 0, _costo(modello, out.get("usage") or {}))
+    chiamata = next((x for x in out.get("output", []) if x.get("type") == "function_call"), None)
+    if not chiamata:
+        return None
+    with connessione() as c:
+        return registro.esegui(c, s.nome, json.loads(chiamata["arguments"]))
+
+
 def solo_link_visti(testo: str, visti: set[str]) -> tuple[str, int]:
     """Toglie i link che non compaiono nei dati letti: niente indirizzi inventati o copiati male."""
     tolti = 0

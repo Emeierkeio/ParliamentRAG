@@ -96,7 +96,7 @@
   .nov-g:nth-child(n+4){display:none}
   .nov-frase{font-size:12.5px;padding:10px 12px}
   .nov-frase small,.nov-fr{display:none}
-  .nov-c{padding:7px 8px}.nov-c b{font-size:12px}
+  .nov-c{padding:7px 8px}.nov-c b{font-size:11.5px;overflow-wrap:normal}
   .nov-chat{justify-content:flex-start;gap:7px}
   .nov-dom{font-size:13px}
   .nov-str code{display:none}

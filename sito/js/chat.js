@@ -403,8 +403,8 @@
       const numerica = /\b(quant[aeio]\w*|numero|percentual\w*|indice|coesion\w*|classific\w*|matrice|conta\w*|conteggi\w*|elenc\w*|come (?:vota|votano|hanno votato|ha votato)|quali (?:interrogazioni|interpellanze|mozioni|atti|leggi|emendamenti|proposte|disegni)|how many|how much|count|ranking|list)\b/.test(B.norm(q))
         || /\b(votat[oaie]|vot[oi] (?:finale|contrari|favorevoli)|contro|favorevol\w*|astenut\w*|approvat\w*|respint\w*|fiducia|applau\w*|protest\w*|intervenut\w*|chi ha (?:parlato|detto)|seduta (?:del|di)|voted|against|applau\w*)\b/.test(B.norm(q))
         || /\b\d{1,2} (?:gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\b/.test(B.norm(q));
-      // il nome di un'azienda o di un ente («Coca Cola», «Coca-Cola», «Rossi S.p.A.») va all'agente, che propone i temi da scegliere
-      if (!seguito && CH.soggetto(q) && !CH.trovaPersona(q)) { await turnoAgente(t, el, n, q, qx, prosaEl); return; }
+      // il nome di un'azienda o di un ente («Coca Cola», «Coca-Cola», «Rossi S.p.A.»): il fascicolo, e sotto i temi da scegliere per il dossier
+      it.soggetto = !seguito && CH.soggetto(q) && !CH.trovaPersona(q);
       if (!seguito && !numerica && (it.tipo === "tema" || it.tipo === "argomento") && !CH.trovaPersona(q)) d = await contaDibattiti(t, q);
       if (!(d >= 3)) {
         // una domanda su una persona mostra subito la sua scheda, mentre l'agente scrive
@@ -440,6 +440,9 @@
       try { const f = await fascicoloVero(t, qx, prosaEl); if (f) { testo = f; it.fascicolo = true; } } catch (err) { /* resta la chat */ }
       if (t.limite) { limite(t, prosaEl); storia.push({ role: "user", content: q }); chiudi(t, el, n, q); return; }
       t.trattieni = false; B.$$("[data-blocco]", t.blocchi).forEach((b) => { b.hidden = false; }); aggiornaIndice(t);
+      if (it.fascicolo && it.soggetto && window.SCELTA)
+        fetch("/api/temi", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ soggetto: q.trim() }) })
+          .then((x) => x.json()).then((r) => { if (r.opzioni) SCELTA.mostra(r); }).catch(() => { /* senza proposta resta il fascicolo */ });
       // se il fascicolo non arriva, con il motore agente risponde l'agente
       if (!it.fascicolo && CH.AGENTE) {
         // senza fascicolo i sei passaggi non hanno senso: si tolgono e si mostra il percorso dell'agente
