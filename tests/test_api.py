@@ -10,7 +10,7 @@ except Exception as e:                                   # database spento o .en
 else:
     MOTIVO = ""
 
-from api.strumenti import atti, persone, ricerca, sedute, voti
+from api.strumenti import atti, documenti, persone, ricerca, sedute, voti
 
 
 @unittest.skipIf(C is None, f"Postgres non raggiungibile: {MOTIVO}")
@@ -19,6 +19,18 @@ class TestApi(unittest.TestCase):
         import psycopg
         with self.assertRaises(psycopg.errors.ReadOnlySqlTransaction):
             C.execute("CREATE TABLE prova (a int)")
+
+    def test_documenti_depositati_su_un_atto(self):
+        # contributi scritti (legati all'atto) e memorie delle audizioni (legate dall'audizione dello stesso giorno)
+        n, righe = documenti.documenti(C, act="it:camera:19:ac:3120", limit=50)
+        self.assertGreaterEqual(n, 40)
+        self.assertEqual({r["kind"] for r in righe}, {"written_contribution", "memorandum"})
+        self.assertTrue(all(" " not in r["url"] for r in righe))                 # link interi anche in Markdown
+        ania = documenti.documenti(C, act="ac:3120", author="ANIA")[1][0]
+        testo = documenti.documento(C, ania["uri"])
+        self.assertEqual(len(testo["text"]), documenti.PAGINA)
+        self.assertIn("offset=11000", testo["more"])
+        self.assertIsNone(documenti.documento(C, "it:camera:19:doc:inesistente"))
 
     def test_senatore_una_persona_due_schede(self):
         renzi = persone.cerca_persone(C, q="renzi", chamber="senato")[0]

@@ -52,6 +52,8 @@ Come lavori
 - Un intervento con government vero è un membro del Governo che parla da tale (office dice la carica): non attribuirlo al suo partito e non usarlo per la posizione di un gruppo. Per il resto il gruppo di una persona in un intervento è quello alla data della seduta.
 - Per numeri, conteggi, classifiche, percentuali e matrici usa gli strumenti di conteggio, mai la stima né un campione. Dai il numero con quello che dice il campo counted (che cosa si è contato, periodo, regole) e Camera e Senato separati, salvo che la domanda chieda il totale.
 - Un elenco con il campo more, o con total maggiore degli elementi ricevuti, è parziale: leggi le pagine successive (offset) o usa un conteggio prima di concludere. Da un elenco parziale non si ricavano «mai», «nessuno», «tutti» né totali; se non hai letto tutto, dì quanti ne hai controllati su quanti.
+- Audizioni, memorie e posizioni dei portatori di interessi su un atto: le audizioni svolte stanno nei lavori delle commissioni, le memorie e i contributi scritti (anche di chi non è stato audito) nei documenti depositati. Se la domanda chiede le posizioni su un atto e il dibattito non c'è ancora, guarda anche lì. Elenca i documenti dell'atto, poi leggi il testo di quelli che servono prima di dire cosa sostengono: riferiscili attribuendoli all'autore («secondo ANIA, nel contributo del 5 novembre, …»), senza «…», con il link al file.
+- Non ritrattare un dato letto negli strumenti solo perché una ricerca successiva non lo ritrova: torna allo strumento da cui veniva (per i documenti l'elenco per atto e autore) e ricontrolla prima di dire che era sbagliato.
 - Le didascalie del resoconto (applausi, proteste, commenti, chi «si leva in piedi») stanno nelle reactions degli interventi della seduta e si cercano negli interventi con captions: riportale come sono scritte.
 
 Regole
@@ -92,7 +94,7 @@ ULTIMO_PASSO = ("Non puoi più consultare i dati. Rispondi ora con quello che ha
                 "dì cosa hai trovato e cosa manca, e dove guardare nelle fonti ufficiali.")
 
 # il passo che il sito mostra mentre lo strumento lavora
-ETICHETTE = {"agenda": "Leggo l'agenda del Parlamento", "fatti_commissioni": "Leggo i lavori delle commissioni", "cerca_persone": "Cerco i parlamentari", "scheda_persona": "Leggo la scheda del parlamentare",
+ETICHETTE = {"agenda": "Leggo l'agenda del Parlamento", "fatti_commissioni": "Leggo i lavori delle commissioni", "documenti_acquisiti": "Leggo i documenti depositati in commissione", "cerca_persone": "Cerco i parlamentari", "scheda_persona": "Leggo la scheda del parlamentare",
              "composizione": "Conto i parlamentari per gruppo", "elenco_sedute": "Cerco nelle sedute", "seduta": "Leggo la seduta", "argomenti_sedute": "Cerco negli ordini del giorno", "conta_sedute": "Conto le sedute",
              "elenco_votazioni": "Cerco le votazioni", "votazione": "Leggo la votazione", "cerca_atti": "Cerco negli atti",
              "atto": "Leggo l'atto", "articolo": "Leggo l'articolo", "cerca_emendamenti": "Cerco negli emendamenti", "emendamento": "Leggo l'emendamento", "confronta_bozza": "Confronto la bozza con gli emendamenti già presentati", "proponi_temi": "Verifico i temi che lo riguardano", "chiedi_settore": "Chiedo di cosa si occupa", "cerca_interventi": "Cerco negli interventi",

@@ -90,7 +90,8 @@ def _altri(c, vettore: str, fonti: list[str], rami: list[str], da, a, quanti: in
         out.append({"fonte": NOMI.get(b["source"], b["source"]), "uri": b["uri"], "atto": r["atto"],
                     "titolo": (r["titolo"] or "")[:300], "testo": (r["testo"] or "")[:TESTO_MASSIMO],
                     "ramo": r["ramo"], "data": r["data"].isoformat() if r["data"] else None, "esito": r["esito"],
-                    "url": r["url"], "similarita": round(b["similarita"], 3)})
+                    "url": (r["url"] or "").replace(" ", "%20") or None,     # file della Camera con spazi nel nome
+                    "similarita": round(b["similarita"], 3)})
         if len(out) >= quanti:
             break
     return out

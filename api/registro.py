@@ -13,7 +13,7 @@ from typing import Literal
 import psycopg
 from pydantic import BaseModel, ConfigDict, Field
 
-from .strumenti import agenda, atti, citazioni, conti, emendamenti, fatti, persone, ricerca, sedute, significato, soggetti, voti
+from .strumenti import agenda, atti, citazioni, conti, documenti, emendamenti, fatti, persone, ricerca, sedute, significato, soggetti, voti
 
 Ramo = Literal["camera", "senato"]
 Iniziativa = Field(None, description="categoria (governo, parlamentare, regione, cnel, popolare, mista) o parole del presentatore "
@@ -361,6 +361,27 @@ class FattiCommissioni(Parametri):
     offset: int = Field(0, ge=0)
 
 
+class DocumentiAcquisiti(Parametri):
+    uri: str | None = Field(None, description="uri di un documento (dall'elenco): ne legge il testo; senza uri si ha l'elenco")
+    act: str | None = Field(None, description="uri dell'atto (da cerca_atti) o riferimento come ac:3120: i documenti depositati su quell'atto")
+    author: str | None = Field(None, description="parole del nome di chi ha mandato il documento: «ANIA», «IVASS», «Confindustria»")
+    body: str | None = Field(None, description="uri o nome della commissione: «X Commissione» (Camera, numeri romani)")
+    kind: Literal["memoria", "contributo", "allegato", "dossier"] | None = Field(
+        None, description="memoria: depositata in un'audizione; contributo: scritto mandato su un atto senza audizione; allegato: "
+                          "del Bollettino; dossier: dei servizi studi. Vuoto: tutti")
+    q: str | None = Field(None, description="parole nel titolo, nell'autore o nel nome dell'audizione")
+    start: dt.date | None = None
+    end: dt.date | None = None
+    limit: int = Field(25, ge=1, le=50)
+    offset: int = Field(0, ge=0, description="per l'elenco: la pagina dopo; con uri: il carattere da cui riprendere il testo")
+
+
+def _documenti(c, p: DocumentiAcquisiti):
+    if p.uri:
+        return documenti.documento(c, p.uri, p.offset) or {"errore": "documento non trovato: prendi l'uri dall'elenco"}
+    return documenti.documenti(c, p.act, p.author, p.body, p.kind, p.q, p.start, p.end, p.limit, p.offset)
+
+
 class VerificaCitazioni(Parametri):
     text: str = Field(max_length=20000, description="la risposta con le citazioni tra «…»")
 
@@ -485,6 +506,11 @@ STRUMENTI: list[Strumento] = [
               "frase del sommario (evidence): è scritta dagli uffici, non va citata come parola di un parlamentare. Copre le sedute "
               "dall'agosto 2026.", FattiCommissioni,
               lambda c, p: fatti.fatti_commissioni(c, p.kind, p.act, p.subject, p.body, p.chamber, p.start, p.end, p.outcome, p.limit, p.offset)),
+    Strumento("documenti_acquisiti", "Documenti depositati in commissione: memorie delle audizioni e contributi scritti di "
+              "associazioni, aziende, sindacati e autorità su un atto, allegati del Bollettino, dossier. Senza uri: l'elenco per atto "
+              "(act), autore, commissione e date, con il link al file. Con uri: il testo del documento, a pagine (more dice da dove "
+              "riprendere). Per «chi ha depositato memorie su…» e «cosa sostiene X nella sua memoria». Sono scritti di terzi, non "
+              "parole di parlamentari: riferiscili attribuendoli all'autore, senza «…», con il link.", DocumentiAcquisiti, _documenti),
     Strumento("agenda", "AGENDA. Cosa succede in Parlamento giorno per giorno fra due date: sedute d'Aula previste e tenute, sedute "
               "di commissione, termini per gli emendamenti in commissione (con la frase del sommario degli uffici, che non va citata come "
               "parola di un parlamentare), progetti di legge presentati, votazioni finali, leggi pubblicate. «Cosa scade oggi o questa "
