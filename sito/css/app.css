@@ -898,6 +898,12 @@ body[data-vista] .punti{display:none}
 #griglia-str:hover .nastro,#griglia-str:focus-within .nastro{animation-play-state:paused}
 @keyframes nastro{to{transform:translateX(-100%)}}
 .giostra__frecce{display:none!important}
+/* 10/11: le frecce tornano, in alto a destra all'altezza del titolo «Gli strumenti»: spostano il nastro di una scheda */
+#strumenti .dentro{position:relative}#strumenti .giostra{position:static}
+#strumenti .giostra__frecce{display:flex!important;position:absolute;top:6px;right:0;margin:0;gap:8px;z-index:2}
+#strumenti .giostra__frecce .ic-a{width:42px;height:42px;border-radius:50%;background:var(--sup);border:1px solid var(--bordo2)}
+#strumenti .giostra__frecce .ic-a:hover{border-color:var(--t3)}
+@media (max-width:760px){#strumenti .giostra__frecce{top:0}#strumenti .giostra__frecce .ic-a{width:38px;height:38px}}
 @media (prefers-reduced-motion:reduce){#griglia-str{overflow-x:auto!important}#griglia-str .nastro{animation:none}#griglia-str .nastro[aria-hidden]{display:none}}
 /* il grafo sta in una sola schermata */
 #grafo-s .kg{margin-top:12px}

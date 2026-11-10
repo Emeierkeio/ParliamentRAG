@@ -129,7 +129,23 @@
     new ResizeObserver(misura).observe(b); misura();
     // fuori dallo schermo il nastro si ferma
     new IntersectionObserver(([v]) => { visto = v.isIntersecting; prima = performance.now(); }).observe(g);
-    const passo = (t) => { const dt = Math.min(64, t - prima); prima = t; if (visto && !fermo && w) { x -= dt * 0.04; if (-x >= w) x += w; b.style.transform = `translate3d(${x}px,0,0)`; } requestAnimationFrame(passo); };
+    // frecce in alto a destra: il nastro avanza o torna di una scheda, poi riparte da solo dopo qualche secondo
+    let salto = null, pausa = 0;
+    const giro = () => { let d = 0; while (w && -x >= w) { x += w; d += w; } while (w && x > 0) { x -= w; d -= w; } if (d && salto) { salto.da += d; salto.a += d; } };
+    B.giostra = (dir) => {
+      const card = b.querySelector("a"), lungo = (card ? card.offsetWidth : 300) + 14;
+      salto = { da: x, a: (salto ? salto.a : x) - dir * lungo, t0: performance.now() };
+      pausa = performance.now() + 7000;
+      return true;
+    };
+    const passo = (t) => {
+      const dt = Math.min(64, t - prima); prima = t;
+      if (salto) { const k = Math.min(1, (t - salto.t0) / 420), e = 1 - Math.pow(1 - k, 3); x = salto.da + (salto.a - salto.da) * e; if (k >= 1) salto = null; }
+      else if (visto && !fermo && w && t > pausa) x -= dt * 0.04;
+      giro();
+      b.style.transform = `translate3d(${x}px,0,0)`;
+      requestAnimationFrame(passo);
+    };
     requestAnimationFrame(passo);
   }
 

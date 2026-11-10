@@ -69,7 +69,8 @@
 
   /* ---------- giostra degli strumenti ---------- */
   const gs = $("#griglia-str"); if (gs) gs.scrollLeft = 0;
-  document.addEventListener("click", (ev) => { const b = ev.target.closest("[data-giostra]"); if (!b) return; const g = $("#griglia-str"), card = g.querySelector("a"); g.scrollBy({ left: (+b.dataset.giostra) * ((card ? card.offsetWidth : 300) + 14) * 2, behavior: "smooth" }); });
+  // il nastro che scorre da solo si sposta con B.giostra (home.js); con il movimento ridotto il contenitore scorre normalmente
+  document.addEventListener("click", (ev) => { const b = ev.target.closest("[data-giostra]"); if (!b) return; if (B.giostra && B.giostra(+b.dataset.giostra)) return; const g = $("#griglia-str"), card = g.querySelector("a"); g.scrollBy({ left: (+b.dataset.giostra) * ((card ? card.offsetWidth : 300) + 14), behavior: "smooth" }); });
 
   /* ---------- newsletter (nel prototipo non invia: la lista è quella vera) ---------- */
   { const f = $("#news-f"); if (f) f.addEventListener("submit", (ev) => { ev.preventDefault(); const m = $("#news-m"), em = $("#news-e").value.trim();
