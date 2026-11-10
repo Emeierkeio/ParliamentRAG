@@ -126,7 +126,6 @@
   ];
   CH.intento = (q) => {
     const n = B.norm(q);
-    if (/\bemendament|\bamendment/.test(n)) return { tipo: "emendamento" };
     if (/\b(quanti anni|eta|nat[oa]|nascita|compleanno|dove e nat|collegio|circoscrizion|elett[oa]|proclamat|convalid|how old|age|born|birth|constituency|district|elected)\b/.test(n)) return { tipo: "anagrafica" };
     const superl = /\b(meno|piu|maggior|minor|massim|minim|ultim|peggior|miglior|record|least|most|lowest|highest|fewest|worst|best)\w*/.test(n);
     const metrica = METRICHE.find((x) => x.re.test(n));
@@ -405,7 +404,7 @@
       const d = await contaDibattiti(t, q);
       if (d != null) { it.dibattiti = d; if (d >= 3) it.tipo = "tema"; else { it.tipo = "puntuale"; it.atto = true; } }
     }
-    const lavoro = it.tipo === "anagrafica" || it.tipo === "emendamento" ? Promise.resolve() : instrada(t, ctx ? `${q} ${ctx.etichetta}` : q, it);
+    const lavoro = it.tipo === "anagrafica" ? Promise.resolve() : instrada(t, ctx ? `${q} ${ctx.etichetta}` : q, it);
     if (it.tipo === "anagrafica") { it.persona = CH.trovaPersona(q) || (ctx && CH.trovaPersona(ctx.etichetta)) || CH.ultimaPersona; if (!it.persona) it.tipo = "puntuale"; }
     if (it.tipo === "anagrafica") {
       const lav = instrada(t, it.persona.n, { tipo: "puntuale", persona: it.persona });
@@ -413,11 +412,6 @@
       try { testo = await anagrafica(t, it.persona, prosaEl); } catch (err) { prosaEl.innerHTML = `<div class="errore">${e(err.message)}</div>`; }
       storia.push({ role: "user", content: q }, { role: "assistant", content: testo });
       await lav; chiudi(t, el, n, q); return;
-    }
-    if (it.tipo === "emendamento") {
-      try { testo = await emendamenti(t, q, ctx, prosaEl); } catch (err) { prosaEl.innerHTML = `<div class="errore">${e(err.message)}</div>`; }
-      storia.push({ role: "user", content: q }, { role: "assistant", content: testo });
-      chiudi(t, el, n, q); return;
     }
     if (it.tipo === "classifica") {
       t.senzaModello = true;
@@ -561,42 +555,6 @@
 
 
 
-
-  /* ---------- emendamenti: ricerca nei testi degli emendamenti (dati di Camera e Senato) ---------- */
-  const FASE = (x) => ({ "camera-commissione": TT("Camera, Commissione", "Chamber, Committee"), "camera-aula": TT("Camera, Aula", "Chamber, floor"), "senato-commissione": TT("Senato, Commissione", "Senate, Committee"), "senato-aula": TT("Senato, Aula", "Senate, floor") }[x] || x || "");
-  async function emendamenti(t, q, ctx, prosaEl) {
-    const s1 = passo(t, "em-legge", TT("Scelgo la legge", "Choosing the law"), "leggi/index.json");
-    const indice = await fetch("/dati/emendamenti/leggi/index.json").then((r) => r.json());
-    const parole = CH.parole(`${q} ${ctx ? ctx.etichetta : ""}`).filter((w) => !/^emendament|^amendment/.test(w));
-    const punti = (x) => parole.reduce((a, w) => a + (B.norm(`${x.title} ${(x.numbers || []).join(" ")}`).includes(w) ? 1 : 0), 0);
-    let leggi = [{ slug: "legge-elettorale", title: "Legge elettorale", file: "legge-elettorale", base: /elettoral|fuorisede|voto|collegi|elezion/.test(B.norm(q + (ctx ? ctx.etichetta : ""))) ? 2 : 0 }, ...indice.map((x) => ({ ...x, file: `leggi/${x.slug}` }))]
-      .map((x) => ({ ...x, p: punti(x) + (x.base || 0) })).filter((x) => x.p > 0).sort((a, b) => b.p - a.p).slice(0, 2);
-    if (!leggi.length) leggi = [{ slug: "legge-elettorale", title: "Legge elettorale", file: "legge-elettorale" }];
-    s1.fatto(leggi.map((x) => B.taglia(x.title, 40)).join(" · "));
-    const VUOTE_EM = new Set("quale quali chi cosa come quando dove emendamento emendamenti chiedeva chiede chiedono proponeva propone prevedeva prevede voleva introdurre legge articolo comma which what amendment asked proposed".split(" "));
-    const SIN = { fuorisede: ["fuori sede"], fuori: [], estero: ["estero", "circoscrizione estero"], preferenze: ["preferenz"], premio: ["premio di maggioranza", "premio"] };
-    const termini = [...new Set(B.norm(q).replace(/[«»"“”?!.,;:()']/g, " ").split(/\s+/).filter((w) => w.length > 3 && !VUOTE_EM.has(w)).flatMap((w) => SIN[w] || [w.length > 7 ? w.slice(0, w.length - 2) : w]))];
-    const s2 = passo(t, "em-cerca", TT("Cerco nei testi degli emendamenti", "Searching amendment texts"), `amendments · ${termini.join(", ")}`);
-    const trovati = [];
-    for (const L of leggi) {
-      const d = await fetch(L.file === "legge-elettorale" ? "/dati/emendamenti/legge-elettorale.json" : `/dati/emendamenti/leggi/${encodeURIComponent(L.slug)}.json`).then((r) => r.json());
-      const am = (d.amendments || []).map((a) => ({ a, tx: B.norm(a.text || "") }));
-      // peso: le parole rare contano di più (log N/df)
-      const peso = Object.fromEntries(termini.map((w) => { const df = am.filter((x) => x.tx.includes(w)).length; return [w, df ? Math.log((am.length + 1) / df) : 0]; }));
-      am.forEach(({ a, tx }) => { const p = termini.reduce((x, w) => x + (tx.includes(w) ? peso[w] : 0), 0); if (p > 0) trovati.push({ a, L, p }); });
-    }
-    trovati.sort((x, y) => y.p - x.p || (y.a.outcome === "approvato") - (x.a.outcome === "approvato"));
-    s2.fatto(TT(`${trovati.length} emendamenti`, `${trovati.length} amendments`));
-    const top = trovati.slice(0, 6);
-    if (!top.length) { prosaEl.innerHTML = `<p>${TT("Non ho trovato emendamenti con queste parole.", "I found no amendments with these words.")}</p>`; prosaEl.classList.remove("cursore"); return ""; }
-    const esito = (a) => a.outcome ? B.frase(a.outcome) : TT("esito non pubblicato", "outcome not published");
-    const primo = top[0].a, firma = (primo.signers || []).find((x) => x.first) || (primo.signers || [])[0];
-    prosaEl.innerHTML = `<p>${TT(`L'emendamento più vicino alla domanda è il <strong>${e(primo.number)}</strong> (${e(B.taglia(top[0].L.title, 60))}, ${e(FASE(primo.stage))})${firma ? `, prima firma ${e(firma.name)} (${e(firma.group)})` : ""}: ${e(esito(primo))}.`, `The amendment closest to the question is <strong>${e(primo.number)}</strong> (${e(B.taglia(top[0].L.title, 60))}, ${e(FASE(primo.stage))})${firma ? `, first signatory ${e(firma.name)} (${e(firma.group)})` : ""}: ${e(esito(primo))}.`)}</p>`;
-    prosaEl.classList.remove("cursore");
-    blocco(t, "atti", TT("Emendamenti trovati", "Amendments found"), B.info(TT("Ordinati per parole della domanda presenti nel testo", "Ordered by question words found in the text")),
-      `<ul class="lista">${top.map(({ a, L }) => { const f = (a.signers || []).find((x) => x.first) || (a.signers || [])[0]; return `<li><span class="meta">${e(a.number)} · ${e(FASE(a.stage))} · ${e(esito(a))}</span><span>${e(B.taglia(L.title, 90))}${f ? ` · ${e(f.name)} ${B.sig(f.group)}` : ""}</span><span class="estratto" translate="no">${e(B.taglia(a.text || "", 280))}</span>${B.link(`#/strumenti/emendamenti/${L.slug}?em=${encodeURIComponent(a.id)}`, TT("Apri l'emendamento nel testo", "Open the amendment in the text"))}</li>`; }).join("")}</ul>`);
-    return prosaEl.innerText;
-  }
 
   /* ---------- fascicolo per le domande di tema ---------- */
   // Markdown del fascicolo: titoli, grassetti, separatori, citazioni [«…»](chunk_id) numerate verso le fonti

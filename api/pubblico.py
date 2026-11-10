@@ -15,7 +15,7 @@ from pydantic import Field
 from pipeline.ambiente import env
 
 from .registro import Parametri, Strumento
-from .strumenti import agenda, atti, citazioni, comune, ricerca, voti
+from .strumenti import agenda, atti, citazioni, comune, emendamenti, ricerca, voti
 from .strumenti.comune import LEGISLATURA, brevi
 
 
@@ -312,6 +312,24 @@ class ParliamentAgenda(Parametri):
     types: list[str] | None = Field(None, description='Which events (default all): "aula" (plenary sittings, planned and held), '
                                     '"commissioni" (committee sittings), "termini" (amendment deadlines), "atti" (bills filed), '
                                     '"voti" (final votes), "leggi" (laws published).')
+
+
+class SearchAmendments(Parametri):
+    text: str | None = Field(None, max_length=6000, description="A topic, a sentence or the text of a draft amendment, in Italian: "
+                             "finds amendments with similar meaning across the legislature, closest first.")
+    query: str | None = Field(None, description="Words in the amendment text (Italian; \"quoted phrase\", -word, or).")
+    bill: str | None = Field(None, description='Bill, as "C. 2750", "S. 1689" or an act uri; empty: the whole legislature.')
+    number: str | None = Field(None, description='Amendment number as written by the source ("1.1", "2.0.3").')
+    chamber: str = Field("both", description='"both" (default), "camera" or "senato".')
+    group: str | None = Field(None, description="Parliamentary group of a signatory on that day (name or abbreviation).")
+    outcome: str | None = Field(None, description="Computed outcome code, as in the `esito` field of the results.")
+    start_date: str | None = Field(None, description="YYYY-MM-DD lower bound of the date.")
+    end_date: str | None = Field(None, description="YYYY-MM-DD upper bound of the date.")
+    max_results: int = Field(20, ge=1, le=50)
+
+
+class AmendmentId(Parametri):
+    amendment_id: str = Field(description="Amendment uri from search_amendments (e.g. \"it:camera:19:ac:2750:eme:ass588:1.1\").")
 
 
 class SessionId(Parametri):
@@ -827,6 +845,32 @@ def get_parliament_agenda(c: psycopg.Connection, p: ParliamentAgenda) -> dict:
     return fuori
 
 
+def _atto_da_sigla(c: psycopg.Connection, x: str | None) -> str | None:
+    if not x:
+        return None
+    if x.startswith("it:"):
+        return x
+    m = re.match(r"\s*(C|S|AC|DDL)\.?\s*(\d+[\w-]*)", x, re.I)
+    if not m:
+        raise NonTrovato('bill must look like "C. 2750", "S. 1689" or an act uri')
+    ramo = "camera" if m.group(1).upper() in ("C", "AC") else "senato"
+    return f"it:{ramo}:{LEGISLATURA}:{'ac' if ramo == 'camera' else 'ddl'}:{m.group(2).lower()}"
+
+
+def search_amendments(c: psycopg.Connection, p: SearchAmendments) -> dict:
+    if not (p.text or p.query or p.bill or p.number or p.group):
+        raise NonTrovato("give at least one of text, query, bill, number, group")
+    return emendamenti.cerca(c, p.text, p.query, _atto_da_sigla(c, p.bill), _ramo(p.chamber), p.group, None, p.outcome, None,
+                             _data(p.start_date), _data(p.end_date), p.max_results, 0, p.number)
+
+
+def get_amendment(c: psycopg.Connection, p: AmendmentId) -> dict:
+    out = emendamenti.scheda(c, p.amendment_id)
+    if out is None:
+        raise NonTrovato("amendment not found")
+    return out
+
+
 # ---------- registro ----------
 
 def _d(t: str) -> str:
@@ -870,13 +914,25 @@ STRUMENTI: list[Strumento] = [
         records, read by fixed rules and confirmed by a second reading: each carries the sentence of the record (written by
         the clerks, not words of a member of Parliament), its date and time, and `superseded` when a later sitting moved it.
         For "what expires today / this week" ask types ["termini"]."""), ParliamentAgenda, get_parliament_agenda),
+    Strumento("search_amendments", _d("""Search amendments of the Chamber of Deputies and the Senate, 19th legislature, across all
+        bills or in one: by meaning (`text`: a topic, a sentence, or the text of a draft amendment, to find similar ones
+        already tabled), by words, by number, group, outcome or dates. Each result has its signatories with their group that
+        day, and an outcome (`esito`) from a fixed list with its source (`fonte`): the Chamber or Senate file, the Chamber's
+        electronic floor vote, or the confidence-vote rule (amendments fall when the government puts a confidence vote on the
+        article). "non_pubblicato" means no source states the outcome: never report it as rejected."""), SearchAmendments, search_amendments),
+    Strumento("get_amendment", _d("""One amendment in full: text, signatories and groups, outcome with its source, the vote
+        of each group on the floor when there was a roll-call vote, its history (the same or almost the same text tabled in
+        other bills, with each outcome), the speeches of the voting sitting that cite it (excerpts of the official record:
+        quote them only word for word), the opinions of government and rapporteur read in the committee summaries, and the
+        bill's amendment deadlines. Data in Italian."""), AmendmentId, get_amendment),
 ]
 PER_NOME = {s.nome: s for s in STRUMENTI}
 TITOLI = {"search_parliament": "Search parliamentary records",
           "list_sessions": "List plenary sittings", "get_session_votes": "List roll-call votes of a sitting",
           "get_vote_details": "Get roll-call vote details", "get_voted_text": "Get the voted amendment/article text",
           "get_debate": "Get debate details", "get_vote_hemicycle": "Vote hemicycle: numbers",
-          "get_parliament_agenda": "Parliament agenda: sittings, deadlines, bills, votes"}
+          "get_parliament_agenda": "Parliament agenda: sittings, deadlines, bills, votes",
+          "search_amendments": "Search amendments, with outcome and source", "get_amendment": "Amendment in full: history, debate, opinions"}
 
 
 def esegui(c: psycopg.Connection, nome: str, argomenti: dict) -> object:

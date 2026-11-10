@@ -13,7 +13,7 @@ from typing import Literal
 import psycopg
 from pydantic import BaseModel, ConfigDict, Field
 
-from .strumenti import agenda, atti, citazioni, conti, fatti, persone, ricerca, sedute, significato, voti
+from .strumenti import agenda, atti, citazioni, conti, emendamenti, fatti, persone, ricerca, sedute, significato, voti
 
 Ramo = Literal["camera", "senato"]
 Iniziativa = Field(None, description="categoria (governo, parlamentare, regione, cnel, popolare, mista) o parole del presentatore "
@@ -136,15 +136,25 @@ class CercaAtti(Parametri):
     offset: int = Field(0, ge=0)
 
 
-class Emendamenti(Parametri):
-    act: str = Field(description="uri del progetto di legge")
+class CercaEmendamenti(Parametri):
+    testo: str | None = Field(None, min_length=3, max_length=6000, description="un tema, una frase o il testo di una bozza di emendamento: "
+                              "cerca per significato in tutta la legislatura, dal più vicino")
+    q: str | None = Field(None, description="parole del testo dell'emendamento («\"frase esatta\"», «-parola», «or»)")
+    act: str | None = Field(None, description="uri del progetto di legge; vuoto: tutta la legislatura")
+    number: str | None = Field(None, description="numero dell'emendamento come lo scrive la fonte («1.1», «2.0.3», «Tab. 2.1»)")
+    chamber: Ramo | None = None
+    group: str | None = Field(None, description="nome, sigla o uri del gruppo di un firmatario alla data")
     signer: str | None = Field(None, description="uri di un firmatario")
-    group: str | None = Field(None, description="sigla o uri del gruppo del firmatario alla data")
-    outcome: str | None = None
-    venue: str | None = Field(None, description="committee, assembly, referente…")
-    q: str | None = Field(None, description="parole del testo dell'emendamento")
+    outcome: Literal[tuple(emendamenti.CODICI)] | None = Field(None, description="esito calcolato (vedi il campo esito dei risultati)")
+    venue: Literal["committee", "assembly"] | None = Field(None, description="commissione o Aula")
+    start: dt.date | None = None
+    end: dt.date | None = None
     limit: int = Field(20, ge=1, le=100)
     offset: int = Field(0, ge=0)
+
+
+class Emendamento(Parametri):
+    uri: str = Field(description="uri dell'emendamento (dai risultati di cerca_emendamenti)")
 
 
 class CercaInterventi(Parametri):
@@ -394,8 +404,15 @@ STRUMENTI: list[Strumento] = [
               Uri, lambda c, p: atti.atto(c, p.uri)),
     Strumento("articolo", "Il testo di un articolo di una versione dell'atto (presentato, della commissione, approvato), o l'elenco degli articoli.",
               Articolo, lambda c, p: atti.articolo(c, p.code, p.number)),
-    Strumento("emendamenti", "Emendamenti di un progetto di legge, con testo e firmatari, filtrati per firmatario, gruppo, esito, sede o parole.",
-              Emendamenti, lambda c, p: atti.emendamenti(c, p.act, p.signer, p.group, p.outcome, p.venue, p.q, p.limit, p.offset)),
+    Strumento("cerca_emendamenti", "Emendamenti di tutta la legislatura o di un progetto di legge: per significato (un tema, una frase, il "
+              "testo di una bozza: trova quelli simili già presentati), per parole o per filtri (gruppo, firmatario, esito, sede, ramo, "
+              "periodo). Ognuno con firmatari e gruppi, l'esito in un elenco fisso e la fonte dell'esito.",
+              CercaEmendamenti, lambda c, p: emendamenti.cerca(c, p.testo, p.q, p.act, p.chamber, p.group, p.signer, p.outcome, p.venue,
+                                                             p.start, p.end, p.limit, p.offset, p.number)),
+    Strumento("emendamento", "La scheda di un emendamento: testo intero, firmatari, esito con la fonte, voto dei gruppi in Aula, storia (lo "
+              "stesso testo o quasi presentato in altri atti, con l'esito di ogni volta), interventi della seduta del voto che lo citano, "
+              "pareri di governo e relatore letti nei sommari, termini per gli emendamenti dell'atto.",
+              Emendamento, lambda c, p: emendamenti.scheda(c, p.uri) or {"errore": "emendamento non trovato"}),
     Strumento("cerca_interventi", "Interventi in Aula e in commissione che contengono le parole cercate, dal più recente, con un estratto; "
               "con captions, le didascalie del resoconto (applausi, proteste, chi si alza in piedi) con il parlato che le precede.",
               CercaInterventi, _cerca_interventi),

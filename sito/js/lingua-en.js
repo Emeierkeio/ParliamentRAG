@@ -605,7 +605,9 @@
  "assenze nelle votazioni": "absences from votes",
  "interventi in Aula": "floor speeches",
  "atti con la prima firma": "acts as first signatory",
- "atti cofirmati": "co-signed acts"
+ "atti cofirmati": "co-signed acts",
+ "Decaduto per la fiducia": "Lapsed with the confidence vote",
+ "Il governo ha posto la fiducia sull'articolo senza emendamenti: con il voto di fiducia gli emendamenti non votati decadono.": "The government made the article a matter of confidence with no amendments: with the confidence vote, amendments not yet voted lapse."
 };
   const SEG = {"tabelle": "tables", "autorevole": "authoritative", "Legge": "Law", "Camera, aula": "Chamber, floor", "Senato, aula": "Senate, floor", "Camera, commissione": "Chamber, committee", "Senato, commissione": "Senate, committee"};
   const T = (s) => testi[s] || SEG[s] || s;

@@ -575,6 +575,8 @@ def legge(c: psycopg.Connection, slug: str) -> dict | None:
     # ancoraggi al comma, voti in Aula, subemendamenti e testi identici
     testo_di = {t["id"]: t["text"] for t in tappe}
     voti_aula = {a["uri"]: _voti_aula(c, a["number"]) for a in letture if a["chamber"] == "camera"}
+    from .strumenti.emendamenti import _fiducie
+    fiducie = _fiducie(c, [a["uri"] for a in letture if a["chamber"] == "camera"])
     per_uri = {a["uri"]: a for a in letture}
     atto_di = {f"{sigla_atto(a)}-{s}": a["uri"] for a in letture for s in ("commissione", "assemblea")}
     emendamenti = [e for e in emendamenti if e["stage"] in testo_di]
@@ -595,6 +597,12 @@ def legge(c: psycopg.Connection, slug: str) -> dict | None:
         if e["stage"].endswith("-assemblea"):
             e["vote"] = voti_aula.get(atto_di[e["stage"]], {}).get(e["number"])
             e["outcome"] = e["outcome"] or (e["vote"]["outcome"] if e["vote"] else None)
+            # in Aula alla Camera la fiducia posta su un articolo «senza emendamenti» fa decadere quelli non votati
+            if not e["outcome"]:
+                for f in fiducie.get(atto_di[e["stage"]], []):
+                    if f["articolo"] is None or (e["article"] or "").split("-")[0] == f["articolo"].split("-")[0]:
+                        e["outcome"], e["outcome_raw"] = "decaduto per fiducia", f"fiducia del {f['data'].isoformat()}"
+                        break
     per_numero = {(e["stage"], e["number"]): e for e in emendamenti}
     for e in emendamenti:
         bersaglio = re.match(r"\s*All'emendamento\s+([\w./-]+?)[,\s]", e["text"] or "")
