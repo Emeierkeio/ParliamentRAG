@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dossier · ParliamentRAG</title>
+<meta name="robots" content="noindex">
+<style>body{margin:0;font:16px/1.5 "Schibsted Grotesk",Arial,sans-serif;background:#e9ebf0;color:#14161d}.attesa{padding:80px 16px;text-align:center;color:#666b79}</style>
+</head><body><p class="attesa" id="attesa">Carico il dossier…</p>
+<!-- la pagina condivisibile di un dossier: legge /dati/dossier/<id>.json e disegna il documento di sito/js/dossier-doc.js -->
+<script src="/js/dossier-doc.js"></script>
+<script>
+(async () => {
+  const id = location.pathname.split("/").filter(Boolean).pop();
+  const r = await fetch(`/dati/dossier/${encodeURIComponent(id)}.json`).catch(() => null);
+  const d = r && r.ok ? await r.json() : null;
+  if (!d) { document.getElementById("attesa").innerHTML = 'Dossier non trovato. <a href="/">Torna a ParliamentRAG</a>'; return; }
+  const stampa = /[?&]stampa=1/.test(location.search);
+  if (stampa) history.replaceState(null, "", location.pathname);
+  d.data = d.creata; d.link = location.origin + location.pathname;
+  document.open(); document.write(DOSSIER_DOC(d, stampa)); document.close();
+})();
+</script></body></html>

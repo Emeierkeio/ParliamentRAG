@@ -14,11 +14,12 @@ import urllib.error
 import urllib.request
 from collections import defaultdict
 from collections.abc import Iterator
+from pathlib import Path
 from typing import Literal
 
 import psycopg
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse
 from pydantic import BaseModel, Field, ValidationError
 from starlette.concurrency import run_in_threadpool
 
@@ -311,6 +312,60 @@ def condivisa(ident: str):
         return JSONResponse({"errore": "conversazione non trovata"}, status_code=404)
     x = r["conversazione"]                              # ripulite anche in lettura: valgono pure per quelle di prima
     return {**x, "turni": [{**t, "html": pulisci(t.get("html") or "")} for t in x.get("turni") or []]}
+
+
+# ---------- dossier condivisibile ----------
+
+class SezioneDossier(BaseModel):
+    titolo: str = Field(default="", max_length=200)
+    html: str = Field(default="", max_length=400_000)
+
+
+class DossierSalvato(BaseModel):
+    titolo: str = Field(min_length=1, max_length=200)
+    temi: str = Field(default="", max_length=600)
+    lingua: str = "it"
+    sezioni: list[SezioneDossier] = Field(default_factory=list, max_length=20)
+
+
+@router.post("/api/dossier/condividi")
+async def dossier_condividi(req: Request):
+    """Un dossier con un indirizzo casuale non indovinabile: la pagina /dossier/<id> si condivide e si stampa in PDF.
+    Sta nella stessa tabella delle conversazioni condivise; l'HTML si ripulisce in scrittura e in lettura."""
+    corpo = await req.body()
+    if len(corpo) > 3_000_000:
+        raise HTTPException(413, "dossier troppo grande")
+    try:
+        d = DossierSalvato.model_validate_json(corpo or b"{}")
+    except ValidationError:
+        raise HTTPException(400, "formato non valido")
+    ident = secrets.token_urlsafe(12)
+    dati = {"tipo": "dossier", "titolo": d.titolo, "temi": d.temi, "lingua": "en" if d.lingua == "en" else "it",
+            "creata": time.strftime("%Y-%m-%dT%H:%M:%S"), "sezioni": [{"titolo": x.titolo, "html": pulisci(x.html)} for x in d.sezioni]}
+    with _db_sito() as c:
+        if c is None:
+            return JSONResponse({"errore": "condivisione non disponibile"}, status_code=503)
+        c.execute("INSERT INTO sito.condivisa (id, conversazione) VALUES (%s, %s)", (ident, json.dumps(dati, ensure_ascii=False)))
+    return {"id": ident}
+
+
+@router.get("/dati/dossier/{ident}.json")
+def dossier_salvato(ident: str):
+    if not re.fullmatch(r"[\w-]{8,40}", ident):
+        raise HTTPException(404, "dossier non trovato")
+    with _db_sito() as c:
+        r = c.execute("SELECT conversazione FROM sito.condivisa WHERE id = %s", (ident,)).fetchone() if c else None
+    if not r or r["conversazione"].get("tipo") != "dossier":
+        return JSONResponse({"errore": "dossier non trovato"}, status_code=404)
+    x = r["conversazione"]
+    return {**x, "sezioni": [{**s, "html": pulisci(s.get("html") or "")} for s in x.get("sezioni") or []]}
+
+
+@router.get("/dossier/{ident}", include_in_schema=False)
+def pagina_dossier(ident: str):
+    if not re.fullmatch(r"[\w-]{8,40}", ident):
+        return RedirectResponse("/", status_code=302)
+    return FileResponse(Path(__file__).resolve().parents[1] / "sito" / "dossier.html", headers={"Cache-Control": "no-cache"})
 
 
 # ---------- segnalazioni ----------
