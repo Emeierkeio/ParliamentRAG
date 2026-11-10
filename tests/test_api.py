@@ -23,9 +23,15 @@ class TestApi(unittest.TestCase):
 
     def test_documenti_depositati_su_un_atto(self):
         # contributi scritti (legati all'atto) e memorie delle audizioni (legate dall'audizione dello stesso giorno)
+        # i documenti su C. 3120 crescono a ogni giro (35 nel backup del 10/11/2026, oltre 40 la sera): conta che ci siano i due tipi
         n, righe = documenti.documenti(C, act="it:camera:19:ac:3120", limit=50)
-        self.assertGreaterEqual(n, 40)
-        self.assertEqual({r["kind"] for r in righe}, {"written_contribution", "memorandum"})
+        self.assertGreaterEqual(n, 30)
+        tipi = {r["kind"] for r in righe}
+        self.assertIn("written_contribution", tipi)
+        self.assertLessEqual(tipi, {"written_contribution", "memorandum"})
+        # le memorie arrivano con le audizioni del 10/11/2026: un database di prima ha solo i contributi scritti
+        if C.execute("SELECT EXISTS (SELECT 1 FROM document WHERE kind = 'memorandum' AND sitting_date >= '2026-11-10') AS c").fetchone()["c"]:
+            self.assertIn("memorandum", tipi)
         self.assertTrue(all(" " not in r["url"] for r in righe))                 # link interi anche in Markdown
         ania = documenti.documenti(C, act="ac:3120", author="ANIA")[1][0]
         testo = documenti.documento(C, ania["uri"])

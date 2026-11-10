@@ -261,7 +261,9 @@ class TestRotta(unittest.TestCase):
     def test_rotta_in_sse_con_lingua_e_pesi(self):
         from api import sito
         req = types.SimpleNamespace(headers={"accept-language": "en-GB"})
-        with mock.patch.object(sito, "ip", return_value="1.2.3.4"), \
+        # chi chiama e il conteggio delle visite vogliono una richiesta vera (indirizzo, cookie): qui si prova solo il
+        # passaggio di lingua e pesi. Dal 10/11/2026 la rotta riconosce chi chiama con `chi`, non più con `ip`.
+        with mock.patch.object(sito, "chi", return_value="1.2.3.4"), mock.patch.object(sito.statistiche, "registra"), \
                 mock.patch.object(servizio, "stream", return_value=iter(["data: {}\n\n"])) as s:
             r = sito.fascicolo(req, sito.Fascicolo(query="salario minimo", authority_weights={"committee": 40, "interventions": 60}))
         self.assertEqual(r.media_type, "text/event-stream")
