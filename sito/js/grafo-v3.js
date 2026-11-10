@@ -71,10 +71,6 @@ const POS = {
 };
 const ZONE = [["Persone e organi", 20, 30, 380, 760], ["Sedute e lavori", 420, 30, 440, 470], ["Voti", 420, 540, 440, 140], ["Atti", 900, 30, 320, 760]];
 const W = 128, H = 46;
-// curvatura per coppia (positiva = verso destra rispetto alla direzione)
-const CURVA = { "Person>Amendment": 0.32, "Person>Act": -0.06, "Person>Vote": -0.12, "Vote>Act": 0.06, "Person>Group": -0.2, "Person>Body": 0.2,
-  "Vote>Sitting": -0.55, "Video>Sitting": 0.15, "Amendment>Act": 0.18, "TextVersion>Act": 0.55, "Document>Act": 0.1, "Sitting>Person": 0.1,
-  "Vote>Person": 0.2, "Speech>Person": -0.1, "Ministry>Government": 0, "Person>Ministry": 0.12, "Person>Government": 0.12, "Person>Legislatura": 0.1, "Speech>Person": -0.1, "TextVersion>Amendment": 0, "AgendaItem>Act": -0.12, "Reaction>Group": 0.2, "Act>AmendmentDeadline": -0.3, "Act>CommitteeFact": 0.08, "AmendmentDeadline>Sitting": -0.08 };
 
 const fmt = n => n.toLocaleString("it-IT");
 const svg = document.getElementById("g3-svg");
@@ -100,40 +96,154 @@ const ZONE_EN = { "Persone e organi": "People and bodies", "Sedute e lavori": "S
 if (window.LANG === "en") ZONE.forEach((z) => { z[0] = ZONE_EN[z[0]] || z[0]; });
 ZONE.forEach(([t, x, y, w, h]) => { el("rect", { x, y, width: w, height: h, rx: 8, class: "zona-fondo" }); el("text", { x: x + 12, y: y + 18, class: "zona" }).textContent = t; });
 
-// bordo del rettangolo verso un punto
-function bordo([cx, cy], [tx, ty]) {
-  const dx = tx - cx, dy = ty - cy, sx = (W / 2 + 4) / Math.abs(dx || 1e-9), sy = (H / 2 + 4) / Math.abs(dy || 1e-9), s = Math.min(sx, sy);
-  return [cx + dx * s, cy + dy * s];
+// linee ortogonali (10/11/2026): solo tratti orizzontali e verticali, con gli angoli arrotondati. Ogni coppia esce dal lato
+// rivolto verso l'arrivo; le linee di uno stesso lato si distribuiscono lungo il bordo. Per il tratto di mezzo si provano
+// molte posizioni e vince quella che non attraversa riquadri e non si sovrappone alle linee già tracciate; le etichette
+// vanno dove non toccano riquadri né altre etichette.
+const MARGINE = 8;
+const riquadri = Object.entries(POS).map(([l, [x, y]]) => ({ l, x0: x - W / 2 - MARGINE, y0: y - H / 2 - MARGINE, x1: x + W / 2 + MARGINE, y1: y + H / 2 + MARGINE }))
+  .concat(ZONE.map(([t, x, y]) => ({ l: "zona " + t, x0: x + 2, y0: y + 2, x1: x + 22 + t.length * 8, y1: y + 28 })));   // i titoli delle zone
+const tratti = [];                                     // {o: "h" | "v", c: coordinata fissa, a, b: intervallo, k: coppia}
+function attraversa(p, q, salta) {
+  const x0 = Math.min(p[0], q[0]), x1 = Math.max(p[0], q[0]), y0 = Math.min(p[1], q[1]), y1 = Math.max(p[1], q[1]);
+  return riquadri.filter(r => !salta.includes(r.l) && x0 < r.x1 && x1 > r.x0 && y0 < r.y1 && y1 > r.y0).length;
+}
+function tratto(p, q, k) {
+  const o = Math.abs(p[1] - q[1]) < .5 ? "h" : "v", i = o === "h" ? 0 : 1;
+  return { o, c: o === "h" ? p[1] : p[0], a: Math.min(p[i], q[i]), b: Math.max(p[i], q[i]), k };
+}
+function sovrapposti(t) {                              // lunghezza in comune con tratti paralleli già tracciati, a meno di 7 px
+  return tratti.filter(u => u.o === t.o && u.k !== t.k && Math.abs(u.c - t.c) < 7).reduce((s, u) => s + Math.max(0, Math.min(t.b, u.b) - Math.max(t.a, u.a)), 0);
+}
+function costo(pts, salta, k) {
+  let c = 0;
+  for (let i = 0; i < pts.length - 1; i++) {
+    if (Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]) < .5) continue;
+    c += attraversa(pts[i], pts[i + 1], salta) * 10000 + sovrapposti(tratto(pts[i], pts[i + 1], k)) * 2;   // un riquadro attraversato pesa più di qualsiasi sovrapposizione
+  }
+  return c + (pts.length - 2) * 15;
+}
+function arrotonda(pts, r = 9) {
+  let d = `M ${pts[0][0]} ${pts[0][1]}`;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const [px, py] = pts[i - 1], [x, y] = pts[i], [nx, ny] = pts[i + 1], l1 = Math.hypot(x - px, y - py), l2 = Math.hypot(nx - x, ny - y);
+    if (l1 < .5 || l2 < .5) continue;
+    const q = Math.min(r, l1 / 2, l2 / 2);
+    d += ` L ${x - (x - px) / l1 * q} ${y - (y - py) / l1 * q} Q ${x} ${y} ${x + (nx - x) / l2 * q} ${y + (ny - y) / l2 * q}`;
+  }
+  return d + ` L ${pts[pts.length - 1][0]} ${pts[pts.length - 1][1]}`;
 }
 const gArchi = el("g"), gNodi = el("g");
 const archiEl = [];
+const linee = [];                                      // {k, a, b, rs, pts, giro}
+// 1. gli anelli, accanto al nodo
 Object.entries(coppie).forEach(([k, rs]) => {
-  const [a, b] = k.replace("#p", "").split(">"); const g = el("g", { class: "arco" + (rs.every(r => r.rif) ? " rif" : "") + (rs.every(r => r.perProp) ? " prop" : "") }, gArchi);
-  let d, lx, ly, ang;
-  if (a === b) { // anello
-    const [x, y] = POS[a]; const s = a === "Act" ? 1 : -1;
-    if (a === "Body") { d = `M ${x + W / 2} ${y - 8} C ${x + W / 2 + 70} ${y - 30}, ${x + W / 2 + 70} ${y + 30}, ${x + W / 2} ${y + 8}`; el("path", { d }, g); lx = x + W / 2 + 62; ly = y; }
-    else {
-    d = `M ${x + 30} ${y + s * H / 2} C ${x + 70} ${y + s * 95}, ${x - 70} ${y + s * 95}, ${x - 30} ${y + s * H / 2}`;
-    lx = x; ly = y + s * 80; ang = null;
-    el("path", { d }, g); }
-  } else {
-    const p0 = POS[a], p1 = POS[b], c = CURVA[k] ?? CURVA[k.replace("#p", "")] ?? 0;
-    const mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2, dx = p1[0] - p0[0], dy = p1[1] - p0[1];
-    const cx = mx - dy * c, cy = my + dx * c;
-    const s = bordo(p0, [cx, cy]), e = bordo(p1, [cx, cy]);
-    d = `M ${s[0]} ${s[1]} Q ${cx} ${cy} ${e[0]} ${e[1]}`;
-    el("path", { d }, g);
-    lx = 0.25 * s[0] + 0.5 * cx + 0.25 * e[0]; ly = 0.25 * s[1] + 0.5 * cy + 0.25 * e[1];
-    const ax = e[0] - cx, ay = e[1] - cy, L = Math.hypot(ax, ay) || 1, ux = ax / L, uy = ay / L;
-    el("path", { class: "freccia", d: `M ${e[0]} ${e[1]} L ${e[0] - 9 * ux + 4 * uy} ${e[1] - 9 * uy - 4 * ux} L ${e[0] - 9 * ux - 4 * uy} ${e[1] - 9 * uy + 4 * ux} Z` }, g);
+  const [a, b] = k.replace("#p", "").split(">"); if (a !== b) return;
+  const [x, y] = POS[a];
+  const pts = a === "Body" ? [[x + W / 2, y - 10], [x + W / 2 + 32, y - 10], [x + W / 2 + 32, y + 10], [x + W / 2, y + 10]]
+    : (s => [[x + 24, y + s * H / 2], [x + 24, y + s * (H / 2 + 30)], [x - 24, y + s * (H / 2 + 30)], [x - 24, y + s * H / 2]])(a === "Act" ? 1 : -1);
+  linee.push({ k, a, b, rs, pts, giro: true });
+  for (let i = 0; i < pts.length - 1; i++) tratti.push(tratto(pts[i], pts[i + 1], k));
+});
+// 2. per le altre coppie, il lato: in orizzontale fra colonne diverse, in verticale nella stessa colonna, o quello che attraversa meno riquadri
+const lati = {};
+Object.entries(coppie).forEach(([k, rs]) => {
+  const [a, b] = k.replace("#p", "").split(">"); if (a === b) return;
+  const [ax, ay] = POS[a], [bx, by] = POS[b], dx = bx - ax, dy = by - ay;
+  const prova = (oriz) => {
+    const s = oriz ? [ax + Math.sign(dx) * W / 2, ay] : [ax, ay + Math.sign(dy) * H / 2], e = oriz ? [bx - Math.sign(dx) * W / 2, by] : [bx, by - Math.sign(dy) * H / 2];
+    const m = oriz ? (s[0] + e[0]) / 2 : (s[1] + e[1]) / 2;
+    return attraversa(s, oriz ? [m, s[1]] : [s[0], m], [a, b]) + attraversa(oriz ? [m, s[1]] : [s[0], m], oriz ? [m, e[1]] : [e[0], m], [a, b]) + attraversa(oriz ? [m, e[1]] : [e[0], m], e, [a, b]);
+  };
+  const puoO = Math.abs(dx) > W + 16, puoV = Math.abs(dy) > H + 16;
+  const oriz = puoO && (!puoV || prova(true) <= prova(false) && (prova(true) < prova(false) || Math.abs(dx) >= Math.abs(dy)));
+  const l = { k, a, b, rs, oriz, sa: oriz ? (dx > 0 ? "E" : "W") : (dy > 0 ? "S" : "N"), sb: oriz ? (dx > 0 ? "W" : "E") : (dy > 0 ? "N" : "S") };
+  linee.push(l);
+  (lati[a + l.sa] = lati[a + l.sa] || []).push({ l, capo: "s", altro: POS[b] });
+  (lati[b + l.sb] = lati[b + l.sb] || []).push({ l, capo: "e", altro: POS[a] });
+});
+// 3. le porte: lungo il bordo, nell'ordine della posizione dell'altro capo
+Object.entries(lati).forEach(([k, xs]) => {
+  const lato = k.slice(-1), [x, y] = POS[k.slice(0, -1)], vert = lato === "E" || lato === "W", L = vert ? H : W;
+  xs.sort((p, q) => vert ? p.altro[1] - q.altro[1] : p.altro[0] - q.altro[0]);
+  xs.forEach((p, i) => {
+    const o = -L / 2 + (i + 1) / (xs.length + 1) * L;
+    p.l[p.capo] = lato === "E" ? [x + W / 2, y + o] : lato === "W" ? [x - W / 2, y + o] : lato === "S" ? [x + o, y + H / 2] : [x + o, y - H / 2];
+  });
+});
+// 3b. porte quasi allineate: si allineano, così la linea è dritta invece di fare uno scalino di pochi pixel
+const porte = {};
+Object.entries(lati).forEach(([k, xs]) => xs.forEach(p => { (porte[k] = porte[k] || []).push(p.l[p.capo]); }));
+linee.filter(l => !l.giro).forEach(l => {
+  const i = l.oriz ? 1 : 0, d = Math.abs(l.s[i] - l.e[i]);
+  if (d < .5 || d > (l.oriz ? 18 : 30)) return;
+  const [ax, ay] = POS[l.a], [bx, by] = POS[l.b], mezza = l.oriz ? H / 2 - 6 : W / 2 - 10;
+  const lo = Math.max((l.oriz ? ay : ax) - mezza, (l.oriz ? by : bx) - mezza), hi = Math.min((l.oriz ? ay : ax) + mezza, (l.oriz ? by : bx) + mezza);
+  const v = Math.min(hi, Math.max(lo, (l.s[i] + l.e[i]) / 2));
+  if (v < lo || v > hi) return;
+  const libero = (k, pt) => (porte[k] || []).every(q => q === pt || Math.abs(q[i] - v) > 7);
+  if (!libero(l.a + l.sa, l.s) || !libero(l.b + l.sb, l.e)) return;
+  l.s[i] = v; l.e[i] = v;
+});
+// 4. il tratto di mezzo, dalle linee più corte alle più lunghe
+linee.filter(l => !l.giro).sort((p, q) => (Math.abs(p.e[0] - p.s[0]) + Math.abs(p.e[1] - p.s[1])) - (Math.abs(q.e[0] - q.s[0]) + Math.abs(q.e[1] - q.s[1]))).forEach(l => {
+  const [sx, sy] = l.s, [ex, ey] = l.e, salta = [l.a, l.b];
+  const via = (m) => l.oriz ? [l.s, [m, sy], [m, ey], l.e] : [l.s, [sx, m], [ex, m], l.e];
+  let meglio = null;
+  if (l.oriz ? Math.abs(sy - ey) < .5 : Math.abs(sx - ex) < .5) meglio = { pts: [l.s, l.e], c: costo([l.s, l.e], salta, l.k) };
+  const centro = l.oriz ? (sx + ex) / 2 : (sy + ey) / 2;
+  for (let n = 0; n < 90; n++) {
+    const m = centro + (n % 2 ? 1 : -1) * Math.ceil(n / 2) * 6, pts = via(m), c = costo(pts, salta, l.k) + Math.abs(m - centro) * .04;
+    if (!meglio || c < meglio.c) meglio = { pts, c };
   }
+  // se attraversa ancora un riquadro (due nodi nella stessa colonna o nella stessa riga), un percorso a C: esce di lato,
+  // corre nel corridoio accanto e rientra dallo stesso lato
+  if (meglio.c >= 10000) {
+    const [ax, ay] = POS[l.a], [bx, by] = POS[l.b];
+    for (const lato of l.oriz ? ["N", "S"] : ["E", "W"]) {
+      const v = lato === "E" || lato === "W", sg = lato === "E" || lato === "S" ? 1 : -1;
+      const s = v ? [ax + sg * W / 2, ay] : [ax, ay + sg * H / 2], e = v ? [bx + sg * W / 2, by] : [bx, by + sg * H / 2];
+      const fuori = v ? sg * Math.max(sg * s[0], sg * e[0]) : sg * Math.max(sg * s[1], sg * e[1]);
+      for (let n = 0; n < 40; n++) {
+        const m = fuori + sg * (18 + n * 6), pts = v ? [s, [m, s[1]], [m, e[1]], e] : [s, [s[0], m], [e[0], m], e], c = costo(pts, [l.a, l.b], l.k) + n * .5 + 25;
+        if (c < meglio.c) meglio = { pts, c };
+      }
+    }
+  }
+  l.pts = meglio.pts;
+  for (let i = 0; i < l.pts.length - 1; i++) tratti.push(tratto(l.pts[i], l.pts[i + 1], l.k));
+});
+// 5. il disegno, poi le etichette dove non coprono riquadri né altre etichette
+const etichette = [];
+const tocca = (r, s) => r.x0 < s.x1 && r.x1 > s.x0 && r.y0 < s.y1 && r.y1 > s.y0;
+linee.forEach(l => {
+  const rs = l.rs, g = el("g", { class: "arco" + (rs.every(r => r.rif) ? " rif" : "") + (rs.every(r => r.perProp) ? " prop" : "") }, gArchi);
+  el("path", { d: arrotonda(l.pts) }, g);
+  const e = l.pts[l.pts.length - 1], p = l.pts[l.pts.length - 2], L = Math.hypot(e[0] - p[0], e[1] - p[1]) || 1, ux = (e[0] - p[0]) / L, uy = (e[1] - p[1]) / L;
+  el("path", { class: "freccia", d: `M ${e[0]} ${e[1]} L ${e[0] - 9 * ux + 4 * uy} ${e[1] - 9 * uy - 4 * ux} L ${e[0] - 9 * ux - 4 * uy} ${e[1] - 9 * uy + 4 * ux} Z` }, g);
+  const w = Math.max(...rs.map(r => r.type.length)) * 6.6 + 8, h = rs.length * 13 + 2;
+  let meglio = null;
+  for (let i = 0; i < l.pts.length - 1; i++) {
+    const [ax, ay] = l.pts[i], [bx, by] = l.pts[i + 1], lung = Math.hypot(bx - ax, by - ay);
+    if (lung < 24 && !l.giro) continue;
+    for (const t of [.5, .35, .65, .2, .8]) {
+      const x = ax + (bx - ax) * t + (l.giro && l.a === "Body" ? 34 : 0), y = ay + (by - ay) * t + (l.giro && l.a !== "Body" ? (l.a === "Act" ? 16 : -16) : 0);
+      const r = { x0: x - w / 2, x1: x + w / 2, y0: y - h / 2, y1: y + h / 2 };
+      const c = riquadri.filter(q => tocca(r, q.l.startsWith("zona ") ? q : { x0: q.x0 + MARGINE, x1: q.x1 - MARGINE, y0: q.y0 + MARGINE, y1: q.y1 - MARGINE })).length * 1000
+        + etichette.filter(q => tocca(r, q)).length * 1000
+        + tratti.filter(u => u.k !== l.k && (u.o === "h" ? u.c > r.y0 && u.c < r.y1 && u.b > r.x0 && u.a < r.x1 : u.c > r.x0 && u.c < r.x1 && u.b > r.y0 && u.a < r.y1)).length * 30
+        + Math.abs(t - .5) * 20 - Math.min(lung, 200) * .05;
+      if (!meglio || c < meglio.c) meglio = { c, x, y, r };
+    }
+  }
+  if (!meglio) { const [ax, ay] = l.pts[0], [bx, by] = l.pts[l.pts.length - 1]; meglio = { x: (ax + bx) / 2, y: (ay + by) / 2, r: { x0: 0, x1: 0, y0: 0, y1: 0 } }; }
+  etichette.push(meglio.r);
   rs.forEach((r, i) => {
-    const t = el("text", { x: lx, y: ly + (i - (rs.length - 1) / 2) * 13 + 4, "text-anchor": "middle", tabindex: 0, role: "button" }, g);
+    const t = el("text", { x: meglio.x, y: meglio.y + (i - (rs.length - 1) / 2) * 13 + 4, "text-anchor": "middle", tabindex: 0, role: "button" }, g);
     t.textContent = r.type; t.addEventListener("click", ev => { ev.stopPropagation(); scegliRel(r.id); });
     t.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); scegliRel(r.id); } });
   });
-  archiEl.push({ g, a, b, ids: rs.map(r => r.id) });
+  archiEl.push({ g, a: l.a, b: l.b, ids: rs.map(r => r.id) });
 });
 const nodiEl = {};
 tuttiNodi.forEach(l => {
