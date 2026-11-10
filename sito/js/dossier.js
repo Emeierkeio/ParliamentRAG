@@ -59,7 +59,8 @@
     .indice ol{padding-left:9mm;font-size:11pt;line-height:2}
     .sez{page-break-before:always}.sez:first-of-type{page-break-before:auto}
     .sez h3{display:none}.sez h4{font-size:11pt;margin:5mm 0 2mm}
-    .sez ul{list-style:none;padding:0;margin:0}.sez li{padding:2.5mm 0;border-bottom:1px solid #e4e6eb;display:grid;gap:.8mm;break-inside:avoid}
+    .sez ul.lista{list-style:none;padding:0;margin:0}.sez .lista>li{padding:2.5mm 0;border-bottom:1px solid #e4e6eb;display:grid;gap:.8mm;break-inside:avoid}
+    .sez .prosa li{margin:0 0 1.5mm}
     .meta,.dos-firme,.dos-sotto{font-size:9pt;color:#666b79}
     .dos-chip{display:inline-block;border:1px solid #cdd1da;border-radius:99px;padding:.5mm 2.5mm;margin:0 1.5mm 1.5mm 0;font-size:9pt}
     .dos-es--ok{color:#1d6b4a;font-weight:600}.dos-es--no{color:#a52a14;font-weight:600}
