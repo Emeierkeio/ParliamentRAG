@@ -37,10 +37,19 @@
     table{border-collapse:collapse;width:100%;font-size:9.5pt;margin-bottom:4mm}th,td{border-bottom:1px solid #e4e6eb;padding:1.5mm 2mm;text-align:left}th{font-weight:600;color:#3b3f4b}
     blockquote,q{color:#14161d}
     .metodo{page-break-before:always;font-size:9.5pt;color:#3b3f4b}.metodo h2{font-size:13pt;color:#14161d}
-    section button:not(.esperto),section .azioni,.avviso-r,.dx,.info,section svg.ic,.indice-r,.indice-g,section nav,.sei-passi,details.come,.pdf-dossier{display:none!important}
+    section button:not(.esperto),section .azioni,.avviso-r,.dx,.info,section svg.ic:not(.g2__ico svg),.indice-r,.indice-g,section nav,.sei-passi,details.come,.pdf-dossier{display:none!important}
     .fonti{list-style:none;padding:0;margin:0}.fonti li{display:grid;grid-template-columns:7mm 1fr;gap:1mm 2mm;padding:2mm 0;border-bottom:1px solid #e4e6eb;break-inside:avoid}
     .fonti .n{font-weight:600;color:#666b79}.fonti li>span:last-child{display:flex;flex-wrap:wrap;gap:0 2mm;align-items:baseline}.fonti small{flex-basis:100%;font-size:9pt;color:#666b79}
     .fonte-g{color:#3b3f4b}
+    .g2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3mm}
+    .g2__c{display:grid;grid-template-columns:7mm 1fr;gap:3mm;padding:4mm;border:1px solid #e4e6eb;border-radius:3mm;background:#f6f7f9;break-inside:avoid}
+    .g2__ico{width:7mm;height:7mm;border-radius:50%;display:grid;place-items:center}.g2__ico svg{width:3.8mm;height:3.8mm}
+    .g2--ok .g2__ico{background:#e6f3ec;color:#1d6b4a}.g2--av .g2__ico{background:#f9eed4;color:#8c5b00}.g2--no .g2__ico{background:#f8e7e3;color:#a52a14}.g2--na .g2__ico{background:#e9ebf0;color:#666b79}
+    .g2__t{display:flex;flex-wrap:wrap;align-items:center;gap:1.5mm 2mm}.g2__t b{font-size:10.5pt}
+    .g2__t em{font-style:normal;font-size:8pt;font-weight:500;padding:.5mm 2mm;border-radius:99px;background:#e9ebf0;color:#3b3f4b}
+    .g2--ok .g2__t em{color:#1d6b4a;background:#e6f3ec}.g2--av .g2__t em{color:#8c5b00;background:#f9eed4}.g2--no .g2__t em{color:#a52a14;background:#f8e7e3}
+    .g2__c p{margin:1.5mm 0 0;font-size:9pt;line-height:1.45;color:#3b3f4b}
+    @media (max-width:760px){.g2{grid-template-columns:1fr}}
     .sez .lista>li:has(>span:last-child:empty){display:none}
     .esperti{display:grid;grid-template-columns:repeat(2,1fr);gap:2.5mm}
     .esperto{display:flex!important;align-items:center;gap:3mm;border:1px solid #e4e6eb;border-radius:2mm;padding:2.5mm 3mm;background:#fff;font:inherit;text-align:left;color:inherit;break-inside:avoid}
