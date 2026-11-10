@@ -3,7 +3,8 @@ procedure informative (audizioni del Governo, indagini conoscitive) e per la ses
 
 Per ogni commissione permanente la pagina dell'anno elenca le sedute con lo stenografico: commissione (anche riunite o
 congiunte con la Camera), data, numero della seduta, sede e argomento, e il link al PDF. Ogni notte si rileggono gli
-elenchi dell'anno in corso (dieci richieste); gli anni passati una volta sola. I PDF nuovi si scaricano, al più
+elenchi dell'anno in corso (dieci richieste); gli anni passati una volta sola. Una commissione senza stenografici in un
+anno risponde 500: si segna come anno vuoto e si va avanti. I PDF nuovi si scaricano, al più
 `massimo_file_per_giro` per notte. senato.it sta dietro il WAF: tutto con il browser, nel tetto comune delle richieste.
 
 Nel lago: l'elenco (`leg19-senato-stc-elenco-05-2026`), per ogni stenografico la scheda con i dati dell'elenco
@@ -62,7 +63,7 @@ def scarica(ctx) -> dict:
     massimo_file = int(cfg.get("massimo_file_per_giro", 40))
     lago, anno = Lago(ctx.cartella), dt.date.today().year
     noti = set(lago.chiavi(NOME))
-    elenchi = nuovi = file_ = 0
+    elenchi = nuovi = file_ = di_fila = 0
     voci: dict[str, dict] = {}
     try:
         with senato_browser.Sessione(pausa=float(cfg.get("pausa_secondi", 5)), massimo=int(cfg.get("massimo_richieste", 80)), ctx=ctx) as sessione:
@@ -74,9 +75,17 @@ def scarica(ctx) -> dict:
                     else:
                         try:
                             corpo = sessione.scarica(PAGINA.format(n=n, anno=a))
+                            di_fila = 0
                         except senato_browser.NonTrovato:
                             continue
-                        lago.salva(NOME, k, corpo, PAGINA.format(n=n, anno=a), "htm")
+                        except senato_browser.Bloccato as e:
+                            # una commissione senza stenografici in quell'anno risponde 500: non è un blocco (verificato
+                            # l'11/11/2026 sulla 6ª, 2026). Tre di fila invece sì: il sito non sta rispondendo
+                            di_fila += 1
+                            if "HTTP 500" not in str(e) or di_fila >= 3:
+                                raise
+                            corpo = b""
+                        lago.salva(NOME, k, corpo or b"<!-- nessuno stenografico -->", PAGINA.format(n=n, anno=a), "htm")
                         elenchi += 1
                     for v in elenco(corpo, n):
                         voci.setdefault(v["id"], v)                             # una seduta congiunta sta negli elenchi di più commissioni
