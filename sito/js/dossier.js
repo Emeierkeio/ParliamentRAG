@@ -78,7 +78,7 @@
     .meta,.dos-firme,.dos-sotto{font-size:9pt;color:#666b79}
     .dos-chip{display:inline-block;border:1px solid #cdd1da;border-radius:99px;padding:.5mm 2.5mm;margin:0 1.5mm 1.5mm 0;font-size:9pt}
     .dos-es--ok{color:#1d6b4a;font-weight:600}
-    .dos-quadro{font-size:9pt}.dos-quadro td{vertical-align:top}.dos-quadro th{font-size:8.5pt;text-transform:none}.dos-es--no{color:#a52a14;font-weight:600}
+    .dos-quadro{font-size:9pt}.dos-quadro td{vertical-align:top}.dos-quadro td:first-child{white-space:nowrap}.dos-quadro th{font-size:8.5pt;text-transform:none}.dos-es--no{color:#a52a14;font-weight:600}
     table{border-collapse:collapse;width:100%;font-size:9.5pt;margin-bottom:4mm}th,td{border-bottom:1px solid #e4e6eb;padding:1.5mm 2mm;text-align:left}th{font-weight:600;color:#3b3f4b}
     blockquote,q{color:#14161d}
     .metodo{page-break-before:always;font-size:9.5pt;color:#3b3f4b}.metodo h2{font-size:13pt;color:#14161d}

@@ -70,6 +70,8 @@ def sezioni(c: psycopg.Connection, tema: str) -> dict:
         t = re.sub(r"<[^>]+>", "", t or "")
         t = re.sub(r'^(?:\s*[CS]\.\s*\d+(?:-\w+)?\.?)*\s*[-–.]?\s*', "", t)
         t = re.sub(r"^[A-ZÀ-Ý' ]+(?: ed altri| e altri)?:\s*", "", t)
+        # «Conversione in legge del decreto-legge 7 agosto 2026, n. 143, recante …» → «DL 143/2026: …», il tema prima
+        t = re.sub(r"^Conversione in legge,?(?: con modificazioni,)? del decreto-legge \d+ \w+ (\d{4}), n\. (\d+),? recante\s*", r"DL \2/\1: ", t)
         return re.sub(r'^["“]|["”]\s*$', "", t.strip()).strip()
     quadro = [{"atto": r["uri"], "sigla": ("C. " if r["chamber"] == "camera" else "S. ") + r["number"], "titolo": pulito(r["title"]),
                "stato": r["status"], "data_stato": r["status_date"], "legge": r["law_number"], "data_legge": r["law_date"],
