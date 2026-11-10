@@ -60,5 +60,40 @@ class TestCalendario(unittest.TestCase):
         self.assertIsNone(vigente(b"<html></html>"))
 
 
+class TestCalendarioSenato(unittest.TestCase):
+    def setUp(self):
+        from pipeline.trasforma.senato_calendario import trasforma as senato
+        grezzo = (Path(__file__).parent / "fixtures" / "senato_calendario.htm").read_bytes()
+        self.r = senato(grezzo, {"chiave": "leg19-senato-calendario"}, oggi=dt.date(2026, 11, 10))
+        self.per_giorno = {}
+        for n in self.r["nodi"]:
+            self.per_giorno.setdefault(n["date"], []).append(n)
+
+    def test_settimana_d_aula(self):
+        mar = self.per_giorno["2026-11-17"]
+        self.assertTrue(all(v["when"].startswith("Martedì 17 novembre (16,30-22)") for v in mar))
+        self.assertIn("ddl:1836", [a for v in mar for a in v["acts"]])
+        # un argomento con il suo giorno («(giovedì 19, ore 15)») sta solo in quel giorno
+        self.assertFalse(any("Interrogazioni a risposta immediata" in v["title"] for v in mar))
+        self.assertTrue(any("Interrogazioni a risposta immediata" in v["title"] for v in self.per_giorno["2026-11-19"]))
+
+    def test_settimana_riservata_alle_commissioni(self):
+        for giorno in ("2026-11-09", "2026-11-11", "2026-11-13"):
+            self.assertEqual(len(self.per_giorno[giorno]), 1)
+            self.assertIn("riservata ai lavori delle Commissioni", self.per_giorno[giorno][0]["title"])
+        self.assertNotIn("2026-11-14", self.per_giorno)                                          # sabato
+
+    def test_controlli_e_script(self):
+        righe = [{"tipo": "ambito", **self.r["ambito"]}] + [{"tipo": "nodo", **n} for n in self.r["nodi"]]
+        self.assertEqual(uscite._regole(righe), [])
+        self.assertIn("DELETE FROM calendar_item WHERE chamber = 'senato' AND source = 'senato_calendario';", script_calendario(righe))
+
+    def test_ora_del_giorno(self):
+        from api.strumenti.agenda import _ora
+        titolo = "Martedì 17 novembre (16,30-22) - Mercoledì 18 novembre (10-22) - Giovedì 19 novembre (10)"
+        self.assertEqual([_ora(titolo, g) for g in (17, 18, 19)], ["16:30", "10:00", "10:00"])
+        self.assertEqual(_ora("Mercoledì 11 novembre (ore 12)", 11), "12:00")
+
+
 if __name__ == "__main__":
     unittest.main()

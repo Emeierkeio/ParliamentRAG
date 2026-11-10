@@ -85,7 +85,7 @@ def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | N
                     continue
                 quando = list(dict.fromkeys(v["when_text"] for v in voci if v["when_text"]))
                 giorni[g]["aula"].append({
-                    "uri": None, "chamber": ramo, "number": None, "date": g, "status": "calendar", "start_time": _ora(quando[0]) if quando else None,
+                    "uri": None, "chamber": ramo, "number": None, "date": g, "status": "calendar", "start_time": _ora(quando[0], int(g[-2:])) if quando else None,
                     "record_url": None, "items": [v["title"] for v in voci][:8], "items_total": len(voci), "votes": 0, "schedule": quando[:4],
                     "acts": sorted({a for v in voci for a in (v["acts"] or [])}), "calendar": voci[0]["calendar"], "updated": voci[0]["updated"]})
     if "commissioni" in tipi:
@@ -136,9 +136,11 @@ def _c_e_il_calendario(c: psycopg.Connection) -> bool:
     return bool(c.execute("SELECT to_regclass('calendar_item') IS NOT NULL AS c").fetchone()["c"])
 
 
-def _ora(t: str) -> str | None:
-    """L'ora d'inizio in un'indicazione del calendario: «(ore 12)», «(ore 9,30-13,30 …)», «(16,15-20, …)»."""
-    m = re.search(r"\(\s*(?:ore\s+)?(\d{1,2})(?:[,.](\d{2}))?", t, re.I)
+def _ora(t: str, giorno: int | None = None) -> str | None:
+    """L'ora d'inizio in un'indicazione del calendario: «(ore 12)», «(ore 9,30-13,30 …)», «(16,30-22)». Con più giorni
+    nella stessa indicazione («Martedì 17 novembre (16,30-22) - Mercoledì 18 novembre (10-22)»), quella del giorno chiesto."""
+    ora = r"\(\s*(?:ore\s+)?(\d{1,2})(?:[,.](\d{2}))?"
+    m = (re.search(rf"\b{giorno}°?(?:\s+[a-zà-ù]+)?\s*{ora}", t, re.I) if giorno else None) or re.search(ora, t, re.I)
     return f"{int(m.group(1)):02d}:{m.group(2) or '00'}" if m and int(m.group(1)) < 24 else None
 
 

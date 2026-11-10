@@ -83,6 +83,11 @@ massimo_giorni_per_giro = 60  # ordini del giorno passati per notte (circa 740 i
 legislatura = 19
 pausa_secondi = 2.0           # due richieste per notte: la pagina del calendario e il calendario vigente
 
+[fonti.senato_calendario]
+legislatura = 19
+pausa_secondi = 3.0
+massimo_richieste = 3         # una pagina per notte, con il browser (senato.it sta dietro il WAF)
+
 [fonti.camera_documenti]
 legislatura = 19
 pausa_secondi = 1.0

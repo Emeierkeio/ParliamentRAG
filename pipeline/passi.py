@@ -26,6 +26,8 @@ from .trasforma import camera_dossier as camera_dossier_t
 from .trasforma import camera_emendamenti as camera_emendamenti_t
 from .trasforma import camera_odg as camera_odg_t
 from .trasforma import camera_calendario as camera_calendario_t
+from .fonti import senato_calendario
+from .trasforma import senato_calendario as senato_calendario_t
 from .trasforma import camera_stenografico_commissione
 from .trasforma import camera_testi as camera_testi_t
 from .trasforma import corrispondenze, senato_anagrafica
@@ -288,6 +290,8 @@ PASSI = [
     Passo("trasforma_camera_odg", Trasforma("camera_odg", camera_odg_t.trasforma, chiavi=r"-odg-\d{8}$"), dopo=["scarica_camera_odg"], timeout_minuti=10),
     Passo("scarica_camera_calendario", camera_calendario.scarica, timeout_minuti=5, tentativi=2),
     Passo("trasforma_camera_calendario", Trasforma("camera_calendario", camera_calendario_t.trasforma, chiavi=r"-calendario-vigente$"), dopo=["scarica_camera_calendario"], timeout_minuti=5),
+    Passo("scarica_senato_calendario", senato_calendario.scarica, timeout_minuti=10, tentativi=1),
+    Passo("trasforma_senato_calendario", Trasforma("senato_calendario", senato_calendario_t.trasforma, chiavi=r"-senato-calendario$"), dopo=["scarica_senato_calendario"], timeout_minuti=5),
     Passo("scarica_camera_documenti", camera_documenti.scarica, timeout_minuti=60, tentativi=1),
     Passo("trasforma_camera_documenti_elenchi", Trasforma("camera_documenti", camera_documenti_t.trasforma_elenco, chiavi=r"-doc-elenco-",
                                                           segno="camera_documenti_elenchi"), dopo=["scarica_camera_documenti"], timeout_minuti=10),
@@ -334,7 +338,7 @@ PASSI = [
     Passo("controlla_uscite", controlli_uscite.controlla, dopo_comunque=["trasforma_eurovoc", "trasforma_camera_resoconti", "trasforma_camera_ocd", "trasforma_camera_governo", "trasforma_camera_atti", "trasforma_camera_voti",
                                                           "trasforma_camera_bollettino", "trasforma_camera_stenografici_commissioni",
                                                           "trasforma_camera_aic", "trasforma_camera_webtv",
-                                                          "trasforma_camera_odg", "trasforma_camera_calendario", "trasforma_camera_documenti_elenchi",
+                                                          "trasforma_camera_odg", "trasforma_camera_calendario", "trasforma_senato_calendario", "trasforma_camera_documenti_elenchi",
                                                           "trasforma_camera_documenti_testi", "trasforma_camera_dossier",
                                                           "trasforma_camera_emendamenti", "trasforma_camera_testi",
                                                           "trasforma_senato_osr", "trasforma_senato_voti",

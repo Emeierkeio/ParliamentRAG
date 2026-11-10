@@ -548,7 +548,7 @@ STRUMENTI: list[Strumento] = [
               "riprendere). Per «chi ha depositato memorie su…» e «cosa sostiene X nella sua memoria». Sono scritti di terzi, non "
               "parole di parlamentari: riferiscili attribuendoli all'autore, senza «…», con il link.", DocumentiAcquisiti, _documenti),
     Strumento("agenda", "AGENDA. Cosa succede in Parlamento giorno per giorno fra due date: sedute d'Aula previste e tenute (status calendar: "
-              "il giorno viene dal calendario dei lavori dell'Assemblea della Camera, con gli argomenti previsti e gli orari in schedule; "
+              "il giorno viene dal calendario dei lavori dell'Assemblea, di Camera o Senato, con gli argomenti previsti e gli orari in schedule; "
               "non ha ancora numero di seduta e può cambiare), sedute "
               "di commissione, termini per gli emendamenti in commissione (con la frase del sommario degli uffici, che non va citata come "
               "parola di un parlamentare), progetti di legge presentati, votazioni finali, leggi pubblicate. «Cosa scade oggi o questa "
