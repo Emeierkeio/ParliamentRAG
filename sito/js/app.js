@@ -72,11 +72,22 @@
   // il nastro che scorre da solo si sposta con B.giostra (home.js); con il movimento ridotto il contenitore scorre normalmente
   document.addEventListener("click", (ev) => { const b = ev.target.closest("[data-giostra]"); if (!b) return; if (B.giostra && B.giostra(+b.dataset.giostra)) return; const g = $("#griglia-str"), card = g.querySelector("a"); g.scrollBy({ left: (+b.dataset.giostra) * ((card ? card.offsetWidth : 300) + 14), behavior: "smooth" }); });
 
-  /* ---------- newsletter (nel prototipo non invia: la lista è quella vera) ---------- */
-  { const f = $("#news-f"); if (f) f.addEventListener("submit", (ev) => { ev.preventDefault(); const m = $("#news-m"), em = $("#news-e").value.trim();
+  /* ---------- newsletter: doppia conferma di Brevo; l'indirizzo va solo a Brevo ---------- */
+  { const f = $("#news-f"); if (f) f.addEventListener("submit", async (ev) => { ev.preventDefault(); const m = $("#news-m"), em = $("#news-e").value.trim(), bt = f.querySelector("button");
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { m.textContent = TT("Scrivi un indirizzo email valido.", "Enter a valid email address."); return; }
     if (!$("#news-c").checked) { m.textContent = TT("Per iscriverti serve il consenso.", "Consent is required to subscribe."); return; }
-    m.textContent = TT("Prototipo locale: l'iscrizione non viene inviata. Sul sito pubblico arriverebbe una mail di conferma.", "Local prototype: the subscription is not sent. On the public site you would get a confirmation email."); }); }
+    bt.disabled = true; m.textContent = TT("Invio…", "Sending…");
+    try {
+      const r = await fetch("/api/iscriviti", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: em, consenso: true, lingua: window.LANG }) });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok && d.ok) { f.reset(); m.textContent = TT("Ti abbiamo mandato una mail: clicca il link per confermare l'iscrizione.", "We sent you an email: click the link to confirm."); }
+      else m.textContent = d.errore || TT("Iscrizione non riuscita, riprova.", "Subscription failed, try again.");
+    } catch { m.textContent = TT("Iscrizione non riuscita, riprova.", "Subscription failed, try again."); }
+    bt.disabled = false; }); }
+  // /iscriviti (link dei post e dei volantini) arriva qui con #iscriviti: si va al modulo, col cursore nella casella
+  if (location.hash === "#iscriviti") { history.replaceState(null, "", location.pathname + location.search); setTimeout(() => { const n = $("#newsletter"); if (n) { n.scrollIntoView({ block: "center" }); $("#news-e")?.focus({ preventScroll: true }); } }, 400); }
+  // ritorno dal link di conferma della mail
+  if (/[?&]iscritto=1/.test(location.search)) { const m = $("#news-m"); if (m) { m.textContent = TT("Iscrizione confermata. Grazie!", "Subscription confirmed. Thank you!"); setTimeout(() => $("#newsletter")?.scrollIntoView({ block: "center" }), 400); } }
 
   /* ---------- cronologia ---------- */
   document.addEventListener("click", (ev) => { if (ev.target.closest("#apri-storia")) CH.mostraStoria(); });

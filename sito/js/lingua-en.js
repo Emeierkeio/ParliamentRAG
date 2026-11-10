@@ -785,7 +785,7 @@
 
   Object.assign(window.LINGUA_EN.testi, { "Aggiornamenti sul progetto e sui dati.": "Updates on the project and the data." });
 
-  Object.assign(window.LINGUA_EN.testi, { "Resta aggiornato": "Stay updated", "Nuovi dati, nuovi strumenti e i risultati della ricerca, direttamente nella tua casella.": "New data, new tools and research results, straight to your inbox." });
+  Object.assign(window.LINGUA_EN.testi, { "Ricevi le novità di ParliamentRAG per email": "Get ParliamentRAG news by email", "Nuovi strumenti come il dossier per la tua azienda o le scadenze per gli emendamenti, appena escono. Ti scriviamo solo quando c'è qualcosa di nuovo.": "New tools, like the dossier for your company or amendment deadlines, as soon as they ship. We only write when there is something new." });
 
   Object.assign(window.LINGUA_EN.testi, { "Cerca uno strumento, un deputato, o chiedi…": "Search a tool, a deputy, or ask…", "Cerca uno strumento o chiedi": "Search a tool or ask", "Chiedi": "Ask", "Le tue chat": "Your chats", "Strumenti": "Tools", "Deputati": "Deputies", "Gruppi": "Groups" });
 

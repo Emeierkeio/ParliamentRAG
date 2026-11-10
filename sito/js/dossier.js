@@ -45,7 +45,24 @@
         : `<p class="dos-sotto">${TT("Nessun termine aperto né audizione recente sugli atti trovati.", "No open deadline or recent hearing on the bills found.")}</p>`);
     if (d.atti.length) blocco(t, "atti", TT("Atti sul tema", "Bills and acts on the topic"), "",
       `<ul class="lista">${d.atti.map((a) => `<li><span class="meta">${e(a.ramo === "senato" ? "Senato" : "Camera")}${a.data ? ` · ${data(a.data)}` : ""}</span><span>${a.url ? `<a href="${e(a.url)}" target="_blank" rel="noopener">${e(B.taglia(a.titolo, 200))}</a>` : e(B.taglia(a.titolo, 200))}</span></li>`).join("")}</ul>`);
+    // in fondo al dossier, l'invito alla newsletter: chi ha appena ottenuto un dossier è chi la vuole
+    blocco(t, "iscriviti", TT("Ricevi le novità per email", "Get the news by email"), "",
+      `<form class="dos-news" novalidate><p>${TT("Nuovi strumenti e nuovi dati sul Parlamento, appena escono. Ti scriviamo solo quando c'è qualcosa di nuovo.", "New tools and data on Parliament, as soon as they ship. We only write when there is something new.")}</p>
+        <div class="news__riga"><label class="vh">Email</label><input type="email" placeholder="${TT("La tua email", "Your email")}" autocomplete="email" required><button class="bt bt--primario" type="submit">${TT("Iscriviti", "Subscribe")}</button></div>
+        <label class="spunta"><input type="checkbox"> <span>${TT("Ho letto l'<a href=\"#/legale/privacy\">informativa privacy</a> e accetto di ricevere aggiornamenti.", "I have read the <a href=\"#/legale/privacy\">privacy notice</a> and agree to receive updates.")}</span></label><p class="news__msg" role="status"></p></form>`);
   };
+  // i moduli di iscrizione sotto i dossier: stessa chiamata del modulo della home
+  document.addEventListener("submit", async (ev) => {
+    const f = ev.target.closest(".dos-news"); if (!f) return; ev.preventDefault();
+    const m = f.querySelector(".news__msg"), em = f.querySelector("input[type=email]").value.trim(), bt = f.querySelector("button");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { m.textContent = TT("Scrivi un indirizzo email valido.", "Enter a valid email address."); return; }
+    if (!f.querySelector("input[type=checkbox]").checked) { m.textContent = TT("Per iscriverti serve il consenso.", "Consent is required to subscribe."); return; }
+    bt.disabled = true;
+    const r = await fetch("/api/iscriviti", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: em, consenso: true, lingua: window.LANG }) }).catch(() => null);
+    const d = r ? await r.json().catch(() => ({})) : {};
+    m.textContent = r && r.ok && d.ok ? TT("Ti abbiamo mandato una mail: clicca il link per confermare l'iscrizione.", "We sent you an email: click the link to confirm.") : d.errore || TT("Iscrizione non riuscita, riprova.", "Subscription failed, try again.");
+    if (r && r.ok) f.reset(); bt.disabled = false;
+  });
 
   /* ---------- PDF ---------- */
   const STAMPA_CSS = `@page{size:A4;margin:18mm 16mm 22mm;
@@ -95,7 +112,7 @@
     const m = q.match(/^(?:Dossier su|Dossier on) (.+?)(?:, (?:temi|topics): (.+?))?(?:; (?:associazioni|associations): (.+?))?\. /);
     const titolo = m ? m[1] : q, temi = m ? [m[2], m[3]].filter(Boolean).join(", ").split(/, /).join(" · ") : "";
     const oggi = new Date().toLocaleDateString(window.LANG === "en" ? "en-GB" : "it-IT", { day: "numeric", month: "long", year: "numeric" });
-    const sezioni = [...el.querySelectorAll("[data-blocco]")].filter((b) => !b.hidden && b.textContent.trim())
+    const sezioni = [...el.querySelectorAll("[data-blocco]")].filter((b) => !b.hidden && b.textContent.trim() && b.dataset.blocco !== "iscriviti")
       .sort((a, b) => (b.dataset.blocco === "quadro") - (a.dataset.blocco === "quadro"))
       .map((b) => ({ titolo: b.dataset.blocco === "risposta" ? TT("Posizioni e risposta", "Positions and answer") : ((b.querySelector("h3") || {}).firstChild || {}).textContent || "", html: b.innerHTML }));
     const html = `<!doctype html><html lang="${window.LANG || "it"}"><head><meta charset="utf-8"><title>${e(titolo)} · ParliamentRAG</title>
@@ -107,7 +124,8 @@
       <section class="metodo"><h2>${TT("Metodo e fonti", "Method and sources")}</h2>
         <p>${TT("ParliamentRAG organizza i dati del Parlamento per un accesso facile e verificabile. Le risposte rispettano tre garanzie, controllate da un programma prima di mostrarle: tutti i gruppi sono considerati (il Gruppo Misto per componente); per ogni gruppo parla chi segue il tema, secondo criteri pubblici; ogni citazione è copiata parola per parola dal resoconto.", "ParliamentRAG organises the data of the Italian Parliament for easy and verifiable access. Answers meet three guarantees, checked by a program before they are shown: every group is considered (the Mixed Group by component); for each group the member who follows the topic speaks, by public criteria; every quote is copied word for word from the record.")}</p>
         <p>${TT("Fonti: dati.camera.it, dati.senato.it, resoconti stenografici e sommari delle commissioni, schede degli atti. Gli esiti degli emendamenti vengono dai file di Camera e Senato, dai voti elettronici dell'Aula o dalla regola della fiducia; «non pubblicato» vuol dire che nessuna fonte lo dice. Un modello di AI scrive il testo e può sbagliare: fanno fede le fonti linkate.", "Sources: dati.camera.it, dati.senato.it, verbatim records and committee summaries, bill pages. Amendment outcomes come from the Chamber and Senate files, the floor's electronic votes or the confidence-vote rule; «not published» means no source states it. An AI model writes the text and can be wrong: the linked sources prevail.")}</p>
-        <p>www.parliamentrag.it · contatti@parliamentrag.it</p></section>
+        <p>www.parliamentrag.it · contatti@parliamentrag.it</p>
+        <p><b>${TT("Ricevi le novità per email:", "Get the news by email:")}</b> <a href="https://www.parliamentrag.it/iscriviti">www.parliamentrag.it/iscriviti</a></p></section>
       <script>Promise.all([document.fonts.ready,...[...document.images].map((i)=>i.complete?0:new Promise((r)=>{i.onload=i.onerror=r}))]).then(()=>setTimeout(()=>{print()},300));<\/script></body></html>`;
     const w = window.open("", "_blank");
     if (w) { w.document.open(); w.document.write(html); w.document.close(); return; }

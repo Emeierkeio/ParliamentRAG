@@ -1976,3 +1976,4 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
 .dos-quadro th{text-align:left;font-size:12px;font-weight:600;color:var(--t3);padding:6px 10px 6px 0;border-bottom:1px solid var(--bordo2)}
 .dos-quadro td{vertical-align:top;padding:9px 10px 9px 0;border-bottom:1px solid var(--bordo);color:var(--t2)}
 .dos-quadro td:first-child{white-space:nowrap}.dos-quadro td b{color:var(--t)}
+.dos-news p{margin:0 0 10px;color:var(--t2)}.dos-news .news__riga{max-width:520px}.dos-news .news__msg{margin-top:8px}

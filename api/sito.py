@@ -18,7 +18,7 @@ from typing import Literal
 
 import psycopg
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 from pydantic import BaseModel, Field, ValidationError
 from starlette.concurrency import run_in_threadpool
 
@@ -362,3 +362,54 @@ def segnala(req: Request, s: Segnalazione):
         return JSONResponse({"errore": "invio non riuscito"}, status_code=502)
     _segnalazioni[indirizzo].append(ora)
     return {"ok": True}
+
+
+# ---------- newsletter ----------
+ISCRIZIONI_ORA = 5
+_iscrizioni: dict[str, list[float]] = defaultdict(list)    # orari dell'ultima ora per IP, solo in memoria
+LISTA_NEWSLETTER, TEMPLATE_CONFERMA = 4, 2
+
+
+class Iscrizione(BaseModel):
+    email: str = Field(min_length=5, max_length=200, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+    consenso: bool
+    lingua: str = Field(default="it", max_length=5)
+
+
+@router.post("/api/iscriviti")
+def iscriviti(req: Request, d: Iscrizione):
+    """Iscrizione alla newsletter con doppia conferma di Brevo (lista 4, mail di conferma col template 2). L'indirizzo va
+    solo a Brevo: non si salva, non si scrive nei log, non si lega alle domande della chat."""
+    if not d.consenso:
+        return JSONResponse({"errore": "serve il consenso"}, status_code=400)
+    indirizzo, ora = ip(req), time.time()
+    _iscrizioni[indirizzo] = [t for t in _iscrizioni[indirizzo] if ora - t < 3600]
+    if len(_iscrizioni[indirizzo]) >= ISCRIZIONI_ORA:
+        return JSONResponse({"errore": "troppe iscrizioni in un'ora, riprova più tardi"}, status_code=429)
+    chiave = env("BREVO_API_KEY", "")
+    if not chiave:
+        return JSONResponse({"errore": "iscrizione non configurata"}, status_code=503)
+    corpo = {"email": d.email.strip(), "includeListIds": [LISTA_NEWSLETTER], "templateId": TEMPLATE_CONFERMA,
+             "redirectionUrl": "https://www.parliamentrag.it/?iscritto=1"}
+    try:
+        r = urllib.request.Request("https://api.brevo.com/v3/contacts/doubleOptinConfirmation", json.dumps(corpo).encode(),
+                                   {"api-key": chiave, "Content-Type": "application/json", "accept": "application/json"})
+        with urllib.request.urlopen(r, timeout=20) as risposta_brevo:
+            risposta_brevo.read()
+    except urllib.error.HTTPError as e:
+        # 400 con «Contact already exist»: è già iscritto; per chi scrive non cambia niente
+        if e.code == 400 and b"already" in e.read().lower():
+            return {"ok": True}
+        log.warning("iscrizione non riuscita: Brevo %s", e.code)
+        return JSONResponse({"errore": "iscrizione non riuscita, riprova"}, status_code=502)
+    except (urllib.error.URLError, TimeoutError):
+        return JSONResponse({"errore": "iscrizione non riuscita, riprova"}, status_code=502)
+    _iscrizioni[indirizzo].append(ora)
+    return {"ok": True}
+
+
+@router.get("/iscriviti", include_in_schema=False)
+def pagina_iscriviti(req: Request):
+    """Il link dei post e dei volantini: la home, già sul modulo della newsletter (con la lingua, se c'è)."""
+    q = f"?{req.url.query}" if req.url.query else ""
+    return RedirectResponse(f"/{q}#iscriviti", status_code=302)

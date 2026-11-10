@@ -65,7 +65,7 @@
       const p = PASSI[i];
       $(".nov__et").textContent = `${TT("Novità", "What's new")} · ${i + 1} ${TT("di", "of")} ${PASSI.length}`;
       $(".nov__anim").innerHTML = p.scena();
-      $(".nov__corpo").innerHTML = `<div class="nov__passo"><h2 id="nov-titolo">${e(p.titolo)}</h2></div><div class="nov__passo" style="animation-delay:.06s"><p>${e(p.testo)}</p></div>`;
+      $(".nov__corpo").innerHTML = `<div class="nov__passo"><h2 id="nov-titolo">${e(p.titolo)}</h2></div><div class="nov__passo" style="animation-delay:.06s"><p>${e(p.testo)}</p>${i === PASSI.length - 1 ? `<p class="nov__news"><a href="#newsletter" data-nov="news">${TT("Vuoi le prossime novità per email? Iscriviti alla newsletter", "Want the next updates by email? Subscribe to the newsletter")}</a></p>` : ""}</div>`;
       p.dopo?.($(".nov__anim"), tempi);
       box.querySelectorAll(".nov__punti button").forEach((b, n) => b.setAttribute("aria-current", n === i ? "true" : "false"));
       $('[data-nov="indietro"]').hidden = i === 0;
@@ -85,6 +85,7 @@
       if (ev.target === box || ev.target.closest(".nov__x")) return chiudi();
       const p = ev.target.closest(".nov__punti button"); if (p) return vai(+p.dataset.k);
       const b = ev.target.closest("[data-nov]"); if (!b) return;
+      if (b.dataset.nov === "news") { ev.preventDefault(); chiudi(); setTimeout(() => { document.getElementById("newsletter")?.scrollIntoView({ block: "center" }); document.getElementById("news-e")?.focus({ preventScroll: true }); }, 260); return; }
       if (b.dataset.nov === "indietro") return vai(i - 1);
       if (i < PASSI.length - 1) return vai(i + 1);
       chiudi();

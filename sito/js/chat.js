@@ -64,7 +64,7 @@
     b.innerHTML = `<h3>${e(titolo)}${dx ? `<span class="dx">${dx}</span>` : ""}</h3>${html}`;
     return b;
   }
-  const ORDINE_B = ["risposta", "quadro", "classifica", "garanzie", "posizioni", "voti", "emendamenti", "chi", "arrivo", "persona", "interventi", "schede", "atti", "sedute", "fonti"];
+  const ORDINE_B = ["risposta", "quadro", "classifica", "garanzie", "posizioni", "voti", "emendamenti", "chi", "arrivo", "persona", "interventi", "schede", "atti", "sedute", "fonti", "iscriviti"];
   const NOMI_BLOCCHI = { risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", emendamenti: "Emendamenti", chi: "Chi ci lavora", arrivo: "In arrivo", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica" };
   // l'indice serve solo quando la risposta ha almeno due parti oltre al testo
   function aggiornaIndice(t) {

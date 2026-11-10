@@ -17,6 +17,7 @@
 .nov__corpo{padding:24px 28px 8px;display:grid;gap:8px;min-height:152px}
 .nov__corpo h2{margin:0;font-size:22px;line-height:1.25;letter-spacing:-.02em;font-weight:600;text-wrap:balance}
 .nov__corpo p{margin:0;color:var(--t2);font-size:15.5px;line-height:1.55}
+.nov__news{margin-top:6px!important;font-size:14.5px!important}.nov__news a{color:var(--acc);font-weight:500}
 .nov__corpo code{font:500 13.5px "IBM Plex Mono",ui-monospace,monospace;color:var(--acc);background:var(--acc-f);padding:1px 6px;border-radius:6px}
 .nov__piede{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 28px 24px;flex-wrap:wrap}
 .nov__punti{display:flex;gap:6px}
