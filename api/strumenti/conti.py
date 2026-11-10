@@ -820,3 +820,53 @@ def cambi_gruppo(c: psycopg.Connection, chamber: str | None = None, start: dt.da
                          "cambio; un ritorno al gruppo di prima conta come un nuovo cambio. Data = inizio dell'appartenenza nuova. "
                          "Fonte: appartenenze ai gruppi dell'anagrafica dei due rami.",
             "by_chamber": {k: {"persons": len(v["persons"]), "changes": v["changes"]} for k, v in per_ramo.items()}} | pagina
+
+
+MESI = {m: i for i, m in enumerate(("gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre",
+                                    "ottobre", "novembre", "dicembre"), 1)}
+# «…del decreto-legge 28 agosto 2026, n. 154, recante…»: giorno, mese, anno e numero del decreto nel titolo del ddl di conversione
+DECRETO = r"decreto-legge\s+(\d{1,2})[°º]?\s+([a-zà-ù]+)\s+(\d{4}),?\s*n\.\s*(\d+)"
+
+
+def conta_decreti(c: psycopg.Connection, year: int | None = None, converted: bool | None = None,
+                  limit: int = 100, offset: int = 0) -> dict:
+    """Decreti-legge della legislatura, letti dai titoli dei disegni di legge di conversione: uno per numero e anno del
+    decreto, anche se il ddl è in tutti e due i rami. Con `year` quelli emanati in quell'anno; `converted` dice se sono
+    già legge."""
+    with tempo_massimo(c):
+        righe = c.execute(f"""
+            WITH d AS (SELECT a.uri, a.chamber, a.title, a.card_url, a.law_number, a.law_date,
+                              regexp_match(a.title, %(re)s, 'i') AS m
+                       FROM act a WHERE a.legislature = %(leg)s AND a.kind = 'bill' AND a.title ~* 'conversione in legge')
+            SELECT m[3]::int AS year, m[4]::int AS number, min(m[1])::int AS giorno, lower(min(m[2])) AS mese,
+                   (array_agg(title ORDER BY chamber))[1] AS title, array_agg(DISTINCT chamber ORDER BY chamber) AS chambers,
+                   max(law_number) AS law_number, max(law_date) FILTER (WHERE law_date < DATE '2100-01-01') AS law_date,
+                   (array_agg(card_url ORDER BY chamber))[1] AS card_url
+            FROM d WHERE m IS NOT NULL GROUP BY 1, 2 ORDER BY 1 DESC, 2 DESC""", {"re": DECRETO, "leg": LEGISLATURA}).fetchall()
+        senza = c.execute("""SELECT count(*) AS n FROM act a WHERE a.legislature = %(leg)s AND a.kind = 'bill'
+                             AND a.title ~* 'conversione in legge' AND a.title !~* %(re)s""", {"re": DECRETO, "leg": LEGISLATURA}).fetchone()["n"]
+    out = []
+    for r in righe:
+        legge = r["law_number"] is not None
+        if (year and r["year"] != year) or (converted is not None and legge != converted):
+            continue
+        mese = MESI.get(r["mese"])
+        out.append({"decree": f"decreto-legge {r['giorno']} {r['mese']} {r['year']}, n. {r['number']}", "year": r["year"], "number": r["number"],
+                    "date": dt.date(r["year"], mese, r["giorno"]).isoformat() if mese and 1 <= r["giorno"] <= 31 else None,
+                    "subject": re.sub(r"^.*?recante\s+", "", r["title"] or "", flags=re.I | re.S)[:160],
+                    "chambers": r["chambers"], "converted": legge,
+                    "law": f"legge n. {r['law_number']} del {r['law_date'].isoformat()}" if legge and r["law_date"] else None,
+                    "card_url": r["card_url"]})
+    per_anno: dict[int, int] = defaultdict(int)
+    for x in out:
+        per_anno[x["year"]] += 1
+    return {"counted": "Decreti-legge letti dai titoli dei disegni di legge di conversione presentati nella XIX legislatura"
+                       + (f", emanati nel {year}" if year else "") + ({True: ", già convertiti in legge", False: ", non (ancora) convertiti"}.get(converted, ""))
+                       + ". Un decreto = numero e anno del decreto: conta una volta anche se il ddl di conversione è in tutti e due i rami. "
+                         "L'anno è quello del decreto, non della presentazione del ddl. Il numero del decreto non è un progressivo dei "
+                         "soli decreti-legge (la numerazione è comune alle leggi e ai decreti legislativi): il conteggio è total. "
+                         "converted = il ddl di conversione ha un numero di legge; un decreto non convertito può essere decaduto, "
+                         "assorbito in un altro o ancora in esame."
+                       + (f" {senza} ddl di conversione hanno un titolo senza data e numero del decreto e non sono contati." if senza else ""),
+            "total": len(out), "by_year": dict(sorted(per_anno.items())),
+            "converted": sum(x["converted"] for x in out)} | _pagina(out, limit, offset)

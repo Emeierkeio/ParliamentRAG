@@ -11,9 +11,17 @@
   CH.parole = (q) => B.norm(q).replace(/[«»"“”?!.,;:()']/g, " ").split(/\s+/).filter((w) => w.length > 2 && !VUOTE.has(w));
 
   /* ---------- markdown minimo e riferimenti ---------- */
+  // un link del testo che ha una pagina del sito si apre lì: le pagine del sito scritte per intero, e le schede dei
+  // parlamentari al posto del file RDF degli open data (che a chi legge non dice niente)
+  CH.paginaInterna = (u) => {
+    let m = /^https:\/\/www\.parliamentrag\.it\/(#\/.*)$/.exec(u); if (m) return m[1];
+    m = /^https?:\/\/dati\.camera\.it\/ocd\/persona\.rdf\/p(\d+)$/.exec(u); if (m && B.persona(m[1])) return `#/strumenti/deputato/${m[1]}`;
+    m = /^https?:\/\/dati\.senato\.it\/senatore\/(\d+)$/.exec(u); if (m) return `#/strumenti/senatore/${m[1]}`;
+    return u;
+  };
   CH.pulisci = (t) => String(t || "").replace(/\n{3,}/g, "\n\n");
   const prosa = (t, nT) => e(CH.pulisci(t)).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*\w])\*(\S(?:[^*\n]*?\S)?)\*(?![*\w])/g, "$1<em>$2</em>")
-    .replace(/\[([^\]\n]+)\]\(((?:https?:\/\/|#\/)[^\s)]+)\)/g, (m, tx, u) => `<a href="${u}"${u.startsWith("#") ? "" : ' target="_blank" rel="noopener"'}>${tx}</a>`)
+    .replace(/\[([^\]\n]+)\]\(((?:https?:\/\/|#\/)[^\s)]+)\)/g, (m, tx, u) => { u = CH.paginaInterna(u); return `<a href="${u}"${u.startsWith("#") ? "" : ' target="_blank" rel="noopener"'}>${tx}</a>`; })
     .replace(/«([^«»\n]{3,}?)»/g, "<q>$1</q>").replace(/\[(\d+(?:\s*,\s*\d+)*)\]/g, (m, ns) => ns.split(/\s*,\s*/).map((n) => `<button class="rif" data-fonte="${nT}-${n}" aria-label="Fonte ${n}">${n}</button>`).join(""))
     .split(/\n{2,}/).map((p) => p.split(/\n/).reduce((acc, l) => { const el = /^\s*[-•]\s/.test(l) ? "li" : /^\s*\|/.test(l) ? "tb" : "p"; const ult = acc[acc.length - 1]; if (ult && ult.el === el) ult.r.push(l); else acc.push({ el, r: [l] }); return acc; }, [])
       .map((g) => g.el === "li" ? `<ul>${g.r.map((l) => `<li>${l.replace(/^\s*[-•]\s*/, "")}</li>`).join("")}</ul>` : g.el === "tb" ? tabella(g.r) : `<p>${g.r.join("<br>")}</p>`).join("")).join("");
@@ -71,8 +79,11 @@
   function aggiornaIndice(t) {
     const bs = B.$$("[data-blocco]", t.blocchi).filter((b) => !b.hidden && b.dataset.blocco !== "iscriviti");
     t.indice.hidden = bs.filter((b) => b.dataset.blocco !== "risposta").length < 2;
-    t.indice.innerHTML = t.indice.hidden ? "" : `<div class="indice-r__in"><span class="occ" style="margin:0;padding:5px 4px">${TT("In questa risposta", "In this answer")}</span>` + bs.map((b) => `<a href="#${b.id}" data-salta>${NOMI_BLOCCHI[b.dataset.blocco] || b.dataset.blocco}</a>`).join("") + `</div>`;
+    t.indice.innerHTML = t.indice.hidden ? "" : `<div class="indice-r__in"><span class="occ" style="margin:0;padding:5px 4px">${TT("In questa risposta", "In this answer")}</span>` + bs.map((b) => `<a href="#${b.id}" data-salta>${NOMI_BLOCCHI[b.dataset.blocco] || b.dataset.blocco}</a>`).join("") + (t.pdf ? pdfIndice(t.pdf) : "") + `</div>`;
   }
+  // il PDF del dossier sta nell'indice della risposta, che resta in vista mentre si scorre; dove l'indice non c'è
+  // (telefono, risposte corte) resta il pulsante sopra il testo
+  const pdfIndice = (n) => `<button type="button" class="indice-r__pdf" data-pdf="${n}">${B.ico("scarica")}${TT("Scarica il PDF", "Download PDF")}</button>`;
 
   /* ---------- voti e Aula ---------- */
   async function dettaglioVoto(id) { const r = await B.mcp("get_vote_details", { vote_id: id, include_individual_votes: true }); return r.dati; }
@@ -579,6 +590,8 @@
       const pul = `<p class="pdf-dossier"><button type="button" class="bt bt--primario" data-pdf="${n}">${B.ico("scarica")}${TT("Scarica il dossier in PDF", "Download the dossier as PDF")}</button></p>`;
       el.querySelector(".blocchi")?.insertAdjacentHTML("beforebegin", pul.replace('class="pdf-dossier"', 'class="pdf-dossier pdf-dossier--su"'));
       el.querySelector(".azioni")?.insertAdjacentHTML("beforebegin", pul);
+      t.pdf = n;
+      if (!t.indice.hidden && !t.indice.querySelector("[data-pdf]")) t.indice.querySelector(".indice-r__in")?.insertAdjacentHTML("beforeend", pdfIndice(n));
     }
     salva(); aperta({ id: CH.idChat, attesa: null });
     if (!CH.contesto) CH.imposta(null);

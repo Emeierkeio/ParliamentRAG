@@ -1980,6 +1980,12 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
 .pdf-dossier{margin:18px 0 6px}.pdf-dossier .bt{display:inline-flex;align-items:center;gap:8px}.pdf-dossier .ic{width:17px;height:17px}
 .dos-chi>li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center}.dos-chi .foto img{width:40px;height:40px;border-radius:50%;object-fit:cover;display:block}.dos-chi>li>span:last-child{display:grid;gap:2px}
 .pdf-dossier--su{margin:4px 0 18px}
+/* il PDF del dossier nell'indice della risposta: in coda alla barra, o sotto le voci quando l'indice è a destra */
+.indice-r__pdf{display:inline-flex;align-items:center;gap:6px;margin-left:auto;font:600 12.5px var(--f-ui);color:var(--t);background:transparent;border:1px solid var(--bordo2);border-radius:8px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+.indice-r__pdf:hover{border-color:var(--t);background:var(--sup2)}
+.indice-r__pdf .ic{width:15px;height:15px}
+@media (min-width:761px){.turno:has(.indice-r:not([hidden]) [data-pdf]) .pdf-dossier--su{display:none}}
+@media (min-width:1381px){.indice-r__pdf{margin:14px 0 0 8px;justify-self:start;font-size:13px;padding:7px 12px}}
 /* mobile: /iscriviti mostra il modulo della newsletter al posto della chat (il resto della home lì è nascosto) */
 @media (max-width:760px){
  body[data-iscriviti]:not([data-vista]) #home .eroe{display:none!important}

@@ -104,4 +104,30 @@ def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | N
     conti = {t: sum(len(g.get(t, [])) for g in giorni.values()) for t in tipi}
     fuori = {"start": start.isoformat(), "end": end.isoformat(), "types": tipi, "counts": conti,
              "days": {d: dict(g) for d, g in sorted(giorni.items())}}
+    if "aula" in tipi:                                      # prima dei giorni: un periodo lungo non deve tagliarla via
+        fuori = {k: v for k, v in fuori.items() if k != "days"} | {"coverage": _copertura(c, end, _ramo(chamber)), "days": fuori["days"]}
     return json.loads(json.dumps(fuori, default=str))      # date e ore come testo, per la chat, l'MCP e il sito
+
+
+NOMI_RAMO = {"camera": "Camera", "senato": "Senato"}
+
+
+def _copertura(c: psycopg.Connection, fine: dt.date, ramo: str | None) -> dict:
+    """Fin dove arrivano nei dati le sedute d'Aula di ogni ramo. Delle sedute future c'è solo l'ordine del giorno già
+    pubblicato (di solito la seduta successiva), non il calendario dei lavori: oltre quella data un giorno senza
+    sedute non dice che l'Aula non si riunisce (10/11/2026: «domani c'è Aula?» riceveva un no)."""
+    righe = {r["chamber"]: r for r in c.execute("""
+        SELECT chamber, max(date) FILTER (WHERE status = 'held') AS tenuta, max(date) FILTER (WHERE status <> 'held') AS prevista
+        FROM sitting WHERE body LIKE '%%:aula' GROUP BY 1""")}
+    out, scoperti = {}, []
+    for r in ([ramo] if ramo else ["camera", "senato"]):
+        x = righe.get(r) or {"tenuta": None, "prevista": None}
+        fino = max([d for d in (x["tenuta"], x["prevista"]) if d], default=None)
+        out[r] = {"last_held": x["tenuta"], "last_planned": x["prevista"], "known_until": fino}
+        if fino is None or fine > fino:
+            scoperti.append(f"{NOMI_RAMO[r]} dopo il {fino.strftime('%d/%m/%Y')}" if fino else NOMI_RAMO[r])
+    if scoperti:
+        out["note"] = ("Sedute d'Aula non ancora nei dati: " + "; ".join(scoperti) + ". Dei giorni futuri i dati hanno solo l'ordine del "
+                       "giorno già pubblicato, non il calendario dei lavori: per quei giorni non dire che l'Aula non si riunisce, di' che "
+                       "il calendario non è ancora nei dati e rimanda a www.camera.it e www.senato.it.")
+    return out

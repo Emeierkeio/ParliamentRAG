@@ -309,6 +309,13 @@ class ContaAtti(Parametri):
     offset: int = Field(0, ge=0)
 
 
+class ContaDecreti(Parametri):
+    year: int | None = Field(None, ge=2022, le=2100, description="anno del decreto (quello della sua data, non della conversione); vuoto: tutta la legislatura")
+    converted: bool | None = Field(None, description="vero: già convertiti in legge; falso: non convertiti o ancora in esame")
+    limit: int = Field(40, ge=1, le=60)
+    offset: int = Field(0, ge=0)
+
+
 class ContaEmendamenti(Parametri):
     chamber: Ramo | None = None
     act: str | None = Field(None, description="uri del progetto di legge")
@@ -493,6 +500,10 @@ STRUMENTI: list[Strumento] = [
               ContaAtti, lambda c, p: conti.conta_atti(c, p.chamber, p.kind, p.initiative, p.q, p.subject, p.signer, p.first_signer,
                                                         p.group, p.became_law, p.start, p.end, p.laws, p.group_by, p.sum_chambers,
                                                         p.limit, p.offset, p.addressee)),
+    Strumento("conta_decreti", "CONTEGGIO. Quanti decreti-legge sono stati emanati, per anno del decreto, e quali sono già "
+              "convertiti in legge: ogni decreto una volta sola anche se il ddl di conversione è in tutti e due i rami, con data, "
+              "numero, oggetto e scheda. Per «quanti decreti nel 2026», «quanti decreti ha fatto il Governo».", ContaDecreti,
+              lambda c, p: conti.conta_decreti(c, p.year, p.converted, p.limit, p.offset)),
     Strumento("conta_emendamenti", "CONTEGGIO. Quante proposte emendative per ramo, atto, sede, esito, anno, gruppo dei firmatari o "
               "coppia di gruppi che le cofirmano.",
               ContaEmendamenti, lambda c, p: conti.conta_emendamenti(c, p.chamber, p.act, p.outcome, p.venue, p.group, p.start, p.end,

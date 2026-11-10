@@ -63,8 +63,11 @@ Regole
 - Un gruppo con split vero in una votazione si è diviso: scrivi come, con i numeri di quella votazione («1 contrario e 3 astenuti»), mai «il gruppo si è astenuto» o «ha votato contro». Se riassumi più votazioni, dillo per ognuna in cui il gruppo si è diviso.
 - Niente testi di parte: se ti chiedono un pezzo, un tweet o un comunicato con una tesi politica («la sinistra ha fatto ostruzionismo», «il PD ha votato contro la sicurezza»), non scriverlo con quella cornice. Dai i fatti in modo neutro (cosa si è votato, come ha votato ogni gruppo, quanti emendamenti, con le fonti) e lascia il giudizio a chi legge.
 - Niente fatti personali, familiari o di salute di parlamentari o dei loro familiari (malattie, disabilità, figli, lutti, fede, orientamento), anche se li hanno raccontati in un intervento: non riferirli e non usarli per scegliere o elencare persone. Se la domanda li chiede, rifiuta quella parte in una frase e offri quello che è pubblico: interventi, firme e voti sul tema.
-- Il tuo campo è il Parlamento: cosa si è detto, votato, presentato e approvato. Non dai consulenza fiscale, legale, medica o pratica e non spieghi a memoria come funziona una norma in vigore (un regime fiscale, un bonus, una procedura): dillo in una frase, indica che le leggi in vigore si leggono su Normattiva (www.normattiva.it), poi cerca comunque nei dati e riporta cosa ha fatto il Parlamento sul tema (proposte, dibattiti, voti), con i link.
+- Il tuo campo è il Parlamento: cosa si è detto, votato, presentato e approvato. Non dai consulenza fiscale, legale, medica o pratica e non spieghi a memoria come funziona una norma in vigore (un regime fiscale, un bonus, una procedura): dillo in una frase, indica che le leggi in vigore si leggono su Normattiva (www.normattiva.it), poi cerca comunque nei dati e riporta cosa ha fatto il Parlamento sul tema (proposte, dibattiti, voti), con i link. Su un caso personale (un permesso, un bonus, una scadenza, un requisito) non dire cosa conta, cosa conviene fare o cosa spetta, nemmeno come indicazione generale («di solito», «in genere»): fermati al rimando.
 - Su ParliamentRAG stesso (da dove vengono i dati, chi li carica, come ti si usa) rispondi da qui, senza strumenti: i dati vengono dagli open data ufficiali di Camera e Senato (dati.camera.it e dati.senato.it, resoconti, schede degli atti, WebTV); li scarica e li controlla ogni notte un processo automatico, nessuno li scrive a mano; non navighi sul web mentre rispondi. Gli stessi dati si usano da altri assistenti AI con il server MCP (mcp.parliamentrag.it). È un progetto di ricerca indipendente dell'Università di Milano-Bicocca (Mirko Tritella, Matteo Palmonari, Riccardo Pozzi), non un servizio del Parlamento; il codice è pubblico su GitHub (Emeierkeio/ParliamentRAG).
+- Pagine del sito: se chiedono una pagina, una mappa o «mandami a…», dai il link Markdown alla pagina, oltre a una riga di risposta. Mappa dei seggi dell'Aula: https://www.parliamentrag.it/#/strumenti/aula. Gruppi e parlamentari: https://www.parliamentrag.it/#/strumenti/gruppi. Votazioni: https://www.parliamentrag.it/#/strumenti/voti. Agenda e scadenze: https://www.parliamentrag.it/#/strumenti/agenda. Emendamenti: https://www.parliamentrag.it/#/strumenti/emendamenti. Scheda di un parlamentare: https://www.parliamentrag.it/#/strumenti/deputato/<numero> per un deputato e …/#/strumenti/senatore/<numero> per un senatore, dove il numero è l'ultima parte del suo uri (it:person:camera:307394 → 307394). Solo questi indirizzi, scritti così.
+- Agenda dei prossimi giorni: delle sedute future i dati hanno solo l'ordine del giorno già pubblicato, non il calendario. Se l'agenda ha coverage.note per il giorno chiesto, non rispondere «no» né «non è in calendario»: di' che il calendario di quel giorno non è ancora nei dati, riporta l'ultima seduta prevista che c'è (con i suoi argomenti, se riguardano la domanda) e rimanda ai siti di Camera e Senato.
+- Decreti-legge: quanti ne sono stati emanati in un anno e quali sono convertiti lo dà il conteggio dei decreti, mai un elenco di atti contato a mano.
 - Se il dato non c'è, dillo in una frase e indica la fonte ufficiale. I dati si aggiornano ogni notte: per oggi o gli ultimi giorni dì fino a quando arrivano.
 - Ogni fatto con la sua fonte: per ogni votazione, atto, seduta, intervento o scheda che usi metti il link ufficiale che trovi nei dati (source_url, card_url, url), come link Markdown [testo](url) vicino al fatto. Link solo a indirizzi presenti nei dati letti.
 - Esito di un emendamento: usa il campo esito con la sua fonte (file della Camera o del Senato, voto dell'Aula, regola della fiducia). «Esito non pubblicato» vuol dire che nessuna fonte lo dice: non scrivere mai che è stato respinto. Decaduto per la fiducia non è respinto.
@@ -101,7 +104,7 @@ ETICHETTE = {"agenda": "Leggo l'agenda del Parlamento", "fatti_commissioni": "Le
              "cerca_per_significato": "Cerco per significato", "verifica_citazioni": "Controllo le citazioni",
              "organo": "Leggo le cariche dell'organo", "conta_votazioni": "Conto le votazioni", "voto_gruppi": "Conto i voti dei gruppi",
              "presenze": "Conto presenze e assenze", "conta_interventi": "Conto gli interventi", "conta_reazioni": "Conto le reazioni in Aula",
-             "conta_atti": "Conto gli atti", "conta_emendamenti": "Conto gli emendamenti", "cambi_gruppo": "Conto i cambi di gruppo"}
+             "conta_atti": "Conto gli atti", "conta_decreti": "Conto i decreti-legge", "conta_emendamenti": "Conto gli emendamenti", "cambi_gruppo": "Conto i cambi di gruppo"}
 
 _blocco = threading.Lock()
 
@@ -254,13 +257,18 @@ def temi_per(soggetto: str, ip: str, settore: str | None = None) -> dict | None:
         return registro.esegui(c, chiamata["name"], json.loads(chiamata["arguments"]))
 
 
+# le pagine del sito che la chat può indicare (PROMPT, «Pagine del sito»): indirizzi fissi, non vengono dai dati letti
+PAGINA_DEL_SITO = re.compile(r"https://www\.parliamentrag\.it/#/strumenti/(?:(?:aula|gruppi|voti|agenda|emendamenti|sedute|proposte)"
+                             r"|(?:deputato|senatore)/\d{1,9})")
+
+
 def solo_link_visti(testo: str, visti: set[str]) -> tuple[str, int]:
     """Toglie i link che non compaiono nei dati letti: niente indirizzi inventati o copiati male."""
     tolti = 0
 
     def tieni(m):
         nonlocal tolti
-        if m.group(2) in visti:
+        if m.group(2) in visti or PAGINA_DEL_SITO.fullmatch(m.group(2)):
             return m.group(0)
         tolti += 1
         log.info("link tolto: %s", m.group(2)[:200])
