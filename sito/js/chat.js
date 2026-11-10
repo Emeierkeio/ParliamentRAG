@@ -64,8 +64,8 @@
     b.innerHTML = `<h3>${e(titolo)}${dx ? `<span class="dx">${dx}</span>` : ""}</h3>${html}`;
     return b;
   }
-  const ORDINE_B = ["risposta", "classifica", "garanzie", "posizioni", "voti", "persona", "interventi", "schede", "atti", "sedute", "fonti"];
-  const NOMI_BLOCCHI = { risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica" };
+  const ORDINE_B = ["risposta", "classifica", "garanzie", "posizioni", "voti", "emendamenti", "chi", "arrivo", "persona", "interventi", "schede", "atti", "sedute", "fonti"];
+  const NOMI_BLOCCHI = { risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", emendamenti: "Emendamenti", chi: "Chi ci lavora", arrivo: "In arrivo", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica" };
   // l'indice serve solo quando la risposta ha almeno due parti oltre al testo
   function aggiornaIndice(t) {
     const bs = B.$$("[data-blocco]", t.blocchi).filter((b) => !b.hidden);
@@ -553,7 +553,7 @@
     el.querySelector(".stato-v").textContent = "Fatto"; el.querySelector(".stato-v").classList.add("fatto");
     t.passi.dataset.fine = TT("Risposta completata", "Answer complete");
     t.stato.textContent = `${t.passi.children.length} ${t.passi.children.length === 1 ? "passaggio" : "passaggi"}`;
-    el.insertAdjacentHTML("beforeend", `<div class="azioni"><button data-copia="${n}" aria-label="Copia la risposta" data-tip="Copia la risposta">${B.ico("copia")}</button><button data-utile aria-label="Utile" data-tip="Utile">${B.ico("su")}</button><button data-utile aria-label="Non utile" data-tip="Non utile">${B.ico("giuP")}</button><button data-segnala="${n}" aria-label="Segnala un errore" data-tip="Segnala un errore">${B.ico("segnala")}</button><button data-condividi aria-label="Condividi la conversazione" data-tip="Condividi la conversazione">${B.ico("condividi")}</button></div>`);
+    el.insertAdjacentHTML("beforeend", `<div class="azioni"><button data-copia="${n}" aria-label="Copia la risposta" data-tip="Copia la risposta">${B.ico("copia")}</button><button data-utile aria-label="Utile" data-tip="Utile">${B.ico("su")}</button><button data-utile aria-label="Non utile" data-tip="Non utile">${B.ico("giuP")}</button><button data-segnala="${n}" aria-label="Segnala un errore" data-tip="Segnala un errore">${B.ico("segnala")}</button><button data-condividi aria-label="Condividi la conversazione" data-tip="Condividi la conversazione">${B.ico("condividi")}</button><button data-pdf="${n}" aria-label="${TT("Scarica in PDF", "Download as PDF")}" data-tip="${TT("Scarica in PDF", "Download as PDF")}"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button></div>`);
     salva(); aperta({ id: CH.idChat, attesa: null });
     if (!CH.contesto) CH.imposta(null);
   }
@@ -689,6 +689,8 @@
     Object.values(passi).forEach((p) => p.fatto());
     if (!md.trim() || t.limite) { sp.togli(); t.sp = null; const come = t.el.querySelector("details.come"); if (come) come.hidden = false; return null; }
     prosaEl.innerHTML = mdFascicolo(md, t.n, num); prosaEl.classList.remove("cursore");
+    // il dossier del tema: accanto alle posizioni, le sezioni tecniche (emendamenti, chi ci lavora, in arrivo, atti)
+    if (window.DOSSIER) t.dossier = DOSSIER.sezioni(t, q, blocco);
     if (stat) { t.el._stat = stat; numeriCliccabili(prosaEl, t.n); }
     citazioniInglese(prosaEl);
     // indice laterale: un salto per ogni gruppo e per le sezioni del fascicolo

@@ -24,7 +24,7 @@ from starlette.concurrency import run_in_threadpool
 
 from pipeline.ambiente import env
 
-from . import agente, allegati, conversazioni, pubblico, statistiche
+from . import agente, allegati, conversazioni, dossier, pubblico, statistiche
 from .db import connessione, connessione_sito as _db_sito
 from .pulisci import pulisci
 from .rete import ip
@@ -75,6 +75,28 @@ def allegato(d: Allegato) -> dict:
     pezzi = allegati.dividi(testo)
     return {"text": testo, "amendments": min(len(pezzi), allegati.EMENDAMENTI_MAX), "more": max(0, len(pezzi) - allegati.EMENDAMENTI_MAX),
             "truncated": len(testo) >= allegati.CARATTERI_MAX}
+
+
+class Tema(BaseModel):
+    tema: str = Field(min_length=3, max_length=300)
+
+
+_DOSSIER: dict[str, tuple[float, dict]] = {}
+
+
+@router.post("/api/dossier")
+def dossier_tema(d: Tema) -> JSONResponse:
+    """Le sezioni tecniche del dossier di un tema (emendamenti, atti, chi ci lavora, in arrivo), in memoria 10 minuti."""
+    chiave = d.tema.strip().lower()
+    ora = time.time()
+    if chiave in _DOSSIER and ora - _DOSSIER[chiave][0] < 600:
+        return JSONResponse(_DOSSIER[chiave][1])
+    with connessione() as c:
+        dati = json.loads(json.dumps(dossier.sezioni(c, d.tema.strip()), ensure_ascii=False, default=str))
+    if len(_DOSSIER) > 200:
+        _DOSSIER.clear()
+    _DOSSIER[chiave] = (ora, dati)
+    return JSONResponse(dati)
 
 
 @router.get("/api/uso")
