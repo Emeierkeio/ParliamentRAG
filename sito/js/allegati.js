@@ -51,6 +51,24 @@
     }
   }
 
+  // al primo clic sulla graffetta: cosa fa la bozza allegata, poi si sceglie il file
+  const VISTO = "parliamentrag-allega";
+  const spiegato = () => { try { return localStorage.getItem(VISTO) === "1"; } catch { return false; } };
+  function spiega(input) {
+    let d = document.getElementById("dlg-allega");
+    if (!d) {
+      d = document.createElement("dialog"); d.id = "dlg-allega"; d.className = "dlg";
+      d.innerHTML = `<form method="dialog" class="dlg__f"><header><h2>${TT("Confronta una bozza di emendamenti", "Compare a draft of amendments")}</h2><button class="dlg__x" value="annulla" aria-label="${TT("Chiudi", "Close")}">×</button></header>
+        <p class="dlg__p">${TT("Allega un file .docx o .pdf, oppure incolla nella casella un testo di più di 1.000 caratteri. La chat divide la bozza in emendamenti, fino a 20, e per ognuno cerca fra quelli presentati in questa legislatura: se è già stato proposto, dove, da chi e com'è finito.",
+          "Attach a .docx or .pdf file, or paste a text longer than 1,000 characters into the box. The chat splits the draft into amendments, up to 20, and for each one searches those tabled in this legislature: whether it was already proposed, where, by whom and how it ended.")}</p>
+        <p class="dlg__q">${TT("Al massimo 50.000 caratteri; una bozza vale 3 domande. Il testo non viene associato a te.", "Up to 50,000 characters; a draft counts as 3 questions. The text is not linked to you.")}</p>
+        <div class="dlg__az"><button class="bt bt--linea" value="annulla">${TT("Annulla", "Cancel")}</button><button class="bt" value="scegli">${TT("Scegli il file", "Choose the file")}</button></div></form>`;
+      document.body.appendChild(d);
+    }
+    d.onclose = () => { try { localStorage.setItem(VISTO, "1"); } catch { /* la spiegazione torna al prossimo clic */ } if (d.returnValue === "scegli") input.click(); };
+    d.returnValue = ""; d.showModal();
+  }
+
   function modifica() {
     const a = CH.allegato; if (!a || a.stato !== "pronto") return;
     let d = document.getElementById("dlg-allegato");
@@ -75,7 +93,7 @@
     bt.setAttribute("aria-label", TT("Allega una bozza (.docx o .pdf)", "Attach a draft (.docx or .pdf)")); bt.dataset.tip = bt.getAttribute("aria-label");
     bt.innerHTML = svg(CLIP);
     const invia = f.querySelector(".invia"); invia.parentNode.insertBefore(bt, invia); invia.parentNode.insertBefore(input, invia);
-    bt.addEventListener("click", () => input.click());
+    bt.addEventListener("click", () => spiegato() ? input.click() : spiega(input));
     input.addEventListener("change", () => { if (input.files[0]) leggiFile(input.files[0]); input.value = ""; });
     ta.addEventListener("paste", (ev) => {
       const t = (ev.clipboardData && ev.clipboardData.getData("text")) || "";

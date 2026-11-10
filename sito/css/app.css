@@ -535,7 +535,7 @@ details.come[open]>summary{margin-bottom:8px}
 html,body{overflow-x:clip}
 .eroe__aula{opacity:.12;bottom:auto;top:40px;-webkit-mask-image:radial-gradient(ellipse 60% 70% at 50% 60%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse 60% 70% at 50% 60%,#000 20%,transparent 75%)}
 [data-scelta=chiaro] .eroe__aula{opacity:.1}[data-scelta=netto] .eroe__aula{opacity:.16}
-.chat__piede .ic-a{margin-right:auto}
+.chat__piede .ic-a{margin-right:auto}.chat__piede .ic-a.allega{margin-right:0}
 .oggi{overflow:visible;border-radius:0}
 .ic-a--grande{width:40px;height:40px;border-radius:10px;background:transparent}.ic-a--grande .ic{width:18px;height:18px}
 .testa-str h1 .info{width:22px;height:22px;vertical-align:.25em}
@@ -1790,6 +1790,7 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
 .dlg__x{border:0;background:transparent;color:var(--t3);font-size:22px;line-height:1;width:32px;height:32px;border-radius:8px;cursor:pointer}
 .dlg__x:hover{background:var(--sup2);color:var(--t)}
 .dlg__q{margin:0;font-size:14px;color:var(--t3)}
+.dlg__p{margin:0;font-size:15px;line-height:1.55;color:var(--t2)}
 .dlg fieldset{border:0;margin:0;padding:0;display:grid;gap:6px}
 .dlg legend{font-size:14px;font-weight:600;margin-bottom:6px}
 .dlg fieldset label{display:flex;gap:10px;align-items:center;font-size:14.5px;padding:7px 10px;border:1px solid var(--bordo);border-radius:10px;cursor:pointer}
@@ -1856,7 +1857,7 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
 
 /* titolo della home in una frase; l'avviso della demo è una «i» accanto a «Chiedi» */
 @media (min-width:761px){.chat-eroe h1#t-eroe{font-size:clamp(28px,3.3vw,48px)!important;line-height:1.1;max-width:min(21em,calc(100vw - 48px))}}
-#f-eroe .info--demo{margin-left:auto;color:var(--t3)}#f-eroe .info--demo+.invia{margin-left:0}
+#f-eroe .info--demo{margin-left:auto;color:var(--t3)}#f-eroe .info--demo~.invia{margin-left:0}
 .esperto>.ic{width:16px;height:16px;color:var(--t3)}.esperto:hover>.ic{color:var(--t)}
 
 /* 4/11 sera: risalto del titolo, telefono (barra nascosta, criteri in alto, niente «i» né suggerimenti al tocco), suggerimento della «i» dentro lo schermo */
