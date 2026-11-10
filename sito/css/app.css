@@ -1945,7 +1945,7 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
 .scelta ol{list-style:none;margin:0;padding:0;display:grid}
 .scelta li{border-bottom:1px solid var(--bordo)}
 .scelta li label{display:flex;gap:12px;align-items:center;padding:10px 4px;cursor:pointer}
-.scelta li input[type=checkbox]{width:18px;height:18px;accent-color:var(--btn);flex:none}
+.scelta li input[type=checkbox],.scelta li input[type=radio]{width:18px;height:18px;accent-color:var(--btn);flex:none}
 .scelta__n{width:30px;height:30px;border-radius:8px;background:var(--sup2);display:grid;place-items:center;font-size:13px;color:var(--t2);flex:none}
 .scelta__c{display:grid;gap:2px;min-width:0}
 .scelta__c b{font-weight:600;font-size:15px}

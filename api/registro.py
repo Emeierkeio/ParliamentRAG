@@ -165,6 +165,10 @@ class ProponiTemi(Parametri):
     associazioni: list[str] = Field(default_factory=list, max_length=4, description="le sue associazioni di categoria, se ne ha")
 
 
+class ChiediSettore(Parametri):
+    soggetto: str = Field(min_length=2, max_length=120, description="l'azienda o l'ente di cui non si capisce il settore")
+
+
 class Emendamento(Parametri):
     uri: str = Field(description="uri dell'emendamento (dai risultati di cerca_emendamenti)")
 
@@ -425,6 +429,9 @@ STRUMENTI: list[Strumento] = [
               "un ente): proponi i temi parlamentari che lo riguardano e le sue associazioni di categoria; lo strumento li verifica "
               "sui dati e mostra all'utente una scelta con i numeri. Le proposte senza riscontro spariscono.",
               ProponiTemi, lambda c, p: soggetti.proponi(c, p.soggetto, [t.model_dump() for t in p.temi], p.associazioni)),
+    Strumento("chiedi_settore", "Per un'azienda o un ente di cui dal nome non si capisce di cosa si occupa (es. «Rossi S.r.l.», «Gruppo "
+              "Bianchi»), invece di proponi_temi: mostra all'utente una scelta per dire il settore; poi i temi arrivano da soli.",
+              ChiediSettore, lambda c, p: {"soggetto": p.soggetto, "chiedi_settore": True}),
     Strumento("emendamento", "La scheda di un emendamento: testo intero, firmatari, esito con la fonte, voto dei gruppi in Aula, storia (lo "
               "stesso testo o quasi presentato in altri atti, con l'esito di ogni volta), interventi della seduta del voto che lo citano, "
               "pareri di governo e relatore letti nei sommari, termini per gli emendamenti dell'atto.",

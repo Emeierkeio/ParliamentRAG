@@ -15,6 +15,45 @@
   const togli = () => { const x = document.getElementById("scelta"); if (x) x.remove(); };
   S.togli = togli;
 
+  // prima della scelta dei temi, quando dal nome non si capisce di cosa si occupa l'azienda: si sceglie il settore
+  const SETTORI = [["Alimentare e bevande", "Food and drink"], ["Commercio, turismo e ristorazione", "Retail, tourism and hospitality"],
+    ["Edilizia e immobiliare", "Construction and real estate"], ["Energia e ambiente", "Energy and environment"],
+    ["Industria e manifattura", "Industry and manufacturing"], ["Salute e farmaceutica", "Health and pharma"],
+    ["Trasporti e logistica", "Transport and logistics"], ["Tecnologia e telecomunicazioni", "Technology and telecoms"],
+    ["Banche, finanza e assicurazioni", "Banking, finance and insurance"], ["Agricoltura e pesca", "Farming and fishing"]];
+  const temi = (soggetto, settore) => fetch("/api/temi", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ soggetto, settore }) })
+    .then((x) => x.json()).catch(() => ({}));
+  S.settore = (r) => {
+    togli();
+    const box = document.createElement("div");
+    box.id = "scelta"; box.className = "scelta"; box.setAttribute("role", "group"); box.setAttribute("aria-labelledby", "scelta-t");
+    box.innerHTML = `<header><div><h3 id="scelta-t">${e(TT(`Di cosa si occupa ${r.soggetto}?`, `What does ${r.soggetto} do?`))}</h3><p>${e(TT("Dal nome non lo capiamo. Scegli il settore e ti proponiamo i temi del Parlamento che lo riguardano.", "We can't tell from the name. Pick the sector and we'll suggest the topics before Parliament."))}</p></div>
+        <button type="button" class="scelta__x" data-scelta="chiudi" aria-label="${TT("Chiudi", "Close")}">${B.ico("chiudi")}</button></header>
+      <ol>${SETTORI.map(([it, en], i) => `<li><label><input type="radio" name="settore" value="${e(TT(it, en))}"><span class="scelta__n">${i + 1}</span><span class="scelta__c"><b>${e(TT(it, en))}</b></span></label></li>`).join("")}
+        <li class="scelta__altro"><span class="scelta__n">${B.ico("piu")}</span><label class="vh" for="scelta-altro">${TT("Altro: scrivilo tu", "Other: type it")}</label><input id="scelta-altro" placeholder="${TT("Altro: scrivilo tu (es. «produciamo imballaggi»)", "Other: type it (e.g. «we make packaging»)")}" maxlength="120"></li></ol>
+      <footer><p class="scelta__nota">${TT("Serve solo a proporti i temi giusti.", "Only used to suggest the right topics.")}</p>
+        <button type="button" class="bt bt--linea" data-scelta="chiudi">${TT("Salta", "Skip")}</button><button type="button" class="bt" data-scelta="vai">${TT("Continua", "Continue")}</button></footer>`;
+    const comp = document.querySelector(".compositore");
+    comp.insertBefore(box, comp.querySelector("form"));
+    box.addEventListener("keydown", (ev) => {
+      if (ev.target.id === "scelta-altro") { if (ev.key === "Enter") { ev.preventDefault(); box.querySelector('[data-scelta="vai"]').click(); } return; }
+      const n = parseInt(ev.key, 10); if (n >= 1 && n <= SETTORI.length) box.querySelectorAll("input[type=radio]")[n - 1].checked = true;
+      if (ev.key === "Escape") togli();
+    });
+    box.addEventListener("click", async (ev) => {
+      const b = ev.target.closest("[data-scelta]"); if (!b) return;
+      if (b.dataset.scelta === "chiudi") return togli();
+      const altro = box.querySelector("#scelta-altro").value.trim();
+      const settore = altro || (box.querySelector("input[type=radio]:checked") || {}).value;
+      if (!settore) return;
+      b.disabled = true; b.textContent = TT("Cerco i temi…", "Finding topics…");
+      const x = await temi(r.soggetto, settore);
+      if (x && x.opzioni && x.opzioni.length) S.mostra(x);
+      else { b.disabled = false; b.textContent = TT("Riprova", "Try again"); }
+    });
+    const primo = box.querySelector("input[type=radio]"); if (primo) primo.focus({ preventScroll: true });
+  };
+
   S.mostra = (r) => {
     togli();
     const ops = (r.opzioni || []).slice().sort((a, b) => (b.consigliato ? 1 : 0) - (a.consigliato ? 1 : 0) || b.peso - a.peso);

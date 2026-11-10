@@ -66,7 +66,7 @@ Regole
 - Se il dato non c'è, dillo in una frase e indica la fonte ufficiale. I dati si aggiornano ogni notte: per oggi o gli ultimi giorni dì fino a quando arrivano.
 - Ogni fatto con la sua fonte: per ogni votazione, atto, seduta, intervento o scheda che usi metti il link ufficiale che trovi nei dati (source_url, card_url, url), come link Markdown [testo](url) vicino al fatto. Link solo a indirizzi presenti nei dati letti.
 - Esito di un emendamento: usa il campo esito con la sua fonte (file della Camera o del Senato, voto dell'Aula, regola della fiducia). «Esito non pubblicato» vuol dire che nessuna fonte lo dice: non scrivere mai che è stato respinto. Decaduto per la fiducia non è respinto.
-- Se la domanda è su un soggetto che non è un tema parlamentare (un'azienda come Coca-Cola, un marchio, un'associazione, un ente) e non dice su cosa, chiama proponi_temi con i temi parlamentari che probabilmente lo riguardano (parole precise come le userebbe il Parlamento, frasi tra virgolette unite da or, mai parole generiche come «alimenti» o «bevande» da sole) e le sue associazioni di categoria. Poi rispondi in due o tre frasi: cosa hai trovato sul soggetto stesso (audizioni, memorie, interventi che lo nominano davvero) e che sopra la casella può scegliere i temi su cui fare il dossier. Non presentare come fatto il legame fra il soggetto e un tema: è una tua proposta.
+- Se la domanda è su un soggetto che non è un tema parlamentare (un'azienda come Coca-Cola, un marchio, un'associazione, un ente) e non dice su cosa, chiama proponi_temi con i temi parlamentari che probabilmente lo riguardano (parole precise come le userebbe il Parlamento, frasi tra virgolette unite da or, mai parole generiche come «alimenti» o «bevande» da sole) e le sue associazioni di categoria. Poi rispondi in due o tre frasi: cosa hai trovato sul soggetto stesso (audizioni, memorie, interventi che lo nominano davvero) e che sopra la casella può scegliere i temi su cui fare il dossier. Non presentare come fatto il legame fra il soggetto e un tema: è una tua proposta. Se dal nome non capisci di cosa si occupa (un cognome, una sigla, «Gruppo …», «… S.r.l.» senza indizi sul settore), non tirare a indovinare: chiama chiedi_settore e rispondi in una frase che sopra la casella può dire di cosa si occupa.
 - Se l'utente incolla o allega il testo di un emendamento o di una bozza, cerca gli emendamenti simili per significato con quel testo e di' cosa c'è già: dove e da chi è stato presentato, com'è finito, chi ne ha parlato. Non commentare né riscrivere la bozza.
 - Emendamenti «presentati» da un gruppo: contali per gruppo del primo firmatario, con le sedi separate (commissione e Aula); il gruppo di qualunque firmatario serve solo se la domanda chiede le firme o le cofirme.
 - Il question time («interrogazioni a risposta immediata») si conta fra gli argomenti delle sedute, per sede e data, non dalle parole degli interventi.
@@ -95,7 +95,7 @@ ULTIMO_PASSO = ("Non puoi più consultare i dati. Rispondi ora con quello che ha
 ETICHETTE = {"agenda": "Leggo l'agenda del Parlamento", "fatti_commissioni": "Leggo i lavori delle commissioni", "cerca_persone": "Cerco i parlamentari", "scheda_persona": "Leggo la scheda del parlamentare",
              "composizione": "Conto i parlamentari per gruppo", "elenco_sedute": "Cerco nelle sedute", "seduta": "Leggo la seduta", "argomenti_sedute": "Cerco negli ordini del giorno", "conta_sedute": "Conto le sedute",
              "elenco_votazioni": "Cerco le votazioni", "votazione": "Leggo la votazione", "cerca_atti": "Cerco negli atti",
-             "atto": "Leggo l'atto", "articolo": "Leggo l'articolo", "cerca_emendamenti": "Cerco negli emendamenti", "emendamento": "Leggo l'emendamento", "confronta_bozza": "Confronto la bozza con gli emendamenti già presentati", "proponi_temi": "Verifico i temi che lo riguardano", "cerca_interventi": "Cerco negli interventi",
+             "atto": "Leggo l'atto", "articolo": "Leggo l'articolo", "cerca_emendamenti": "Cerco negli emendamenti", "emendamento": "Leggo l'emendamento", "confronta_bozza": "Confronto la bozza con gli emendamenti già presentati", "proponi_temi": "Verifico i temi che lo riguardano", "chiedi_settore": "Chiedo di cosa si occupa", "cerca_interventi": "Cerco negli interventi",
              "cerca_per_significato": "Cerco per significato", "verifica_citazioni": "Controllo le citazioni",
              "organo": "Leggo le cariche dell'organo", "conta_votazioni": "Conto le votazioni", "voto_gruppi": "Conto i voti dei gruppi",
              "presenze": "Conto presenze e assenze", "conta_interventi": "Conto gli interventi", "conta_reazioni": "Conto le reazioni in Aula",
@@ -221,19 +221,23 @@ def chiama_openai(modello: str, istruzioni: str, voci: list, chiave: str, strume
 
 TEMI = ("Il soggetto è un'azienda, un marchio, un'associazione o un ente. Chiama proponi_temi con i temi parlamentari che "
         "probabilmente lo riguardano (parole precise come le userebbe il Parlamento, frasi tra virgolette unite da or, mai parole "
-        "generiche come «alimenti» o «bevande» da sole) e le sue associazioni di categoria.")
+        "generiche come «alimenti» o «bevande» da sole) e le sue associazioni di categoria. Se non è indicato il settore e dal nome "
+        "non capisci di cosa si occupa (un cognome, una sigla, «Gruppo …», «… S.r.l.» senza indizi), chiama invece chiedi_settore.")
 
 
-def temi_per(soggetto: str, ip: str) -> dict | None:
+def temi_per(soggetto: str, ip: str, settore: str | None = None) -> dict | None:
     """Dopo il fascicolo su un soggetto: i temi da proporre per il dossier, con una sola chiamata che può usare solo
     proponi_temi. Non conta come domanda, la spesa sì."""
     if controlla_limiti(ip) or not controlla_spesa():
         return None
     modello = env("AGENTE_MODELLO", "gpt-5.6-terra")
-    s = registro.PER_NOME["proponi_temi"]
-    corpo = json.dumps({"model": modello, "instructions": TEMI, "input": [{"role": "user", "content": soggetto[:200]}],
-                        "tools": [{"type": "function", "name": s.nome, "description": s.descrizione, "parameters": s.schema()}],
-                        "tool_choice": {"type": "function", "name": s.nome}, "reasoning": {"effort": "low"}, "store": False}).encode()
+    # con il settore detto dall'utente si propongono i temi; senza, il modello può anche chiedere il settore
+    nomi = ["proponi_temi"] if settore else ["proponi_temi", "chiedi_settore"]
+    strumenti = [{"type": "function", "name": x.nome, "description": x.descrizione, "parameters": x.schema()}
+                 for x in (registro.PER_NOME[n] for n in nomi)]
+    testo = f"{soggetto[:120]} (settore: {settore[:120]})" if settore else soggetto[:200]
+    corpo = json.dumps({"model": modello, "instructions": TEMI, "input": [{"role": "user", "content": testo}], "tools": strumenti,
+                        "tool_choice": "required", "reasoning": {"effort": "low"}, "store": False}).encode()
     req = urllib.request.Request(OPENAI, corpo, {"Content-Type": "application/json", "Authorization": f"Bearer {env('OPENAI_API_KEY')}"})
     with urllib.request.urlopen(req, timeout=90) as r:
         out = json.loads(r.read())
@@ -242,7 +246,7 @@ def temi_per(soggetto: str, ip: str) -> dict | None:
     if not chiamata:
         return None
     with connessione() as c:
-        return registro.esegui(c, s.nome, json.loads(chiamata["arguments"]))
+        return registro.esegui(c, chiamata["name"], json.loads(chiamata["arguments"]))
 
 
 def solo_link_visti(testo: str, visti: set[str]) -> tuple[str, int]:

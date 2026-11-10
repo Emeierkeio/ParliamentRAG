@@ -445,7 +445,7 @@
       t.trattieni = false; B.$$("[data-blocco]", t.blocchi).forEach((b) => { b.hidden = false; }); aggiornaIndice(t);
       if (it.fascicolo && it.soggetto && window.SCELTA)
         fetch("/api/temi", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ soggetto: q.trim() }) })
-          .then((x) => x.json()).then((r) => { if (r.opzioni) SCELTA.mostra(r); }).catch(() => { /* senza proposta resta il fascicolo */ });
+          .then((x) => x.json()).then((r) => { if (r.chiedi_settore) SCELTA.settore(r); else if (r.opzioni) SCELTA.mostra(r); }).catch(() => { /* senza proposta resta il fascicolo */ });
       // se il fascicolo non arriva, con il motore agente risponde l'agente
       if (!it.fascicolo && CH.AGENTE) {
         // senza fascicolo i sei passaggi non hanno senso: si tolgono e si mostra il percorso dell'agente
@@ -535,6 +535,7 @@
   function daiDati(t, ev) {
     const r = ev.result || {}, d = r.dati || r, a = ev.args || {};
     if (ev.name === "proponi_temi" && window.SCELTA && r.opzioni) { SCELTA.mostra(r); return; }
+    if (ev.name === "chiedi_settore" && window.SCELTA && r.soggetto) { SCELTA.settore(r); return; }
     if (!t.persona && (ev.name === "scheda_persona" || (ev.name === "cerca_persone" && Array.isArray(ev.result) && ev.result.length === 1))) {
       const x = ev.name === "scheda_persona" ? ev.result : ev.result[0], m = /^it:person:(camera|senato):(\d+)$/.exec((x && x.uri) || "");
       if (m) { const p = m[1] === "camera" ? B.persona(m[2]) : B.senatori().find((y) => y.id === m[2]); if (p) t.persona = t.persona || p; }

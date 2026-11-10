@@ -101,13 +101,14 @@ def dossier_tema(d: Tema) -> JSONResponse:
 
 class Soggetto(BaseModel):
     soggetto: str = Field(min_length=2, max_length=120)
+    settore: str | None = Field(default=None, max_length=120)
 
 
 @router.post("/api/temi")
 async def temi(req: Request, d: Soggetto) -> JSONResponse:
     """I temi da proporre per il dossier su un soggetto, da mostrare sotto il fascicolo."""
     try:
-        r = await run_in_threadpool(agente.temi_per, d.soggetto.strip(), ip(req))
+        r = await run_in_threadpool(agente.temi_per, d.soggetto.strip(), ip(req), (d.settore or "").strip() or None)
     except Exception:                                 # noqa: BLE001 — senza proposta il fascicolo resta com'è
         log.exception("temi per %s non riusciti", d.soggetto)
         r = None
