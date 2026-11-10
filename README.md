@@ -67,6 +67,7 @@ XIX legislature (from 13 October 2022), both chambers. Counts from the database 
 | Acts (bills, questions, motions, resolutions, agenda orders) | 50,307 |
 | Amendments | 229,617 |
 | Amendment deadlines in committee (9 November 2026) | 1,392 |
+| Committee facts: hearings, opinions, steps, answers (since August 2026) | 1,740 |
 | Documents (research dossiers, written evidence, committee annexes) | 19,322 |
 | People | 938 |
 
@@ -95,11 +96,13 @@ The model is a property graph stored in PostgreSQL 16: nodes and edges become ta
 
 **Derived facts carry their evidence.** Some facts exist only as prose in the committee summaries, such as the deadline for tabling amendments ("il termine per la presentazione delle proposte emendative è fissato alle ore 12 di lunedì 9 novembre"). `amendment_deadline` (`Act -HAS_DEADLINE-> AmendmentDeadline`) holds them with the date, the time, the event (set, moved, expired), the sitting and the sentence they come from. Fixed rules read the sentence (`pipeline/trasforma/termini_emendamenti.py`); a second reading by a language model through the Batch API must give the same date, or the deadline stays out (`pipeline/termini.py`). Measured by hand on unseen sentences, the rules alone get the date right 92 to 95 times in 100.
 
+The same summaries carry the work of the committees: who was heard, the opinions of the committees, the opinions of the Government and the rapporteur on amendments, the steps of a bill, the answers to questions. A language model reads the summary of each agenda item through the Batch API and returns the facts, each with the sentence it comes from; a fact enters `committee_fact` (`Act -HAS_FACT-> CommitteeFact`) only if that sentence is copied from the record, the outcome is one of the allowed values and the fact happened in that sitting, not just recalled or announced (`pipeline/fatti.py`). Measured by hand, hearings, committee opinions and answers to questions are right 19 to 20 times in 20; they are the ones the chat reads.
+
 The schema of the graph: node types grouped by area, with the relations between them. Counts from the load of 1 November 2026.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/grafo-scuro.png">
-  <img alt="Schema of the graph: people and bodies, sittings and business, votes, acts, with node types such as Person, Group, Body, Sitting, AgendaItem, Speech, Vote, Act, Amendment, AmendmentDeadline, Document and their relations." src="docs/assets/grafo-chiaro.png">
+  <img alt="Schema of the graph: people and bodies, sittings and business, votes, acts, with node types such as Person, Group, Body, Sitting, AgendaItem, Speech, Vote, Act, Amendment, AmendmentDeadline, CommitteeFact, Document and their relations." src="docs/assets/grafo-chiaro.png">
 </picture>
 
 Core tables:
@@ -108,7 +111,7 @@ Core tables:
 |---|---|
 | Sittings and records | `sitting`, `agenda_item`, `agenda_item_act`, `speech`, `segment`, `reaction`, `reaction_from`, `speech_mention` |
 | People and institutions | `person`, `person_same_as`, `grp`, `grp_alias`, `body`, `mandate`, `membership`, `seat`, `office`, `government`, `ministry` |
-| Legislation and oversight | `act`, `act_step`, `act_version`, `act_sponsor`, `act_assignment`, `act_rapporteur`, `act_joint`, `act_transmission`, `act_text`, `act_article`, `act_citation`, `act_subject`, `act_addressee`, `amendment`, `amendment_signer`, `amendment_deadline`, `deadline_check` |
+| Legislation and oversight | `act`, `act_step`, `act_version`, `act_sponsor`, `act_assignment`, `act_rapporteur`, `act_joint`, `act_transmission`, `act_text`, `act_article`, `act_citation`, `act_subject`, `act_addressee`, `amendment`, `amendment_signer`, `amendment_deadline`, `deadline_check`, `committee_fact`, `summary_check` |
 | Votes | `vote`, `vote_act`, `ballot` |
 | Documents and video | `document`, `video`, `video_segment` |
 | Subjects | `entity`, `concept`, `concept_match` |
