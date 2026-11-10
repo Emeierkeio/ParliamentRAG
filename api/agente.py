@@ -140,6 +140,8 @@ def uso(ip: str) -> dict:
     """Domande usate nell'ora in corso (il conteggio riparte allo scoccare dell'ora), limite e secondi alla ripartenza."""
     limite, ora = int(env("AGENTE_DOMANDE_ORA", "10")), time.time()
     inizio = ora - ora % ORA
+    if ip.startswith("esente:"):                       # chi ha fatto l'accesso ai pannelli (api/rete.py, chi)
+        return {"used": 0, "limit": 10_000, "resets_in": round(inizio + ORA - ora)}
     with connessione_sito() as c:
         if c:
             c.execute("DELETE FROM sito.domanda WHERE ts < to_timestamp(%s)", (inizio,))

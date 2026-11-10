@@ -28,7 +28,7 @@ from pipeline.ambiente import env
 from . import agente, allegati, conversazioni, dossier, pubblico, statistiche
 from .db import connessione, connessione_sito as _db_sito
 from .pulisci import pulisci
-from .rete import ip
+from .rete import chi, ip
 
 log = logging.getLogger("parliamentrag.sito")
 router = APIRouter(include_in_schema=False)
@@ -109,7 +109,7 @@ class Soggetto(BaseModel):
 async def temi(req: Request, d: Soggetto) -> JSONResponse:
     """I temi da proporre per il dossier su un soggetto, da mostrare sotto il fascicolo."""
     try:
-        r = await run_in_threadpool(agente.temi_per, d.soggetto.strip(), ip(req), (d.settore or "").strip() or None)
+        r = await run_in_threadpool(agente.temi_per, d.soggetto.strip(), chi(req), (d.settore or "").strip() or None)
     except Exception:                                 # noqa: BLE001 — senza proposta il fascicolo resta com'è
         log.exception("temi per %s non riusciti", d.soggetto)
         r = None
@@ -118,7 +118,7 @@ async def temi(req: Request, d: Soggetto) -> JSONResponse:
 
 @router.get("/api/uso")
 def uso(req: Request) -> dict:
-    return agente.uso(ip(req))
+    return agente.uso(chi(req))
 
 
 @router.post("/api/agente")
@@ -126,7 +126,7 @@ def uso(req: Request) -> dict:
 def chat(req: Request, d: Domanda):
     """Le due rotte della chat del sito vanno allo stesso agente."""
     statistiche.registra(req, "domanda")
-    return risposta_ndjson(ip(req), d)
+    return risposta_ndjson(chi(req), d)
 
 
 class Fascicolo(BaseModel):
@@ -147,7 +147,7 @@ def fascicolo(req: Request, d: Fascicolo):
     statistiche.registra(req, "fascicolo")
     lingua = "en" if req.headers.get("accept-language", "it").strip()[:2].lower() == "en" else "it"
     pesi = {k: float(v) for k, v in d.authority_weights.items()} if d.authority_weights else None
-    return StreamingResponse(servizio.stream(d.query, pesi, lingua, ip(req)), media_type="text/event-stream",
+    return StreamingResponse(servizio.stream(d.query, pesi, lingua, chi(req)), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 

@@ -28,7 +28,7 @@ from pipeline.ambiente import QUI
 
 from . import accesso, agente, mcp, sistema, sito, sito_emendamenti, sito_parlamentari, statistiche
 from .db import connessione, per_richiesta
-from .rete import ip as _ip
+from .rete import chi as _chi, ip as _ip
 from .strumenti import atti, persone, ricerca, sedute, voti
 
 Ramo = Literal["camera", "senato"]
@@ -167,13 +167,13 @@ def cerca_interventi(c: Db, q: Annotated[str, Query(min_length=2, max_length=200
 @app.get("/v1/uso")
 def uso_chat(req: Request) -> dict:
     """Domande alla chat usate nell'ora in corso da questo indirizzo, limite e secondi alla ripartenza del conteggio."""
-    return agente.uso(_ip(req))
+    return agente.uso(_chi(req))
 
 
 @app.post("/v1/chat")
 def chat(req: Request, d: sito.Domanda):
     """Risposta dell'agente in NDJSON: un evento per riga."""
-    return sito.risposta_ndjson(_ip(req), d)
+    return sito.risposta_ndjson(_chi(req), d)
 
 
 # CORS solo per /mcp, perché i client MCP nel browser (ispettori, app web) leggano le risposte e l'mcp-session-id
