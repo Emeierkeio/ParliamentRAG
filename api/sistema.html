@@ -28,6 +28,8 @@
  <div class="cifre" id="cifre" aria-live="polite"></div>
  <section class="pn-blocco"><h2>Da guardare</h2><p class="nota">Problemi e cose da controllare, calcolati dallo stato di adesso.</p><ul class="avvisi" id="avvisi"></ul></section>
 
+ <section class="pn-blocco"><h2>Copertura del Parlamento</h2><p class="nota" id="n-copertura"></p><div id="copertura"></div></section>
+
  <div class="griglia">
   <section class="pn-blocco largo"><h2>Ultimo giro notturno</h2><p class="nota">Parte ogni notte alle 01:30 UTC, cioè alle 02:30 di Roma con l'ora solare. Se finisce male arriva una mail a segnalazioni@parliamentrag.it.</p><div id="giro"></div></section>
   <section class="pn-blocco largo"><h2>Giri nel periodo</h2><p class="nota" id="n-giri"></p><div id="giri"></div></section>
@@ -87,6 +89,8 @@ function avvisi(d) {
     const s = (dati.sedute || []).find((x) => x.ramo === r && x.tipo === "committee_summary"), v = (dati.voti || []).find((x) => x.ramo === r);
     if (s && v && giorniDa(s.ultima_tenuta) - giorniDa(v.ultima) > 3) a.push(["att", `<b>${RAMI[r]}: resoconti delle commissioni fermi.</b> I voti arrivano al ${data(v.ultima)}, le commissioni solo al ${data(s.ultima_tenuta)}.`]);
   }
+  const vuote = (d.copertura?.voci || []).flatMap((v) => Object.entries(v.rami).filter(([, x]) => x.vuoto).map(([r]) => `${v.nome} (${RAMI_C[r]})`));
+  if (vuote.length) a.push(["att", `<b>Copertura: ${num(vuote.length)} ${vuote.length === 1 ? "voce data per fatta non ha" : "voci date per fatte non hanno"} righe nel database.</b> ${esc(vuote.slice(0, 3).join("; "))}${vuote.length > 3 ? "…" : ""}`]);
   if (dati.errore) a.push(["ko", `<b>Il database non risponde</b> (${esc(dati.errore)}).`]);
   if (dati.vettori?.aperti && ad - Date.parse(dati.vettori.ultimo_invio) / 1000 > 26 * 3600) a.push(["att", `<b>${num(dati.vettori.aperti)} batch di vettori aperti da più di un giorno.</b> OpenAI non li ha ancora restituiti.`]);
   if (k.oggi > .8 * k.tetto) a.push([k.oggi >= k.tetto ? "ko" : "att", `<b>Spesa di oggi ${usd(k.oggi)} su ${usd(k.tetto, 0)} di tetto.</b>${k.oggi >= k.tetto ? " La chat è ferma fino a domani." : ""}`]);
@@ -145,6 +149,27 @@ function dati(d) {
     + `<p class="nota" style="margin-top:12px">Vettori: ${num(v.aperti)} batch in attesa da OpenAI, ${num(v.con_errore)} con errore. Ultimo invio ${quando(v.ultimo_invio)}, ultima raccolta ${quando(v.ultima_raccolta)}.</p>`;
 }
 
+const STATI_C = { fatto: ["ok", "fatto"], parziale: ["att", "parziale"], manca: ["ko", "manca"], non_c_e: ["", "non pubblicato"] };
+const RAMI_C = { camera: "Camera", senato: "Senato", parlamento: "Parlamento" };
+function copertura(c) {
+  if (!c || c.errore || c.percento == null) { $("#copertura").innerHTML = '<p class="vuoto">Elenco della copertura non leggibile.</p>'; return; }
+  const k = c.conti || {}, voci = c.voci || [];
+  $("#n-copertura").textContent = `Quanto di ciò che Camera e Senato pubblicano per la legislatura in corso è scaricato e modellato. Ogni voce pesa da 1 a 3; una parziale vale metà. Elenco confrontato con i due siti il ${data(c.verificato)}; le legislature precedenti sono fuori.`;
+  const righeVoce = (v, solo) => Object.entries(v.rami).filter(([, x]) => !solo || solo(x)).map(([r, x]) =>
+    [esc(v.area), esc(v.nome), RAMI_C[r], P.stato(...(STATI_C[x.stato] || ["", x.stato])) + (x.vuoto ? ' <small style="color:var(--no)">nessuna riga nel database</small>' : ""),
+     x.righe == null ? "–" : num(x.righe), esc(x.perche || "")]);
+  const mancano = voci.flatMap((v) => righeVoce(v, (x) => x.stato === "manca" || x.stato === "parziale" || x.vuoto).map((r) => [v.peso, r]))
+    .sort((a, b) => b[0] - a[0]).map(([p, r]) => [r[1], r[2], r[3], "●".repeat(p), r[5]]);
+  $("#copertura").innerHTML = `<div class="cifre"><div class="cifra"><small>Coperto</small><span class="cifra__n">${num(c.percento, 1)}%</span></div>`
+    + `<div class="cifra"><small>Voci fatte</small><span class="cifra__n cifra__n--medio">${num(k.fatto)}</span></div><div class="cifra"><small>Parziali</small><span class="cifra__n cifra__n--medio">${num(k.parziale)}</span></div><div class="cifra"><small>Mancanti</small><span class="cifra__n cifra__n--medio">${num(k.manca)}</span></div></div>`
+    + Object.entries(c.rami || {}).map(([r, q]) => riempi(q / 100, RAMI_C[r], `${num(q, 1)}%`, true)).join("")
+    + `<h3>Per area</h3>` + Object.entries(c.aree || {}).map(([a, q]) => riempi(q / 100, esc(a), `${num(q, 1)}%`, true)).join("")
+    + `<h3>Cosa manca e perché</h3>` + P.tab([["Voce"], ["Ramo"], ["Stato"], ["Peso"], ["Perché", "lungo"]], mancano, "Non manca niente.")
+    + `<button class="mostra" id="c-tutte" aria-expanded="false">Mostra tutte le ${num(voci.length)} voci</button><div id="c-elenco" hidden>`
+    + P.tab([["Area"], ["Voce"], ["Ramo"], ["Stato"], ["Righe nel database", "n"], ["Nota", "lungo"]], voci.flatMap((v) => righeVoce(v))) + `</div>`;
+  $("#c-tutte").onclick = (ev) => { const e = $("#c-elenco"); e.hidden = !e.hidden; ev.target.setAttribute("aria-expanded", String(!e.hidden)); ev.target.textContent = e.hidden ? `Mostra tutte le ${num(voci.length)} voci` : "Nascondi l'elenco"; };
+}
+
 function chat(c, k, d) {
   const per = Object.fromEntries((c.per_giorno || []).map((g) => [String(g.giorno), g]));
   const col = P.giorni(String(d.dal), String(d.al)).map((g) => ({ k: g, etichetta: data(g), titolo: data(g, true) }));
@@ -177,7 +202,7 @@ let ultimo = null;
 function disegna(d) {
   window.LIMITI = d.limiti || {};
   const a = avvisi(d);
-  cifre(d, a); giro(d.macchina || {}, d); dati(d.dati || {}); chat(d.chat || {}, d.costi || {}, d); macchina(d.macchina || {});
+  cifre(d, a); copertura(d.copertura); giro(d.macchina || {}, d); dati(d.dati || {}); chat(d.chat || {}, d.costi || {}, d); macchina(d.macchina || {});
 }
 async function carica(dal, al) {
   try { ultimo = await P.leggi(`/api/sistema?dal=${dal}&al=${al}`); disegna(ultimo); }

@@ -3,6 +3,7 @@
 Tre fonti: dati/sistema/stato.json, che il cron della VPS riscrive ogni 10 minuti (`python -m pipeline sistema`: giri,
 quarantena, disco, memoria, container, backup, versione); Postgres con l'utente `lettura` (quanto sono freschi i dati,
 quante righe, batch dei vettori); lo schema `sito` per spesa e chat (registro.uso_chat, senza domande né risposte).
+La copertura del dominio parlamentare viene da copertura.toml (api/copertura.py).
 """
 
 from __future__ import annotations
@@ -18,7 +19,7 @@ from fastapi.responses import HTMLResponse
 
 from pipeline.ambiente import env
 
-from . import statistiche
+from . import copertura, statistiche
 from .db import connessione, connessione_sito
 
 router = APIRouter()
@@ -120,5 +121,5 @@ def dati(req: Request, giorni: int = 14, dal: dt.date | None = None, al: dt.date
             sito = statistiche._costi(c, dal, al)
             chat = _chat(c, dal, al)
             sito["oggi_domande"] = c.execute("SELECT count(*) AS n FROM sito.visita WHERE giorno = current_date AND evento = 'domanda'").fetchone()["n"]
-    return {"adesso": time.time(), "dal": dal, "al": al, "macchina": _stato(), "dati": _dati(), "costi": sito, "chat": chat,
+    return {"adesso": time.time(), "dal": dal, "al": al, "macchina": _stato(), "dati": _dati(), "costi": sito, "chat": chat, "copertura": copertura.copertura(),
             "limiti": {"domande_ora": int(env("AGENTE_DOMANDE_ORA", "10")), "dollari_giorno": float(env("AGENTE_DOLLARI_GIORNO", "25"))}}

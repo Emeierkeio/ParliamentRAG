@@ -1,0 +1,344 @@
+# Copertura del dominio parlamentare: che cosa pubblicano Camera e Senato e che cosa di questo scarichiamo e modelliamo.
+# La legge il pannello /sistema (api/copertura.py), che ne ricava la percentuale e l'elenco di ciò che manca, con il motivo.
+#
+# Si aggiorna insieme al codice: quando una fonte entra o cambia, si cambia qui lo stato della sua voce (un test controlla
+# che ogni fonte di pipeline.toml compaia in una voce). Vale per la legislatura in corso: le precedenti sono fuori.
+#
+# Una voce:
+#   area, nome     dove sta e che cos'è, con le parole dei siti
+#   peso           1 = marginale, 2 = utile, 3 = essenziale per seguire i lavori
+#   camera, senato "fatto" | "parziale" | "manca" | "non_c_e" (il ramo non lo pubblica: non conta); `parlamento` per le voci comuni
+#   perche_camera, perche_senato, perche   perché manca o è parziale, in una frase
+#   fonti          i connettori di pipeline.toml che la portano
+#   conta          una query che conta le righe nel database ({ramo} = 'camera' o 'senato'): una voce «fatto» senza righe
+#                  si vede nel pannello. `conta_camera` e `conta_senato` quando la query cambia fra i rami.
+
+verificato = "2026-11-10"     # l'ultima volta che l'elenco è stato confrontato con i siti dei due rami
+
+# ---------------------------------------------------------------- persone e organi
+[[voce]]
+area = "Persone e organi"
+nome = "Parlamentari, mandati e gruppi"
+peso = 3
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_ocd", "senato_osr"]
+conta = "SELECT count(*) FROM mandate WHERE chamber = {ramo}"
+
+[[voce]]
+area = "Persone e organi"
+nome = "Componenti del Gruppo Misto"
+peso = 2
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_ocd", "senato_misto"]
+conta = "SELECT count(*) FROM grp WHERE chamber = {ramo} AND kind = 'misto_component'"
+
+[[voce]]
+area = "Persone e organi"
+nome = "Commissioni, giunte e altri organi: chi ne fa parte e con quale carica"
+peso = 2
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_ocd", "senato_osr"]
+conta = "SELECT count(*) FROM body WHERE chamber = {ramo}"
+
+[[voce]]
+area = "Persone e organi"
+nome = "Governo: ministri, viceministri e sottosegretari"
+peso = 2
+parlamento = "fatto"
+fonti = ["camera_governo"]
+conta = "SELECT count(*) FROM government"
+
+[[voce]]
+area = "Persone e organi"
+nome = "Foto dei parlamentari"
+peso = 1
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_ocd", "senato_foto"]
+
+[[voce]]
+area = "Persone e organi"
+nome = "Trasparenza: dichiarazioni patrimoniali, spese elettorali, rendiconti dei gruppi"
+peso = 1
+camera = "manca"
+senato = "manca"
+perche = "Sono PDF con dati personali e non servono alle tre garanzie: per scelta non si scaricano."
+
+[[voce]]
+area = "Persone e organi"
+nome = "Registro dei rappresentanti di interessi"
+peso = 1
+camera = "manca"
+senato = "manca"
+perche_camera = "Vista solo la pagina di iscrizione: da verificare se l'elenco degli iscritti è pubblico."
+perche_senato = "Non verificato se il Senato ne pubblica uno."
+
+# ---------------------------------------------------------------- Aula
+[[voce]]
+area = "Aula"
+nome = "Resoconti stenografici"
+peso = 3
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_resoconti", "senato_resoconti"]
+conta = "SELECT count(*) FROM sitting WHERE chamber = {ramo} AND kind = 'assembly_verbatim'"
+
+[[voce]]
+area = "Aula"
+nome = "Ordine del giorno"
+peso = 2
+camera = "fatto"
+senato = "manca"
+perche_senato = "La pagina c'è (vista il 10/11/2026), sta dietro il blocco di senato.it: connettore da scrivere."
+fonti = ["camera_odg"]
+conta = "SELECT count(*) FROM sitting WHERE chamber = {ramo} AND kind = 'assembly_agenda'"
+
+[[voce]]
+area = "Aula"
+nome = "Calendario dei lavori"
+peso = 2
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_calendario", "senato_calendario"]
+conta = "SELECT count(*) FROM calendar_item WHERE chamber = {ramo}"
+
+[[voce]]
+area = "Aula"
+nome = "Votazioni elettroniche, con il voto di ogni parlamentare"
+peso = 3
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_voti", "senato_voti"]
+conta = "SELECT count(*) FROM vote WHERE chamber = {ramo}"
+
+[[voce]]
+area = "Aula"
+nome = "Votazioni senza i nomi (alzata di mano, voto segreto)"
+peso = 1
+camera = "manca"
+senato = "manca"
+perche = "L'esito sta solo nel testo del resoconto: serve uno strumento che lo legga da lì."
+
+[[voce]]
+area = "Aula"
+nome = "Video delle sedute, con i tempi di ogni intervento"
+peso = 2
+camera = "fatto"
+senato = "manca"
+perche_senato = "Da verificare se la WebTV del Senato dà i tempi intervento per intervento."
+fonti = ["camera_webtv"]
+conta = "SELECT count(*) FROM video v JOIN sitting s ON s.uri = v.sitting WHERE s.chamber = {ramo}"
+
+# ---------------------------------------------------------------- commissioni
+[[voce]]
+area = "Commissioni"
+nome = "Resoconti sommari"
+peso = 3
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_bollettino", "senato_akn"]
+conta = "SELECT count(*) FROM sitting WHERE chamber = {ramo} AND kind = 'committee_summary'"
+
+[[voce]]
+area = "Commissioni"
+nome = "Resoconti stenografici: audizioni formali e indagini conoscitive"
+peso = 3
+camera = "fatto"
+senato = "manca"
+perche_senato = "Stanno solo su senato.it, dietro il blocco: con il tetto di richieste per notte servono settimane. In prova un ritmo più lento."
+fonti = ["camera_stenografici_commissioni"]
+conta = "SELECT count(*) FROM sitting WHERE chamber = {ramo} AND kind = 'committee_verbatim'"
+
+[[voce]]
+area = "Commissioni"
+nome = "Convocazioni e ordini del giorno"
+peso = 3
+camera = "parziale"
+senato = "parziale"
+perche = "Ci sono le commissioni permanenti, da oggi in poi; mancano bicamerali, giunte e commissioni d'inchiesta."
+fonti = ["camera_convocazioni", "senato_convocazioni"]
+conta = "SELECT count(*) FROM convocation WHERE chamber = {ramo}"
+
+[[voce]]
+area = "Commissioni"
+nome = "Documenti acquisiti: memorie e contributi scritti delle audizioni"
+peso = 2
+camera = "fatto"
+senato = "manca"
+perche_senato = "Stanno solo su senato.it, dietro il blocco: stesso limite degli stenografici."
+fonti = ["camera_documenti"]
+conta_camera = "SELECT count(*) FROM document WHERE source = 'camera_documenti'"
+
+[[voce]]
+area = "Commissioni"
+nome = "Audizioni informali"
+peso = 1
+camera = "manca"
+senato = "manca"
+perche = "Esistono solo come video, senza un resoconto ufficiale da citare."
+
+[[voce]]
+area = "Commissioni"
+nome = "Termini per gli emendamenti"
+peso = 2
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_bollettino", "senato_akn"]
+conta = "SELECT count(*) FROM amendment_deadline WHERE chamber = {ramo}"
+
+[[voce]]
+area = "Commissioni"
+nome = "Audizioni, pareri e risposte alle interrogazioni letti nei sommari"
+peso = 2
+camera = "parziale"
+senato = "parziale"
+perche = "Solo gli ultimi tre mesi; iter e pareri sugli emendamenti sono ancora sotto la precisione che serve per mostrarli."
+fonti = ["camera_bollettino", "senato_akn"]
+conta = "SELECT count(*) FROM committee_fact WHERE chamber = {ramo}"
+
+[[voce]]
+area = "Commissioni"
+nome = "Bicamerali e commissioni d'inchiesta: resoconti"
+peso = 2
+camera = "parziale"
+senato = "manca"
+perche_camera = "Il Bollettino porta giunte e comitati; per bicamerali e inchiesta la copertura non è stata verificata."
+perche_senato = "Non verificato che cosa ne pubblicano i bulk data."
+fonti = ["camera_bollettino"]
+
+# ---------------------------------------------------------------- atti e leggi
+[[voce]]
+area = "Atti e leggi"
+nome = "Progetti di legge: scheda, firmatari, iter, commissioni e relatori"
+peso = 3
+camera = "fatto"
+senato = "parziale"
+perche_senato = "Mancano i passi dell'iter e la classificazione per materia, che gli open data del Senato hanno."
+fonti = ["camera_atti", "senato_ddl"]
+conta = "SELECT count(*) FROM act WHERE chamber = {ramo} AND kind = 'bill'"
+
+[[voce]]
+area = "Atti e leggi"
+nome = "Testi degli atti, versione per versione"
+peso = 3
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_testi", "senato_akn"]
+
+[[voce]]
+area = "Atti e leggi"
+nome = "Emendamenti: testo e firmatari"
+peso = 3
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_emendamenti", "senato_akn"]
+conta = "SELECT count(*) FROM amendment e JOIN act a ON a.uri = e.act WHERE a.chamber = {ramo}"
+
+[[voce]]
+area = "Atti e leggi"
+nome = "Emendamenti: esito"
+peso = 2
+camera = "fatto"
+senato = "parziale"
+perche_senato = "In Aula dal voto; in commissione dalle schede di senato.it, poche per notte."
+fonti = ["camera_emendamenti", "senato_esiti"]
+
+[[voce]]
+area = "Atti e leggi"
+nome = "Dossier dei servizi di documentazione"
+peso = 2
+camera = "fatto"
+senato = "manca"
+perche_senato = "PDF su senato.it, dietro il blocco: stesso limite degli stenografici."
+fonti = ["camera_dossier"]
+conta_camera = "SELECT count(*) FROM document WHERE kind = 'dossier'"
+
+[[voce]]
+area = "Atti e leggi"
+nome = "Leggi approvate e norme citate"
+peso = 2
+camera = "parziale"
+senato = "parziale"
+perche = "Ci sono numero e data della legge e le norme citate nei testi; il testo della legge pubblicata non si scarica."
+fonti = ["camera_atti", "senato_ddl"]
+
+# ---------------------------------------------------------------- indirizzo e controllo
+[[voce]]
+area = "Indirizzo e controllo"
+nome = "Interrogazioni, interpellanze, mozioni, risoluzioni, ordini del giorno"
+peso = 3
+camera = "fatto"
+senato = "fatto"
+fonti = ["camera_aic", "senato_aic"]
+conta = "SELECT count(*) FROM act WHERE chamber = {ramo} AND source_key LIKE '%-aic-%'"
+
+[[voce]]
+area = "Indirizzo e controllo"
+nome = "Risposte del Governo alle interrogazioni"
+peso = 2
+camera = "manca"
+senato = "manca"
+perche = "Negli open data della Camera si fermano al 2012: stanno nell'allegato del resoconto, da leggere da lì."
+
+[[voce]]
+area = "Indirizzo e controllo"
+nome = "Atti del Governo sottoposti a parere (schemi di decreto legislativo, regolamenti)"
+peso = 3
+camera = "fatto"
+senato = "parziale"
+perche_senato = "Gli open data danno titolo, data, stato e testo; commissione, termine e parere stanno solo nelle schede di senato.it."
+fonti = ["camera_atti_governo", "senato_atti_governo"]
+conta = "SELECT count(*) FROM act WHERE chamber = {ramo} AND kind = 'government_act'"
+
+[[voce]]
+area = "Indirizzo e controllo"
+nome = "Proposte di nomina sottoposte a parere"
+peso = 2
+camera = "fatto"
+senato = "parziale"
+perche_senato = "Come per gli atti del Governo: mancano commissione, termine e parere."
+fonti = ["camera_atti_governo", "senato_atti_governo"]
+conta = "SELECT count(*) FROM act WHERE chamber = {ramo} AND kind = 'appointment'"
+
+[[voce]]
+area = "Indirizzo e controllo"
+nome = "Documenti (Doc.): relazioni al Parlamento, DEF, Corte dei conti"
+peso = 2
+camera = "parziale"
+senato = "parziale"
+perche = "Entrano solo i documenti citati da un dibattito o da un voto, non l'elenco intero."
+
+[[voce]]
+area = "Indirizzo e controllo"
+nome = "Atti dell'Unione europea e pareri di sussidiarietà"
+peso = 1
+camera = "manca"
+senato = "manca"
+perche = "Disponibili negli open data del Senato (circa mille): non ancora in programma."
+
+[[voce]]
+area = "Indirizzo e controllo"
+nome = "Petizioni"
+peso = 1
+camera = "manca"
+senato = "manca"
+perche = "Disponibili (circa duemila al Senato): non in programma."
+
+# ---------------------------------------------------------------- Parlamento
+[[voce]]
+area = "Parlamento"
+nome = "Parlamento in seduta comune"
+peso = 1
+parlamento = "manca"
+perche = "Sta su un sito a parte: non verificato."
+
+[[voce]]
+area = "Parlamento"
+nome = "Thesaurus dei temi (EuroVoc)"
+peso = 1
+parlamento = "fatto"
+fonti = ["eurovoc"]
+conta = "SELECT count(*) FROM concept"
