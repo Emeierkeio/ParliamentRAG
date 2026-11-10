@@ -122,7 +122,29 @@ class ElencoVotazioni(Parametri):
 
 class Votazione(Parametri):
     uri: str
-    with_ballots: bool = Field(False, description="anche il voto di ogni parlamentare (lungo: solo per «chi ha votato…»)")
+    with_ballots: bool = Field(False, description="anche il voto di ogni parlamentare, tutti: è lungo e può arrivare tagliato; per i nomi di chi ha fatto una scelta usa result")
+    result: Literal["favor", "against", "abstain", "absent", "mission"] | None = Field(
+        None, description="i nomi di chi ha votato così (contrari: against; astenuti: abstain; assenti: absent), divisi per gruppo: "
+                          "per «chi ha votato contro», «chi si è astenuto», «chi era assente»")
+
+
+def _votazione(c, p: Votazione):
+    """Con `result` i soli nomi di quella scelta, per gruppo: l'elenco di tutti i votanti non sta nel taglio dei risultati."""
+    if not p.result:
+        return voti.votazione(c, p.uri, p.with_ballots)
+    v = voti.votazione(c, p.uri, True)
+    if v is None:
+        return None
+    out = v.model_dump(mode="json", exclude_none=True, exclude={"ballots"})
+    nomi: dict[str, list[str]] = {}
+    for b in v.ballots:
+        if b.result == p.result:
+            g = b.person.group
+            nomi.setdefault((g.short_name or g.name) if g else "gruppo non indicato", []).append(b.person.name)
+    out["names"] = {"result": p.result, "total": sum(len(x) for x in nomi.values()),
+                    "note": "gruppo alla data del voto, il Misto per componente; l'elenco è completo",
+                    "by_group": dict(sorted(nomi.items(), key=lambda kv: -len(kv[1])))}
+    return out
 
 
 class CercaAtti(Parametri):
@@ -228,7 +250,8 @@ class VotoGruppi(FiltriVoti):
     chamber: Ramo
     groups: list[str] | None = Field(None, max_length=20, description="sigle, nomi o uri dei gruppi da mostrare; con due gruppi anche "
                                                                      "l'elenco delle votazioni in cui hanno preso posizioni diverse")
-    person: str | None = Field(None, description="uri di un parlamentare: quanto ha votato come ciascun gruppo, diviso per il gruppo che aveva al voto")
+    person: str | None = Field(None, description="uri di un parlamentare: quanto ha votato come ciascun gruppo, diviso per il gruppo che aveva al voto; "
+                                                 "con un solo gruppo in groups anche l'elenco delle votazioni in cui ha votato diversamente da quel gruppo")
     limit: int = Field(50, ge=1, le=200, description="righe dell'elenco delle posizioni diverse")
     offset: int = Field(0, ge=0)
 
@@ -438,9 +461,10 @@ STRUMENTI: list[Strumento] = [
               "gruppo) e il numero dei membri.", Organo, lambda c, p: persone.organo(c, p.q, p.chamber, p.date, p.titles)),
     Strumento("elenco_votazioni", "Votazioni elettroniche, dalla più recente, per parole, ramo, atto, tipo e date.", ElencoVotazioni,
               lambda c, p: voti.elenco_votazioni(c, p.chamber, p.act, p.kind, p.start, p.end, p.final, p.limit, p.offset, p.confidence, p.q)),
-    Strumento("votazione", "Una votazione: totali, esito, atto, voto di ogni gruppo (il Misto per componente) e, se chiesto, di ogni parlamentare. "
+    Strumento("votazione", "Una votazione: totali, esito, atto, voto di ogni gruppo (il Misto per componente) e, se chiesto, i nomi di chi ha fatto "
+              "una scelta (result) o il voto di ogni parlamentare. "
               "Un gruppo con split vero si è diviso: dillo con i numeri di ogni scelta, mai una posizione unica.",
-              Votazione, lambda c, p: voti.votazione(c, p.uri, p.with_ballots)),
+              Votazione, _votazione),
     Strumento("cerca_atti", "Progetti di legge, interrogazioni, mozioni e altri atti per parole del titolo, numero, tipo, firmatario o "
               "iniziativa (governo, parlamentare, regione, CNEL, popolare, o il presentatore: «Regione Toscana»).",
               CercaAtti, lambda c, p: atti.cerca_atti(c, p.q, p.chamber, p.kind, p.number, p.signer, p.limit, p.offset, p.initiative)),
@@ -476,7 +500,8 @@ STRUMENTI: list[Strumento] = [
                                                                   p.q, p.start, p.end, p.group_by, p.sum_chambers, p.limit, p.offset)),
     Strumento("voto_gruppi", "CONTEGGIO. Come hanno votato i gruppi (il Misto per componente) su un insieme di votazioni palesi di un ramo: "
               "posizioni, coesione (indice di Hix-Noury-Roland), quota di voti compatti, matrice di accordo fra gruppi; con due gruppi le "
-              "votazioni in cui si sono divisi; con una persona quanto ha votato come ciascun gruppo, prima e dopo un cambio di gruppo.",
+              "votazioni in cui si sono divisi; con una persona quanto ha votato come ciascun gruppo, prima e dopo un cambio di gruppo, e con una persona e un solo gruppo "
+              "l'elenco delle votazioni in cui ha votato diversamente dal gruppo (anche dal suo: «quando ha votato contro il gruppo»).",
               VotoGruppi, lambda c, p: conti.voto_gruppi(c, p.chamber, p.kind, p.final, p.approved, p.confidence, p.act, p.q, p.start,
                                                           p.end, p.groups, p.person, p.limit, p.offset)),
     Strumento("presenze", "CONTEGGIO. Per ogni parlamentare: votazioni a cui ha partecipato, favorevoli, contrari, astenuti, assenze e "

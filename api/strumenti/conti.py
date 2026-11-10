@@ -362,6 +362,29 @@ def voto_gruppi(c: psycopg.Connection, chamber: str, kind: str | None = None, fi
                                               for (mio, g), (n, k) in allineato.items()
                                               if n and (scelti is None or g in scelti or g == mio)),
                                              key=lambda x: (x["own_group_at_vote"] or "", -x["share"]))}
+        # con un solo gruppo scelto: l'elenco delle votazioni in cui la persona ha votato diversamente da quel gruppo
+        uno = gruppi_chiesti(cat, groups[0], chamber) if groups and len(groups) == 1 else []
+        if len(uno) == 1:
+            g, diverse = uno[0], []
+            for s in schede_persona:
+                conti = per_voto.get(s["vote"], {}).get(g)
+                if not conti:
+                    continue
+                if g == s["g"]:
+                    conti = tuple(n - (k == s["result"]) for n, k in zip(conti, SCELTE))
+                pos = posizione(conti)
+                if pos not in (None, "tie") and pos != s["result"]:
+                    diverse.append({"vote": s["vote"], "person": s["result"], etichetta(cat, g): pos})
+            dettagli = {r["uri"]: r for r in c.execute("SELECT uri, date, title, final, source_url FROM vote WHERE uri = ANY(%s)",
+                                                       ([d["vote"] for d in diverse],))}
+            for d in diverse:
+                x = dettagli.get(d["vote"], {})
+                d.update(date=x.get("date"), title=x.get("title"), final=x.get("final") or None, source_url=x.get("source_url"))
+            diverse.sort(key=lambda d: (d["date"] or dt.date.min), reverse=True)
+            out["person"]["different_votes"] = {
+                "total": len(diverse), "compared_with": etichetta(cat, g),
+                "note": "votazioni in cui la persona ha votato diversamente dalla posizione del gruppo (tie esclusi), dalla più recente; "
+                        "per restringere usa final, kind, act, q o le date"} | _pagina(diverse, min(limit, 25), offset)
     return out
 
 
