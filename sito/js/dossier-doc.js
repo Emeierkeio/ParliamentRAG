@@ -3,10 +3,10 @@
 (function () {
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const LOGO = '<svg viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="currentColor"/></svg>';
-  const CSS = `@page{size:A4;margin:18mm 16mm 22mm;
-      @bottom-left{content:"ParliamentRAG · www.parliamentrag.it · contatti@parliamentrag.it";font:8pt "Schibsted Grotesk",Arial,sans-serif;color:#666b79}
-      @bottom-right{content:counter(page) " / " counter(pages);font:8pt "Schibsted Grotesk",Arial,sans-serif;color:#666b79}}
-    @page:first{margin:0;@bottom-left{content:none}@bottom-right{content:none}}
+  // margini dentro le sezioni (ripetuti su ogni pagina con box-decoration-break), non nella @page: così valgono anche
+  // quando nella finestra di stampa «Margini» è su «Nessuno»
+  const CSS = `@page{size:A4;margin:0}
+    @media print{.indice,.sez,.metodo{padding:16mm 16mm 18mm;box-decoration-break:clone;-webkit-box-decoration-break:clone}}
     *{box-sizing:border-box}body{margin:0;font:400 10.5pt/1.55 "Schibsted Grotesk",Arial,sans-serif;color:#14161d;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     a{color:#2a4bd7;text-decoration:none}
     .copertina{position:relative;overflow:hidden;width:210mm;height:296mm;padding:20mm 18mm 18mm;background:#f6f7f9;color:#14161d;display:flex;flex-direction:column;page-break-after:always}
