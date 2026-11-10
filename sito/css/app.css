@@ -1361,7 +1361,10 @@ html.scorre .compositore .chat{transition:none}
 
 /* ===== mobile: conversazione come nelle app di chat ===== */
 @media (max-width:760px){
- html,body{overflow-x:hidden!important;overscroll-behavior-x:none;max-width:100%}
+ /* clip e non hidden (10/11): hidden su html e body insieme, con overscroll-behavior, rendeva la pagina un contenitore che
+    su Chrome Android non scorreva più col dito (segnalazione da uno Xiaomi 11 Pro). clip taglia lo sbordo senza creare uno scorrimento */
+ html,body{overflow-x:clip!important;max-width:100%}
+ html{overscroll-behavior-x:none}
  .testata .barra{padding-left:16px!important;padding-right:10px!important}
  /* domanda: fumetto piccolo a destra */
  .dom-utente{max-width:85%}
@@ -1861,7 +1864,7 @@ body[data-vista=conversazione] .conv-rail:not([hidden]){display:flex}
  .pesi-m{display:inline-flex}
  #f-eroe .pesi-prima,#f-eroe .info--demo{display:none}
  body:not([data-vista]):not([data-barra]) .compositore{visibility:hidden}
- html,body{overscroll-behavior-y:none}
+ html{overscroll-behavior-y:none}
 }
 @media (hover:none){[data-tip]::after,[data-tip]:not(.punti a)::before{display:none!important}}
 
