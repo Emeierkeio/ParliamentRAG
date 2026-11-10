@@ -13,7 +13,7 @@ from typing import Literal
 import psycopg
 from pydantic import BaseModel, ConfigDict, Field
 
-from .strumenti import agenda, atti, citazioni, conti, persone, ricerca, sedute, significato, voti
+from .strumenti import agenda, atti, citazioni, conti, fatti, persone, ricerca, sedute, significato, voti
 
 Ramo = Literal["camera", "senato"]
 Iniziativa = Field(None, description="categoria (governo, parlamentare, regione, cnel, popolare, mista) o parole del presentatore "
@@ -320,6 +320,21 @@ class Agenda(Parametri):
         None, description="quali eventi; vuoto: tutti. termini = scadenze per emendamenti, subemendamenti e ordini del giorno")
 
 
+class FattiCommissioni(Parametri):
+    kind: Literal["audizione", "parere", "interrogazione"] | None = Field(
+        None, description="audizione: chi è stato sentito; parere: parere di una commissione su un atto; interrogazione: chi "
+                          "risponde per il governo a un'interrogazione in commissione e la replica")
+    act: str | None = Field(None, description="uri dell'atto (da cerca_atti) o riferimento come ac:3120, ddl:2074, aic:5-05944")
+    subject: str | None = Field(None, description="parole del soggetto: l'ente o la persona audita, la commissione che dà il parere, chi risponde")
+    body: str | None = Field(None, description="uri o parole del nome della commissione")
+    chamber: Ramo | None = None
+    outcome: str | None = Field(None, description="esito: favorevole, contrario, favorevole con condizioni, nulla osta, soddisfatto, insoddisfatto …")
+    start: dt.date | None = None
+    end: dt.date | None = None
+    limit: int = Field(30, ge=1, le=100)
+    offset: int = Field(0, ge=0)
+
+
 class VerificaCitazioni(Parametri):
     text: str = Field(max_length=20000, description="la risposta con le citazioni tra «…»")
 
@@ -425,6 +440,11 @@ STRUMENTI: list[Strumento] = [
               "totale delle persone e dei passaggi per ramo.",
               CambiGruppo, lambda c, p: conti.cambi_gruppo(c, p.chamber, p.start, p.end, p.person, p.group, p.components, p.limit,
                                                             p.offset)),
+    Strumento("fatti_commissioni", "Lavori delle commissioni letti nei sommari: audizioni (chi è stato sentito, su quale atto), pareri "
+              "delle commissioni sugli atti, risposte del governo alle interrogazioni in commissione con la replica. Ogni fatto ha la "
+              "frase del sommario (evidence): è scritta dagli uffici, non va citata come parola di un parlamentare. Copre le sedute "
+              "dall'agosto 2026.", FattiCommissioni,
+              lambda c, p: fatti.fatti_commissioni(c, p.kind, p.act, p.subject, p.body, p.chamber, p.start, p.end, p.outcome, p.limit, p.offset)),
     Strumento("agenda", "AGENDA. Cosa succede in Parlamento giorno per giorno fra due date: sedute d'Aula previste e tenute, sedute "
               "di commissione, termini per gli emendamenti in commissione (con la frase del sommario degli uffici, che non va citata come "
               "parola di un parlamentare), progetti di legge presentati, votazioni finali, leggi pubblicate. «Cosa scade oggi o questa "

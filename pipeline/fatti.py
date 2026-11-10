@@ -144,6 +144,8 @@ def verifica(a: dict, fatto: dict) -> tuple[dict | None, str | None]:
         esito = None                                    # la frase non è la replica: chi risponde resta, l'esito no
     if tipo in ("parere_emendamenti",) and not fatto.get("emendamenti"):
         return None, "parere sugli emendamenti senza numeri"
+    if tipo == "parere_emendamenti" and not re.search(r"governo|relat|sottosegretari|ministr", soggetto or "", re.I):
+        return None, "parere sugli emendamenti non del governo o del relatore"   # «la Commissione respinge» è un voto
     refs = list(dict.fromkeys(r for r in (riferimento(x) for x in fatto.get("atti") or []) if r))
     dell_argomento = {x["ref"]: x["act"] for x in a["acts"]}
     if not refs and len(dell_argomento) == 1:          # l'argomento ha un atto solo: è quello

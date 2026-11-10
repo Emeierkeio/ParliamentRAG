@@ -54,6 +54,12 @@ class TestVerifica(unittest.TestCase):
                             "evidenza": "Il sottosegretario Luigi D'ERAMO risponde all'interrogazione in titolo", "soggetto": "Luigi D'ERAMO", "esito": "soddisfatto"})
         self.assertEqual((m, r["outcome"], r["act_refs"]), (None, None, ["aic:5-05950"]))
 
+    def test_parere_emendamenti_solo_governo_o_relatore(self):
+        a = {**ARG, "paragrafi": [{"uri": "p1", "text": "La Commissione respinge l'emendamento 2.45. Con distinta votazione respinge anche il 2.46."}]}
+        _, m = verifica(a, {"tipo": "parere_emendamenti", "quando": "in questa seduta", "paragrafo": 1, "atti": [], "emendamenti": ["2.45"],
+                            "evidenza": "La Commissione respinge l'emendamento 2.45.", "soggetto": "Commissione", "esito": "contrario"})
+        self.assertEqual(m, "parere sugli emendamenti non del governo o del relatore")
+
     def test_riferimenti(self):
         self.assertEqual([riferimento(x) for x in ("C. 3120", "S. 2074", "5-01234", "Atto n. 312", "Doc. XVI")],
                          ["ac:3120", "ddl:2074", "aic:5-01234", "ag:312", None])
