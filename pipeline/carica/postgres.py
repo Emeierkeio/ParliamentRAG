@@ -277,6 +277,7 @@ ATTI = {
     "act_rapporteur": ["act", "name_raw", "role", "raw", "person"],
     "act_joint": ["act", "main_act", "text_type"],
     "act_transmission": ["act", "other_ref", "date", "title", "provenance"],
+    "act_subject": ["act", "concept"],
 }
 
 
@@ -311,6 +312,8 @@ def script_atti(righe: list[dict]) -> str:
             t["act_joint"].append([a["from"], a["to"], a.get("text_type")])
         elif a["type"] == "TRANSMITTED":
             t["act_transmission"].append([a["from"], a.get("to_ref"), a.get("date"), a.get("title"), a.get("provenance")])
+        elif a["type"] == "SUBJECT":
+            t["act_subject"].append([a["from"], a["to"]])
     # i relatori del Senato arrivano già con il senatore: la persona deve esserci prima della riga
     persone = sorted({r[1] for r in t["act_sponsor"]} | {r[4] for r in t["act_rapporteur"] if r[4]})
     parti = ["BEGIN;", f"DELETE FROM act WHERE chamber = {ramo} AND legislature = {leg} AND kind = 'bill';",

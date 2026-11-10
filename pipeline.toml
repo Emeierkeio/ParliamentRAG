@@ -156,6 +156,11 @@ legislatura = 19               # una pagina per commissione (10), con il browser
 pausa_secondi = 4.0
 massimo_richieste = 12
 
+[fonti.senato_odg]
+legislatura = 19               # ordine del giorno dell'Aula del Senato: una pagina per notte, con il browser
+pausa_secondi = 3.0
+massimo_richieste = 3
+
 [fonti.senato_aic]
 legislatura = 19               # sindacato ispettivo del Senato, da dati.camera.it (non tocca senato.it)
 pausa_secondi = 0.5

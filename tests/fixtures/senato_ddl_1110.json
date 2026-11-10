@@ -8,6 +8,7 @@
    "data": "2024-04-18",
    "natura": "di conversione di decreto-legge",
    "stato": "appr. definit. Legge",
+   "dataStato": "2024-04-23",
    "ramo": "S",
    "iniziativa": "Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro aff.eu,Sud.coe.pnrr Fitto Raffaele (Meloni-I) ed altri.",
    "legge": "56",
@@ -210,6 +211,24 @@
    "data": "2024-04-19",
    "organo": "commissione",
    "senatore": "http://dati.senato.it/senatore/32747"
+  }
+ ],
+ "classificazione": [
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "concetto": "http://dati.senato.it/teseo/00002602"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "concetto": "http://dati.senato.it/teseo/00002919"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "concetto": "http://dati.senato.it/teseo/00022209"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "concetto": "http://dati.senato.it/teseo/00022227"
   }
  ]
 }

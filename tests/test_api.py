@@ -70,8 +70,9 @@ class TestApi(unittest.TestCase):
         self.assertEqual(sum(g.favor for g in v.groups), v.favor)
 
     def test_seduta_e_atti(self):
-        _, ss = sedute.elenco_sedute(C, chamber="senato", body="aula", limit=1)
-        s = sedute.seduta(C, ss[0].uri)
+        # la più recente può essere la seduta prevista dall'ordine del giorno, che non ha ancora interventi
+        _, ss = sedute.elenco_sedute(C, chamber="senato", body="aula", limit=5)
+        s = sedute.seduta(C, next(x for x in ss if x.status == "held").uri)
         self.assertTrue(any(i.speeches for i in s.items))
         a = atti.atto(C, "it:senato:19:ddl:1695")
         self.assertEqual({v.kind for v in a.versions}, {"presented", "committee", "message"})

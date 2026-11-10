@@ -28,11 +28,19 @@ class TestDdlSenato(unittest.TestCase):
         self.assertEqual((r["from_ref"], r["role"], r["person"], r["to"]),
                          ("Dario Damiani", "rapporteur", "it:person:senato:32747", "it:senato:19:ddl:1110"))
 
+    def test_materia_e_data_dello_stato(self):
+        temi = [x["to"] for x in self.archi if x["type"] == "SUBJECT"]
+        self.assertTrue(temi and all(t.startswith("http://dati.senato.it/teseo/") for t in temi))
+        self.assertEqual(len(temi), len(set(temi)))
+        self.assertTrue(self.r["nodi"][0]["status_date"])                    # la data dell'ultimo stato, dagli open data
+        self.assertIn("COPY act_subject (act, concept)", script_atti(
+            [{"tipo": "ambito", **self.r["ambito"]}, *({"tipo": "nodo", **n} for n in self.r["nodi"]), *({"tipo": "arco", **a} for a in self.archi)]))
+
     def test_senza_le_query_nuove(self):
         # un lago che ha solo le query di prima dà gli atti di prima, senza assegnazioni né relatori
         r = trasforma({k: v for k, v in GREZZI.items() if k in ("ddl", "firmatari", "presentatori")}, 19)
         self.assertEqual(len(r["nodi"]), 1)
-        self.assertFalse([x for x in r["archi"] if x["type"] in ("ASSIGNED", "RAPPORTEUR")])
+        self.assertFalse([x for x in r["archi"] if x["type"] in ("ASSIGNED", "RAPPORTEUR", "SUBJECT")])
 
     def test_script(self):
         righe = [{"tipo": "ambito", **self.r["ambito"]}, *({"tipo": "nodo", **n} for n in self.r["nodi"]),

@@ -1,7 +1,7 @@
 """Disegni di legge del Senato da dati.senato.it (osr:Ddl): una riga per fase (S. 1468, S. 1468-B, con lo stesso
 idDdl), titolo, natura, stato, presentazione, legge che ne è nata; firmatari senatori; presentatori che non sono
-senatori (governo, deputati, regioni, CNEL, iniziativa popolare); assegnazioni alle commissioni (sede e data) e
-relatori, con il senatore.
+senatori (governo, deputati, regioni, CNEL, iniziativa popolare); assegnazioni alle commissioni (sede e data),
+relatori con il senatore, data dell'ultimo stato e classificazione per materia (i termini TESEO dati al ddl intero).
 
 Circa 2 mila ddl: si rifà tutto ogni notte con poche richieste (i firmatari a intervalli di numero, per restare
 sotto le 10 mila righe che l'endpoint restituisce al massimo). Si tengono solo le fasi del Senato (ramo S): il
@@ -20,10 +20,10 @@ from .sparql import _richiesta
 NOME = "senato_ddl"
 ENDPOINT = "https://dati.senato.it/sparql"
 P = "PREFIX osr:<http://dati.senato.it/osr/> PREFIX xsd:<http://www.w3.org/2001/XMLSchema#> "
-DDL = P + """SELECT ?ddl ?idDdl ?numero ?titolo ?data ?natura ?stato ?ramo ?iniziativa ?legge ?dataLegge WHERE {
+DDL = P + """SELECT ?ddl ?idDdl ?numero ?titolo ?data ?natura ?stato ?dataStato ?ramo ?iniziativa ?legge ?dataLegge WHERE {
  ?ddl a osr:Ddl ; osr:legislatura {LEG} ; osr:idDdl ?idDdl ; osr:numeroFase ?numero ; osr:ramo ?ramo . FILTER(str(?ramo) = "S")
  OPTIONAL { ?ddl osr:titolo ?titolo } OPTIONAL { ?ddl osr:dataPresentazione ?data } OPTIONAL { ?ddl osr:natura ?natura }
- OPTIONAL { ?ddl osr:statoDdl ?stato } OPTIONAL { ?ddl osr:descrIniziativa ?iniziativa }
+ OPTIONAL { ?ddl osr:statoDdl ?stato } OPTIONAL { ?ddl osr:dataStatoDdl ?dataStato } OPTIONAL { ?ddl osr:descrIniziativa ?iniziativa }
  OPTIONAL { ?ddl osr:numeroLegge ?legge } OPTIONAL { ?ddl osr:dataLegge ?dataLegge } } LIMIT 10000"""
 FIRMATARI = P + """SELECT ?ddl ?senatore ?primo WHERE {
  ?ddl a osr:Ddl ; osr:legislatura {LEG} ; osr:numeroFase ?numero ; osr:ramo ?ramo ; osr:iniziativa ?i . FILTER(str(?ramo) = "S")
@@ -43,6 +43,11 @@ RELATORI = P + """SELECT ?ddl ?etichetta ?tipo ?minoranza ?data ?organo ?senator
  ?rel <http://www.w3.org/2000/01/rdf-schema#label> ?etichetta . OPTIONAL { ?rel osr:tipoRelatore ?tipo }
  OPTIONAL { ?rel osr:diMinoranza ?minoranza } OPTIONAL { ?rel osr:dataNomina ?data } OPTIONAL { ?rel osr:organo ?organo }
  OPTIONAL { ?rel osr:senatore ?senatore }
+ FILTER(xsd:integer(?numero) >= {DA} && xsd:integer(?numero) < {A}) } LIMIT 10000"""
+# solo la classificazione del ddl intero («Generale»): quella per articolo è cinque volte tanto e dice di un comma, non dell'atto
+CLASSIFICAZIONE = P + """SELECT DISTINCT ?ddl ?concetto WHERE {
+ ?ddl a osr:Ddl ; osr:legislatura {LEG} ; osr:numeroFase ?numero ; osr:ramo ?ramo ; osr:classificazione ?c . FILTER(str(?ramo) = "S")
+ ?c osr:livello ?livello ; <http://purl.org/dc/terms/subject> ?concetto . FILTER(str(?livello) = "Generale")
  FILTER(xsd:integer(?numero) >= {DA} && xsd:integer(?numero) < {A}) } LIMIT 10000"""
 PASSO = 400
 
@@ -76,16 +81,17 @@ def scarica(ctx) -> dict:
     firmatari = _a_intervalli(FIRMATARI, leg, massimo, pausa)
     assegnazioni = _a_intervalli(ASSEGNAZIONI, leg, massimo, pausa)
     relatori = _a_intervalli(RELATORI, leg, massimo, pausa)
+    classificazione = _a_intervalli(CLASSIFICAZIONE, leg, massimo, pausa)
     presentatori = _richiesta(ENDPOINT, PRESENTATORI.replace("{LEG}", str(leg)), 2)
     esito = {}
     tabelle = (("ddl", ddl), ("firmatari", firmatari), ("presentatori", presentatori), ("assegnazioni", assegnazioni),
-               ("relatori", relatori))
+               ("relatori", relatori), ("classificazione", classificazione))
     for nome, righe in tabelle:                          # sostituiscono intere tabelle: un calo forte è un errore dell'endpoint
         controlla_calo(lago, NOME, f"leg{leg}-{nome}", len(righe), massimo=float(cfg.get("calo_massimo", 0.05)))
     for nome, righe in tabelle:
         righe.sort(key=lambda r: json.dumps(r, sort_keys=True, ensure_ascii=False))
         esito[nome] = lago.salva(NOME, f"leg{leg}-{nome}", json.dumps(righe, ensure_ascii=False, indent=0).encode(), ENDPOINT, "json")["nuovo"]
     ctx.log(f"{NOME}: {len({r['ddl'] for r in ddl})} ddl, {len(firmatari)} firme, {len(presentatori)} presentatori, "
-            f"{len(assegnazioni)} assegnazioni, {len(relatori)} relatori")
+            f"{len(assegnazioni)} assegnazioni, {len(relatori)} relatori, {len(classificazione)} termini di classificazione")
     return {"ddl": len({r["ddl"] for r in ddl}), "firme": len(firmatari), "presentatori": len(presentatori),
-            "assegnazioni": len(assegnazioni), "relatori": len(relatori)}
+            "assegnazioni": len(assegnazioni), "relatori": len(relatori), "classificazione": len(classificazione)}

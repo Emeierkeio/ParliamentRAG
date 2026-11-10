@@ -91,10 +91,9 @@ area = "Aula"
 nome = "Ordine del giorno"
 peso = 2
 camera = "fatto"
-senato = "manca"
-perche_senato = "La pagina c'è (vista il 10/11/2026), sta dietro il blocco di senato.it: connettore da scrivere."
-fonti = ["camera_odg"]
-conta = "SELECT count(*) FROM sitting WHERE chamber = {ramo} AND kind = 'assembly_agenda'"
+senato = "fatto"
+fonti = ["camera_odg", "senato_odg"]
+# niente conteggio: la seduta prevista sparisce quando arriva il resoconto, e fra una seduta e l'altra può non essercene
 
 [[voce]]
 area = "Aula"
@@ -216,7 +215,7 @@ nome = "Progetti di legge: scheda, firmatari, iter, commissioni e relatori"
 peso = 3
 camera = "fatto"
 senato = "parziale"
-perche_senato = "Mancano i passi dell'iter e la classificazione per materia, che gli open data del Senato hanno."
+perche_senato = "Manca la storia dei passi dell'iter: gli open data danno solo l'ultimo stato con la sua data."
 fonti = ["camera_atti", "senato_ddl"]
 conta = "SELECT count(*) FROM act WHERE chamber = {ramo} AND kind = 'bill'"
 

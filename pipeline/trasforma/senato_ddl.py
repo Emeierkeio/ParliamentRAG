@@ -2,7 +2,8 @@
 S. 1468-B) con stato, natura, legge che ne è nata, firmatari senatori (SPONSORS); i presentatori che non sono
 senatori (governo, regioni, CNEL, iniziativa popolare) restano come testo; i deputati presentatori si legano alla
 persona della Camera. Le assegnazioni alle commissioni (ASSIGNED, con la sede: referente, redigente, deliberante,
-consultiva) e i relatori (RAPPORTEUR), che qui arrivano già con il senatore. Trasformazione pura.
+consultiva), i relatori (RAPPORTEUR), che qui arrivano già con il senatore, e la materia (SUBJECT, termini TESEO).
+Trasformazione pura.
 """
 
 from __future__ import annotations
@@ -42,7 +43,8 @@ def trasforma(grezzi: dict[str, list[dict]], leg: int, fonte: dict | None = None
                    "kind_raw": natura, "constitutional": "costituzional" in natura, "initiative": r.get("iniziativa"),
                    "title": r.get("titolo"), "date": data(r.get("data")),
                    "description": "; ".join(dict.fromkeys(presentatori.get(r["ddl"], []))) or None,
-                   "law_number": r.get("legge"), "law_date": data(r.get("dataLegge")), "status": r.get("stato"), "status_date": None,
+                   "law_number": r.get("legge"), "law_date": data(r.get("dataLegge")), "status": r.get("stato"),
+                   "status_date": data(r.get("dataStato")),
                    "card_url": f"https://www.senato.it/leg/{leg}/BGT/Schede/Ddliter/{r['idDdl']}.htm" if r.get("idDdl") else None,
                    "text_urls": [], "source": "osr", "source_uri": r["ddl"]}
     firme: dict[tuple, bool] = {}
@@ -81,5 +83,11 @@ def trasforma(grezzi: dict[str, list[dict]], leg: int, fonte: dict | None = None
             visti.add(k)
             archi.append({"type": "RAPPORTEUR", "from_ref": nome, "to": k[0], "role": ruolo, "raw": etichetta,
                           "person": f"it:person:senato:{m.group(1)}" if m else None})
+    # la materia del ddl: i termini TESEO, gli stessi che la tabella dei concetti allinea a EuroVoc
+    for r in grezzi.get("classificazione", []):
+        k = (uri_di.get(r["ddl"]), r.get("concetto"))
+        if all(k) and k not in visti:
+            visti.add(k)
+            archi.append({"type": "SUBJECT", "from": k[0], "to": k[1]})
     return {"nodi": list(nodi.values()), "archi": archi, "testi": [],
             "ambito": {"kind": "atti", "chamber": "senato", "legislature": leg, "source_key": fonte.get("chiave"), "source_hash": fonte.get("impronta")}}
