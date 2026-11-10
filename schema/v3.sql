@@ -457,6 +457,7 @@ CREATE TABLE IF NOT EXISTS amendment (
   source_key text NOT NULL
 );
 CREATE INDEX IF NOT EXISTS amendment_act ON amendment (act);
+CREATE INDEX IF NOT EXISTS amendment_fts ON amendment USING gin (to_tsvector('italian', coalesce(text, '')));   -- ricerca per parole (cerca_emendamenti, proponi_temi)
 ALTER TABLE amendment ADD COLUMN IF NOT EXISTS presented date;      -- data di presentazione (Senato)
 CREATE TABLE IF NOT EXISTS amendment_signer (
   amendment text NOT NULL REFERENCES amendment (uri) ON DELETE CASCADE,

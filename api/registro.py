@@ -13,7 +13,7 @@ from typing import Literal
 import psycopg
 from pydantic import BaseModel, ConfigDict, Field
 
-from .strumenti import agenda, atti, citazioni, conti, emendamenti, fatti, persone, ricerca, sedute, significato, voti
+from .strumenti import agenda, atti, citazioni, conti, emendamenti, fatti, persone, ricerca, sedute, significato, soggetti, voti
 
 Ramo = Literal["camera", "senato"]
 Iniziativa = Field(None, description="categoria (governo, parlamentare, regione, cnel, popolare, mista) o parole del presentatore "
@@ -151,6 +151,18 @@ class CercaEmendamenti(Parametri):
     end: dt.date | None = None
     limit: int = Field(20, ge=1, le=100)
     offset: int = Field(0, ge=0)
+
+
+class TemaProposto(Parametri):
+    nome: str = Field(min_length=2, max_length=80, description="il tema come lo capisce un utente («Sugar tax»)")
+    parole: str = Field(min_length=2, max_length=200, description="le parole con cui il Parlamento ne parla, sintassi di ricerca: "
+                        "«\"bevande edulcorate\" or \"sugar tax\"»")
+
+
+class ProponiTemi(Parametri):
+    soggetto: str = Field(min_length=2, max_length=120, description="l'azienda, l'associazione o l'ente chiesto dall'utente")
+    temi: list[TemaProposto] = Field(min_length=1, max_length=8, description="i temi parlamentari che probabilmente lo riguardano")
+    associazioni: list[str] = Field(default_factory=list, max_length=4, description="le sue associazioni di categoria, se ne ha")
 
 
 class Emendamento(Parametri):
@@ -409,6 +421,10 @@ STRUMENTI: list[Strumento] = [
               "periodo). Ognuno con firmatari e gruppi, l'esito in un elenco fisso e la fonte dell'esito.",
               CercaEmendamenti, lambda c, p: emendamenti.cerca(c, p.testo, p.q, p.act, p.chamber, p.group, p.signer, p.outcome, p.venue,
                                                              p.start, p.end, p.limit, p.offset, p.number)),
+    Strumento("proponi_temi", "Per una domanda su un soggetto che non è un tema parlamentare (un'azienda, un marchio, un'associazione, "
+              "un ente): proponi i temi parlamentari che lo riguardano e le sue associazioni di categoria; lo strumento li verifica "
+              "sui dati e mostra all'utente una scelta con i numeri. Le proposte senza riscontro spariscono.",
+              ProponiTemi, lambda c, p: soggetti.proponi(c, p.soggetto, [t.model_dump() for t in p.temi], p.associazioni)),
     Strumento("emendamento", "La scheda di un emendamento: testo intero, firmatari, esito con la fonte, voto dei gruppi in Aula, storia (lo "
               "stesso testo o quasi presentato in altri atti, con l'esito di ogni volta), interventi della seduta del voto che lo citano, "
               "pareri di governo e relatore letti nei sommari, termini per gli emendamenti dell'atto.",

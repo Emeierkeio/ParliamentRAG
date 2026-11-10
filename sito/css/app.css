@@ -1933,3 +1933,29 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
 .dlg--largo{width:min(760px,calc(100vw - 32px))}
 .dlg--largo textarea{width:100%;font-size:14px;line-height:1.5;border:1px solid var(--bordo2);border-radius:10px;padding:10px 12px;background:var(--sup);resize:vertical}
 .dlg__az{display:flex;justify-content:flex-end;gap:8px}
+
+/* ---------- scelta sopra la casella (sito/js/scelta.js) ---------- */
+.scelta{max-width:852px;margin:0 auto 10px;background:var(--sup);border:1px solid var(--bordo2);border-radius:18px;padding:16px 18px 12px;box-shadow:0 18px 50px -12px rgba(0,0,0,.25);display:grid;gap:8px;max-height:min(60vh,520px);overflow:auto}
+.scelta header{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.scelta h3{margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.scelta header p{margin:2px 0 0;font-size:13.5px;color:var(--t3)}
+.scelta__x{width:36px;height:36px;border:0;border-radius:999px;background:none;color:var(--t3);cursor:pointer;display:grid;place-items:center;flex:none}
+.scelta__x:hover{color:var(--t);background:var(--sup2)}
+.scelta ol{list-style:none;margin:0;padding:0;display:grid}
+.scelta li{border-bottom:1px solid var(--bordo)}
+.scelta li label{display:flex;gap:12px;align-items:center;padding:10px 4px;cursor:pointer}
+.scelta li input[type=checkbox]{width:18px;height:18px;accent-color:var(--btn);flex:none}
+.scelta__n{width:30px;height:30px;border-radius:8px;background:var(--sup2);display:grid;place-items:center;font-size:13px;color:var(--t2);flex:none}
+.scelta__c{display:grid;gap:2px;min-width:0}
+.scelta__c b{font-weight:600;font-size:15px}
+.scelta__c b small{font-weight:500;color:var(--t3);font-size:12px;margin-left:4px}
+.scelta__c b em{font-style:normal;font-size:12px;font-weight:500;color:var(--acc);background:var(--acc-f);border-radius:999px;padding:1px 8px;margin-left:4px}
+.scelta__c > span{font-size:13px;color:var(--t3)}
+.scelta__altro{display:flex;gap:12px;align-items:center;padding:8px 4px 8px 34px;border-bottom:0!important}
+.scelta__altro input{flex:1;min-width:0;border:0;background:none;font-size:15px;padding:6px 0;outline:none}
+.scelta footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.scelta__nota{margin:0 auto 0 0;font-size:12px;color:var(--t3)}
+.scelta footer .bt{min-height:38px;font-size:14px}
+.scelta{padding-bottom:0}
+.scelta li label{padding:7px 4px}
+.scelta footer{position:sticky;bottom:0;background:var(--sup);padding:10px 0 12px;border-top:1px solid var(--bordo)}

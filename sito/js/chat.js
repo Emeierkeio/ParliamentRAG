@@ -517,6 +517,7 @@
   // quello che l'agente ha preso dai dati diventa una scheda sotto la risposta
   function daiDati(t, ev) {
     const r = ev.result || {}, d = r.dati || r, a = ev.args || {};
+    if (ev.name === "proponi_temi" && window.SCELTA && r.opzioni) { SCELTA.mostra(r); return; }
     if (!t.persona && (ev.name === "scheda_persona" || (ev.name === "cerca_persone" && Array.isArray(ev.result) && ev.result.length === 1))) {
       const x = ev.name === "scheda_persona" ? ev.result : ev.result[0], m = /^it:person:(camera|senato):(\d+)$/.exec((x && x.uri) || "");
       if (m) { const p = m[1] === "camera" ? B.persona(m[2]) : B.senatori().find((y) => y.id === m[2]); if (p) t.persona = t.persona || p; }
