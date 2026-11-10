@@ -1,4 +1,4 @@
-/* Novità: una card animata che da desktop si apre sulla home, una volta per versione. Per le novità successive si
+/* Novità: una card animata che si apre sulla home, una volta per versione. Per le novità successive si
    cambiano VERSIONE e PASSI; i dati negli esempi vengono dal database (niente esempi inventati). */
 (function () {
   const VERSIONE = "2026-11-10b";
@@ -18,8 +18,8 @@
     },
     {
       titolo: TT("I termini per gli emendamenti diventano un dato", "Amendment deadlines become data"),
-      testo: TT("Li leggiamo nei sommari delle commissioni: atto, commissione, data e ora, proroghe. Ogni termine è letto due volte, con le regole e con un modello, ed entra solo se le due letture coincidono. Accanto c'è sempre la frase da cui viene.",
-        "We read them in the committee summaries: bill, committee, date and time, extensions. Each deadline is read twice, by rules and by a model, and goes in only when both readings agree. The sentence it comes from is always next to it."),
+      testo: TT("Li leggiamo nei sommari delle commissioni: atto, commissione, data e ora, proroghe. Così sai fino a quando puoi presentarli.",
+        "We read them in the committee summaries: bill, committee, date and time, extensions. So you know until when you can table them."),
       scena: () => `<div class="nov-estr"><div class="nov-frase"><small>${TT("Bollettino, X Commissione Camera, 4 novembre 2026", "Bulletin, Chamber Committee X, 4 November 2026")}</small>«… ricorda che il <mark data-k="0">termine per la presentazione delle proposte emendative</mark> è fissato <mark data-k="2">alle ore 12 di lunedì 9 novembre</mark>.» <mark data-k="1">C. 3120</mark></div><div class="nov-fr">↓ amendment_deadline</div><div class="nov-campi"><div class="nov-c" data-k="0"><i>kind</i><b>${TT("emendamenti", "amendments")}</b></div><div class="nov-c" data-k="1"><i>act</i><b>C. 3120, ${TT("concorrenza", "competition")}</b></div><div class="nov-c scad" data-k="2"><i>due</i><b>${TT("lun 9/11/2026, 12:00", "Mon 9/11/2026, 12:00")}</b></div></div></div>`,
       dopo: (el, t) => [0, 1, 2].forEach((k) => t.push(setTimeout(() => el.querySelectorAll(`[data-k="${k}"]`).forEach((n) => n.classList.add("on")), 600 + k * 650))),
     },
@@ -39,7 +39,7 @@
           ["Assobibe", TT("3 audizioni · 1 memoria", "3 hearings · 1 memo"), 1],
           [TT("Imballaggi e plastica monouso", "Packaging and single-use plastic"), TT("22 interventi · 21 emendamenti", "22 speeches · 21 amendments"), 0]];
         const sez = [TT("Posizioni dei gruppi", "Group positions"), TT("Emendamenti", "Amendments"), TT("Chi ci lavora", "Who works on it"), TT("In arrivo", "Coming up")];
-        return `<div class="nov-tema"><div class="nov-scelta"><small>${TT("Su cosa faccio il dossier di Coca-Cola?", "What should the Coca-Cola dossier cover?")}</small>${temi.map(([n, c, s], i) => `<div class="nov-op" style="animation-delay:${.2 + i * .12}s"><i class="nov-ck" data-s="${s ? i : ""}"></i><span><b>${n}</b>${c}</span></div>`).join("")}</div><div class="nov-dos"><small>${TT("Dossier · sugar tax", "Dossier · sugar tax")}<span class="nov-pdf">PDF</span></small>${sez.map((x, i) => `<div class="nov-sez" data-z="${i}">${x}</div>`).join("")}</div></div>`;
+        return `<div class="nov-tema"><div class="nov-scelta"><small>${TT("Su cosa faccio il dossier di Acme Bevande?", "What should the Acme Drinks dossier cover?")}</small>${temi.map(([n, c, s], i) => `<div class="nov-op" style="animation-delay:${.2 + i * .12}s"><i class="nov-ck" data-s="${s ? i : ""}"></i><span><b>${n}</b>${c}</span></div>`).join("")}</div><div class="nov-dos"><small>${TT("Dossier · sugar tax", "Dossier · sugar tax")}<span class="nov-pdf">PDF</span></small>${sez.map((x, i) => `<div class="nov-sez" data-z="${i}">${x}</div>`).join("")}</div></div>`;
       },
       dopo: (el, t) => {
         [0, 1].forEach((k) => t.push(setTimeout(() => el.querySelector(`[data-s="${k}"]`)?.classList.add("on"), 800 + k * 400)));
@@ -95,8 +95,8 @@
   }
 
   window.NOVITA = { apri };
-  // solo da desktop, solo sulla home, e mai nei controlli automatici
+  // solo sulla home, e mai nei controlli automatici
   const home = !location.hash || location.hash === "#/" || location.hash === "#";
-  if (matchMedia("(min-width: 761px)").matches && home && !navigator.webdriver && !vista() && !/[?&]novita=0/.test(location.search))
+  if (home && !navigator.webdriver && !vista() && !/[?&]novita=0/.test(location.search))
     setTimeout(apri, 900);
 })();

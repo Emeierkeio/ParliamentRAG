@@ -1,4 +1,4 @@
-/* Card delle novità: da desktop, all'apertura della home, una volta per versione (sito/js/novita.js). */
+/* Card delle novità: all'apertura della home, una volta per versione (sito/js/novita.js). */
 .nov{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:24px;background:rgba(10,12,20,.42);animation:nov-velo .35s ease both}
 [data-tono=scuro] .nov{background:rgba(0,0,0,.62)}
 .nov.via{animation:nov-velo-via .24s ease both}
@@ -82,6 +82,24 @@
 .nov-sez.on{animation:nov-su .4s cubic-bezier(.2,.8,.2,1) forwards}
 .nov-pdf{font-size:10.5px;font-weight:600;color:var(--acc);background:var(--acc-f);border-radius:5px;padding:2px 6px;opacity:0;transform:scale(.8)}
 .nov-pdf.on{animation:nov-pop .4s cubic-bezier(.3,1.5,.5,1) forwards}
+
+/* da telefono: scene più strette, si tolgono i dettagli che non ci stanno */
+@media (max-width:760px){
+  .nov{padding:12px}
+  .nov__scena{height:224px}
+  .nov__corpo{padding:20px 20px 4px;min-height:0}
+  .nov__corpo h2{font-size:20px}
+  .nov__corpo p{font-size:15px}
+  .nov__piede{padding:14px 20px 20px}
+  .nov-sett,.nov-estr,.nov-tema,.nov-chat{inset:48px 14px 14px}
+  .nov-sett{grid-template-columns:repeat(3,1fr)}
+  .nov-g:nth-child(n+4){display:none}
+  .nov-frase{font-size:12.5px;padding:10px 12px}
+  .nov-frase small,.nov-fr{display:none}
+  .nov-c{padding:7px 8px}.nov-c b{font-size:12px}
+  .nov-tema{grid-template-columns:1fr}
+  .nov-dos{display:none}
+}
 
 @media (prefers-reduced-motion:reduce){
   .nov,.nov *{animation-duration:.001ms!important;animation-delay:0ms!important;transition:none!important}

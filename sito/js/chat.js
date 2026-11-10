@@ -124,6 +124,15 @@
     { k: "ap", re: /prim[ao] firm|propost|atti|present[ao]t|bills?|first signator|sponsor/, nome: TT("atti con la prima firma", "acts as first signatory"), unita: (v) => B.num(v), basso: false },
     { k: "ac", re: /cofirm|firmat|cosign|co-sign/, nome: TT("atti cofirmati", "co-signed acts"), unita: (v) => B.num(v), basso: false },
   ];
+  // poche parole tutte con l'iniziale maiuscola, un nome col trattino o una forma societaria: un soggetto, non un tema
+  CH.soggetto = (q) => {
+    const x = q.trim().replace(/[.!]+$/, ""), w = x.split(/\s+/).filter(Boolean);
+    if (/\?/.test(x) || !w.length || w.length > 4) return false;
+    if (/\b(s\.?p\.?a\.?|s\.?r\.?l\.?|holding|group)$/i.test(x)) return true;
+    if (/^\p{Lu}\p{Ll}+-\p{Lu}/u.test(x)) return true;
+    return w.length >= 2 && w.every((p) => /^[\p{Lu}\d]/u.test(p)) && w.some((p) => /\p{Ll}/u.test(p));
+  };
+
   CH.intento = (q) => {
     const n = B.norm(q);
     if (/\b(quanti anni|eta|nat[oa]|nascita|compleanno|dove e nat|collegio|circoscrizion|elett[oa]|proclamat|convalid|how old|age|born|birth|constituency|district|elected)\b/.test(n)) return { tipo: "anagrafica" };
@@ -394,6 +403,8 @@
       const numerica = /\b(quant[aeio]\w*|numero|percentual\w*|indice|coesion\w*|classific\w*|matrice|conta\w*|conteggi\w*|elenc\w*|come (?:vota|votano|hanno votato|ha votato)|quali (?:interrogazioni|interpellanze|mozioni|atti|leggi|emendamenti|proposte|disegni)|how many|how much|count|ranking|list)\b/.test(B.norm(q))
         || /\b(votat[oaie]|vot[oi] (?:finale|contrari|favorevoli)|contro|favorevol\w*|astenut\w*|approvat\w*|respint\w*|fiducia|applau\w*|protest\w*|intervenut\w*|chi ha (?:parlato|detto)|seduta (?:del|di)|voted|against|applau\w*)\b/.test(B.norm(q))
         || /\b\d{1,2} (?:gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\b/.test(B.norm(q));
+      // il nome di un'azienda o di un ente («Coca Cola», «Coca-Cola», «Rossi S.p.A.») va all'agente, che propone i temi da scegliere
+      if (!seguito && CH.soggetto(q) && !CH.trovaPersona(q)) { await turnoAgente(t, el, n, q, qx, prosaEl); return; }
       if (!seguito && !numerica && (it.tipo === "tema" || it.tipo === "argomento") && !CH.trovaPersona(q)) d = await contaDibattiti(t, q);
       if (!(d >= 3)) {
         // una domanda su una persona mostra subito la sua scheda, mentre l'agente scrive
