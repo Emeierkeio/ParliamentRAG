@@ -66,10 +66,10 @@
   }
   // nei dossier l'ordine di chi fa relazioni istituzionali: quadro, scadenze, chi ci lavora, posizioni, dettaglio, verifiche
   const ORDINE_B = ["quadro", "arrivo", "chi", "risposta", "classifica", "posizioni", "voti", "emendamenti", "persona", "interventi", "schede", "atti", "sedute", "garanzie", "fonti", "iscriviti"];
-  const NOMI_BLOCCHI = { risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", emendamenti: "Emendamenti", chi: "Chi ci lavora", arrivo: "In arrivo", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica" };
+  const NOMI_BLOCCHI = { quadro: "In breve", risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", emendamenti: "Emendamenti", chi: "Chi ci lavora", arrivo: "In arrivo", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica" };
   // l'indice serve solo quando la risposta ha almeno due parti oltre al testo
   function aggiornaIndice(t) {
-    const bs = B.$$("[data-blocco]", t.blocchi).filter((b) => !b.hidden);
+    const bs = B.$$("[data-blocco]", t.blocchi).filter((b) => !b.hidden && b.dataset.blocco !== "iscriviti");
     t.indice.hidden = bs.filter((b) => b.dataset.blocco !== "risposta").length < 2;
     t.indice.innerHTML = t.indice.hidden ? "" : `<div class="indice-r__in"><span class="occ" style="margin:0;padding:5px 4px">${TT("In questa risposta", "In this answer")}</span>` + bs.map((b) => `<a href="#${b.id}" data-salta>${NOMI_BLOCCHI[b.dataset.blocco] || b.dataset.blocco}</a>`).join("") + `</div>`;
   }
