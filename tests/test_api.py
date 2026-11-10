@@ -39,6 +39,21 @@ class TestApi(unittest.TestCase):
         self.assertIn("offset=11000", testo["more"])
         self.assertIsNone(documenti.documento(C, "it:camera:19:doc:inesistente"))
 
+    def test_parole_nel_testo_dei_documenti(self):
+        # le parole si cercano dentro il testo, con un estratto del punto in cui compaiono; i filtri restano
+        n, righe = documenti.documenti(C, text="salario minimo", kind="memoria", limit=5)
+        self.assertGreater(n, 10)
+        self.assertTrue(all(r["kind"] == "memorandum" and r.get("snippet") for r in righe))
+        tutti, _ = documenti.documenti(C, text="salario minimo", limit=1)
+        self.assertGreater(tutti, n)
+        # una frase esatta: meno risultati delle stesse parole sparse, e la frase sta nell'estratto
+        esatta, righe = documenti.documenti(C, text='"salario minimo legale"', kind="memoria", limit=5)
+        self.assertLess(esatta, n)
+        self.assertTrue(all("salario minimo legale" in r["snippet"].lower() for r in righe))
+        # senza `text` niente estratto, e le pagine oltre la fine danno comunque il totale
+        self.assertNotIn("snippet", documenti.documenti(C, kind="memoria", limit=1)[1][0])
+        self.assertEqual(documenti.documenti(C, text="salario minimo", kind="memoria", limit=5, offset=100000), (n, []))
+
     def test_assenze_del_senato_ricavate(self):
         # il Senato non pubblica gli assenti: in carica senza scheda; chi presiedeva la seduta è chair, non assente
         r = conti.presenze(C, "senato", start=dt.date(2026, 2, 25), end=dt.date(2026, 2, 25), order_by="absent", limit=250)

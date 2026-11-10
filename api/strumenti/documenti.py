@@ -6,6 +6,7 @@ parlamentare, vanno riferiti attribuendoli a chi li ha mandati, con il link al f
 from __future__ import annotations
 
 import datetime as dt
+import re
 
 import psycopg
 
@@ -35,9 +36,11 @@ def _riga(r: dict) -> dict:
 
 def documenti(c: psycopg.Connection, act: str | None = None, author: str | None = None, body: str | None = None,
               kind: str | None = None, q: str | None = None, start: dt.date | None = None, end: dt.date | None = None,
-              limit: int = 25, offset: int = 0) -> tuple[int, list[dict]]:
+              limit: int = 25, offset: int = 0, text: str | None = None) -> tuple[int, list[dict]]:
+    """`text` cerca le parole dentro il testo dei documenti (ricerca in italiano, sintassi web): ogni riga porta allora un
+    estratto del punto in cui compaiono; l'ordine resta dal più recente."""
     p = {"a": act, "rif": riferimento(act), "au": author, "b": body, "k": TIPI.get(kind or "", kind), "q": q,
-         "dal": start, "al": end, "lim": limit, "off": offset}
+         "dal": start, "al": end, "lim": limit, "off": offset, "t": text}
     # le memorie delle audizioni non portano l'atto: si legano all'atto dall'audizione dello stesso giorno nella stessa
     # commissione (committee_fact); il campo hearing dice di quale audizione si tratta
     filtro = """(%(a)s::text IS NULL OR %(a)s = ANY (d.acts) OR %(rif)s = ANY (d.acts)
@@ -49,10 +52,36 @@ def documenti(c: psycopg.Connection, act: str | None = None, author: str | None 
         AND (%(q)s::text IS NULL OR concat_ws(' ', d.title, d.author_raw, d.hearing) ILIKE '%%' || %(q)s || '%%')
         AND (%(dal)s::date IS NULL OR coalesce(d.date, d.sitting_date) >= %(dal)s)
         AND (%(al)s::date IS NULL OR coalesce(d.date, d.sitting_date) <= %(al)s)"""
-    totale = c.execute(f"SELECT count(*) AS n FROM document d LEFT JOIN body o ON o.uri = d.body WHERE {filtro}", p).fetchone()["n"]
-    righe = c.execute(f"""SELECT d.uri, d.kind, d.date, d.sitting_date, o.name AS body, d.author_raw AS author, d.title, d.hearing, d.url,
-               length(coalesce(d.text, '')) AS chars
-        FROM document d LEFT JOIN body o ON o.uri = d.body WHERE {filtro} ORDER BY coalesce(d.date, d.sitting_date) DESC NULLS LAST, d.uri LIMIT %(lim)s OFFSET %(off)s""", p).fetchall()
+    # parole nel testo: l'indice trova i documenti che hanno tutte le parole; una «frase esatta» si controlla poi sul testo
+    # con ILIKE, perché farla controllare all'indice vuol dire rileggere ogni documento candidato (decine di secondi)
+    frasi, estratto = "", "NULL::text AS snippet"
+    if text:
+        esatte = [f.strip() for f in re.findall(r'"([^"]+)"', text) if f.strip()]
+        p["t"] = text.replace('"', " ")
+        filtro += " AND to_tsvector('italian', coalesce(d.text, '')) @@ websearch_to_tsquery('italian', %(t)s)"
+        for k, f in enumerate(esatte):
+            p[f"f{k}"] = f
+            frasi += f" AND d.text ILIKE '%%' || %(f{k})s || '%%'"
+        # l'estratto: il testo intorno alla prima occorrenza della frase, o dell'inizio della parola più lunga; si guarda nei
+        # primi 400 mila caratteri, perché i dossier arrivano a qualche milione
+        parole = [w for w in re.findall(r"[^\W\d_]{4,}", re.sub(r"-\S+", " ", p["t"])) if w.lower() != "or"]
+        lunga = max(parole, key=len) if parole else ""
+        p["ago"] = (esatte[0] if esatte else lunga[:max(5, len(lunga) - 2)]).lower()
+        estratto = ("btrim(regexp_replace(substr(d.text, greatest(1, position(%(ago)s in lower(left(d.text, 400000))) - 160), 420), "
+                    "'\\s+', ' ', 'g')) AS snippet")
+    # in tre passi, perché il testo di un documento pesa: prima i documenti che passano i filtri leggeri e l'indice (base),
+    # poi la frase esatta solo su quelli, infine lunghezza ed estratto solo per le righe della pagina
+    base = f"""WITH base AS MATERIALIZED (
+        SELECT d.uri, coalesce(d.date, d.sitting_date) AS giorno FROM document d LEFT JOIN body o ON o.uri = d.body WHERE {filtro}),
+      buoni AS MATERIALIZED (SELECT b.uri, b.giorno FROM base b{" JOIN document d ON d.uri = b.uri WHERE true" + frasi if frasi else ""})"""
+    # il totale viaggia con le righe: contare a parte rifarebbe il controllo della frase su tutti i candidati
+    righe = c.execute(f"""{base},
+      pagina AS MATERIALIZED (SELECT uri, giorno FROM buoni ORDER BY giorno DESC NULLS LAST, uri LIMIT %(lim)s OFFSET %(off)s)
+    SELECT d.uri, d.kind, d.date, d.sitting_date, o.name AS body, d.author_raw AS author, d.title, d.hearing, d.url,
+           length(coalesce(d.text, '')) AS chars, {estratto}, (SELECT count(*) FROM buoni) AS totale
+    FROM pagina s JOIN document d ON d.uri = s.uri LEFT JOIN body o ON o.uri = d.body ORDER BY s.giorno DESC NULLS LAST, d.uri""", p).fetchall()
+    totale = righe[0]["totale"] if righe else c.execute(f"{base} SELECT count(*) AS n FROM buoni", p).fetchone()["n"]
+    righe = [{k: v for k, v in r.items() if k != "totale"} for r in righe]
     # elenco stretto, perché una pagina stia nel taglio dell'agente: il titolo solo se non ripete l'autore, l'audizione solo
     # per le memorie (nei contributi è il titolo dell'atto)
     return totale, [_riga({**r, "title": None if (r["title"] or "") == (r["author"] or "") else (r["title"] or "")[:160],

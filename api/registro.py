@@ -405,6 +405,8 @@ class DocumentiAcquisiti(Parametri):
                           "del Bollettino; dossier: dei servizi studi; stenografico: resoconto stenografico di una commissione "
                           "del Senato (sedi redigente e deliberante, audizioni del Governo, indagini conoscitive). Vuoto: tutti")
     q: str | None = Field(None, description="parole nel titolo, nell'autore o nel nome dell'audizione")
+    text: str | None = Field(None, min_length=3, max_length=300, description="parole da cercare dentro il testo dei documenti "
+                             "(«\"frase esatta\"», «-parola», «or»): ogni risultato ha un estratto del punto in cui compaiono")
     start: dt.date | None = None
     end: dt.date | None = None
     limit: int = Field(25, ge=1, le=50)
@@ -414,7 +416,13 @@ class DocumentiAcquisiti(Parametri):
 def _documenti(c, p: DocumentiAcquisiti):
     if p.uri:
         return documenti.documento(c, p.uri, p.offset) or {"errore": "documento non trovato: prendi l'uri dall'elenco"}
-    return documenti.documenti(c, p.act, p.author, p.body, p.kind, p.q, p.start, p.end, p.limit, p.offset)
+    try:
+        return documenti.documenti(c, p.act, p.author, p.body, p.kind, p.q, p.start, p.end, p.limit, p.offset, p.text)
+    except psycopg.errors.QueryCanceled:
+        # una frase esatta o una parola comune su tutti i documenti rilegge migliaia di testi lunghi e supera il tempo massimo
+        c.rollback()
+        return {"errore": "ricerca nel testo troppo ampia: restringi con kind, act, body o le date, oppure cerca per significato "
+                          "(cerca_per_significato con fonti documenti)"}
 
 
 class VerificaCitazioni(Parametri):
@@ -551,8 +559,9 @@ STRUMENTI: list[Strumento] = [
               lambda c, p: fatti.fatti_commissioni(c, p.kind, p.act, p.subject, p.body, p.chamber, p.start, p.end, p.outcome, p.limit, p.offset)),
     Strumento("documenti_acquisiti", "Documenti depositati in commissione: memorie delle audizioni e contributi scritti di "
               "associazioni, aziende, sindacati e autorità su un atto, allegati del Bollettino, dossier. Senza uri: l'elenco per atto "
-              "(act), autore, commissione e date, con il link al file. Con uri: il testo del documento, a pagine (more dice da dove "
-              "riprendere). Per «chi ha depositato memorie su…» e «cosa sostiene X nella sua memoria». Sono scritti di terzi, non "
+              "(act), autore, commissione e date, con il link al file; con text cerca le parole dentro il testo dei documenti e dà "
+              "un estratto. Con uri: il testo del documento, a pagine (more dice da dove riprendere). Ci sono anche gli stenografici "
+              "delle commissioni del Senato (kind stenografico). Per «chi ha depositato memorie su…» e «cosa sostiene X nella sua memoria». Sono scritti di terzi, non "
               "parole di parlamentari: riferiscili attribuendoli all'autore, senza «…», con il link.", DocumentiAcquisiti, _documenti),
     Strumento("agenda", "AGENDA. Cosa succede in Parlamento giorno per giorno fra due date: sedute d'Aula previste e tenute (status calendar: "
               "il giorno viene dal calendario dei lavori dell'Assemblea, di Camera o Senato, con gli argomenti previsti e gli orari in schedule; "
