@@ -86,17 +86,22 @@
 /* da telefono: scene più strette, si tolgono i dettagli che non ci stanno */
 @media (max-width:760px){
   .nov{padding:12px}
-  .nov__scena{height:224px}
+  .nov__scena{height:240px}
   .nov__corpo{padding:20px 20px 4px;min-height:0}
   .nov__corpo h2{font-size:20px}
   .nov__corpo p{font-size:15px}
   .nov__piede{padding:14px 20px 20px}
-  .nov-sett,.nov-estr,.nov-tema,.nov-chat{inset:48px 14px 14px}
+  .nov-sett,.nov-estr,.nov-tema,.nov-chat{inset:62px 14px 14px}
   .nov-sett{grid-template-columns:repeat(3,1fr)}
   .nov-g:nth-child(n+4){display:none}
   .nov-frase{font-size:12.5px;padding:10px 12px}
   .nov-frase small,.nov-fr{display:none}
   .nov-c{padding:7px 8px}.nov-c b{font-size:12px}
+  .nov-chat{justify-content:flex-start;gap:7px}
+  .nov-dom{font-size:13px}
+  .nov-str code{display:none}
+  .nov-risp{padding:9px 12px}
+  .nov-chips span:nth-child(n+3){display:none}
   .nov-tema{grid-template-columns:1fr}
   .nov-dos{display:none}
 }
