@@ -430,13 +430,37 @@ def presenze(c: psycopg.Connection, chamber: str, persons: list[str] | None = No
                    count(*) FILTER (WHERE b.result NOT IN ('favor', 'against', 'abstain', 'voted', 'absent', 'mission', 'chair')) AS other
             {FROM_SCHEDE} WHERE true {chi} GROUP BY 1""", p | {"ids": list(ids_di), "gruppi": gruppi}).fetchall()
         n = c.execute(f"SELECT count(*) AS n, min(v.date) AS dal, max(v.date) AS al FROM vote v WHERE {FILTRO_VOTI}", p).fetchone()
+        ricavate = []
+        if chamber == "senato":
+            # il Senato non pubblica gli assenti: chi è in carica alla data e non ha una scheda in una votazione che ne ha.
+            # Chi ha parlato da PRESIDENTE in quella seduta la presiedeva (chi presiede non vota): chair, non assente.
+            # Controllo del 10/11/2026 su 8.423 votazioni: i votanti ufficiali coincidono con le schede nel 98,5% (il resto
+            # sono verifiche del numero legale, senza schede) e i presenti ufficiali sono i votanti più chi presiede
+            ricavate = c.execute(f"""
+                WITH v AS (SELECT v.uri, v.date, v.sitting FROM vote v WHERE {FILTRO_VOTI} AND EXISTS (SELECT 1 FROM ballot b WHERE b.vote = v.uri)),
+                pres AS (SELECT DISTINCT i.sitting, s.person FROM speech s JOIN agenda_item i ON i.uri = s.item
+                         WHERE s.as_office = 'PRESIDENTE' AND s.person IS NOT NULL AND i.sitting IN (SELECT sitting FROM v))
+                SELECT md.person, count(*) FILTER (WHERE x.person IS NULL) AS absent, count(*) FILTER (WHERE x.person IS NOT NULL) AS chair
+                FROM v JOIN mandate md ON md.chamber = 'senato' AND md.legislature = %(leg)s AND md.start_date <= v.date
+                                      AND coalesce(md.end_date, DATE '9999-12-31') >= v.date
+                LEFT JOIN pres x ON x.sitting = v.sitting AND x.person = md.person
+                WHERE NOT EXISTS (SELECT 1 FROM ballot b WHERE b.vote = v.uri AND b.person = md.person)
+                  AND (%(ids)s::text[] IS NULL OR md.person = ANY(%(ids)s))
+                  AND (%(gruppi)s::text[] IS NULL OR group_at(md.person, v.date) = ANY(%(gruppi)s))
+                GROUP BY 1""", p | {"ids": list(ids_di) or None, "gruppi": gruppi}).fetchall()
     per_persona: dict[str, dict] = {}
+    campi = ("ballots", "favor", "against", "abstain", "secret_voted", "absent", "mission", "chair", "other")
     for r in righe:
         u = ids_di.get(r["person"], r["person"])
-        x = per_persona.setdefault(u, {"persona": u} | {k: 0 for k in r if k != "person"})
+        x = per_persona.setdefault(u, {"persona": u} | {k: 0 for k in campi})
         for k, val in r.items():
             if k != "person":
                 x[k] += val
+    for r in ricavate:
+        u = ids_di.get(r["person"], r["person"])
+        x = per_persona.setdefault(u, {"persona": u} | {k: 0 for k in campi})
+        x["absent"] += r["absent"]
+        x["chair"] += r["chair"]
     for x in per_persona.values():
         x["voted"] = x["favor"] + x["against"] + x["abstain"] + x["secret_voted"]
     elenco = sorted(per_persona.values(), key=lambda x: (-x[order_by.split()[0]], x["persona"]))
@@ -458,7 +482,13 @@ def presenze(c: psycopg.Connection, chamber: str, persons: list[str] | None = No
                        f"{_estremi(n)}; persone: {chi_testo}. "
                        "voted = favorevoli + contrari + astenuti + voti segreti dati; mission = in missione (per incarico, non è assenza); "
                        "absent = assente; chair = presiede. Le votazioni contate sono quelle dell'insieme, anche fuori dal periodo "
-                       "di un incarico; chi ha avuto il mandato per parte del periodo ha meno schede (ballots).",
+                       "di un incarico; chi ha avuto il mandato per parte del periodo ha meno schede (ballots)."
+                       + (" Al Senato gli assenti non sono pubblicati e sono ricavati: senatori in carica alla data senza scheda in "
+                          "quella votazione (other = presenti che non hanno votato, che non sono assenti). chair = senza scheda in una "
+                          "seduta che la persona ha presieduto: chi presiede non vota. Il Presidente del Senato per prassi non partecipa "
+                          "ai voti e i vicepresidenti presiedono a turno: per chi ha chair maggiore di zero le assenze non sono "
+                          "confrontabili con quelle degli altri, dillo e non metterli in una classifica degli assenti. Anche i "
+                          "senatori a vita votano di rado." if chamber == "senato" else ""),
             "votes_in_set": n["n"], "persons_total": len(elenco)} | pagina
 
 

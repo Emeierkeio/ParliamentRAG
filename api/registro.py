@@ -504,8 +504,8 @@ STRUMENTI: list[Strumento] = [
               "l'elenco delle votazioni in cui ha votato diversamente dal gruppo (anche dal suo: «quando ha votato contro il gruppo»).",
               VotoGruppi, lambda c, p: conti.voto_gruppi(c, p.chamber, p.kind, p.final, p.approved, p.confidence, p.act, p.q, p.start,
                                                           p.end, p.groups, p.person, p.limit, p.offset)),
-    Strumento("presenze", "CONTEGGIO. Per ogni parlamentare: votazioni a cui ha partecipato, favorevoli, contrari, astenuti, assenze e "
-              "missioni, per persone, gruppo o membri del governo che hanno anche il seggio, in un periodo.",
+    Strumento("presenze", "CONTEGGIO. Per ogni parlamentare: votazioni a cui ha partecipato, favorevoli, contrari, astenuti, assenze (al Senato "
+              "ricavate: in carica senza scheda) e missioni, per persone, gruppo o membri del governo che hanno anche il seggio, in un periodo.",
               Presenze, lambda c, p: conti.presenze(c, p.chamber, p.persons, p.group, p.government, p.kind, p.final, p.start, p.end,
                                                      p.order_by, p.limit, p.offset)),
     Strumento("conta_interventi", "CONTEGGIO. Quanti interventi (e parole, e occorrenze di una parola o frase) per ramo, sede, organo, "

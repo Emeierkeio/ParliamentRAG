@@ -1,5 +1,6 @@
 """Strumenti dell'API sul Postgres locale (utente `lettura`). Si saltano se il database non risponde."""
 
+import datetime as dt
 import unittest
 
 try:
@@ -10,7 +11,7 @@ except Exception as e:                                   # database spento o .en
 else:
     MOTIVO = ""
 
-from api.strumenti import atti, documenti, persone, ricerca, sedute, voti
+from api.strumenti import atti, conti, documenti, persone, ricerca, sedute, voti
 
 
 @unittest.skipIf(C is None, f"Postgres non raggiungibile: {MOTIVO}")
@@ -31,6 +32,16 @@ class TestApi(unittest.TestCase):
         self.assertEqual(len(testo["text"]), documenti.PAGINA)
         self.assertIn("offset=11000", testo["more"])
         self.assertIsNone(documenti.documento(C, "it:camera:19:doc:inesistente"))
+
+    def test_assenze_del_senato_ricavate(self):
+        # il Senato non pubblica gli assenti: in carica senza scheda; chi presiedeva la seduta è chair, non assente
+        r = conti.presenze(C, "senato", start=dt.date(2026, 2, 25), end=dt.date(2026, 2, 25), order_by="absent", limit=250)
+        righe = {x["persona"]: x for x in r["rows"]}
+        self.assertTrue(all(x["ballots"] + x["absent"] + x["chair"] <= r["votes_in_set"] for x in r["rows"]))
+        self.assertGreater(sum(x["absent"] for x in r["rows"]), 0)
+        self.assertEqual(righe["Renzo Piano"]["absent"], r["votes_in_set"])          # senatore a vita, in carica, nessuna scheda
+        self.assertIn("ricavati", r["counted"])
+        self.assertNotIn("ricavati", conti.presenze(C, "camera", start=dt.date(2026, 2, 11), end=dt.date(2026, 2, 11), limit=1)["counted"])
 
     def test_senatore_una_persona_due_schede(self):
         renzi = persone.cerca_persone(C, q="renzi", chamber="senato")[0]
