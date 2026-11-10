@@ -216,7 +216,12 @@
       const modArt = new Set(modifiche.map((c) => c.article));
       const modComma = new Map(modifiche.filter((c) => c.article === art.num).map((c) => [c.comma, c]));
       const cur = st.em ? perId.get(st.em) : null;
-      const eff = cur ? effetto(cur, art) : null;
+      // leggi grandi: i testi arrivano tagliati, quello intero si chiede per articolo quando si apre un emendamento
+      if (cur && cur.cut) {
+        const u = `/dati/emendamenti/leggi/${encodeURIComponent(slug)}/testi/${encodeURIComponent(cur.article || "_")}.json`;
+        leggi(u).then((m) => { L.amendments.forEach((a) => { if (m[a.id] != null) { a.text = m[a.id]; a.cut = false; } }); if ($("#em-corpo")) disegna(); }).catch(() => {});
+      }
+      const eff = cur && !cur.cut ? effetto(cur, art) : null;
       scriviStato(slug, st);
       CH.imposta({ etichetta: cur ? `em. ${cur.number}, ${titolo}` : titolo, testo: `Emendamenti di ${L.bill.numbers.join(", ")} «${L.bill.title}», fase ${fase.chamber} ${fase.label}, articolo ${art.num}${st.comma ? `, comma ${st.comma}` : ""}${cur ? `; emendamento ${cur.number} (${esito(cur)}): ${B.taglia(cur.text || "", 300)}` : ""}` });
 
@@ -310,7 +315,7 @@
             ${v.secret ? `<p class="em-sotto">Voto segreto: i voti dei singoli e dei gruppi non sono pubblici.</p>` : ""}
             ${v.by_group && v.by_group.length ? `<table class="em-vg"><thead><tr><th>Gruppo</th><th class="dx">Sì</th><th class="dx">No</th><th class="dx">Ast.</th></tr></thead><tbody>${v.by_group.map((g) => `<tr><td>${chip(g.group)}</td><td class="dx em-cifra">${g.favor}</td><td class="dx em-cifra">${g.against}</td><td class="dx em-cifra">${g.abstain}</td></tr>`).join("")}</tbody></table>` : ""}
             <p class="em-azioni">${votoUrl ? `${B.link(votoUrl, "Apri la votazione con l'Aula")}` : ""}${v.url ? `${B.link(v.url, "Apri il resoconto")}` : ""}</p></section>` : ""}
-          <section><details class="em-det-testo"${eff && cur === a ? "" : " open"}><summary><h4>Testo dell'emendamento</h4></summary><div class="em-testo-em">${e(a.text || "Testo non nei dati.")}</div>${a.text_presented && a.text_presented !== a.text ? `<details><summary>Testo come presentato</summary><div class="em-testo-em">${e(a.text_presented)}</div></details>` : ""}</details></section>
+          <section><details class="em-det-testo"${eff && cur === a ? "" : " open"}><summary><h4>Testo dell'emendamento</h4></summary><div class="em-testo-em">${e(a.text || "Testo non nei dati.")}${a.cut ? "…" : ""}</div>${a.cut ? `<p class="em-sotto" role="status">${TT("Carico il testo intero…", "Loading the full text…")}</p>` : ""}${a.text_presented && a.text_presented !== a.text ? `<details><summary>Testo come presentato</summary><div class="em-testo-em">${e(a.text_presented)}</div></details>` : ""}</details></section>
           ${padre || ripreso || sub.length || ident.length ? `<section><h4>Collegati</h4><ul class="em-coll">
             ${padre ? `<li>Subemendamento di <button class="em-link" data-em="${e(padre.id)}">${e(padre.number)}</button></li>` : ""}
             ${ripreso ? `<li>Ripresenta in Aula <button class="em-link" data-em="${e(ripreso.id)}">${e(ripreso.number)}</button>, ${e((nomeFase.get(ripreso.stage) || "").toLowerCase())}</li>` : ""}

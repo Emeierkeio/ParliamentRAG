@@ -659,7 +659,31 @@ def _risposta(c: psycopg.Connection, slug: str):
     dati = _in_memoria(f"legge:{slug}", lambda: legge(c, slug))
     if dati is None:
         raise HTTPException(404, "legge non trovata")
-    return JSONResponse(dati)
+    return JSONResponse(_leggera(dati))
+
+
+TAGLIO = 160            # caratteri del testo di un emendamento nella risposta leggera
+PESANTE = 1_500_000     # oltre questi caratteri di testi, i testi interi arrivano per articolo
+
+
+def _leggera(dati: dict) -> dict:
+    """Le leggi grandi (la legge di bilancio: 16 milioni di caratteri di emendamenti) arrivano con i testi tagliati;
+    il lettore chiede il testo intero, articolo per articolo, quando apre un emendamento (card 271)."""
+    if sum(len(a["text"] or "") for a in dati["amendments"]) <= PESANTE:
+        return dati
+    corti = [a | {"text": a["text"][:TAGLIO], "cut": True} if a["text"] and len(a["text"]) > TAGLIO else a for a in dati["amendments"]]
+    return dati | {"amendments": corti}
+
+
+def _testi_articolo(c: psycopg.Connection, slug: str, articolo: str):
+    if not re.fullmatch(r"[\w-]{1,40}", slug) or not re.fullmatch(r"[\w.-]{1,20}", articolo):
+        raise HTTPException(404, "articolo non trovato")
+    c.execute("SET statement_timeout = '30s'")
+    dati = _in_memoria(f"legge:{slug}", lambda: legge(c, slug))
+    if dati is None:
+        raise HTTPException(404, "legge non trovata")
+    voluto = None if articolo == "_" else articolo
+    return JSONResponse({a["id"]: a["text"] for a in dati["amendments"] if a["article"] == voluto and a["text"]})
 
 
 @router.get("/dati/emendamenti/legge-elettorale.json")
@@ -670,3 +694,9 @@ def legge_elettorale(c: Db):
 @router.get("/dati/emendamenti/leggi/{slug}.json")
 def una_legge(c: Db, slug: str):
     return _risposta(c, ELETTORALE[1] if slug == ELETTORALE[0] else slug)
+
+
+@router.get("/dati/emendamenti/leggi/{slug}/testi/{articolo}.json")
+def testi_articolo(c: Db, slug: str, articolo: str):
+    """I testi interi degli emendamenti di un articolo («_» per quelli fuori articolato)."""
+    return _testi_articolo(c, ELETTORALE[1] if slug == ELETTORALE[0] else slug, articolo)
