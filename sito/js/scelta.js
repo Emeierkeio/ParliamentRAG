@@ -26,7 +26,7 @@
       : TT(`${r.soggetto} non è mai nominato in modo pertinente. Ti propongo:`, `${r.soggetto} is never mentioned in a relevant way. I suggest:`);
     const box = document.createElement("div");
     box.id = "scelta"; box.className = "scelta"; box.setAttribute("role", "group"); box.setAttribute("aria-labelledby", "scelta-t");
-    box.innerHTML = `<header><div><h3 id="scelta-t">${e(TT(`Su cosa faccio il dossier di ${r.soggetto}?`, `What should ${r.soggetto}'s dossier cover?`))}</h3><p>${e(diretto)}</p></div>
+    box.innerHTML = `<header><div><h3 id="scelta-t">${e(TT(`Quali temi all'esame del Parlamento interessano ${r.soggetto}?`, `Which topics before Parliament matter to ${r.soggetto}?`))}</h3><p>${e(diretto)}</p></div>
         <button type="button" class="scelta__x" data-scelta="chiudi" aria-label="${TT("Chiudi", "Close")}">${B.ico("chiudi")}</button></header>
       <ol>${ops.map((o, i) => `<li><label><input type="checkbox" value="${i}"${o.consigliato || (o.tipo === "associazione" && i < 3) ? " checked" : ""}>
         <span class="scelta__n">${i + 1}</span><span class="scelta__c"><b>${e(o.nome)}${o.tipo === "associazione" ? ` <small>${TT("associazione di categoria", "trade association")}</small>` : ""}${o.consigliato ? ` <em>${TT("Consigliato", "Recommended")}</em>` : ""}${o.generico ? ` <small>${TT("tema molto ampio", "very broad topic")}</small>` : ""}</b>

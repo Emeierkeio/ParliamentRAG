@@ -39,7 +39,7 @@
           ["Assobibe", TT("3 audizioni · 1 memoria", "3 hearings · 1 memo"), 1],
           [TT("Imballaggi e plastica monouso", "Packaging and single-use plastic"), TT("22 interventi · 21 emendamenti", "22 speeches · 21 amendments"), 0]];
         const sez = [TT("Posizioni dei gruppi", "Group positions"), TT("Emendamenti", "Amendments"), TT("Chi ci lavora", "Who works on it"), TT("In arrivo", "Coming up")];
-        return `<div class="nov-tema"><div class="nov-scelta"><small>${TT("Su cosa faccio il dossier di Acme Bevande?", "What should the Acme Drinks dossier cover?")}</small>${temi.map(([n, c, s], i) => `<div class="nov-op" style="animation-delay:${.2 + i * .12}s"><i class="nov-ck" data-s="${s ? i : ""}"></i><span><b>${n}</b>${c}</span></div>`).join("")}</div><div class="nov-dos"><small>${TT("Dossier · sugar tax", "Dossier · sugar tax")}<span class="nov-pdf">PDF</span></small>${sez.map((x, i) => `<div class="nov-sez" data-z="${i}">${x}</div>`).join("")}</div></div>`;
+        return `<div class="nov-tema"><div class="nov-scelta"><small>${TT("Quali temi all'esame del Parlamento interessano Acme Bevande?", "Which topics before Parliament matter to Acme Drinks?")}</small>${temi.map(([n, c, s], i) => `<div class="nov-op" style="animation-delay:${.2 + i * .12}s"><i class="nov-ck" data-s="${s ? i : ""}"></i><span><b>${n}</b>${c}</span></div>`).join("")}</div><div class="nov-dos"><small>${TT("Dossier · sugar tax", "Dossier · sugar tax")}<span class="nov-pdf">PDF</span></small>${sez.map((x, i) => `<div class="nov-sez" data-z="${i}">${x}</div>`).join("")}</div></div>`;
       },
       dopo: (el, t) => {
         [0, 1].forEach((k) => t.push(setTimeout(() => el.querySelector(`[data-s="${k}"]`)?.classList.add("on"), 800 + k * 400)));
