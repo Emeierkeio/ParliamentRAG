@@ -1,7 +1,7 @@
 /* Novità: una card animata che da desktop si apre sulla home, una volta per versione. Per le novità successive si
    cambiano VERSIONE e PASSI; i dati negli esempi vengono dal database (niente esempi inventati). */
 (function () {
-  const VERSIONE = "2026-11-10";
+  const VERSIONE = "2026-11-10b";
   const CHIAVE = "parliamentrag-novita";
   const e = B.esc;
 
@@ -32,6 +32,24 @@
       cta: [TT("Prova nella chat", "Try it in the chat"), null, TT("Chi è stato audito sul ddl concorrenza?", "Who was heard on the competition bill?")],
       scena: () => `<div class="nov-chat"><div class="nov-dom">${TT("Chi è stato audito sul ddl concorrenza?", "Who was heard on the competition bill?")}</div><div class="nov-str"><i class="nov-giro"></i>${TT("Leggo i fatti delle commissioni", "Reading committee facts")} <code>fatti_commissioni</code></div><div class="nov-risp"><p>${TT("Nella X Commissione della Camera, sul C. 3120, fra gli auditi:", "In Chamber Committee X, on C. 3120, among those heard:")}</p><div class="nov-chips">${["Confimprese", "Assopetroli-Assoenergia", "Federchimica-Assogasliquidi", "FIAIP", "FIMAA"].map((s, i) => `<span style="animation-delay:${2.1 + i * .12}s">${s}</span>`).join("")}</div></div></div>`,
       dopo: (el, t) => t.push(setTimeout(() => el.querySelector(".nov-str")?.classList.add("fatto"), 1800)),
+    },
+    {
+      titolo: TT("Il dossier di un tema, anche da un'azienda", "A topic dossier, even from a company"),
+      testo: TT("Scrivi un tema o il nome di un'azienda: la chat propone i temi parlamentari e le associazioni di categoria, li conta sui dati e tu scegli. Il dossier mette insieme posizioni dei gruppi, emendamenti e com'è finita, chi ci lavora e cosa è in arrivo, e si scarica in PDF.",
+        "Type a topic or a company name: the chat suggests the parliamentary topics and trade associations, counts them on the data, and you choose. The dossier brings together group positions, amendments and their outcome, who works on it and what is coming, and downloads as a PDF."),
+      cta: [TT("Prova con Coca-Cola", "Try Coca-Cola"), null, TT("Fai un dossier su Coca-Cola", "Make a dossier on Coca-Cola")],
+      scena: () => {
+        const temi = [[TT("Sugar tax", "Sugar tax"), TT("87 interventi · 5 emendamenti", "87 speeches · 5 amendments"), 1],
+          ["Assobibe", TT("3 audizioni · 1 memoria", "3 hearings · 1 memo"), 1],
+          [TT("Imballaggi e plastica monouso", "Packaging and single-use plastic"), TT("22 interventi · 21 emendamenti", "22 speeches · 21 amendments"), 0]];
+        const sez = [TT("Posizioni dei gruppi", "Group positions"), TT("Emendamenti", "Amendments"), TT("Chi ci lavora", "Who works on it"), TT("In arrivo", "Coming up")];
+        return `<div class="nov-tema"><div class="nov-scelta"><small>${TT("Su cosa faccio il dossier di Coca-Cola?", "What should the Coca-Cola dossier cover?")}</small>${temi.map(([n, c, s], i) => `<div class="nov-op" style="animation-delay:${.2 + i * .12}s"><i class="nov-ck" data-s="${s ? i : ""}"></i><span><b>${n}</b>${c}</span></div>`).join("")}</div><div class="nov-dos"><small>${TT("Dossier · sugar tax", "Dossier · sugar tax")}<span class="nov-pdf">PDF</span></small>${sez.map((x, i) => `<div class="nov-sez" data-z="${i}">${x}</div>`).join("")}</div></div>`;
+      },
+      dopo: (el, t) => {
+        [0, 1].forEach((k) => t.push(setTimeout(() => el.querySelector(`[data-s="${k}"]`)?.classList.add("on"), 800 + k * 400)));
+        [0, 1, 2, 3].forEach((k) => t.push(setTimeout(() => el.querySelector(`[data-z="${k}"]`)?.classList.add("on"), 1800 + k * 220)));
+        t.push(setTimeout(() => el.querySelector(".nov-pdf")?.classList.add("on"), 2800));
+      },
     },
   ];
 
