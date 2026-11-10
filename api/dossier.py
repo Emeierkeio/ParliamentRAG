@@ -68,7 +68,7 @@ def sezioni(c: psycopg.Connection, tema: str) -> dict:
     # e i proponenti («IAIA ed altri: …») e i tag HTML di alcune schede
     def pulito(t: str | None) -> str:
         t = re.sub(r"<[^>]+>", "", t or "")
-        t = re.sub(r'^(?:\s*[CS]\.\s*\d+(?:-\w+)?\.?)*\s*[-–.]?\s*', "", t)
+        t = re.sub(r'^(?:\s*[CS]\.\s*\d+(?:-\w+)?\.?)*\s*[-–.]?\s*["“]?', "", t)
         t = re.sub(r"^[A-ZÀ-Ý' ]+(?: ed altri| e altri)?:\s*", "", t)
         # «Conversione in legge del decreto-legge 7 agosto 2026, n. 143, recante …» → «DL 143/2026: …», il tema prima
         t = re.sub(r"^Conversione in legge,?(?: con modificazioni,)? del decreto-legge \d+ \w+ (\d{4}), n\. (\d+),? recante\s*", r"DL \2/\1: ", t)
