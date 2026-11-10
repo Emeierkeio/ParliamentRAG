@@ -52,8 +52,8 @@ FONTI = {
     "speech": ("speech", "uri", "text", "hash", "true", 300),
     # interrogazioni, mozioni, risoluzioni: conta il testo, il titolo è un'etichetta uguale per tutte
     "act": ("act", "uri", "text", "md5(text)", "text IS NOT NULL", 50),
-    # progetti di legge: il titolo dice di cosa parlano
-    "act_title": ("act", "uri", "title", "md5(title)", "kind = 'bill' AND title IS NOT NULL", 1),
+    # progetti di legge, atti del Governo e nomine sottoposti a parere: il titolo dice di cosa parlano
+    "act_title": ("act", "uri", "title", "md5(title)", "kind IN ('bill', 'government_act', 'appointment') AND title IS NOT NULL", 1),
     "profession": ("person", "uri", "profession", "md5(profession)", "profession IS NOT NULL", 1),
     "education": ("person", "uri", "education", "md5(education)", "education IS NOT NULL", 1),
     "body": ("body", "uri", "name", "md5(name)", "name IS NOT NULL", 1),

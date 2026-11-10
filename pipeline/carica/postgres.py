@@ -378,6 +378,9 @@ def script_atti_governo(righe: list[dict]) -> str:
     parti += [f"UPDATE agenda_item_act x SET act = a.uri FROM act a, agenda_item i, sitting s WHERE x.act IS NULL AND x.act_ref ~ '^ag:' "
               f"AND i.uri = x.item AND s.uri = i.sitting AND s.chamber = {ramo} AND a.chamber = {ramo} AND a.legislature = {leg} "
               f"AND a.kind = 'government_act' AND a.number = split_part(x.act_ref, ':', 2);",
+              # i fatti delle commissioni letti prima che l'atto ci fosse (pareri su «Atto n. 439»): si legano adesso
+              f"UPDATE committee_fact f SET act = a.uri FROM act a WHERE f.act IS NULL AND f.chamber = {ramo} AND a.chamber = {ramo} "
+              f"AND a.legislature = {leg} AND a.kind = 'government_act' AND cardinality(f.act_refs) = 1 AND f.act_refs[1] = 'ag:' || a.number;",
               "COMMIT;"]
     return "\n".join(parti) + "\n"
 

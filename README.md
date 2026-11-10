@@ -98,11 +98,11 @@ The model is a property graph stored in PostgreSQL 16: nodes and edges become ta
 
 The same summaries carry the work of the committees: who was heard, the opinions of the committees, the opinions of the Government and the rapporteur on amendments, the steps of a bill, the answers to questions. A language model reads the summary of each agenda item through the Batch API and returns the facts, each with the sentence it comes from; a fact enters `committee_fact` (`Act -HAS_FACT-> CommitteeFact`) only if that sentence is copied from the record, the outcome is one of the allowed values and the fact happened in that sitting, not just recalled or announced (`pipeline/fatti.py`). Measured by hand, hearings, committee opinions and answers to questions are right 19 to 20 times in 20; they are the ones the chat reads.
 
-The schema of the graph: node types grouped by area, with the relations between them. Counts from the load of 1 November 2026.
+The schema of the graph: node types grouped by area, with the relations between them. Counts from the load of 1 November 2026; acts and convocations from 10 November.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/grafo-scuro.png">
-  <img alt="Schema of the graph: people and bodies, sittings and business, votes, acts, with node types such as Person, Group, Body, Sitting, AgendaItem, Speech, Vote, Act, Amendment, AmendmentDeadline, CommitteeFact, Document and their relations." src="docs/assets/grafo-chiaro.png">
+  <img alt="Schema of the graph: people and bodies, sittings and business, votes, acts, with node types such as Person, Group, Body, Sitting, AgendaItem, Speech, Vote, Act, Amendment, AmendmentDeadline, CommitteeFact, Convocation, Document and their relations." src="docs/assets/grafo-chiaro.png">
 </picture>
 
 Core tables:
