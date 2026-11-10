@@ -27,9 +27,9 @@
     togli();
     const box = document.createElement("div");
     box.id = "scelta"; box.className = "scelta"; box.setAttribute("role", "group"); box.setAttribute("aria-labelledby", "scelta-t");
-    box.innerHTML = `<header><div><h3 id="scelta-t">${e(TT(`Di cosa si occupa ${r.soggetto}?`, `What does ${r.soggetto} do?`))}</h3><p>${e(TT("Dal nome non lo capiamo. Scegli il settore e ti proponiamo i temi del Parlamento che lo riguardano.", "We can't tell from the name. Pick the sector and we'll suggest the topics before Parliament."))}</p></div>
+    box.innerHTML = `<header><div><h3 id="scelta-t">${e(TT(`Di cosa si occupa ${r.soggetto}?`, `What does ${r.soggetto} do?`))}</h3><p>${e(TT("Dal nome non lo capiamo. Scegli uno o più settori e ti proponiamo i temi del Parlamento che lo riguardano.", "We can't tell from the name. Pick one or more sectors and we'll suggest the topics before Parliament."))}</p></div>
         <button type="button" class="scelta__x" data-scelta="chiudi" aria-label="${TT("Chiudi", "Close")}">${B.ico("chiudi")}</button></header>
-      <ol>${SETTORI.map(([it, en], i) => `<li><label><input type="radio" name="settore" value="${e(TT(it, en))}"><span class="scelta__n">${i + 1}</span><span class="scelta__c"><b>${e(TT(it, en))}</b></span></label></li>`).join("")}
+      <ol>${SETTORI.map(([it, en], i) => `<li><label><input type="checkbox" value="${e(TT(it, en))}"><span class="scelta__n">${i + 1}</span><span class="scelta__c"><b>${e(TT(it, en))}</b></span></label></li>`).join("")}
         <li class="scelta__altro"><span class="scelta__n">${B.ico("piu")}</span><label class="vh" for="scelta-altro">${TT("Altro: scrivilo tu", "Other: type it")}</label><input id="scelta-altro" placeholder="${TT("Altro: scrivilo tu (es. «produciamo imballaggi»)", "Other: type it (e.g. «we make packaging»)")}" maxlength="120"></li></ol>
       <footer><p class="scelta__nota">${TT("Serve solo a proporti i temi giusti.", "Only used to suggest the right topics.")}</p>
         <button type="button" class="bt bt--linea" data-scelta="chiudi">${TT("Salta", "Skip")}</button><button type="button" class="bt" data-scelta="vai">${TT("Continua", "Continue")}</button></footer>`;
@@ -37,21 +37,22 @@
     comp.insertBefore(box, comp.querySelector("form"));
     box.addEventListener("keydown", (ev) => {
       if (ev.target.id === "scelta-altro") { if (ev.key === "Enter") { ev.preventDefault(); box.querySelector('[data-scelta="vai"]').click(); } return; }
-      const n = parseInt(ev.key, 10); if (n >= 1 && n <= SETTORI.length) box.querySelectorAll("input[type=radio]")[n - 1].checked = true;
+      const n = parseInt(ev.key, 10); if (n >= 1 && n <= SETTORI.length) { const c = box.querySelectorAll("input[type=checkbox]")[n - 1]; c.checked = !c.checked; }
       if (ev.key === "Escape") togli();
     });
     box.addEventListener("click", async (ev) => {
-      const b = ev.target.closest("[data-scelta]"); if (!b) return;
+      // solo i pulsanti del riquadro: <html> ha data-scelta (il tema), e un clic su una voce ci arriverebbe risalendo
+      const b = ev.target.closest("button[data-scelta]"); if (!b || !box.contains(b)) return;
       if (b.dataset.scelta === "chiudi") return togli();
       const altro = box.querySelector("#scelta-altro").value.trim();
-      const settore = altro || (box.querySelector("input[type=radio]:checked") || {}).value;
+      const settore = [...box.querySelectorAll("input[type=checkbox]:checked")].map((x) => x.value).concat(altro ? [altro] : []).join(", ");
       if (!settore) return;
       b.disabled = true; b.textContent = TT("Cerco i temi…", "Finding topics…");
       const x = await temi(r.soggetto, settore);
       if (x && x.opzioni && x.opzioni.length) S.mostra(x);
       else { b.disabled = false; b.textContent = TT("Riprova", "Try again"); }
     });
-    const primo = box.querySelector("input[type=radio]"); if (primo) primo.focus({ preventScroll: true });
+    const primo = box.querySelector("input[type=checkbox]"); if (primo) primo.focus({ preventScroll: true });
   };
 
   S.mostra = (r) => {
@@ -81,7 +82,8 @@
       if (ev.key === "Escape") togli();
     });
     box.addEventListener("click", (ev) => {
-      const b = ev.target.closest("[data-scelta]"); if (!b) return;
+      // solo i pulsanti del riquadro: <html> ha data-scelta (il tema), e un clic su una voce ci arriverebbe risalendo
+      const b = ev.target.closest("button[data-scelta]"); if (!b || !box.contains(b)) return;
       if (b.dataset.scelta === "chiudi") return togli();
       const scelti = [...box.querySelectorAll("input[type=checkbox]:checked")].map((x) => ops[+x.value]);
       const altro = box.querySelector("#scelta-altro").value.trim();

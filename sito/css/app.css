@@ -1977,3 +1977,4 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
 .dos-quadro td{vertical-align:top;padding:9px 10px 9px 0;border-bottom:1px solid var(--bordo);color:var(--t2)}
 .dos-quadro td:first-child{white-space:nowrap}.dos-quadro td b{color:var(--t)}
 .dos-news p{margin:0 0 10px;color:var(--t2)}.dos-news .news__riga{max-width:520px}.dos-news .news__msg{margin-top:8px}
+.pdf-dossier{margin:18px 0 6px}.pdf-dossier .bt{display:inline-flex;align-items:center;gap:8px}.pdf-dossier .ic{width:17px;height:17px}
