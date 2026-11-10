@@ -24,7 +24,7 @@ from starlette.concurrency import run_in_threadpool
 
 from pipeline.ambiente import env
 
-from . import agente, conversazioni, pubblico, statistiche
+from . import agente, allegati, conversazioni, pubblico, statistiche
 from .db import connessione, connessione_sito as _db_sito
 from .pulisci import pulisci
 from .rete import ip
@@ -41,18 +41,40 @@ class Domanda(BaseModel):
     locale: Literal["it", "en"] = "it"
     conversation: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{8,64}$")   # id casuale del browser, per il registro
     turn: int | None = Field(default=None, ge=1, le=1000)
+    # una bozza allegata (file .docx o .pdf già letto da /api/allegato, o testo lungo incollato): vale 3 domande
+    attachment: str | None = Field(default=None, max_length=allegati.CARATTERI_MAX)
+    attachment_name: str | None = Field(default=None, max_length=200)
 
 
 def risposta_ndjson(indirizzo: str, d: Domanda) -> StreamingResponse:
     """La risposta dell'agente in NDJSON, un evento per riga, dopo i limiti per IP e di spesa. La usa anche /v1/chat."""
-    motivo = agente.controlla_limiti(indirizzo)
+    motivo = agente.controlla_limiti(indirizzo, allegati.DOMANDE if d.attachment else 1)
     if motivo:
         raise HTTPException(429, motivo)
     misure: dict = {}
-    eventi = conversazioni.registra(agente.rispondi(d.prompt, d.history, d.locale, indirizzo, misure), d.prompt, d.locale,
-                                    d.conversation, d.turn, misure)
+    # nel registro la bozza resta, senza IP come ogni domanda (decisione del 10/11/2026)
+    registrata = d.prompt + (f"\n\n[allegato: {d.attachment_name or 'testo incollato'}, {len(d.attachment)} caratteri]\n{d.attachment}" if d.attachment else "")
+    eventi = conversazioni.registra(agente.rispondi(d.prompt, d.history, d.locale, indirizzo, misure, allegato=d.attachment,
+                                                    nome_allegato=d.attachment_name), registrata, d.locale, d.conversation, d.turn, misure)
     righe = (json.dumps(e, ensure_ascii=False, default=str) + "\n" for e in eventi)
     return StreamingResponse(righe, media_type="application/x-ndjson")
+
+
+class Allegato(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+    data: str = Field(min_length=10, max_length=7_000_000)        # base64 di un file fino a 5 MB
+
+
+@router.post("/api/allegato")
+def allegato(d: Allegato) -> dict:
+    """Il testo di un file .docx o .pdf allegato alla chat. Il file non si conserva."""
+    try:
+        testo = allegati.testo_da_file(d.name, d.data)
+    except allegati.AllegatoNonLeggibile as e:
+        raise HTTPException(422, str(e)) from e
+    pezzi = allegati.dividi(testo)
+    return {"text": testo, "amendments": min(len(pezzi), allegati.EMENDAMENTI_MAX), "more": max(0, len(pezzi) - allegati.EMENDAMENTI_MAX),
+            "truncated": len(testo) >= allegati.CARATTERI_MAX}
 
 
 @router.get("/api/uso")

@@ -87,7 +87,7 @@
 
   /* ---------- ambito e invio ---------- */
   let ambito = "Parlamento";
-  const invia = (ta) => { if (CH.inCorso) return; let q = ta.value.trim(); if (!q) return; ta.value = ""; ta.style.height = ""; if (ambito !== "Parlamento" && !/camera|senato/i.test(q)) q += ` (solo ${ambito === "Camera" ? "alla Camera" : "al Senato"})`; const ctx = ta.id === "q-conv" && !$("#ctx").hidden ? CH.contesto : null; CH.chiedi(q, ctx); CH.imposta(null); setTimeout(() => $("#q-conv").focus(), 50); };
+  const invia = (ta) => { if (CH.inCorso) return; if (CH.allegato && CH.allegato.stato === "leggo") return; let q = ta.value.trim() || (CH.allegato && CH.allegato.stato === "pronto" ? CH.domandaAllegato : ""); if (!q) return; ta.value = ""; ta.style.height = ""; if (ambito !== "Parlamento" && !/camera|senato/i.test(q)) q += ` (solo ${ambito === "Camera" ? "alla Camera" : "al Senato"})`; const ctx = ta.id === "q-conv" && !$("#ctx").hidden ? CH.contesto : null; CH.chiedi(q, ctx); CH.imposta(null); setTimeout(() => $("#q-conv").focus(), 50); };
   // contesto della pagina nella barra in basso
   CH.imposta = (c) => { CH.contesto = c; $("#ctx").hidden = !c; $("#ctx-t").textContent = c ? c.etichetta : ""; $("#q-conv").placeholder = c ? `Chiedi qualcosa su ${c.etichetta}` : CH.esempio ? TT(`Per esempio: ${CH.esempio}`, `For example: ${CH.esempio}`) : document.body.dataset.vista === "conversazione" ? "Continua: «e il Senato?», «chi ha votato contro?», un nome, una data…" : "Chiedi al Parlamento"; };
   // nella conversazione il campo propone come esempio una delle domande successive suggerite dall'ultima risposta

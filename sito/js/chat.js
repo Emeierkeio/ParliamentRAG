@@ -359,6 +359,9 @@
   const blocca = (si) => { CH.inCorso = si; B.$$(".invia").forEach((b) => { b.disabled = si; b.setAttribute("aria-busy", String(si)); }); };
   CH.chiedi = async (q, ctx) => {
     q = q.trim(); if (!q || CH.inCorso) return;
+    // una bozza allegata va sempre all'agente, con la domanda (vale 3 domande)
+    const allegato = CH.allegato && CH.allegato.stato === "pronto" ? CH.allegato : null;
+    if (allegato) CH.togliAllegato();
     blocca(true); setTimeout(() => { if (CH.inCorso && !document.querySelector(".turno .stato-v:not(.fatto)")) blocca(false); }, 4000);
     // una domanda fatta dalla home apre sempre una chat nuova; i pesi scelti prima della domanda restano
     if (!document.body.dataset.vista) { aperta(null); CH.idChat = null; storia.length = 0; delete CH.ultimaPersona; CH.proponi(null); $("#conversazione").innerHTML = ""; }
@@ -368,15 +371,16 @@
     document.body.dataset.vista = "conversazione"; location.hash !== "#/chiedi" && history.replaceState(null, "", "#/chiedi");
     const n = ++nTurno, box = $("#conversazione");
     const el = document.createElement("article"); el.className = "turno"; el.id = `turno-${n}`;
-    el.innerHTML = `<div class="dom-utente">${ctx ? `<span class="turno__ctx">${e(ctx.etichetta)}</span>` : ""}<h2 class="turno__dom">${e(q)}</h2></div><details class="come" open><summary><span class="stato-v">Al lavoro</span><span class="testo-stato">Leggo la domanda</span></summary><ol class="passi"></ol></details><nav class="indice-r" aria-label="In questa risposta"></nav><div class="blocchi"></div><div class="seguiti"></div>`;
+    el.innerHTML = `<div class="dom-utente">${ctx ? `<span class="turno__ctx">${e(ctx.etichetta)}</span>` : ""}<h2 class="turno__dom">${e(q)}</h2>${allegato ? `<span class="turno__all">${e(allegato.nome || TT("Testo incollato", "Pasted text"))} · ${B.num(allegato.testo.length)} ${TT("caratteri", "characters")}</span>` : ""}</div><details class="come" open><summary><span class="stato-v">Al lavoro</span><span class="testo-stato">Leggo la domanda</span></summary><ol class="passi"></ol></details><nav class="indice-r" aria-label="In questa risposta"></nav><div class="blocchi"></div><div class="seguiti"></div>`;
     box.appendChild(el); el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
     const t = { n, q, el, passi: el.querySelector(".passi"), blocchi: el.querySelector(".blocchi"), indice: el.querySelector(".indice-r"), stato: el.querySelector(".testo-stato") };
     const bRisp = blocco(t, "risposta", "Risposta", "", `<div class="prosa cursore"><div class="carica" role="status"><span class="vh">Scrivo la risposta</span><i></i><i></i><i></i></div></div>`);
     const prosaEl = bRisp.querySelector(".prosa");
     let testo = "", fonti = [], strumenti = {};
-    el._t = t;
+    el._t = t; t.allegato = allegato;
     await B.caricaSenato().catch(() => {});   // i nomi dei senatori servono a riconoscere una persona nella domanda
     const it = CH.intento(q); CH.ultimoIntento = it;
+    if (allegato) { await turnoAgente(t, el, n, q, qx, prosaEl); return; }
     if (CH.AGENTE) {
       // regola: un tema con almeno 3 dibattiti va al fascicolo, con i passaggi del metodo; il resto all'agente
       let d = null;
@@ -483,7 +487,7 @@
   async function turnoAgente(t, el, n, q, qx, prosaEl, modo) {
     let testo = ""; const strumenti = {};
     try {
-      const r = await fetch("/api/agente", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: qx.slice(0, 1500), history: storia.slice(-8), locale: window.LANG, conversation: CH.idChat, turn: storia.filter((m) => m.role === "user").length + 1, modo, ...(CH.pesi ? { pesi: Object.fromEntries(CHIAVI_P.map((k, i) => [k, CH.pesi[i]])) } : {}) }) });
+      const r = await fetch("/api/agente", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: qx.slice(0, 1500), history: storia.slice(-8), locale: window.LANG, conversation: CH.idChat, turn: storia.filter((m) => m.role === "user").length + 1, modo, ...(t.allegato ? { attachment: t.allegato.testo, attachment_name: t.allegato.nome || null } : {}), ...(CH.pesi ? { pesi: Object.fromEntries(CHIAVI_P.map((k, i) => [k, CH.pesi[i]])) } : {}) }) });
       if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j.errore || j.detail || String(r.status)); }
       const lettore = r.body.getReader(), dec = new TextDecoder(); let buf = "";
       for (;;) {

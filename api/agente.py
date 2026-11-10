@@ -27,7 +27,7 @@ from pathlib import Path
 
 from pipeline.ambiente import QUI, env
 
-from . import registro
+from . import allegati, registro
 from .db import connessione, connessione_sito
 
 log = logging.getLogger("parliamentrag.agente")
@@ -81,6 +81,12 @@ Regole
 - Alla fine, su una riga a parte, scrivi SEGUITI: e tre domande successive utili separate da « | »."""
 
 
+ALLEGATO = ("L'utente ha allegato una bozza ({nome}). Qui sotto, per ogni emendamento della bozza (n, inizio del testo), "
+            "gli emendamenti più simili già presentati in Parlamento, con atto, sede, gruppi, esito e fonte dell'esito. Sono dati "
+            "trovati per vicinanza di significato: controlla che parlino davvero della stessa cosa. Rispondi con una riga per "
+            "emendamento della bozza (una tabella va bene): già presentato o no, dove, da chi, com'è finito, con il link all'atto. "
+            "Non commentare né riscrivere la bozza. Se altri_non_controllati è più di 0, di' quanti emendamenti non hai controllato.\n\n")
+
 ULTIMO_PASSO = ("Non puoi più consultare i dati. Rispondi ora con quello che hai già letto, senza inventare niente: "
                 "dì cosa hai trovato e cosa manca, e dove guardare nelle fonti ufficiali.")
 
@@ -88,7 +94,7 @@ ULTIMO_PASSO = ("Non puoi più consultare i dati. Rispondi ora con quello che ha
 ETICHETTE = {"agenda": "Leggo l'agenda del Parlamento", "fatti_commissioni": "Leggo i lavori delle commissioni", "cerca_persone": "Cerco i parlamentari", "scheda_persona": "Leggo la scheda del parlamentare",
              "composizione": "Conto i parlamentari per gruppo", "elenco_sedute": "Cerco nelle sedute", "seduta": "Leggo la seduta", "argomenti_sedute": "Cerco negli ordini del giorno", "conta_sedute": "Conto le sedute",
              "elenco_votazioni": "Cerco le votazioni", "votazione": "Leggo la votazione", "cerca_atti": "Cerco negli atti",
-             "atto": "Leggo l'atto", "articolo": "Leggo l'articolo", "cerca_emendamenti": "Cerco negli emendamenti", "emendamento": "Leggo l'emendamento", "cerca_interventi": "Cerco negli interventi",
+             "atto": "Leggo l'atto", "articolo": "Leggo l'articolo", "cerca_emendamenti": "Cerco negli emendamenti", "emendamento": "Leggo l'emendamento", "confronta_bozza": "Confronto la bozza con gli emendamenti già presentati", "cerca_interventi": "Cerco negli interventi",
              "cerca_per_significato": "Cerco per significato", "verifica_citazioni": "Controllo le citazioni",
              "organo": "Leggo le cariche dell'organo", "conta_votazioni": "Conto le votazioni", "voto_gruppi": "Conto i voti dei gruppi",
              "presenze": "Conto presenze e assenze", "conta_interventi": "Conto gli interventi", "conta_reazioni": "Conto le reazioni in Aula",
@@ -144,10 +150,12 @@ def uso(ip: str) -> dict:
     return {"used": n, "limit": limite, "resets_in": round(inizio + ORA - ora)}
 
 
-def controlla_limiti(ip: str) -> str | None:
-    """Il motivo del rifiuto, o None se si può rispondere."""
+def controlla_limiti(ip: str, costo: int = 1) -> str | None:
+    """Il motivo del rifiuto, o None se si può rispondere. `costo`: quante domande vale questa (un allegato ne vale 3)."""
     u = uso(ip)
-    if u["used"] >= u["limit"]:
+    if u["used"] + costo > u["limit"]:
+        if costo > 1 and u["used"] < u["limit"]:
+            return f"una bozza allegata vale {costo} domande e quest'ora te ne restano {u['limit'] - u['used']}: riprova fra poco o fai una domanda senza allegato"
         minuti = max(1, -(-u["resets_in"] // 60))
         return f"hai usato tutte le {u['limit']} domande di quest'ora: il conteggio riparte fra {minuti} minuti"
     if not controlla_spesa():
@@ -250,7 +258,8 @@ def _conteggio(ris) -> int | None:
     return None
 
 
-def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dict | None = None) -> Iterator[dict]:
+def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dict | None = None, allegato: str | None = None,
+             nome_allegato: str | None = None) -> Iterator[dict]:
     """Generatore di eventi per una domanda. Ogni strumento usa una connessione di sola lettura. In `misure` lascia
     modello e spesa, per il registro delle chat."""
     misure = {} if misure is None else misure
@@ -270,6 +279,22 @@ def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dic
         istruzioni = PROMPT.format(oggi=dt.date.today().strftime("%d/%m/%Y"), ultima=ultima.strftime("%d/%m/%Y") if ultima else "?",
                                    lingua="inglese" if lingua == "en" else "italiano")
         yield {"type": "status", "text": "Leggo la domanda" if lingua != "en" else "Reading the question"}
+        if allegato:
+            # la bozza non va al modello intera: per ogni emendamento si cercano i simili, e il modello legge solo quelli
+            n += 1
+            yield {"type": "tool", "id": str(n), "state": "start", "name": "confronta_bozza", "label": ETICHETTE["confronta_bozza"],
+                   "args": {"allegato": nome_allegato or "testo incollato", "caratteri": len(allegato)}}
+            try:
+                ris = allegati.confronta(c, allegato)
+            except Exception as e:                     # noqa: BLE001 — la domanda prosegue anche senza il confronto
+                log.exception("confronto della bozza non riuscito")
+                ris = {"errore": str(e)[:300]}
+            yield {"type": "tool", "id": str(n), "state": "done", "name": "confronta_bozza", "count": len(ris.get("emendamenti", []))}
+            yield {"type": "dati", "name": "confronta_bozza", "args": {}, "result": ris}
+            testo = registro.in_testo(ris)
+            visti.update(re.findall(r"https?://[^\s\"'<>)\]]+", testo))
+            voci[-1] = {"role": "user", "content": domanda[:2000] + "\n\n" + ALLEGATO.format(nome=nome_allegato or "testo incollato")
+                        + testo[:TAGLIO * 2]}
         try:
             for passo in range(PASSI_MAX):
                 ultimo = passo == PASSI_MAX - 1
@@ -313,7 +338,7 @@ def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dic
             yield {"type": "done"}
         finally:
             misure["dollari"] = spesa
-            _conta(ip, 1, spesa)
+            _conta(ip, allegati.DOMANDE if allegato else 1, spesa)
 
 
 def _chiudi(c, uscita: list, voci: list, visti: set[str], domanda: str) -> Iterator[dict]:
