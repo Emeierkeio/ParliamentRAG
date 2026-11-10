@@ -6,10 +6,11 @@
   const S = (window.SCELTA = {});
   const numeri = (o) => {
     const c = o.conteggi || {};
+    // [numero, singolare, plurale]
     const pezzi = o.tipo === "tema"
-      ? [[c.interventi, TT("interventi", "speeches")], [c.emendamenti, TT("emendamenti", "amendments")], [c.atti, TT("atti", "acts")]]
-      : [[c.audizioni, TT("audizioni", "hearings")], [c.memorie, TT("memorie", "written submissions")], [c.interventi, TT("interventi che la nominano", "speeches naming it")]];
-    return pezzi.filter(([n]) => n).map(([n, x]) => `${n >= 1000 ? "1.000+" : B.num(n)} ${x}`).join(" · ");
+      ? [[c.interventi, TT("intervento", "speech"), TT("interventi", "speeches")], [c.emendamenti, TT("emendamento", "amendment"), TT("emendamenti", "amendments")], [c.atti, TT("atto", "act"), TT("atti", "acts")]]
+      : [[c.audizioni, TT("audizione", "hearing"), TT("audizioni", "hearings")], [c.memorie, TT("memoria", "written submission"), TT("memorie", "written submissions")], [c.interventi, TT("intervento che la nomina", "speech naming it"), TT("interventi che la nominano", "speeches naming it")]];
+    return pezzi.filter(([n]) => n).map(([n, uno, piu]) => `${n >= 1000 ? "1.000+" : B.num(n)} ${n === 1 ? uno : piu}`).join(" · ");
   };
   const togli = () => { const x = document.getElementById("scelta"); if (x) x.remove(); };
   S.togli = togli;
@@ -20,7 +21,7 @@
     if (!ops.length) return;
     const d = r.diretto || {};
     const diretto = d.audizioni || d.memorie || d.interventi
-      ? TT(`${r.soggetto} in Parlamento: ${[d.audizioni && `${d.audizioni} audizioni`, d.memorie && `${d.memorie} memorie`, d.interventi && `${d.interventi} interventi che lo nominano`].filter(Boolean).join(", ")}.`,
+      ? TT(`${r.soggetto} in Parlamento: ${[d.audizioni && `${d.audizioni} ${d.audizioni === 1 ? "audizione" : "audizioni"}`, d.memorie && `${d.memorie} ${d.memorie === 1 ? "memoria" : "memorie"}`, d.interventi && `${d.interventi} ${d.interventi === 1 ? "intervento che lo nomina" : "interventi che lo nominano"}`].filter(Boolean).join(", ")}.`,
         `${r.soggetto} in Parliament: ${[d.audizioni && `${d.audizioni} hearings`, d.memorie && `${d.memorie} submissions`, d.interventi && `${d.interventi} speeches naming it`].filter(Boolean).join(", ")}.`)
       : TT(`${r.soggetto} non è mai nominato in modo pertinente. Ti propongo:`, `${r.soggetto} is never mentioned in a relevant way. I suggest:`);
     const box = document.createElement("div");
