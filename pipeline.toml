@@ -161,6 +161,13 @@ legislatura = 19               # ordine del giorno dell'Aula del Senato: una pag
 pausa_secondi = 3.0
 massimo_richieste = 3
 
+[fonti.senato_stenografici_commissioni]
+legislatura = 19               # stenografici delle commissioni del Senato, in PDF: circa 250 nella legislatura
+primo_anno = 2022
+pausa_secondi = 5.0
+massimo_richieste = 80         # elenchi (10 per notte, 50 al primo giro) più i PDF
+massimo_file_per_giro = 40     # PDF nuovi per notte: il primo caricamento in una settimana
+
 [fonti.senato_aic]
 legislatura = 19               # sindacato ispettivo del Senato, da dati.camera.it (non tocca senato.it)
 pausa_secondi = 0.5

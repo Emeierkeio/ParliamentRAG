@@ -400,9 +400,10 @@ class DocumentiAcquisiti(Parametri):
     act: str | None = Field(None, description="uri dell'atto (da cerca_atti) o riferimento come ac:3120: i documenti depositati su quell'atto")
     author: str | None = Field(None, description="parole del nome di chi ha mandato il documento: «ANIA», «IVASS», «Confindustria»")
     body: str | None = Field(None, description="uri o nome della commissione: «X Commissione» (Camera, numeri romani)")
-    kind: Literal["memoria", "contributo", "allegato", "dossier"] | None = Field(
+    kind: Literal["memoria", "contributo", "allegato", "dossier", "stenografico"] | None = Field(
         None, description="memoria: depositata in un'audizione; contributo: scritto mandato su un atto senza audizione; allegato: "
-                          "del Bollettino; dossier: dei servizi studi. Vuoto: tutti")
+                          "del Bollettino; dossier: dei servizi studi; stenografico: resoconto stenografico di una commissione "
+                          "del Senato (sedi redigente e deliberante, audizioni del Governo, indagini conoscitive). Vuoto: tutti")
     q: str | None = Field(None, description="parole nel titolo, nell'autore o nel nome dell'audizione")
     start: dt.date | None = None
     end: dt.date | None = None

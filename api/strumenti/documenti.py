@@ -1,5 +1,5 @@
 """Documenti depositati in commissione (tabella document): memorie delle audizioni, contributi scritti sugli atti, allegati
-del Bollettino, dossier. Due usi: l'elenco per atto, autore, commissione e date, e la lettura del testo di un documento,
+del Bollettino, dossier, e gli stenografici delle commissioni del Senato (che esistono solo in PDF). Due usi: l'elenco per atto, autore, commissione e date, e la lettura del testo di un documento,
 a pagine. Le memorie e i contributi sono scritti di terzi (associazioni, aziende, autorità): non sono parole di un
 parlamentare, vanno riferiti attribuendoli a chi li ha mandati, con il link al file ufficiale."""
 
@@ -9,7 +9,8 @@ import datetime as dt
 
 import psycopg
 
-TIPI = {"memoria": "memorandum", "contributo": "written_contribution", "allegato": "annex", "dossier": "dossier"}
+TIPI = {"memoria": "memorandum", "contributo": "written_contribution", "allegato": "annex", "dossier": "dossier",
+        "stenografico": "verbatim_record"}
 PAGINA = 11000                          # caratteri di testo per lettura: sta nel taglio che l'agente applica ai risultati
 
 
@@ -55,7 +56,7 @@ def documenti(c: psycopg.Connection, act: str | None = None, author: str | None 
     # elenco stretto, perché una pagina stia nel taglio dell'agente: il titolo solo se non ripete l'autore, l'audizione solo
     # per le memorie (nei contributi è il titolo dell'atto)
     return totale, [_riga({**r, "title": None if (r["title"] or "") == (r["author"] or "") else (r["title"] or "")[:160],
-                           "hearing": (r["hearing"] or "")[:140] if r["kind"] == "memorandum" else None}) for r in righe]
+                           "hearing": (r["hearing"] or "")[:140] if r["kind"] in ("memorandum", "verbatim_record") else None}) for r in righe]
 
 
 def documento(c: psycopg.Connection, uri: str, offset: int = 0) -> dict | None:
@@ -72,4 +73,7 @@ def documento(c: psycopg.Connection, uri: str, offset: int = 0) -> dict | None:
         out["more"] = f"testo parziale: caratteri {offset + 1}-{offset + PAGINA} di {r['chars']}; il seguito con offset={offset + PAGINA}"
     if r["third_party"]:
         out["note_autore"] = "scritto di terzi: riferiscilo attribuendolo all'autore, senza «…», con il link (url)"
+    if r["kind"] == "verbatim_record":
+        out["note_testo"] = ("stenografico di una commissione del Senato, testo estratto dal PDF: gli a capo e gli spazi non sono "
+                             "affidabili, quindi riferisci chi ha detto cosa senza «…» e dai il link al PDF (url)")
     return out

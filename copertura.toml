@@ -146,10 +146,11 @@ area = "Commissioni"
 nome = "Resoconti stenografici: audizioni formali e indagini conoscitive"
 peso = 3
 camera = "fatto"
-senato = "manca"
-perche_senato = "Stanno solo su senato.it, dietro il blocco: con il tetto di richieste per notte servono settimane. In prova un ritmo più lento."
-fonti = ["camera_stenografici_commissioni"]
-conta = "SELECT count(*) FROM sitting WHERE chamber = {ramo} AND kind = 'committee_verbatim'"
+senato = "parziale"
+perche_senato = "Esistono solo in PDF: entrano come documenti da cercare e leggere, non come interventi da citare tra virgolette."
+fonti = ["camera_stenografici_commissioni", "senato_stenografici_commissioni"]
+conta_camera = "SELECT count(*) FROM sitting WHERE chamber = 'camera' AND kind = 'committee_verbatim'"
+conta_senato = "SELECT count(*) FROM document WHERE kind = 'verbatim_record'"
 
 [[voce]]
 area = "Commissioni"

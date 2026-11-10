@@ -12,7 +12,7 @@ from . import documenti, fatti, termini, vettori
 from .carica import postgres
 from .controlli import uscite as controlli_uscite
 from .fonti import eurovoc
-from .fonti import camera_aic, camera_atti, camera_atti_governo, camera_convocazioni, senato_atti_governo, senato_convocazioni, senato_odg, camera_bollettino, camera_calendario, camera_documenti, camera_dossier, camera_emendamenti, camera_governo, camera_ocd, camera_odg, camera_resoconti, camera_stenografici_commissioni, camera_testi, camera_voti, camera_webtv, senato_akn, senato_ddl, senato_esiti, senato_foto, senato_misto, senato_osr, senato_resoconti, senato_voti
+from .fonti import camera_aic, camera_atti, camera_atti_governo, camera_convocazioni, senato_atti_governo, senato_convocazioni, senato_odg, senato_stenografici_commissioni, camera_bollettino, camera_calendario, camera_documenti, camera_dossier, camera_emendamenti, camera_governo, camera_ocd, camera_odg, camera_resoconti, camera_stenografici_commissioni, camera_testi, camera_voti, camera_webtv, senato_akn, senato_ddl, senato_esiti, senato_foto, senato_misto, senato_osr, senato_resoconti, senato_voti
 from .lago import Lago
 from .orchestra import Passo
 from .trasforma import camera_anagrafica, camera_resoconto
@@ -35,6 +35,7 @@ from .trasforma import atti_governo as atti_governo_t
 from .trasforma import convocazioni as convocazioni_t
 from .trasforma import senato_ddl as senato_ddl_t
 from .trasforma import senato_odg as senato_odg_t
+from .trasforma import senato_stenografico_commissione as senato_stenografico_t
 from .trasforma import senato_emendamenti, senato_resoconto, senato_sommario, senato_testi
 from .trasforma import senato_voti as senato_voti_t
 from .trasforma import camera_webtv as camera_webtv_t
@@ -219,6 +220,37 @@ class TrasformaBollettino:
         return _esito(fatti, errori, "comunicati")
 
 
+class TrasformaSchedaEFile:
+    """Per le fonti che danno un documento in due grezzi: la scheda con i dati dell'elenco (`…-scheda`, JSON) e il file
+    (`…-file`). Si trasforma quando arriva o cambia l'uno o l'altro; un documento senza file ancora entra con i soli dati."""
+
+    def __init__(self, fonte: str, funzione, cosa: str = "documenti"):
+        self.fonte, self.funzione, self.cosa = fonte, funzione, cosa
+
+    def __call__(self, ctx) -> dict:
+        fonte = self.fonte
+        lago, uscita = Lago(ctx.cartella), ctx.cartella / "uscite" / "v3" / fonte
+        segno = ctx.cartella / "uscite" / f".{fonte}.ultimo"
+        da = float(segno.read_text()) if segno.exists() else 0.0
+        rifare = DaRifare(ctx.cartella, fonte)
+        inizio, fatti, errori, falliti = time.time(), 0, [], set()
+        cambiati = {re.sub(r"-(scheda|file)$", "", k) for k in _grezzi(lago, fonte, da, rifare) if re.search(r"-(scheda|file)$", k)}
+        for base in sorted(cambiati):
+            scheda, file_ = lago.ultimo(fonte, f"{base}-scheda"), lago.ultimo(fonte, f"{base}-file")
+            if not scheda:
+                continue
+            try:
+                r = self.funzione(lago.leggi(scheda["file"]), lago.leggi(file_["file"]) if file_ else None, {**scheda, "chiave": base})
+                _scrivi_jsonl(uscita / f"{base}.jsonl", r)
+                fatti += 1
+            except Exception as e:
+                errori.append(f"{base}: {e}")
+                falliti.update({f"{base}-scheda", f"{base}-file"})
+        rifare.salva(falliti)
+        segno.write_text(str(inizio))
+        return _esito(fatti, errori, self.cosa) if fatti or errori else {"trasformati": 0}
+
+
 class TrasformaDossier:
     """Scheda e testo di un dossier insieme, con i metadati presi dagli elenchi (data, servizio, nota)."""
 
@@ -335,6 +367,10 @@ PASSI = [
     # ordine del giorno dell'Aula del Senato: la prossima seduta prevista, una pagina per notte
     Passo("scarica_senato_odg", senato_odg.scarica, timeout_minuti=10, tentativi=1),
     Passo("trasforma_senato_odg", Trasforma("senato_odg", senato_odg_t.trasforma, chiavi=r"-senato-odg$"), dopo=["scarica_senato_odg"], timeout_minuti=5),
+    # stenografici delle commissioni del Senato (solo PDF): documenti da cercare, non interventi da citare
+    Passo("scarica_senato_stenografici_commissioni", senato_stenografici_commissioni.scarica, timeout_minuti=40, tentativi=1),
+    Passo("trasforma_senato_stenografici_commissioni", TrasformaSchedaEFile("senato_stenografici_commissioni", senato_stenografico_t.trasforma, "stenografici"),
+          dopo=["scarica_senato_stenografici_commissioni"], timeout_minuti=30),
     Passo("scarica_senato_aic", camera_aic.scarica_senato, timeout_minuti=60, tentativi=2),
     Passo("trasforma_senato_aic", Trasforma("senato_aic", camera_aic_t.trasforma_senato, chiavi=r"-aic-\d{6}$"), dopo=["scarica_senato_aic"], timeout_minuti=20),
     Passo("scarica_senato_resoconti", senato_resoconti.scarica, timeout_minuti=10, tentativi=1),
@@ -366,6 +402,7 @@ PASSI = [
                                                           "trasforma_senato_ddl", "trasforma_senato_aic",
                                                           "trasforma_camera_atti_governo", "trasforma_senato_atti_governo",
                                                           "trasforma_camera_convocazioni", "trasforma_senato_convocazioni", "trasforma_senato_odg",
+                                                          "trasforma_senato_stenografici_commissioni",
                                                           "trasforma_corrispondenze", "trasforma_senato_resoconti",
                                                           "trasforma_senato_emendamenti", "trasforma_senato_sommari",
                                                           "trasforma_senato_testi"], timeout_minuti=30, critico=True),

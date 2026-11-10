@@ -104,6 +104,8 @@ Fatto, tutto per la Camera XIX:
 - emendamenti (dagli XML di documenti.camera.it, riscaricati solo se cambiati) e testi degli atti, articolo per articolo;
 - atti del Governo e proposte di nomina sottoposti a parere (`government_act`, `appointment`; circa 600): fase, e per ogni commissione l'assegnazione con data, termine, norma che chiede il parere e parere espresso (`act_assignment`: `deadline`, `basis`, `opinion`, `opinion_date`). Una pagina sola, una richiesta per notte. Si legano agli argomenti del Bollettino e ai fatti delle commissioni («Atto n. 439» = `ag:439`); l'agenda ne mostra i termini (tipo `pareri`); i titoli entrano nella ricerca per significato (`act_title`).
 
+Senato, stenografici delle commissioni (`senato_stenografici_commissioni`, circa 250): esistono solo in PDF, per le sedi redigente e deliberante, le audizioni del Governo e le indagini conoscitive. Entrano in `document` (`verbatim_record`) con commissione, data, seduta, argomento, ddl e testo estratto: si cercano e si leggono, non si citano tra virgolette (decisione del 10/11/2026). Elenchi dell'anno in corso ogni notte, 40 PDF nuovi per notte, con il browser.
+
 Senato, ordine del giorno dell'Assemblea (`senato_odg`): la prossima seduta prevista con numero, ora, argomenti, ddl e relatori, come `camera_odg`; una pagina per notte con il browser.
 
 Camera e Senato, convocazioni delle commissioni permanenti (`convocation`, una voce per commissione, giorno e blocco orario: ora, sede, aula, argomenti, auditi, atti, sconvocazioni):

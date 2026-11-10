@@ -647,7 +647,7 @@ def script_documenti(righe: list[dict]) -> str:
 
 
 DOC_INTERO = ["uri", "kind", "date", "title", "hearing", "author_raw", "code", "acts", "url", "format", "third_party", "hash", "text",
-              "source", "source_key"]
+              "source", "source_key", "body", "sitting_date"]
 
 
 def script_documento(righe: list[dict]) -> str:
