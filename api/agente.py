@@ -331,6 +331,7 @@ def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dic
             visti.update(re.findall(r"https?://[^\s\"'<>)\]]+", testo))
             voci[-1] = {"role": "user", "content": domanda[:2000] + "\n\n" + ALLEGATO.format(nome=nome_allegato or "testo incollato")
                         + testo[:TAGLIO * 2]}
+        vuota = False
         try:
             for passo in range(PASSI_MAX):
                 ultimo = passo == PASSI_MAX - 1
@@ -350,6 +351,12 @@ def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dic
                 voci.extend(uscita)
                 chiamate = [x for x in uscita if x.get("type") == "function_call"]
                 if not chiamate:
+                    # il modello a volte chiude senza testo (solo i seguiti, o niente): una volta sola gli si chiede di scriverla
+                    if not _testo(uscita)[0].strip() and not vuota and not ultimo:
+                        vuota = True
+                        log.warning("risposta vuota dal modello: riprovo")
+                        voci.append({"role": "user", "content": RISPOSTA_VUOTA})
+                        continue
                     yield from _chiudi(c, uscita, voci, visti, domanda)
                     return
                 for x in chiamate:
@@ -377,15 +384,24 @@ def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dic
             _conta(ip, allegati.DOMANDE if allegato else 1, spesa)
 
 
-def _chiudi(c, uscita: list, voci: list, visti: set[str], domanda: str) -> Iterator[dict]:
+RISPOSTA_VUOTA = ("La tua risposta è arrivata senza testo. Scrivi adesso la risposta per l'utente con quello che hai trovato; se non "
+                  "hai trovato niente, dillo in una frase e indica dove guardare nelle fonti ufficiali.")
+
+
+def _testo(uscita: list) -> tuple[str, list[str]]:
+    """Il testo della risposta senza la riga dei seguiti, e i seguiti."""
     testo = "".join(p.get("text", "") for x in uscita if x.get("type") == "message" for p in x.get("content") or []
                     if p.get("type") == "output_text")
     m = re.search(r"\n?\s*SEGUITI:\s*(.+)\s*$", testo)
     seguiti = [x.strip() for x in m.group(1).split("|") if x.strip()][:3] if m else []
-    testo = testo[: m.start()].rstrip() if m else testo
+    return (testo[: m.start()].rstrip() if m else testo), seguiti
+
+
+def _chiudi(c, uscita: list, voci: list, visti: set[str], domanda: str) -> Iterator[dict]:
+    testo, seguiti = _testo(uscita)
     testo, note = senza_note_di_lavoro(testo)
-    if note and not testo.strip():
-        testo = "Non sono riuscito a chiudere la risposta: prova con una domanda più precisa."
+    if not testo.strip():                               # vuota anche dopo il secondo tentativo, o fatta solo di note di lavoro
+        testo, seguiti = "Non sono riuscito a chiudere la risposta: prova con una domanda più precisa.", []
     testo, tolti = solo_link_visti(testo, visti)
     if tolti:
         yield {"type": "status", "text": f"{tolti} link non verificati tolti"}
