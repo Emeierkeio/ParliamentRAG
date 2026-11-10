@@ -86,7 +86,7 @@
       if (ev.target === box || ev.target.closest(".nov__x")) return chiudi();
       const p = ev.target.closest(".nov__punti button"); if (p) return vai(+p.dataset.k);
       const b = ev.target.closest("[data-nov]"); if (!b) return;
-      if (b.dataset.nov === "news") { ev.preventDefault(); chiudi(); setTimeout(() => { document.getElementById("newsletter")?.scrollIntoView({ block: "center" }); document.getElementById("news-e")?.focus({ preventScroll: true }); }, 260); return; }
+      if (b.dataset.nov === "news") { ev.preventDefault(); chiudi(); setTimeout(() => { location.hash = "#/iscriviti"; }, 260); return; }
       if (b.dataset.nov === "indietro") return vai(i - 1);
       if (i < PASSI.length - 1) return vai(i + 1);
       chiudi();

@@ -84,10 +84,9 @@
       else m.textContent = d.errore || TT("Iscrizione non riuscita, riprova.", "Subscription failed, try again.");
     } catch { m.textContent = TT("Iscrizione non riuscita, riprova.", "Subscription failed, try again."); }
     bt.disabled = false; }); }
-  // /iscriviti (link dei post e dei volantini) arriva qui con #iscriviti: si va al modulo, col cursore nella casella
-  if (location.hash === "#iscriviti") { history.replaceState(null, "", location.pathname + location.search); setTimeout(() => { const n = $("#newsletter"); if (n) { n.scrollIntoView({ block: "center" }); $("#news-e")?.focus({ preventScroll: true }); } }, 400); }
-  // ritorno dal link di conferma della mail
-  if (/[?&]iscritto=1/.test(location.search)) { const m = $("#news-m"); if (m) { m.textContent = TT("Iscrizione confermata. Grazie!", "Subscription confirmed. Thank you!"); setTimeout(() => $("#newsletter")?.scrollIntoView({ block: "center" }), 400); } }
+  // ritorno dal link di conferma della mail: il messaggio sta nel modulo, quindi si apre la vista /iscriviti (su mobile la home mostra solo la chat)
+  if (/[?&]iscritto=1/.test(location.search)) { const m = $("#news-m"); if (m) m.textContent = TT("Iscrizione confermata. Grazie!", "Subscription confirmed. Thank you!");
+    const q = new URLSearchParams(location.search); q.delete("iscritto"); const qs = q.toString(); history.replaceState(null, "", location.pathname + (qs ? `?${qs}` : "") + "#/iscriviti"); }
 
   /* ---------- cronologia ---------- */
   document.addEventListener("click", (ev) => { if (ev.target.closest("#apri-storia")) CH.mostraStoria(); });
@@ -159,6 +158,14 @@
     $("#menu-str").hidden = true; delete document.body.dataset.menu;
     B.$$(".nav [data-nav]").forEach((a) => a.toggleAttribute("aria-current", (p[0] || "home") === a.dataset.nav));
     if (p[0] === "c" && p[1]) { CH.apriCondivisa(p[1]); return; }
+    // /iscriviti (link dei post e dei volantini): il modulo della newsletter. Su mobile la home mostra solo la chat, quindi qui si vede solo il modulo
+    const isc = p[0] === "iscriviti" || h === "#iscriviti";
+    document.body.toggleAttribute("data-iscriviti", isc);
+    if (isc) { delete document.body.dataset.vista; CH.imposta(null); document.title = "ParliamentRAG";
+      const stretto = matchMedia("(max-width:760px)").matches;
+      setTimeout(() => { if (stretto) { window.scrollTo(0, 0); return; } const n = $("#newsletter"); if (n) { n.scrollIntoView({ block: "center" }); $("#news-e")?.focus({ preventScroll: true }); } }, prima === undefined && !rotta.fatta ? 400 : 0);
+      rotta.fatta = true; return; }
+    rotta.fatta = true;
     // ancora di una sezione della home (#strumenti, #metodo…): torna alla home e scorri lì
     if (!h.startsWith("#/") && h.length > 1) { delete document.body.dataset.vista; CH.imposta(null); const s = document.getElementById(h.slice(1)); if (s) requestAnimationFrame(() => vaiSezione(s, false)); return; }
     if (p[0] === "legale") { legale((p[1] || "").split("#")[0] === "termini" ? "termini" : "privacy", (location.hash.split("#")[2] || "")); return; }

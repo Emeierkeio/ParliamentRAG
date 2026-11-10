@@ -1980,3 +1980,17 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
 .pdf-dossier{margin:18px 0 6px}.pdf-dossier .bt{display:inline-flex;align-items:center;gap:8px}.pdf-dossier .ic{width:17px;height:17px}
 .dos-chi>li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center}.dos-chi .foto img{width:40px;height:40px;border-radius:50%;object-fit:cover;display:block}.dos-chi>li>span:last-child{display:grid;gap:2px}
 .pdf-dossier--su{margin:4px 0 18px}
+/* mobile: /iscriviti mostra il modulo della newsletter al posto della chat (il resto della home lì è nascosto) */
+@media (max-width:760px){
+ body[data-iscriviti]:not([data-vista]) #home .eroe{display:none!important}
+ body[data-iscriviti]:not([data-vista]) #home>#newsletter{display:flex!important;min-height:calc(100svh - 57px);padding:24px 16px calc(24px + env(safe-area-inset-bottom))!important}
+ body[data-iscriviti]:not([data-vista]) .indietro-m{display:inline-grid;margin-right:2px}
+ body[data-iscriviti]:not([data-vista]) .compositore{display:none!important}
+ #newsletter .news{gap:24px}
+ #newsletter h2{font-size:34px!important;line-height:1.08;letter-spacing:-.025em;margin-bottom:12px}
+ #newsletter .lead{font-size:17px}
+ #newsletter .news__riga{flex-direction:column;gap:6px;border-radius:18px}
+ #newsletter .news__riga input{font-size:17px;padding:14px 14px;text-align:center}
+ #newsletter .news__riga .bt--primario{width:100%;padding:15px 20px}
+ #newsletter .spunta{font-size:13.5px}
+}
