@@ -2,6 +2,7 @@
    cambiano VERSIONE e PASSI; i dati negli esempi vengono dal database (niente esempi inventati). */
 (function () {
   const VERSIONE = "2026-11-10b";
+  const FINO = new Date("2026-11-11T00:00:00+01:00"); // dopo questa data la card non si apre più da sola
   const CHIAVE = "parliamentrag-novita";
   const e = B.esc;
 
@@ -98,6 +99,6 @@
   window.NOVITA = { apri };
   // solo sulla home, e mai nei controlli automatici
   const home = !location.hash || location.hash === "#/" || location.hash === "#";
-  if (home && !navigator.webdriver && !vista() && !/[?&]novita=0/.test(location.search))
+  if (home && new Date() < FINO && !navigator.webdriver && !vista() && !/[?&]novita=0/.test(location.search))
     setTimeout(apri, 900);
 })();
