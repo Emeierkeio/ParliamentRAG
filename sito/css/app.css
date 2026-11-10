@@ -2000,3 +2000,5 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
  #newsletter .news__riga .bt--primario{width:100%;padding:15px 20px}
  #newsletter .spunta{font-size:13.5px}
 }
+/* la scelta dei temi sta sopra la casella: con una risposta corta il piede è in vista e la casella si nasconderebbe con lei */
+body[data-piede][data-vista]:has(#scelta) .compositore{transform:translate3d(0,0,0)!important}

@@ -420,6 +420,27 @@
       // il dossier chiesto dalla scelta dei temi («Dossier su X, temi: …») va sempre al fascicolo, con le sezioni sui temi scelti
       const scelti = q.match(/^(?:Dossier su|Dossier on) .+?, (?:temi|topics): (.+?)(?:;|\. )/);
       if (scelti) { it.tipo = "tema"; it.contati = true; t.temaDossier = scelti[1]; d = 99; }
+      // un soggetto: prima si chiede su quali temi, poi si risponde (10/11/2026: il fascicolo partiva sul nome e la
+      // scelta dei temi arrivava a risposta già data). Senza proposte la domanda prosegue come un tema qualsiasi
+      if (it.soggetto && window.SCELTA) {
+        t.stato.textContent = TT("Cerco i temi del Parlamento che lo riguardano", "Finding the topics before Parliament that concern it");
+        const r = await fetch("/api/temi", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ soggetto: q.trim() }) }).then((x) => x.json()).catch(() => null);
+        if (r && (r.chiedi_settore || (r.opzioni && r.opzioni.length))) {
+          const nome = r.soggetto || q.trim(), dd = r.diretto || {};
+          const cose = [dd.audizioni && `${dd.audizioni} ${dd.audizioni === 1 ? TT("audizione", "hearing") : TT("audizioni", "hearings")}`, dd.memorie && `${dd.memorie} ${dd.memorie === 1 ? TT("memoria", "written submission") : TT("memorie", "written submissions")}`, dd.interventi && `${dd.interventi} ${dd.interventi === 1 ? TT("intervento che lo nomina", "speech naming it") : TT("interventi che lo nominano", "speeches naming it")}`].filter(Boolean);
+          testo = r.chiedi_settore
+            ? TT(`Di cosa si occupa **${nome}**? Dal nome non si capisce: scegli il settore sopra la casella e ti propongo i temi all'esame del Parlamento che lo riguardano.`, `What does **${nome}** do? The name doesn't say: pick the sector above the box and I'll suggest the topics before Parliament that concern it.`)
+            : (cose.length ? TT(`**${nome}** nei lavori del Parlamento: ${cose.join(", ")}.`, `**${nome}** in Parliament's work: ${cose.join(", ")}.`) : TT(`**${nome}** non è nominato nei lavori del Parlamento.`, `**${nome}** is not named in Parliament's work.`))
+              + " " + TT("Sopra la casella trovi i temi all'esame del Parlamento che lo riguardano: scegli quelli che ti interessano e preparo il dossier.", "Above the box are the topics before Parliament that concern it: pick the ones you care about and I'll build the dossier.");
+          t.senzaModello = true; t.el.querySelector(".sei-passi")?.remove();
+          prosaEl.classList.remove("cursore"); prosaEl.innerHTML = prosa(testo, n);
+          storia.push({ role: "user", content: q }, { role: "assistant", content: testo });
+          chiudi(t, el, n, q);
+          if (r.chiedi_settore) SCELTA.settore(r); else SCELTA.mostra(r);
+          return;
+        }
+        it.soggetto = false;
+      }
       if (!scelti && !seguito && !numerica && (it.tipo === "tema" || it.tipo === "argomento") && !CH.trovaPersona(q)) d = await contaDibattiti(t, q);
       if (!(d >= 3)) {
         // una domanda su una persona mostra subito la sua scheda, mentre l'agente scrive

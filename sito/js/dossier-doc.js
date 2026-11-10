@@ -57,6 +57,24 @@
     .esperto .foto img{width:10mm;height:10mm;border-radius:50%;object-fit:cover;display:block}.esperto>span:nth-child(2){display:grid;flex:1;font-size:9.5pt}
     .esperto .ramo-v,.esperto small{font-size:8pt;color:#666b79}.esperto .sig i{display:inline-block;width:2mm;height:2mm;border-radius:50%;margin-right:1.5mm}
     .esperto .aut{display:grid;text-align:right;font-size:10pt}
+    /* il blocco dei voti: l'Aula, l'esito, i numeri e il voto dei gruppi (10/11/2026: usciva senza stile) */
+    .aula-v{display:grid;grid-template-columns:1.1fr 1fr;gap:6mm;align-items:center;break-inside:avoid}
+    .aula-v>div:last-child{display:grid;gap:3mm;min-width:0}
+    svg.emi{width:100%;height:auto;display:block}
+    .legenda{display:flex;flex-wrap:wrap;gap:1mm 4mm;font-size:8.5pt;color:#666b79;margin-top:2mm}.legenda b{font-weight:400}.legenda span:last-child{display:none}
+    .cap{font-size:13pt;font-weight:600;line-height:1.2;margin:0;letter-spacing:-.015em}
+    .badge{display:inline-block;font-size:8.5pt;font-weight:600;padding:.6mm 2.2mm;border-radius:1.5mm;background:#e9ebf0;color:#3b3f4b}
+    .badge--ok{background:#e6f3ec;color:#1d6b4a}.badge--no{background:#f8e7e3;color:#a52a14}
+    .grandi{display:flex;gap:8mm}.grandi b{display:block;font-size:24pt;line-height:1;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.grandi span{font-size:8.5pt;color:#666b79}
+    .collegati{display:grid;border-top:1px solid #e4e6eb}.colleg{display:block;padding:2mm 0;border-bottom:1px solid #e4e6eb;color:#14161d}
+    .colleg span{display:grid;gap:.4mm}.colleg b{font-size:10pt}.colleg small{font-size:8.5pt;color:#666b79}
+    .gr-voti{display:grid;grid-template-columns:1fr 1fr;gap:0 8mm;margin-top:5mm;padding-top:3mm;border-top:1px solid #e4e6eb}
+    .gr-voti__r{display:grid;grid-template-columns:minmax(0,1fr) 22mm auto;gap:3mm;align-items:center;padding:1.6mm 0;border-bottom:1px solid #e4e6eb;break-inside:avoid}
+    .barra-v{display:flex;height:1.6mm;border-radius:99px;overflow:hidden;background:#e9ebf0}.barra-v span{display:block;height:100%}
+    .gr-voti__n{font-size:9pt;white-space:nowrap;font-variant-numeric:tabular-nums}.gr-voti__n b{font-weight:600;display:inline-block;min-width:6mm;text-align:right}
+    .sig{display:inline-flex;align-items:center;gap:1.5mm;font-size:9.5pt;font-weight:600}.sig i{display:inline-block;width:2.2mm;height:2.2mm;border-radius:.5mm;flex:none}
+    .sel-voti,.nota-r,.carica{display:none}
+    @media screen and (max-width:760px){.aula-v,.gr-voti{grid-template-columns:1fr}}
     @media screen{
       html{background:#e9ebf0}body{padding:72px 16px 48px}
       /* sullo schermo: la copertina su un foglio, poi tutto il resto su un foglio unico, con le sezioni separate da una riga */
@@ -87,7 +105,7 @@
   // l'ordine di chi fa relazioni istituzionali: prima il quadro e cosa scade, poi con chi parlare e le posizioni, poi il
   // dettaglio (emendamenti, atti) e in fondo le verifiche (garanzie, fonti)
   const ORDINE = [["In breve", "At a glance"], ["In arrivo", "Coming up"], ["Chi ci lavora", "Who works on it"],
-    ["Posizioni e risposta", "Positions and answer"], ["Una voce per gruppo", "One voice per group"],
+    ["Posizioni e risposta", "Positions and answer"], ["Una voce per gruppo", "One voice per group"], ["Voti e Aula", "Votes and floor"],
     ["Emendamenti sul tema", "Amendments on the topic"], ["Atti sul tema", "Bills and acts on the topic"],
     ["Le tre garanzie", "The three guarantees"], ["Fonti", "Sources"]];
   const posto = (t) => { const k = ORDINE.findIndex((x) => x.includes(String(t).trim())); return k < 0 ? 5.5 : k; };

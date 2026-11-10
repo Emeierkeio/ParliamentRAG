@@ -90,9 +90,9 @@
       const temi = scelti.filter((o) => o.tipo === "tema").map((o) => o.nome).concat(altro ? [altro] : []);
       const ass = scelti.filter((o) => o.tipo === "associazione").map((o) => o.nome);
       togli();
-      const q = b.dataset.scelta === "salta" || (!temi.length && !ass.length)
-        ? TT(`Cosa c'è in Parlamento su ${r.soggetto} in sé: interventi che lo nominano, audizioni, memorie, atti?`, `What does Parliament have on ${r.soggetto} itself: speeches naming it, hearings, submissions, acts?`)
-        : TT(`Dossier su ${r.soggetto}${temi.length ? `, temi: ${temi.join(", ")}` : ""}${ass.length ? `; associazioni: ${ass.join(", ")}` : ""}. Per ogni tema le posizioni dei gruppi, gli emendamenti presentati e com'è finita, i voti e le scadenze; per le associazioni le audizioni e le memorie.`,
+      // «Salta» chiude e basta: quello che c'è sul soggetto in sé è già scritto nella risposta
+      if (b.dataset.scelta === "salta" || (!temi.length && !ass.length)) return;
+      const q = TT(`Dossier su ${r.soggetto}${temi.length ? `, temi: ${temi.join(", ")}` : ""}${ass.length ? `; associazioni: ${ass.join(", ")}` : ""}. Per ogni tema le posizioni dei gruppi, gli emendamenti presentati e com'è finita, i voti e le scadenze; per le associazioni le audizioni e le memorie.`,
           `Dossier on ${r.soggetto}${temi.length ? `, topics: ${temi.join(", ")}` : ""}${ass.length ? `; associations: ${ass.join(", ")}` : ""}. For each topic the groups' positions, the amendments tabled and how they ended, votes and deadlines; for associations their hearings and submissions.`);
       CH.chiedi(q);
     });
