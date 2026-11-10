@@ -79,6 +79,10 @@ primo_mese = 202210
 pausa_secondi = 1.0
 massimo_giorni_per_giro = 60  # ordini del giorno passati per notte (circa 740 in tutto); i futuri si leggono sempre
 
+[fonti.camera_calendario]
+legislatura = 19
+pausa_secondi = 2.0           # due richieste per notte: la pagina del calendario e il calendario vigente
+
 [fonti.camera_documenti]
 legislatura = 19
 pausa_secondi = 1.0

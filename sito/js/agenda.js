@@ -67,7 +67,7 @@
     if (on("termini")) g.termini.forEach((t) => xs.push({ tipo: "termini", ora: t.due_time, x: t, off: t.superseded,
       titolo: `${TT("Termine", "Deadline")} ${atto(t) || TIPO_T[t.kind] || ""}` }));
     if (on("aula")) g.aula.forEach((s) => xs.push({ tipo: "aula", ora: s.start_time, x: s,
-      titolo: `${TT("Aula", "Floor")} ${ramo(s.chamber)}${s.status === "planned" ? ` · ${TT("prevista", "planned")}` : ""}` }));
+      titolo: `${TT("Aula", "Floor")} ${ramo(s.chamber)}${s.status === "planned" ? ` · ${TT("prevista", "planned")}` : s.status === "calendar" ? ` · ${TT("in calendario", "on the calendar")}` : ""}` }));
     if (on("voti")) g.voti.forEach((v) => xs.push({ tipo: "voti", x: v, esito: v.approved ? "ok" : "no", titolo: `${TT("Voto finale", "Final vote")}: ${pulito(v.act_title || v.title)}` }));
     if (on("leggi")) g.leggi.forEach((l) => xs.push({ tipo: "leggi", x: l, titolo: `${TT("Legge", "Law")} ${l.law_number ? `n. ${l.law_number}` : ""} · ${pulito(l.title)}` }));
     if (on("atti")) xs.push({ tipo: "atti", x: g.atti, titolo: `${g.atti.length} ${g.atti.length === 1 ? TT("progetto di legge", "bill") : TT("progetti di legge", "bills")}` });
@@ -92,6 +92,14 @@
     }
     if (ev.tipo === "aula") {
       const temi = merito(x.items);
+      // un giorno del calendario dei lavori dell'Assemblea: non ha ancora numero di seduta né ordine del giorno
+      if (x.status === "calendar") return `<p class="ag-d__tipo ag-t--aula">${TT("Aula", "Floor")} ${ramo(x.chamber)} <span class="ag-pill">${TT("in calendario", "on the calendar")}</span></p>
+        <h3>${e(giornoLungo(x.date))}</h3>
+        ${(x.schedule || []).length ? `<p class="ag-nota">${x.schedule.map((q) => e(q)).join("<br>")}</p>` : ""}
+        <ul class="ag-d__lista">${(x.items || []).map((t) => `<li>${e(B.taglia(t, 260))}</li>`).join("")}</ul>
+        ${x.items_total > (x.items || []).length ? `<p class="ag-nota">${TT("e altri argomenti", "and more items")}</p>` : ""}
+        <p class="ag-nota">${TT("Dal calendario dei lavori dell'Assemblea", "From the Assembly's calendar of works")}${x.calendar ? ` (${e(x.calendar)})` : ""}${x.updated ? `. ${e(x.updated)}` : ""} ${TT("Può cambiare: l'ordine del giorno arriva per la seduta successiva.", "It can change: the order of business is published for the next sitting.")}</p>
+        <a class="bt bt--linea ag-d__vai" href="https://www.camera.it/leg19/76?active_tab_3806=4184" target="_blank" rel="noopener">${B.ico("esterno")}${TT("Calendario sul sito della Camera", "Calendar on the Chamber's website")}</a>`;
       return `<p class="ag-d__tipo ag-t--aula">${TT("Aula", "Floor")} ${ramo(x.chamber)} · ${TT("seduta", "sitting")} ${x.number}${x.status === "planned" ? ` <span class="ag-pill">${TT("prevista", "planned")}</span>` : ""}</p>
         <h3>${x.start_time ? `${TT("Ore", "At")} ${e(x.start_time)}` : e(giornoLungo(x.date))}${x.votes ? ` · ${x.votes} ${TT("votazioni", "votes")}` : ""}</h3>
         ${temi.length ? `<ul class="ag-d__lista">${temi.map((t) => `<li>${e(B.taglia(t, 220))}</li>`).join("")}</ul>` : `<p class="ag-nota">${TT("Comunicazioni e adempimenti", "Announcements and formalities")}</p>`}

@@ -74,6 +74,13 @@ def _regole(righe: list[dict]) -> list[str]:
         if not any(n["label"] == "AgendaItem" for n in nodi):
             errori.append("ordine del giorno senza argomenti")
         return errori
+    if ambito.get("kind") == "calendario":
+        voci = [n for n in nodi if n["label"] == "CalendarItem"]
+        if len(voci) < 3:
+            errori.append(f"calendario dei lavori con {len(voci)} voci: la pagina è cambiata o è vuota")
+        if any(not n.get("date") or not n.get("title") for n in voci):
+            errori.append("voce del calendario senza data o senza testo")
+        return errori
     if ambito.get("kind") == "video":
         return errori + _regole_video(nodi, [r for r in righe if r["tipo"] == "arco"])
     if ambito.get("kind") == "aic":

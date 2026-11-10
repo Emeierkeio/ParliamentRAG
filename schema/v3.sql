@@ -48,6 +48,25 @@ CREATE TABLE IF NOT EXISTS agenda_item_act (      -- ABOUT: atti discussi, per o
   PRIMARY KEY (item, act_ref)
 );
 
+-- calendario dei lavori dell'Assemblea (camera_calendario): cosa è previsto in Aula, giorno per giorno. Non sono sedute
+-- (niente numero, niente resoconto): la seduta prevista arriva con l'ordine del giorno, quella tenuta con il resoconto.
+-- Si sostituisce per intero a ogni aggiornamento del calendario.
+CREATE TABLE IF NOT EXISTS calendar_item (
+  uri text PRIMARY KEY,
+  chamber text NOT NULL,
+  date date NOT NULL,
+  ord int NOT NULL,
+  when_text text,                     -- giorni e orari come li scrive il calendario («Mercoledì 11 novembre (ore 12)»)
+  title text NOT NULL,
+  acts text[],                        -- riferimenti agli atti (ac:3121, aic:1-00610)
+  calendar text,                      -- «Calendario n. 44»
+  updated text,                       -- «Aggiornato alle sedute del 6 e del 9 novembre 2026.»
+  source text NOT NULL,
+  source_key text,
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS calendar_item_date ON calendar_item (chamber, date);
+
 CREATE TABLE IF NOT EXISTS person (                -- una persona per tutte le legislature; segnaposto (stub) finché l'anagrafica non la completa
   uri text PRIMARY KEY,
   stub boolean NOT NULL DEFAULT true,

@@ -551,6 +551,20 @@ def script_odg(righe: list[dict]) -> str:
     return "\n".join(parti) + "\n"
 
 
+def script_calendario(righe: list[dict]) -> str:
+    """Il calendario dei lavori di un ramo: sostituisce per intero quello di prima (le voci cambiano a ogni aggiornamento)."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    voci = [r for r in righe if r["tipo"] == "nodo" and r["label"] == "CalendarItem"]
+    if not voci:
+        return ""
+    col = ["uri", "chamber", "date", "ord", "when_text", "title", "acts", "calendar", "updated", "source", "source_key"]
+    dati = [[v["uri"], v["chamber"], v["date"], v["order"], v.get("when"), v["title"],
+             "{" + ",".join('"' + a.replace('"', "") + '"' for a in v.get("acts") or []) + "}", v.get("calendar"), v.get("updated"),
+             amb["source"], amb.get("source_key")] for v in voci]
+    return "\n".join(["BEGIN;", f"DELETE FROM calendar_item WHERE chamber = {_lit(amb['chamber'])} AND source = {_lit(amb['source'])};",
+                      f"COPY calendar_item ({', '.join(col)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(dati)}\\.", "COMMIT;"]) + "\n"
+
+
 DOC_META = ["uri", "kind", "date", "body_code", "body", "title", "author_raw", "hearing", "sitting_date", "acts", "url", "format",
             "third_party", "hash", "source", "source_key"]
 
@@ -693,7 +707,7 @@ SCRIPT = {"anagrafica": (script_anagrafica, "anagrafiche_e_atti"), "voti": (scri
           "commissione": (script_commissione, "sedute"), "testo_atto": (script_testo_atto, "sedute"),
           "emendamenti": (script_emendamenti, "sedute"), "dossier": (script_documento, "sedute"),
           "documenti_elenco": (script_documenti, "sedute"), "documento_testo": (script_documenti, "sedute"),
-          "odg": (script_odg, "sedute"), "video": (script_video, "sedute"), "aic": (script_aic, "anagrafiche_e_atti"),
+          "odg": (script_odg, "sedute"), "calendario": (script_calendario, "sedute"), "video": (script_video, "sedute"), "aic": (script_aic, "anagrafiche_e_atti"),
           "corrispondenze": (script_corrispondenze, "anagrafiche_e_atti"), "governo": (script_governo, "anagrafiche_e_atti"),
           "concetti": (script_concetti, "anagrafiche_e_atti"), "atti": (script_atti, "anagrafiche_e_atti")}
 

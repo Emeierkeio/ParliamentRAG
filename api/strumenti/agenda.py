@@ -1,4 +1,5 @@
-"""L'agenda del Parlamento, giorno per giorno: sedute d'Aula (previste e tenute), sedute di commissione, termini per gli
+"""L'agenda del Parlamento, giorno per giorno: sedute d'Aula (previste e tenute, e i giorni del calendario dei lavori
+che non hanno ancora una seduta: status «calendar»), sedute di commissione, termini per gli
 emendamenti, progetti di legge presentati, votazioni finali e leggi pubblicate. La usano la chat (strumento `agenda`),
 il server MCP pubblico (get_parliament_agenda) e la pagina Agenda del sito.
 
@@ -9,6 +10,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import re
 from collections import defaultdict
 
 import psycopg
@@ -69,6 +71,23 @@ def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | N
             FROM sitting s WHERE s.body LIKE '%%:aula' AND s.date BETWEEN %(s)s AND %(e)s AND (%(r)s::text IS NULL OR s.chamber = %(r)s)
             ORDER BY s.date, s.chamber, s.number""", p):
             giorni[r["date"].isoformat()]["aula"].append({**r, "items": (r["items"] or [])[:8], "items_total": len(r["items"] or [])})
+        # il calendario dei lavori dell'Assemblea: per i giorni da oggi in poi che non hanno ancora una seduta (né
+        # l'ordine del giorno né il resoconto), quello che il calendario prevede
+        if _c_e_il_calendario(c):
+            con_seduta = {(g, x["chamber"]) for g, ev in giorni.items() for x in ev.get("aula", [])}
+            per_giorno: dict[tuple, list] = defaultdict(list)
+            for r in c.execute("""SELECT chamber, date, when_text, title, acts, calendar, updated FROM calendar_item
+                                  WHERE date BETWEEN %(s)s AND %(e)s AND date >= current_date AND (%(r)s::text IS NULL OR chamber = %(r)s)
+                                  ORDER BY date, chamber, ord""", p):
+                per_giorno[(r["date"].isoformat(), r["chamber"])].append(r)
+            for (g, ramo), voci in per_giorno.items():
+                if (g, ramo) in con_seduta:
+                    continue
+                quando = list(dict.fromkeys(v["when_text"] for v in voci if v["when_text"]))
+                giorni[g]["aula"].append({
+                    "uri": None, "chamber": ramo, "number": None, "date": g, "status": "calendar", "start_time": _ora(quando[0]) if quando else None,
+                    "record_url": None, "items": [v["title"] for v in voci][:8], "items_total": len(voci), "votes": 0, "schedule": quando[:4],
+                    "acts": sorted({a for v in voci for a in (v["acts"] or [])}), "calendar": voci[0]["calendar"], "updated": voci[0]["updated"]})
     if "commissioni" in tipi:
         for r in c.execute("""
             SELECT s.date, s.chamber, s.body, coalesce(nullif(trim(s.body_name), ''), b.name) AS body_name, count(*) AS sittings,
@@ -112,6 +131,17 @@ def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | N
 NOMI_RAMO = {"camera": "Camera", "senato": "Senato"}
 
 
+def _c_e_il_calendario(c: psycopg.Connection) -> bool:
+    """La tabella nasce con il primo giro dopo il rilascio: fino ad allora l'agenda resta com'era."""
+    return bool(c.execute("SELECT to_regclass('calendar_item') IS NOT NULL AS c").fetchone()["c"])
+
+
+def _ora(t: str) -> str | None:
+    """L'ora d'inizio in un'indicazione del calendario: «(ore 12)», «(ore 9,30-13,30 …)», «(16,15-20, …)»."""
+    m = re.search(r"\(\s*(?:ore\s+)?(\d{1,2})(?:[,.](\d{2}))?", t, re.I)
+    return f"{int(m.group(1)):02d}:{m.group(2) or '00'}" if m and int(m.group(1)) < 24 else None
+
+
 def _copertura(c: psycopg.Connection, fine: dt.date, ramo: str | None) -> dict:
     """Fin dove arrivano nei dati le sedute d'Aula di ogni ramo. Delle sedute future c'è solo l'ordine del giorno già
     pubblicato (di solito la seduta successiva), non il calendario dei lavori: oltre quella data un giorno senza
@@ -119,15 +149,17 @@ def _copertura(c: psycopg.Connection, fine: dt.date, ramo: str | None) -> dict:
     righe = {r["chamber"]: r for r in c.execute("""
         SELECT chamber, max(date) FILTER (WHERE status = 'held') AS tenuta, max(date) FILTER (WHERE status <> 'held') AS prevista
         FROM sitting WHERE body LIKE '%%:aula' GROUP BY 1""")}
+    calendario = ({r["chamber"]: r["fino"] for r in c.execute("SELECT chamber, max(date) AS fino FROM calendar_item GROUP BY 1")}
+                  if _c_e_il_calendario(c) else {})
     out, scoperti = {}, []
     for r in ([ramo] if ramo else ["camera", "senato"]):
         x = righe.get(r) or {"tenuta": None, "prevista": None}
-        fino = max([d for d in (x["tenuta"], x["prevista"]) if d], default=None)
-        out[r] = {"last_held": x["tenuta"], "last_planned": x["prevista"], "known_until": fino}
+        fino = max([d for d in (x["tenuta"], x["prevista"], calendario.get(r)) if d], default=None)
+        out[r] = {"last_held": x["tenuta"], "last_planned": x["prevista"], "calendar_until": calendario.get(r), "known_until": fino}
         if fino is None or fine > fino:
             scoperti.append(f"{NOMI_RAMO[r]} dopo il {fino.strftime('%d/%m/%Y')}" if fino else NOMI_RAMO[r])
     if scoperti:
-        out["note"] = ("Sedute d'Aula non ancora nei dati: " + "; ".join(scoperti) + ". Dei giorni futuri i dati hanno solo l'ordine del "
-                       "giorno già pubblicato, non il calendario dei lavori: per quei giorni non dire che l'Aula non si riunisce, di' che "
+        out["note"] = ("Sedute d'Aula non ancora nei dati: " + "; ".join(scoperti) + ". Dei giorni futuri i dati hanno l'ordine del giorno "
+                       "già pubblicato e, dove c'è (calendar_until), il calendario dei lavori dell'Assemblea: oltre quelle date non dire che l'Aula non si riunisce, di' che "
                        "il calendario non è ancora nei dati e rimanda a www.camera.it e www.senato.it.")
     return out

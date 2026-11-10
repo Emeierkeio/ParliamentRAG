@@ -12,7 +12,7 @@ from . import documenti, fatti, termini, vettori
 from .carica import postgres
 from .controlli import uscite as controlli_uscite
 from .fonti import eurovoc
-from .fonti import camera_aic, camera_atti, camera_bollettino, camera_documenti, camera_dossier, camera_emendamenti, camera_governo, camera_ocd, camera_odg, camera_resoconti, camera_stenografici_commissioni, camera_testi, camera_voti, camera_webtv, senato_akn, senato_ddl, senato_esiti, senato_foto, senato_misto, senato_osr, senato_resoconti, senato_voti
+from .fonti import camera_aic, camera_atti, camera_bollettino, camera_calendario, camera_documenti, camera_dossier, camera_emendamenti, camera_governo, camera_ocd, camera_odg, camera_resoconti, camera_stenografici_commissioni, camera_testi, camera_voti, camera_webtv, senato_akn, senato_ddl, senato_esiti, senato_foto, senato_misto, senato_osr, senato_resoconti, senato_voti
 from .lago import Lago
 from .orchestra import Passo
 from .trasforma import camera_anagrafica, camera_resoconto
@@ -25,6 +25,7 @@ from .trasforma import camera_documenti as camera_documenti_t
 from .trasforma import camera_dossier as camera_dossier_t
 from .trasforma import camera_emendamenti as camera_emendamenti_t
 from .trasforma import camera_odg as camera_odg_t
+from .trasforma import camera_calendario as camera_calendario_t
 from .trasforma import camera_stenografico_commissione
 from .trasforma import camera_testi as camera_testi_t
 from .trasforma import corrispondenze, senato_anagrafica
@@ -285,6 +286,8 @@ PASSI = [
     Passo("trasforma_camera_webtv", Trasforma("camera_webtv", camera_webtv_t.trasforma, chiavi=r"-webtv-evento-"), dopo=["scarica_camera_webtv"], timeout_minuti=15),
     Passo("scarica_camera_odg", camera_odg.scarica, timeout_minuti=30, tentativi=2),
     Passo("trasforma_camera_odg", Trasforma("camera_odg", camera_odg_t.trasforma, chiavi=r"-odg-\d{8}$"), dopo=["scarica_camera_odg"], timeout_minuti=10),
+    Passo("scarica_camera_calendario", camera_calendario.scarica, timeout_minuti=5, tentativi=2),
+    Passo("trasforma_camera_calendario", Trasforma("camera_calendario", camera_calendario_t.trasforma, chiavi=r"-calendario-vigente$"), dopo=["scarica_camera_calendario"], timeout_minuti=5),
     Passo("scarica_camera_documenti", camera_documenti.scarica, timeout_minuti=60, tentativi=1),
     Passo("trasforma_camera_documenti_elenchi", Trasforma("camera_documenti", camera_documenti_t.trasforma_elenco, chiavi=r"-doc-elenco-",
                                                           segno="camera_documenti_elenchi"), dopo=["scarica_camera_documenti"], timeout_minuti=10),
@@ -331,7 +334,7 @@ PASSI = [
     Passo("controlla_uscite", controlli_uscite.controlla, dopo_comunque=["trasforma_eurovoc", "trasforma_camera_resoconti", "trasforma_camera_ocd", "trasforma_camera_governo", "trasforma_camera_atti", "trasforma_camera_voti",
                                                           "trasforma_camera_bollettino", "trasforma_camera_stenografici_commissioni",
                                                           "trasforma_camera_aic", "trasforma_camera_webtv",
-                                                          "trasforma_camera_odg", "trasforma_camera_documenti_elenchi",
+                                                          "trasforma_camera_odg", "trasforma_camera_calendario", "trasforma_camera_documenti_elenchi",
                                                           "trasforma_camera_documenti_testi", "trasforma_camera_dossier",
                                                           "trasforma_camera_emendamenti", "trasforma_camera_testi",
                                                           "trasforma_senato_osr", "trasforma_senato_voti",

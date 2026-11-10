@@ -309,7 +309,7 @@ class ParliamentAgenda(Parametri):
     start_date: str = Field(description="First day, YYYY-MM-DD.")
     end_date: str | None = Field(None, description="Last day, YYYY-MM-DD (at most 62 days after start_date); default: start_date.")
     chamber: str = Field("both", description='"both" (default), "camera" or "senato".')
-    types: list[str] | None = Field(None, description='Which events (default all): "aula" (plenary sittings, planned and held), '
+    types: list[str] | None = Field(None, description='Which events (default all): "aula" (plenary sittings, planned and held; a day with status "calendar" comes from the Chamber's calendar of works and has no sitting number yet), '
                                     '"commissioni" (committee sittings), "termini" (amendment deadlines), "atti" (bills filed), '
                                     '"voti" (final votes), "leggi" (laws published).')
 
@@ -839,7 +839,8 @@ def get_parliament_agenda(c: psycopg.Connection, p: ParliamentAgenda) -> dict:
     fuori = agenda.agenda(c, inizio, _data(p.end_date) or inizio, _ramo(p.chamber), p.types)
     for giorno in fuori["days"].values():         # gli id che get_session_votes e get_vote_details accettano
         for x in giorno.get("aula", []):
-            x["session_id"] = id_vecchio(x["uri"])
+            if x.get("uri"):                          # un giorno del calendario dei lavori non è ancora una seduta
+                x["session_id"] = id_vecchio(x["uri"])
         for x in giorno.get("voti", []):
             x["vote_id"] = id_vecchio(x["uri"])
     return fuori
