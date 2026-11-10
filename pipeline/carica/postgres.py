@@ -755,7 +755,8 @@ def _legami() -> None:
     # dopo voti e atti: gli id dei gruppi nei voti, gli ordini del giorno votati e le votazioni su emendamenti e articoli
     # (schema/v3.sql); poi le reazioni
     # ancora senza chi reagisce, se sono arrivati gruppi o persone nuovi
-    psql("SELECT lega_gruppi_voti();\nSELECT lega_odg_voti(l), lega_voti_seguito(l) FROM (SELECT DISTINCT legislature AS l FROM vote WHERE chamber = 'camera') x;", timeout=3600)
+    psql("SELECT lega_gruppi_voti();\nSELECT lega_odg_voti(l), lega_voti_seguito(l) FROM (SELECT DISTINCT legislature AS l FROM vote WHERE chamber = 'camera') x;\n"
+         "SELECT lega_voti_titolo_senato(l) FROM (SELECT DISTINCT legislature AS l FROM vote WHERE chamber = 'senato') y;", timeout=3600)
     psql("SELECT lega_reazioni('it:');", timeout=3600)
 
 

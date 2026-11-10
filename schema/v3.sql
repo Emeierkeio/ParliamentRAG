@@ -677,6 +677,20 @@ CREATE OR REPLACE FUNCTION lega_odg_voti(leg int) RETURNS void LANGUAGE sql AS $
   UPDATE vote_act v SET act = u.uri FROM unici u WHERE v.vote = u.vote AND v.act_ref = u.act_ref;
 $$;
 
+-- votazioni del Senato senza l'atto nella fonte: le questioni di fiducia e alcuni voti finali lo scrivono solo nel titolo
+-- («Disegno di legge n.1933. Votazione questione di fiducia.», «DDL n. 1037. Articolo 3»). Si legano all'atto con quel
+-- numero, se c'è (10/11/2026: la fiducia sul salario giusto del 24/6 non risultava fra i voti di S. 1933)
+CREATE OR REPLACE FUNCTION lega_voti_titolo_senato(leg int) RETURNS void LANGUAGE sql AS $$
+  INSERT INTO vote_act (vote, act_ref, act)
+  SELECT v.uri, 'ddl:' || m.n, a.uri
+  FROM vote v
+  CROSS JOIN LATERAL (SELECT (regexp_match(v.title, '(?:disegno di legge|ddl) n\.\s*(\d+(?:-[A-Za-z]+)?)', 'i'))[1] AS n) m
+  JOIN act a ON a.uri = 'it:senato:' || leg || ':ddl:' || m.n
+  WHERE v.chamber = 'senato' AND v.legislature = leg AND m.n IS NOT NULL
+    AND NOT EXISTS (SELECT 1 FROM vote_act x WHERE x.vote = v.uri)
+  ON CONFLICT DO NOTHING;
+$$;
+
 -- votazioni d'Aula della Camera su emendamenti e articoli («EM 1.2», «ART AGG 9.01», «ARTICOLO 3»): la descrizione non
 -- nomina il progetto di legge. Si lega 1) se l'emendamento con quel numero sta nel fascicolo di quella seduta per un atto
 -- solo; 2) altrimenti se la votazione segue, senza altre votazioni in mezzo, quella che apre il blocco nominando l'atto
