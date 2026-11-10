@@ -38,7 +38,7 @@ def sezioni(c: psycopg.Connection, tema: str) -> dict:
         gruppi[g]["presentati"] += 1
         gruppi[g]["approvati"] += x["esito"] in ("approvato", "approvato_riformulato")
         if primo["persona"]:
-            p = persone.setdefault(primo["persona"], {"nome": primo["nome"], "gruppo": g, "presentati": 0, "approvati": 0})
+            p = persone.setdefault(primo["persona"], {"persona": primo["persona"], "nome": primo["nome"], "gruppo": g, "presentati": 0, "approvati": 0})
             p["presentati"] += 1
             p["approvati"] += x["esito"] in ("approvato", "approvato_riformulato")
     atti = significato.cerca(c, tema, ["atti"], quanti=8)["risultati"]

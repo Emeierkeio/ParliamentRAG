@@ -41,6 +41,7 @@
     .fonti{list-style:none;padding:0;margin:0}.fonti li{display:grid;grid-template-columns:7mm 1fr;gap:1mm 2mm;padding:2mm 0;border-bottom:1px solid #e4e6eb;break-inside:avoid}
     .fonti .n{font-weight:600;color:#666b79}.fonti li>span:last-child{display:flex;flex-wrap:wrap;gap:0 2mm;align-items:baseline}.fonti small{flex-basis:100%;font-size:9pt;color:#666b79}
     .fonte-g{color:#3b3f4b}
+    .dos-chi>li{grid-template-columns:9mm 1fr!important;align-items:center;column-gap:3mm}.dos-chi .foto img{width:9mm;height:9mm;border-radius:50%;object-fit:cover;display:block}.dos-chi>li>span:last-child{display:grid;gap:.5mm}
     .g2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3mm}
     .g2__c{display:grid;grid-template-columns:7mm 1fr;gap:3mm;padding:4mm;border:1px solid #e4e6eb;border-radius:3mm;background:#f6f7f9;break-inside:avoid}
     .g2__ico{width:7mm;height:7mm;border-radius:50%;display:grid;place-items:center}.g2__ico svg{width:3.8mm;height:3.8mm}
@@ -83,8 +84,15 @@
     const t = String(x.html || "").replace(/<h3[\s\S]*?<\/h3>/i, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
     return t.length > 30 && !/^(nessun|no )/i.test(t);
   };
+  // l'ordine di chi fa relazioni istituzionali: prima il quadro e cosa scade, poi con chi parlare e le posizioni, poi il
+  // dettaglio (emendamenti, atti) e in fondo le verifiche (garanzie, fonti)
+  const ORDINE = [["In breve", "At a glance"], ["In arrivo", "Coming up"], ["Chi ci lavora", "Who works on it"],
+    ["Posizioni e risposta", "Positions and answer"], ["Una voce per gruppo", "One voice per group"],
+    ["Emendamenti sul tema", "Amendments on the topic"], ["Atti sul tema", "Bills and acts on the topic"],
+    ["Le tre garanzie", "The three guarantees"], ["Fonti", "Sources"]];
+  const posto = (t) => { const k = ORDINE.findIndex((x) => x.includes(String(t).trim())); return k < 0 ? 5.5 : k; };
   window.DOSSIER_DOC = (d, stampa) => {
-    const en = d.lingua === "en", TT = (it, eng) => (en ? eng : it), e = esc, titolo = d.titolo || "Dossier", temi = d.temi || "", sezioni = (d.sezioni || []).filter(piena);
+    const en = d.lingua === "en", TT = (it, eng) => (en ? eng : it), e = esc, titolo = d.titolo || "Dossier", temi = d.temi || "", sezioni = (d.sezioni || []).filter(piena).sort((x, y) => posto(x.titolo) - posto(y.titolo));
     const oggi = new Date(d.data || Date.now()).toLocaleDateString(en ? "en-GB" : "it-IT", { day: "numeric", month: "long", year: "numeric" });
     const barra = d.link ? `<div class="barra"><a class="marchio" href="/">${LOGO}<span>ParliamentRAG</span></a>
       <button type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText('${e(d.link)}');this.textContent='${TT("Link copiato", "Link copied")}'">${TT("Copia il link", "Copy link")}</button>
@@ -94,7 +102,7 @@
       <section class="copertina">${AULA}<div><div class="marchio">${LOGO}ParliamentRAG</div><span class="tag">${TT("Dossier", "Dossier")}</span><h1${titolo.length > 60 ? ' class="lungo"' : ""}>${e(titolo)}</h1>${temi ? `<p class="temi">${e(temi)}</p>` : ""}<p class="sotto">${TT(`Dati ufficiali di Camera e Senato, XIX legislatura, aggiornati al ${oggi}. Ogni citazione è copiata dal resoconto e ha il link alla seduta.`, `Official data of the Italian Chamber and Senate, 19th legislature, as of ${oggi}. Every quote is copied from the record and links to the sitting.`)}</p></div>
         <div class="contatti">${PARTNER}<b>ParliamentRAG</b><span>${TT("Progetto di ricerca dell'Università di Milano-Bicocca. Non è un servizio ufficiale del Parlamento.", "Research project of the University of Milano-Bicocca. Not an official service of Parliament.")}</span><span>www.parliamentrag.it · contatti@parliamentrag.it</span></div></section>
       <section class="indice"><h2>${TT("Indice", "Contents")}</h2><ol>${sezioni.map((s) => `<li>${e(s.titolo)}</li>`).join("")}<li>${TT("Metodo e fonti", "Method and sources")}</li></ol></section>
-      ${sezioni.map((s) => `<section class="sez"><h2>${e(s.titolo)}</h2>${s.html.replace(/ loading="lazy"/g, "")}</section>`).join("")}
+      ${sezioni.map((s) => `<section class="sez"><h2>${e(s.titolo)}</h2>${s.html.replace(/ loading="lazy"/g, "").replace(/href="#\//g, `href="${location.origin}/#/`)}</section>`).join("")}
       <section class="metodo"><h2>${TT("Metodo e fonti", "Method and sources")}</h2>
         <p>${TT("ParliamentRAG organizza i dati del Parlamento per un accesso facile e verificabile. Le risposte rispettano tre garanzie, controllate da un programma prima di mostrarle: tutti i gruppi sono considerati (il Gruppo Misto per componente); per ogni gruppo parla chi segue il tema, secondo criteri pubblici; ogni citazione è copiata parola per parola dal resoconto.", "ParliamentRAG organises the data of the Italian Parliament for easy and verifiable access. Answers meet three guarantees, checked by a program before they are shown: every group is considered (the Mixed Group by component); for each group the member who follows the topic speaks, by public criteria; every quote is copied word for word from the record.")}</p>
         <p>${TT("Fonti: dati.camera.it, dati.senato.it, resoconti stenografici e sommari delle commissioni, schede degli atti. Gli esiti degli emendamenti vengono dai file di Camera e Senato, dai voti elettronici dell'Aula o dalla regola della fiducia; «non pubblicato» vuol dire che nessuna fonte lo dice. Un modello di AI scrive il testo e può sbagliare: fanno fede le fonti linkate.", "Sources: dati.camera.it, dati.senato.it, verbatim records and committee summaries, bill pages. Amendment outcomes come from the Chamber and Senate files, the floor's electronic votes or the confidence-vote rule; «not published» means no source states it. An AI model writes the text and can be wrong: the linked sources prevail.")}</p>
