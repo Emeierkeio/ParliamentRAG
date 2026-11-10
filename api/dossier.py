@@ -63,9 +63,14 @@ def sezioni(c: psycopg.Connection, tema: str) -> dict:
     for a in audizioni:
         ultima_aud.setdefault(a["atto"], a)
     righe = c.execute("""SELECT uri, chamber, number, title, status, status_date, law_number, law_date, card_url, date
-                         FROM act WHERE uri = ANY(%s)""", (uris,)).fetchall()
+                         FROM act WHERE uri = ANY(%s) AND kind = 'bill'""", (uris,)).fetchall()
     # titoli come «C. 2750 S. 1689. - "Bilancio di previsione…"»: via le sigle e le virgolette in testa
-    pulito = lambda t: re.sub(r'^(?:\s*[CS]\.\s*\d+(?:-\w+)?\.?)*\s*[-–.]?\s*["“]?|["”]\s*$', "", t or "").strip()
+    # e i proponenti («IAIA ed altri: …») e i tag HTML di alcune schede
+    def pulito(t: str | None) -> str:
+        t = re.sub(r"<[^>]+>", "", t or "")
+        t = re.sub(r'^(?:\s*[CS]\.\s*\d+(?:-\w+)?\.?)*\s*[-–.]?\s*', "", t)
+        t = re.sub(r"^[A-ZÀ-Ý' ]+(?: ed altri| e altri)?:\s*", "", t)
+        return re.sub(r'^["“]|["”]\s*$', "", t.strip()).strip()
     quadro = [{"atto": r["uri"], "sigla": ("C. " if r["chamber"] == "camera" else "S. ") + r["number"], "titolo": pulito(r["title"]),
                "stato": r["status"], "data_stato": r["status_date"], "legge": r["law_number"], "data_legge": r["law_date"],
                "url": r["card_url"], "emendamenti": em_atto[r["uri"]]["presentati"], "approvati": em_atto[r["uri"]]["approvati"],
