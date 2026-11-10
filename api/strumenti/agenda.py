@@ -85,7 +85,7 @@ def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | N
                     continue
                 quando = list(dict.fromkeys(v["when_text"] for v in voci if v["when_text"]))
                 giorni[g]["aula"].append({
-                    "uri": None, "chamber": ramo, "number": None, "date": g, "status": "calendar", "start_time": _ora(quando[0], int(g[-2:])) if quando else None,
+                    "uri": None, "chamber": ramo, "number": None, "date": g, "status": "calendar", "start_time": _inizio(quando, int(g[-2:])),
                     "record_url": None, "items": [v["title"] for v in voci][:8], "items_total": len(voci), "votes": 0, "schedule": quando[:4],
                     "acts": sorted({a for v in voci for a in (v["acts"] or [])}), "calendar": voci[0]["calendar"], "updated": voci[0]["updated"]})
     if "commissioni" in tipi:
@@ -134,6 +134,16 @@ NOMI_RAMO = {"camera": "Camera", "senato": "Senato"}
 def _c_e_il_calendario(c: psycopg.Connection) -> bool:
     """La tabella nasce con il primo giro dopo il rilascio: fino ad allora l'agenda resta com'era."""
     return bool(c.execute("SELECT to_regclass('calendar_item') IS NOT NULL AS c").fetchone()["c"])
+
+
+def _inizio(quando: list[str], giorno: int) -> str | None:
+    """L'ora d'inizio di un giorno fra le indicazioni del calendario: quella scritta accanto al giorno; se un'indicazione
+    vale per più giorni e per questo non dà l'ora, niente (meglio nessuna ora che quella di un altro giorno)."""
+    for q in quando:
+        if re.search(rf"\b{giorno}°?(?:\s+[a-zà-ù]+)?\s*\(\s*(?:ore\s+)?\d", q, re.I):
+            return _ora(q, giorno)
+    una = [q for q in quando if len(re.findall(r"luned|marted|mercoled|gioved|venerd|sabato|domenica", q, re.I)) <= 1]
+    return _ora(una[0]) if una else None
 
 
 def _ora(t: str, giorno: int | None = None) -> str | None:
