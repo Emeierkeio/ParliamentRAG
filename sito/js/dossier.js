@@ -43,18 +43,18 @@
     @page:first{margin:0;@bottom-left{content:none}@bottom-right{content:none}}
     *{box-sizing:border-box}body{margin:0;font:400 10.5pt/1.55 "Schibsted Grotesk",Arial,sans-serif;color:#14161d;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     a{color:#2a4bd7;text-decoration:none}
-    .copertina{position:relative;overflow:hidden;width:210mm;height:296mm;padding:20mm 18mm 18mm;background:#14161d;color:#fff;display:flex;flex-direction:column;page-break-after:always}
+    .copertina{position:relative;overflow:hidden;width:210mm;height:296mm;padding:20mm 18mm 18mm;background:#f6f7f9;color:#14161d;display:flex;flex-direction:column;page-break-after:always}
     .copertina>*{position:relative}.copertina>div:nth-of-type(2){margin-top:46mm}.copertina .contatti{margin-top:auto}
-    .copertina .aula{position:absolute;right:-30mm;bottom:36mm;width:180mm;opacity:.9}
+    .copertina .aula{position:absolute;right:-36mm;bottom:46mm;width:200mm}
     .marchio{display:flex;align-items:center;gap:10px;font:600 16pt "Geist",Arial,sans-serif;letter-spacing:-.035em}
     .marchio svg{width:30px;height:22px}
     .copertina h1{font-size:40pt;line-height:1.04;letter-spacing:-.035em;margin:0 0 6mm;font-weight:600;max-width:165mm}
     .copertina h1.lungo{font-size:26pt;line-height:1.12}
-    .copertina .temi{font-size:14pt;line-height:1.4;color:#7AA6D2;margin:0 0 8mm;max-width:160mm;font-weight:500}
-    .copertina .sotto{font-size:10.5pt;color:#d4d4d8;max-width:140mm}
-    .copertina .tag{display:inline-block;font-size:9pt;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#9b9ba4;margin-bottom:7mm}
-    .contatti{font-size:9.5pt;color:#d4d4d8;border-top:1px solid rgba(255,255,255,.24);padding-top:5mm;display:grid;gap:1mm}
-    .contatti b{color:#fff}
+    .copertina .temi{font-size:14pt;line-height:1.4;color:#2D5F8F;margin:0 0 8mm;max-width:160mm;font-weight:500}
+    .copertina .sotto{font-size:10.5pt;color:#3b3f4b;max-width:140mm}
+    .copertina .tag{display:inline-block;font-size:9pt;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#666b79;margin-bottom:7mm}
+    .contatti{font-size:9.5pt;color:#3b3f4b;border-top:1px solid #e4e6eb;padding-top:5mm;display:grid;gap:1mm}
+    .contatti b{color:#14161d}
     .indice{page-break-after:always}.indice h2,.sez h2{font-size:15pt;letter-spacing:-.02em;margin:0 0 6mm;font-weight:600}
     .indice ol{padding-left:9mm;font-size:11pt;line-height:2}
     .sez{page-break-before:always}.sez:first-of-type{page-break-before:auto}
@@ -69,16 +69,16 @@
     .metodo{page-break-before:always;font-size:9.5pt;color:#3b3f4b}.metodo h2{font-size:13pt;color:#14161d}
     button,.azioni,.avviso-r,.dx,.info,svg.ic,.indice-r,.indice-g,nav,.sei-passi,details.come{display:none!important}`;
 
-  // un emiciclo di punti per la copertina, nei colori del sito
+  // un emiciclo di punti tenui per la copertina, come nelle grafiche
   const AULA = (() => {
-    const col = ["#7AA6D2", "#ffffff", "#2D5F8F", "#9b9ba4", "#6cc49a", "#e2ae4c", "#ee8a73"];
+    const col = ["#7AA6D2", "#2D5F8F", "#9b9ba4", "#6cc49a", "#e2ae4c", "#ee8a73", "#b59fd6"];
     let p = "", k = 0;
     for (let r = 0; r < 8; r++) {
       const R = 46 + r * 7, n = Math.round(R * 0.62);
       for (let i = 0; i <= n; i++) {
         const a = Math.PI - (Math.PI * i) / n, x = 100 + R * Math.cos(a), y = 100 - R * Math.sin(a);
         const c = col[(i * 7 + r * 3 + (k++ % 5)) % col.length];
-        p += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.3" fill="${c}" fill-opacity="${c === "#ffffff" ? .22 : .7}"/>`;
+        p += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.3" fill="${c}" fill-opacity=".22"/>`;
       }
     }
     return `<svg class="aula" viewBox="0 0 200 104" aria-hidden="true">${p}</svg>`;
