@@ -18,6 +18,8 @@ COPY pipeline/__init__.py pipeline/ambiente.py pipeline/
 COPY schema/ schema/
 COPY api/ api/
 COPY sito/ sito/
+# l'elenco della copertura del dominio, che il pannello /sistema legge (api/copertura.py)
+COPY copertura.toml .
 
 # utente senza privilegi; dati/ è l'unica cartella scrivibile (spesa della chat in dati/api, foto in dati/foto)
 RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin web \

@@ -18,6 +18,11 @@ class TestElenco(unittest.TestCase):
         dette = {f for v in VOCI for f in v.get("fonti", [])}
         self.assertEqual(fonti - dette, set())
 
+    def test_il_file_entra_nell_immagine_del_servizio(self):
+        # l'immagine web copia solo alcune cartelle: senza questa riga il pannello online non trova l'elenco (10/11/2026)
+        self.assertIn("COPY copertura.toml .", (RADICE / "Dockerfile").read_text(encoding="utf-8"))
+        self.assertEqual(FILE, RADICE / "copertura.toml")
+
     def test_voci_complete(self):
         nomi = [v["nome"] for v in VOCI]
         self.assertEqual(len(nomi), len(set(nomi)))
