@@ -37,10 +37,16 @@
     table{border-collapse:collapse;width:100%;font-size:9.5pt;margin-bottom:4mm}th,td{border-bottom:1px solid #e4e6eb;padding:1.5mm 2mm;text-align:left}th{font-weight:600;color:#3b3f4b}
     blockquote,q{color:#14161d}
     .metodo{page-break-before:always;font-size:9.5pt;color:#3b3f4b}.metodo h2{font-size:13pt;color:#14161d}
-    section button,section .azioni,.avviso-r,.dx,.info,section svg.ic,.indice-r,.indice-g,section nav,.sei-passi,details.come,.pdf-dossier{display:none!important}
+    section button:not(.esperto),section .azioni,.avviso-r,.dx,.info,section svg.ic,.indice-r,.indice-g,section nav,.sei-passi,details.come,.pdf-dossier{display:none!important}
     .fonti{list-style:none;padding:0;margin:0}.fonti li{display:grid;grid-template-columns:7mm 1fr;gap:1mm 2mm;padding:2mm 0;border-bottom:1px solid #e4e6eb;break-inside:avoid}
     .fonti .n{font-weight:600;color:#666b79}.fonti li>span:last-child{display:flex;flex-wrap:wrap;gap:0 2mm;align-items:baseline}.fonti small{flex-basis:100%;font-size:9pt;color:#666b79}
     .fonte-g{color:#3b3f4b}
+    .sez .lista>li:has(>span:last-child:empty){display:none}
+    .esperti{display:grid;grid-template-columns:repeat(2,1fr);gap:2.5mm}
+    .esperto{display:flex!important;align-items:center;gap:3mm;border:1px solid #e4e6eb;border-radius:2mm;padding:2.5mm 3mm;background:#fff;font:inherit;text-align:left;color:inherit;break-inside:avoid}
+    .esperto .foto img{width:10mm;height:10mm;border-radius:50%;object-fit:cover;display:block}.esperto>span:nth-child(2){display:grid;flex:1;font-size:9.5pt}
+    .esperto .ramo-v,.esperto small{font-size:8pt;color:#666b79}.esperto .sig i{display:inline-block;width:2mm;height:2mm;border-radius:50%;margin-right:1.5mm}
+    .esperto .aut{display:grid;text-align:right;font-size:10pt}
     @media screen{
       html{background:#e9ebf0}body{padding:72px 16px 48px}
       /* sullo schermo: la copertina su un foglio, poi tutto il resto su un foglio unico, con le sezioni separate da una riga */
@@ -63,8 +69,13 @@
   const PARTNER = `<div class="partner"><img class="disco" src="${IMG}disco.png" alt="Università di Milano-Bicocca, DISCo"><span class="ue"><img src="${IMG}EN_FundedbytheEU_RGB_POS.png" alt="Funded by the European Union">DataPACT</span><img class="datai" src="${IMG}datai-logo.svg" alt="dat·AI"></div>`;
 
   // d: { titolo, temi, lingua, data (ISO), sezioni: [{ titolo, html }], link }; stampa: apre subito la finestra di stampa
+  // una sezione senza contenuto oltre al titolo, o con il solo «nessun …», nel documento non entra
+  const piena = (x) => {
+    const t = String(x.html || "").replace(/<h3[\s\S]*?<\/h3>/i, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    return t.length > 30 && !/^(nessun|no )/i.test(t);
+  };
   window.DOSSIER_DOC = (d, stampa) => {
-    const en = d.lingua === "en", TT = (it, eng) => (en ? eng : it), e = esc, titolo = d.titolo || "Dossier", temi = d.temi || "", sezioni = d.sezioni || [];
+    const en = d.lingua === "en", TT = (it, eng) => (en ? eng : it), e = esc, titolo = d.titolo || "Dossier", temi = d.temi || "", sezioni = (d.sezioni || []).filter(piena);
     const oggi = new Date(d.data || Date.now()).toLocaleDateString(en ? "en-GB" : "it-IT", { day: "numeric", month: "long", year: "numeric" });
     const barra = d.link ? `<div class="barra"><a class="marchio" href="/">${LOGO}<span>ParliamentRAG</span></a>
       <button type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText('${e(d.link)}');this.textContent='${TT("Link copiato", "Link copied")}'">${TT("Copia il link", "Copy link")}</button>

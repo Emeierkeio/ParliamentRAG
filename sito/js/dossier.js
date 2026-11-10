@@ -42,6 +42,7 @@
         ? `${arr.termini.length ? `<h4>${TT("Termini per gli emendamenti", "Amendment deadlines")}</h4><ul class="lista">${arr.termini.map((x) => `<li><span class="meta">${data(x.scadenza)}${x.ora ? `, ${String(x.ora).slice(0, 5)}` : ""} · ${e(x.organo || "")}</span><span>${e(x.frase)}</span></li>`).join("")}</ul>` : ""}
            ${arr.audizioni.length ? `<h4>${TT("Audizioni sugli atti del tema", "Hearings on the topic's bills")}</h4><ul class="lista">${arr.audizioni.map((x) => `<li><span class="meta">${data(x.data)} · ${e(x.organo || "")}</span><span>${e(x.chi)}</span></li>`).join("")}</ul>` : ""}`
         : `<p class="dos-sotto">${TT("Nessun termine aperto né audizione recente sugli atti trovati.", "No open deadline or recent hearing on the bills found.")}</p>`);
+    d.atti = d.atti.filter((a) => a.titolo);   // atti senza titolo nei dati: una riga vuota
     if (d.atti.length) blocco(t, "atti", TT("Atti sul tema", "Bills and acts on the topic"), "",
       `<ul class="lista">${d.atti.map((a) => `<li><span class="meta">${e(a.ramo === "senato" ? "Senato" : "Camera")}${a.data ? ` · ${data(a.data)}` : ""}</span><span>${a.url ? `<a href="${e(a.url)}" target="_blank" rel="noopener">${e(B.taglia(a.titolo, 200))}</a>` : e(B.taglia(a.titolo, 200))}</span></li>`).join("")}</ul>`);
     // in fondo al dossier, l'invito alla newsletter: chi ha appena ottenuto un dossier è chi la vuole
