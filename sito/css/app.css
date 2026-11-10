@@ -1979,3 +1979,4 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
 .dos-news p{margin:0 0 10px;color:var(--t2)}.dos-news .news__riga{max-width:520px}.dos-news .news__msg{margin-top:8px}
 .pdf-dossier{margin:18px 0 6px}.pdf-dossier .bt{display:inline-flex;align-items:center;gap:8px}.pdf-dossier .ic{width:17px;height:17px}
 .dos-chi>li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center}.dos-chi .foto img{width:40px;height:40px;border-radius:50%;object-fit:cover;display:block}.dos-chi>li>span:last-child{display:grid;gap:2px}
+.pdf-dossier--su{margin:4px 0 18px}

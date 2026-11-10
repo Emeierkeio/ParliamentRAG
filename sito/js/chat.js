@@ -64,7 +64,8 @@
     b.innerHTML = `<h3>${e(titolo)}${dx ? `<span class="dx">${dx}</span>` : ""}</h3>${html}`;
     return b;
   }
-  const ORDINE_B = ["risposta", "quadro", "classifica", "garanzie", "posizioni", "voti", "emendamenti", "chi", "arrivo", "persona", "interventi", "schede", "atti", "sedute", "fonti", "iscriviti"];
+  // nei dossier l'ordine di chi fa relazioni istituzionali: quadro, scadenze, chi ci lavora, posizioni, dettaglio, verifiche
+  const ORDINE_B = ["quadro", "arrivo", "chi", "risposta", "classifica", "posizioni", "voti", "emendamenti", "persona", "interventi", "schede", "atti", "sedute", "garanzie", "fonti", "iscriviti"];
   const NOMI_BLOCCHI = { risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", emendamenti: "Emendamenti", chi: "Chi ci lavora", arrivo: "In arrivo", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica" };
   // l'indice serve solo quando la risposta ha almeno due parti oltre al testo
   function aggiornaIndice(t) {
@@ -573,7 +574,12 @@
     t.stato.textContent = `${t.passi.children.length} ${t.passi.children.length === 1 ? "passaggio" : "passaggi"}`;
     el.insertAdjacentHTML("beforeend", `<div class="azioni"><button data-copia="${n}" aria-label="Copia la risposta" data-tip="Copia la risposta">${B.ico("copia")}</button><button data-utile aria-label="Utile" data-tip="Utile">${B.ico("su")}</button><button data-utile aria-label="Non utile" data-tip="Non utile">${B.ico("giuP")}</button><button data-segnala="${n}" aria-label="Segnala un errore" data-tip="Segnala un errore">${B.ico("segnala")}</button><button data-condividi aria-label="Condividi la conversazione" data-tip="Condividi la conversazione">${B.ico("condividi")}</button></div>`);
     // un dossier (fascicolo o «Dossier su …» dalla scelta dei temi): il PDF con un pulsante che si vede, non solo l'icona
-    if (t.dossier || /^\s*(dossier su|dossier on)\b/i.test(q)) el.querySelector(".azioni")?.insertAdjacentHTML("beforebegin", `<p class="pdf-dossier"><button type="button" class="bt bt--primario" data-pdf="${n}">${B.ico("scarica")}${TT("Scarica il dossier in PDF", "Download the dossier as PDF")}</button></p>`);
+    // un dossier: il pulsante per il PDF in alto, dove si vede subito, e di nuovo in fondo
+    if (t.dossier || /^\s*(dossier su|dossier on)\b/i.test(q)) {
+      const pul = `<p class="pdf-dossier"><button type="button" class="bt bt--primario" data-pdf="${n}">${B.ico("scarica")}${TT("Scarica il dossier in PDF", "Download the dossier as PDF")}</button></p>`;
+      el.querySelector(".blocchi")?.insertAdjacentHTML("beforebegin", pul.replace('class="pdf-dossier"', 'class="pdf-dossier pdf-dossier--su"'));
+      el.querySelector(".azioni")?.insertAdjacentHTML("beforebegin", pul);
+    }
     salva(); aperta({ id: CH.idChat, attesa: null });
     if (!CH.contesto) CH.imposta(null);
   }
