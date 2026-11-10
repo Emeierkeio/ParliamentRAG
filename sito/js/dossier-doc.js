@@ -43,13 +43,17 @@
     .fonte-g{color:#3b3f4b}
     @media screen{
       html{background:#e9ebf0}body{padding:72px 16px 48px}
-      .copertina,.indice,.sez,.metodo{width:min(210mm,100%);margin:0 auto 24px;background:#fff;padding:16mm 16mm 18mm;box-shadow:0 1px 2px rgba(20,22,29,.06),0 12px 32px -16px rgba(20,22,29,.25);border-radius:4px}
+      /* sullo schermo: la copertina su un foglio, poi tutto il resto su un foglio unico, con le sezioni separate da una riga */
+      .copertina,.indice,.sez,.metodo{width:min(210mm,100%);margin:0 auto;background:#fff;padding:12mm 16mm;box-shadow:0 0 0 1px #dfe2e8}
+      .copertina{margin-bottom:24px;border-radius:4px;box-shadow:0 1px 2px rgba(20,22,29,.06),0 12px 32px -16px rgba(20,22,29,.25)}
+      .indice{border-radius:4px 4px 0 0;padding-top:16mm}.metodo{border-radius:0 0 4px 4px;padding-bottom:18mm;margin-bottom:24px}
+      .sez,.metodo{border-top:1px solid #e4e6eb}
       .copertina{background:#f6f7f9;height:auto;aspect-ratio:210/297;padding:20mm 18mm 18mm}
       .barra{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid #e4e6eb}
       .barra .marchio{font-size:15pt;margin-right:auto;color:#14161d;text-decoration:none}.barra .marchio svg{width:26px}
       .barra button,.barra a.bt{font:600 14px "Schibsted Grotesk",Arial,sans-serif;border-radius:999px;padding:9px 16px;cursor:pointer;border:1px solid #cdd1da;background:#fff;color:#14161d;text-decoration:none}
       .barra .primo{background:#14161d;color:#fff;border-color:#14161d}
-      @media (max-width:760px){body{padding:64px 10px 32px}.copertina,.indice,.sez,.metodo{padding:22px 18px}.copertina{aspect-ratio:auto;min-height:150vw}.copertina>div:nth-of-type(1){margin-top:24px}.copertina .marchio{font-size:20pt;margin-bottom:28px}.copertina .marchio svg{width:34px;flex:none}.copertina h1{font-size:30pt}.copertina .temi{font-size:13pt}.partner{flex-wrap:wrap;gap:12px 18px}.barra .marchio span{display:none}.barra .marchio svg{flex:none}table{display:block;overflow-x:auto}}
+      @media (max-width:760px){body{padding:64px 10px 32px}.copertina,.indice,.sez,.metodo{padding:22px 18px}.copertina{padding-top:22px}.copertina{aspect-ratio:auto;min-height:150vw}.copertina>div:nth-of-type(1){margin-top:24px}.copertina .marchio{font-size:20pt;margin-bottom:28px}.copertina .marchio svg{width:34px;flex:none}.copertina h1{font-size:30pt}.copertina .temi{font-size:13pt}.partner{flex-wrap:wrap;gap:12px 18px}.barra .marchio span{display:none}.barra .marchio svg{flex:none}table{display:block;overflow-x:auto}}
     }
     @media print{.barra{display:none}}`;
 
