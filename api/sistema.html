@@ -151,23 +151,50 @@ function dati(d) {
 
 const STATI_C = { fatto: ["ok", "fatto"], parziale: ["att", "parziale"], manca: ["ko", "manca"], non_c_e: ["", "non pubblicato"] };
 const RAMI_C = { camera: "Camera", senato: "Senato", parlamento: "Parlamento" };
+const VALE_C = { fatto: 1, parziale: .5, manca: 0 };
+let soloDaFare = true;                      // la vista di partenza: quello che resta da fare
+// una casella della matrice: lo stato di una voce in un ramo, con le righe nel database al passaggio del mouse
+const casella = (x, largo) => !x ? `<span class="cm-cas cm-cas--no" aria-label="non riguarda questo ramo"></span>`
+  : `<span class="cm-cas cm-cas--${STATI_C[x.stato]?.[0] || "no"}${largo ? " cm-cas--largo" : ""}" title="${x.righe == null ? "" : `${num(x.righe)} righe nel database`}">${esc(STATI_C[x.stato]?.[1] || x.stato)}${x.vuoto ? " · vuoto" : ""}</span>`;
+// il motivo: uno solo se i due rami dicono lo stesso, se no ognuno col suo ramo
+function perche(v) {
+  const m = Object.entries(v.rami).filter(([, x]) => x.perche && x.stato !== "fatto");
+  const unici = [...new Set(m.map(([, x]) => x.perche))];
+  const vuoti = Object.entries(v.rami).filter(([, x]) => x.vuoto).map(([r]) => `${RAMI_C[r]}: data per fatta, ma nessuna riga nel database.`);
+  const testi = unici.length === 1 ? [esc(unici[0])] : m.map(([r, x]) => `<b>${RAMI_C[r]}.</b> ${esc(x.perche)}`);
+  return [...testi, ...vuoti.map(esc)].join("<br>");
+}
 function copertura(c) {
   if (!c || c.errore || c.percento == null) { $("#copertura").innerHTML = '<p class="vuoto">Elenco della copertura non leggibile.</p>'; return; }
-  const k = c.conti || {}, voci = c.voci || [];
-  $("#n-copertura").textContent = `Quanto di ciò che Camera e Senato pubblicano per la legislatura in corso è scaricato e modellato. Ogni voce pesa da 1 a 3; una parziale vale metà. Elenco confrontato con i due siti il ${data(c.verificato)}; le legislature precedenti sono fuori.`;
-  const righeVoce = (v, solo) => Object.entries(v.rami).filter(([, x]) => !solo || solo(x)).map(([r, x]) =>
-    [esc(v.area), esc(v.nome), RAMI_C[r], P.stato(...(STATI_C[x.stato] || ["", x.stato])) + (x.vuoto ? ' <small style="color:var(--no)">nessuna riga nel database</small>' : ""),
-     x.righe == null ? "–" : num(x.righe), esc(x.perche || "")]);
-  const mancano = voci.flatMap((v) => righeVoce(v, (x) => x.stato === "manca" || x.stato === "parziale" || x.vuoto).map((r) => [v.peso, r]))
-    .sort((a, b) => b[0] - a[0]).map(([p, r]) => [r[1], r[2], r[3], "●".repeat(p), r[5]]);
-  $("#copertura").innerHTML = `<div class="cifre"><div class="cifra"><small>Coperto</small><span class="cifra__n">${num(c.percento, 1)}%</span></div>`
-    + `<div class="cifra"><small>Voci fatte</small><span class="cifra__n cifra__n--medio">${num(k.fatto)}</span></div><div class="cifra"><small>Parziali</small><span class="cifra__n cifra__n--medio">${num(k.parziale)}</span></div><div class="cifra"><small>Mancanti</small><span class="cifra__n cifra__n--medio">${num(k.manca)}</span></div></div>`
-    + Object.entries(c.rami || {}).map(([r, q]) => riempi(q / 100, RAMI_C[r], `${num(q, 1)}%`, true)).join("")
-    + `<h3>Per area</h3>` + Object.entries(c.aree || {}).map(([a, q]) => riempi(q / 100, esc(a), `${num(q, 1)}%`, true)).join("")
-    + `<h3>Cosa manca e perché</h3>` + P.tab([["Voce"], ["Ramo"], ["Stato"], ["Peso"], ["Perché", "lungo"]], mancano, "Non manca niente.")
-    + `<button class="mostra" id="c-tutte" aria-expanded="false">Mostra tutte le ${num(voci.length)} voci</button><div id="c-elenco" hidden>`
-    + P.tab([["Area"], ["Voce"], ["Ramo"], ["Stato"], ["Righe nel database", "n"], ["Nota", "lungo"]], voci.flatMap((v) => righeVoce(v))) + `</div>`;
-  $("#c-tutte").onclick = (ev) => { const e = $("#c-elenco"); e.hidden = !e.hidden; ev.target.setAttribute("aria-expanded", String(!e.hidden)); ev.target.textContent = e.hidden ? `Mostra tutte le ${num(voci.length)} voci` : "Nascondi l'elenco"; };
+  const voci = c.voci || [], k = c.conti || {};
+  $("#n-copertura").textContent = `Quanto di ciò che Camera e Senato pubblicano per la legislatura in corso è scaricato e modellato. Le voci essenziali pesano di più; una parziale vale metà. Elenco confrontato con i due siti il ${data(c.verificato)}.`;
+  // il peso di fatte, parziali e mancanti, per la barra a tre colori
+  const pesi = { fatto: 0, parziale: 0, manca: 0 };
+  for (const v of voci) for (const x of Object.values(v.rami)) if (x.stato in pesi) pesi[x.stato] += v.peso;
+  const tot = pesi.fatto + pesi.parziale + pesi.manca || 1;
+  const daFare = (v) => Object.values(v.rami).some((x) => x.stato === "manca" || x.stato === "parziale" || x.vuoto);
+  const aree = [...new Set(voci.map((v) => v.area))];
+  const riga = (v) => `<div class="cm-riga" role="row"><div class="cm-voce" role="cell"><span>${esc(v.nome)}</span><i class="cm-peso" title="Peso ${v.peso} su 3">${"●".repeat(v.peso)}<s>${"●".repeat(3 - v.peso)}</s></i></div>`
+    + (v.rami.parlamento ? `<div class="cm-due" role="cell">${casella(v.rami.parlamento, true)}</div>` : `<div role="cell">${casella(v.rami.camera)}</div><div role="cell">${casella(v.rami.senato)}</div>`)
+    + `<div class="cm-perche" role="cell">${perche(v)}</div></div>`;
+  const blocco = (a) => {
+    const tutte = voci.filter((v) => v.area === a), mostrate = soloDaFare ? tutte.filter(daFare) : tutte;
+    const stati = tutte.flatMap((v) => Object.values(v.rami).map((x) => x.stato));
+    const conto = ["fatto", "parziale", "manca"].map((s) => [s, stati.filter((x) => x === s).length]).filter(([, n]) => n);
+    return `<section class="cm-area"><header class="cm-testa"><h3>${esc(a)}</h3><div class="cm-barra" aria-hidden="true"><i style="width:${c.aree[a]}%"></i></div><b>${num(c.aree[a], 0)}%</b>`
+      + `<small>${conto.map(([s, n]) => `${n} ${s === "fatto" ? (n === 1 ? "fatta" : "fatte") : s === "parziale" ? (n === 1 ? "parziale" : "parziali") : (n === 1 ? "mancante" : "mancanti")}`).join(" · ")}</small></header>`
+      + (mostrate.length ? mostrate.sort((x, y) => y.peso - x.peso).map(riga).join("") : `<p class="cm-niente">Niente da fare in quest'area.</p>`) + `</section>`;
+  };
+  const quanti = voci.filter(daFare).length;
+  $("#copertura").innerHTML = `<div class="cm-cima"><div class="cm-totale"><span class="cifra__n">${num(c.percento, 1)}%</span><small>coperto</small></div>`
+    + `<div class="cm-riassunto"><div class="cm-tre" role="img" aria-label="${num(k.fatto)} fatte, ${num(k.parziale)} parziali, ${num(k.manca)} mancanti">`
+    + `<i class="ok" style="width:${100 * pesi.fatto / tot}%"></i><i class="att" style="width:${100 * pesi.parziale / tot}%"></i><i class="ko" style="width:${100 * pesi.manca / tot}%"></i></div>`
+    + `<p class="cm-legenda">${P.stato("ok", `${num(k.fatto)} fatte`)}${P.stato("att", `${num(k.parziale)} parziali`)}${P.stato("ko", `${num(k.manca)} mancanti`)}</p></div>`
+    + ["camera", "senato"].filter((r) => c.rami?.[r] != null).map((r) => `<div class="cm-ramo"><small>${RAMI_C[r]}</small><b>${num(c.rami[r], 1)}%</b><div class="cm-barra" aria-hidden="true"><i style="width:${c.rami[r]}%"></i></div></div>`).join("") + `</div>`
+    + `<div class="cm-filtro" role="group" aria-label="Quali voci mostrare"><button type="button" aria-pressed="${soloDaFare}" data-f="1">Da fare <span>${num(quanti)}</span></button><button type="button" aria-pressed="${!soloDaFare}" data-f="0">Tutte <span>${num(voci.length)}</span></button></div>`
+    + `<div class="cm-matrice" role="table" aria-label="Copertura voce per voce"><div class="cm-riga cm-colonne" role="row"><div role="columnheader">Voce</div><div role="columnheader">Camera</div><div role="columnheader">Senato</div><div role="columnheader">Perché</div></div>`
+    + aree.map(blocco).join("") + `</div>`;
+  $("#copertura .cm-filtro").onclick = (ev) => { const b = ev.target.closest("button"); if (!b) return; soloDaFare = b.dataset.f === "1"; copertura(c); };
 }
 
 function chat(c, k, d) {
@@ -205,9 +232,13 @@ function disegna(d) {
   cifre(d, a); copertura(d.copertura); giro(d.macchina || {}, d); dati(d.dati || {}); chat(d.chat || {}, d.costi || {}, d); macchina(d.macchina || {});
 }
 async function carica(dal, al) {
-  try { ultimo = await P.leggi(`/api/sistema?dal=${dal}&al=${al}`); disegna(ultimo); }
-  catch (e) { if (e.message !== "accesso scaduto") $("#sotto").textContent = "Non riesco a leggere lo stato del sistema. Riprova fra poco."; }
+  try { ultimo = await P.leggi(`/api/sistema?dal=${dal}&al=${al}`); P.fineScheletro(); disegna(ultimo); }
+  catch (e) { P.fineScheletro(true); if (e.message !== "accesso scaduto") $("#sotto").textContent = "Non riesco a leggere lo stato del sistema. Riprova fra poco."; }
 }
+// al primo caricamento ogni blocco mostra la sua forma; i ricaricamenti ogni minuto tengono i dati che ci sono
+P.scheletro({ "#cifre": ["cifre", 6], "#avvisi": ["avvisi", 2], "#copertura": ["barre", 5], "#giro": ["righe", 3], "#giri": ["tabella", 5],
+  "#chat": ["tabella", 5], "#costi": ["tabella", 4], "#errori": ["tabella", 3], "#sedute": ["tabella", 4], "#voti": ["tabella", 2], "#atti": ["tabella", 2],
+  "#db": ["tabella", 6], "#macchina": ["barre", 3], "#container": ["tabella", 3], "#backup": ["righe", 4] });
 P.testata("sistema");
 P.ridisegna = () => ultimo && disegna(ultimo);
 const periodo = P.periodo($("#periodo"), 14, carica);

@@ -64,6 +64,30 @@
     return r.json();
   };
 
+  /* ---------- scheletri: la forma di ciò che sta per arrivare, mentre i dati si caricano ---------- */
+  // P.scheletro({ "#cifre": ["cifre", 6], "#giri": ["tabella", 5], "#db": ["righe", 4], "#macchina": ["barre", 3] })
+  const riga = (classi = "") => `<i class="skel ${classi}"></i>`;
+  const FORME = {
+    cifre: (n) => `<div class="cifra pn-sk-cifra">${riga("pn-sk-etichetta")}${riga("pn-sk-numero")}${riga("pn-sk-nota")}</div>`.repeat(n),
+    avvisi: (n) => `<li class="pn-sk-avviso">${riga()}</li>`.repeat(n),
+    righe: (n) => `<div class="carica">${"<i></i>".repeat(n)}</div>`,
+    barre: (n) => `<div class="pn-sk-barra">${riga("pn-sk-etichetta")}${riga("pn-sk-linea")}</div>`.repeat(n),
+    tabella: (n) => `<div class="pn-sk-tab">${`<div>${riga().repeat(4)}</div>`.repeat(n)}</div>`,
+    grafico: () => riga("pn-sk-grafico"),
+  };
+  P.scheletro = (dove) => {
+    for (const [sel, [forma, n]] of Object.entries(dove)) {
+      const el = P.$(sel); if (!el) continue;
+      el.innerHTML = FORME[forma](n || 3); el.dataset.scheletro = "1"; el.setAttribute("aria-hidden", "true");
+    }
+    document.querySelector("main")?.setAttribute("aria-busy", "true");
+  };
+  // a dati arrivati ogni blocco si ridisegna da solo: qui si toglie il segno; con `svuota` (errore) si tolgono anche le forme
+  P.fineScheletro = (svuota) => {
+    document.querySelectorAll("[data-scheletro]").forEach((el) => { if (svuota) el.innerHTML = ""; delete el.dataset.scheletro; el.removeAttribute("aria-hidden"); });
+    document.querySelector("main")?.removeAttribute("aria-busy");
+  };
+
   /* ---------- tabelle ---------- */
   // tab([["Passo"], ["Durata", "n"], ["Note", "lungo"]], righe di celle già in HTML)
   // oltre PER_PAGINA righe si impagina: nel documento c'è solo la pagina aperta, e il ridisegno ogni minuto non la cambia
