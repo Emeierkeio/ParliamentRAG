@@ -1,4 +1,5 @@
-"""Atti: progetti di legge, sindacato ispettivo e indirizzo, con firmatari, iter, testi, votazioni ed emendamenti."""
+"""Atti: progetti di legge, sindacato ispettivo e indirizzo, atti del Governo e nomine sottoposti a parere, con firmatari,
+commissioni a cui sono assegnati (con termine e parere), relatori, iter, testi, votazioni ed emendamenti."""
 
 from __future__ import annotations
 
@@ -6,12 +7,19 @@ import re
 
 import psycopg
 
-from ..modelli import Act, ActBrief, ActRef, Amendment, AmendmentCounts, Signer, Sponsor, Step, TextVersion
+from ..modelli import Act, ActBrief, ActRef, Amendment, AmendmentCounts, Assignment, Rapporteur, Signer, Sponsor, Step, TextVersion
 from .comune import LEGISLATURA, brevi, stessa_persona
 from .conti import INIZIATIVE, SQL_INIZIATIVA
 from .voti import SQL_VOTO_BREVE, voto_breve
 
 CAMPI_BREVI = "a.uri, a.chamber, a.legislature, a.number, a.kind, a.title, a.date, a.status, a.law_number, a.card_url, a.initiative"
+
+
+def ha_pareri(c: psycopg.Connection) -> bool:
+    """Le colonne del parere in act_assignment nascono con lo schema nuovo: finché non c'è, la scheda dell'atto e l'agenda
+    restano come prima invece di rompersi (un servizio rilasciato prima dello schema)."""
+    return bool(c.execute("""SELECT EXISTS (SELECT 1 FROM information_schema.columns
+                             WHERE table_schema = 'public' AND table_name = 'act_assignment' AND column_name = 'deadline') AS c""").fetchone()["c"])
 
 
 def cerca_atti(c: psycopg.Connection, q: str | None = None, chamber: str | None = None, kind: str | None = None,
@@ -44,6 +52,15 @@ def atto(c: psycopg.Connection, uri: str) -> Act | None:
     persone = brevi(c, [f["person"] for f in firme], a["date"])
     firmatari = sorted((Sponsor(person=persone[f["person"]], first=f["first"], as_office=f["as_office"]) for f in firme if f["person"] in persone),
                        key=lambda s: (not s.first, s.person.name))
+    # commissioni: prima quella di merito (o del parere), poi le altre per data
+    parere = "x.deadline, x.basis, x.opinion, x.opinion_date" if ha_pareri(c) else "NULL::date AS deadline"
+    assegnazioni = [Assignment(**r) for r in c.execute(f"""
+        SELECT b.uri AS body, coalesce(x.title, b.name, x.body) AS body_name, x.seat, x.date, {parere}
+        FROM act_assignment x LEFT JOIN body b ON b.uri = x.body WHERE x.act = %s
+        ORDER BY (x.seat IN ('referente', 'redigente', 'deliberante', 'opinion')) DESC, x.date NULLS LAST, 2""", (uri,))]
+    rel = c.execute("SELECT name_raw, role, person FROM act_rapporteur WHERE act = %s ORDER BY (role = 'minority'), name_raw", (uri,)).fetchall()
+    schede = brevi(c, [r["person"] for r in rel if r["person"]], a["date"])
+    relatori = [Rapporteur(name=r["name_raw"], role=r["role"], person=schede.get(r["person"])) for r in rel]
     passi = [Step(order=s["ord"], title=s["title"], date=s["date"]) for s in c.execute("SELECT ord, title, date FROM act_step WHERE act = %s ORDER BY ord", (uri,))]
     # i testi: alla Camera dalle versioni dell'atto (act_version_text), al Senato dalla colonna act di act_text
     versioni = [TextVersion(**r) for r in c.execute("""
@@ -54,7 +71,8 @@ def atto(c: psycopg.Connection, uri: str) -> Act | None:
         "SELECT j.main_act, m.title FROM act_joint j LEFT JOIN act m ON m.uri = j.main_act WHERE j.act = %s", (uri,))]
     voti = [voto_breve(v) for v in c.execute(SQL_VOTO_BREVE + " JOIN vote_act x ON x.vote = v.uri WHERE x.act = %s ORDER BY v.date, v.number", (uri,))]
     esiti = c.execute("SELECT coalesce(outcome, 'non indicato') AS esito, count(*) AS n FROM amendment WHERE act = %s GROUP BY 1", (uri,)).fetchall()
-    return Act(**{k: a[k] for k in Act.model_fields if k in a}, sponsors=firmatari, steps=passi, versions=versioni, joined=abbinati, votes=voti,
+    return Act(**{k: a[k] for k in Act.model_fields if k in a and a[k] is not None}, sponsors=firmatari, assignments=assegnazioni,
+               rapporteurs=relatori, steps=passi, versions=versioni, joined=abbinati, votes=voti,
                amendments=AmendmentCounts(total=sum(e["n"] for e in esiti), by_outcome={e["esito"]: e["n"] for e in esiti}))
 
 

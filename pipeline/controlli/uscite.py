@@ -87,6 +87,17 @@ def _regole(righe: list[dict]) -> list[str]:
         return errori + _regole_aic(nodi, [r for r in righe if r["tipo"] == "arco"])
     if ambito.get("kind") == "atti":
         return errori + _regole_atti(nodi, [r for r in righe if r["tipo"] == "arco"])
+    if ambito.get("kind") == "convocazioni":
+        voci = [n for n in nodi if n["label"] == "Convocation"]          # una commissione può non avere convocazioni
+        if any(not n.get("date") or not n.get("body_name") or not n.get("uri") for n in voci):
+            errori.append("convocazione senza data o senza commissione")
+        if len({n["uri"] for n in voci}) != len(voci):
+            errori.append("convocazioni ripetute")
+        if len(voci) > 5 and not any(n.get("text") for n in voci):
+            errori.append("convocazioni tutte senza argomenti: la pagina ha cambiato forma")
+        return errori
+    if ambito.get("kind") == "atti_governo":
+        return errori + _regole_atti_governo(nodi, [r for r in righe if r["tipo"] == "arco"], ambito)
     if ambito.get("kind") == "voti":
         return errori + _regole_voti(nodi, [r for r in righe if r["tipo"] == "arco"])
     if ambito.get("kind") == "concetti":
@@ -238,6 +249,24 @@ def _regole_atti(nodi: list[dict], archi: list[dict]) -> list[str]:
         if a["type"] == "SPONSORS" and not (a.get("from") or "").startswith("it:person:"):
             errori.append(f"firmatario che non è una persona: {a}")
             break
+    return errori[:10]
+
+
+def _regole_atti_governo(nodi: list[dict], archi: list[dict], ambito: dict) -> list[str]:
+    errori, noti = [], {n["uri"] for n in nodi}
+    if len(nodi) < 50:
+        errori.append(f"solo {len(nodi)} atti del Governo e nomine: la fonte è cambiata o è arrivata a metà")
+    if len(noti) != len(nodi):
+        errori.append("atti del Governo con lo stesso numero ripetuti")
+    senza = [n["uri"] for n in nodi if not n.get("number") or not n.get("title") or not n.get("status")
+             or n.get("kind") not in ("government_act", "appointment")]
+    if senza:
+        errori.append(f"{len(senza)} atti senza numero, titolo o stato: {senza[:3]}")
+    if any(a["type"] != "ASSIGNED" or a["from"] not in noti or not a.get("to") for a in archi):
+        errori.append("assegnazione verso un atto che non c'è o senza commissione")
+    # alla Camera ogni atto è assegnato almeno a una commissione: se mancano, la pagina ha cambiato forma
+    if ambito.get("chamber") == "camera" and len({a["from"] for a in archi}) < 0.9 * len(nodi):
+        errori.append(f"assegnazioni per {len({a['from'] for a in archi})} atti su {len(nodi)}")
     return errori[:10]
 
 

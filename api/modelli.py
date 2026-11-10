@@ -236,6 +236,25 @@ class AmendmentCounts(BaseModel):
     by_outcome: dict[str, int]
 
 
+class Assignment(BaseModel):
+    """Assegnazione di un atto a una commissione. Per gli atti del Governo e le nomine sottoposti a parere: il termine,
+    la norma che chiede il parere, il parere espresso e la sua data."""
+    body: str | None = None                    # uri dell'organo, se è nell'anagrafica
+    body_name: str
+    seat: str | None = None                    # referente, redigente, deliberante, consultiva; opinion, remarks, eu_compatibility
+    date: dt.date | None = None
+    deadline: dt.date | None = None
+    basis: str | None = None
+    opinion: str | None = None
+    opinion_date: dt.date | None = None
+
+
+class Rapporteur(BaseModel):
+    name: str
+    role: str | None = None                    # rapporteur, majority, minority
+    person: PersonBrief | None = None
+
+
 class Act(ActBrief):
     kind_raw: str | None = None
     description: str | None = None
@@ -243,7 +262,10 @@ class Act(ActBrief):
     status_date: dt.date | None = None
     text: str | None = None                    # atti di sindacato ispettivo e di indirizzo
     source_uri: str | None = None
+    text_urls: list[str] = []
     sponsors: list[Sponsor] = []
+    assignments: list[Assignment] = []
+    rapporteurs: list[Rapporteur] = []
     steps: list[Step] = []
     versions: list[TextVersion] = []
     joined: list[ActRef] = []

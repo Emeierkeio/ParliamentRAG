@@ -1,0 +1,52 @@
+{
+ "atti": [
+  {
+   "doc": "http://dati.senato.it/documento/55029",
+   "numero": "453",
+   "titolo": "Schema di decreto ministeriale di approvazione del programma pluriennale di A/R n. SMD 7/2026, relativo all'acquisizione di due unità idro-oceanografiche costiere (NIOC)",
+   "breve": "Schema D.M. programma pluriennale di A/R n. SMD 7/2026",
+   "data": "2026-10-30",
+   "stato": "da assegnare",
+   "presentatore": "Ministro della difesa (Gov. Meloni-I)"
+  },
+  {
+   "doc": "http://dati.senato.it/documento/55032",
+   "numero": "455",
+   "titolo": "Schema di decreto ministeriale di approvazione del programma pluriennale di A/R n. SMD 9/2026, denominato «Aeromobili a pilotaggio remoto (APR) di classe I della Difesa», relativo al potenziamento della capacità di sorveglianza, esplorazione, acquisizione informativa e intervento a livello tattico delle varie componenti dell'Aeronautica militare",
+   "breve": "Schema D.M. programma pluriennale di A/R n. SMD 9/2026",
+   "data": "2026-10-30",
+   "stato": "da assegnare",
+   "presentatore": "Ministro della difesa (Gov. Meloni-I)"
+  },
+  {
+   "doc": "http://dati.senato.it/documento/54887",
+   "numero": "450",
+   "titolo": "Schema di decreto legislativo recante riforma dell'ordinamento forense",
+   "breve": "Schema D.lgs recante riforma dell'ordinamento forense",
+   "data": "2026-10-26",
+   "stato": "assegnato",
+   "url": "http://www.senato.it/service/PDF/PDFServer/BGT/1526374.pdf",
+   "presentatore": "Ministro per i rapporti con il Parlamento (Gov. Meloni-I)"
+  }
+ ],
+ "nomine": [
+  {
+   "doc": "http://dati.senato.it/documento/55086",
+   "numero": "148",
+   "titolo": "Proposta di nomina del dottor Giulio Centemero a componente della Commissione nazionale per le società e la borsa (CONSOB)",
+   "breve": "Proposta di nomina del dott. Giulio Centemero a componente della CONSOB",
+   "data": "2026-11-09",
+   "stato": "assegnato",
+   "presentatore": "Ministro per i rapporti con il Parlamento (Gov. Meloni-I)"
+  },
+  {
+   "doc": "http://dati.senato.it/documento/51317",
+   "numero": "89",
+   "titolo": "Proposta di nomina del professor Giuseppe Marini a componente della Commissione indipendente per la verifica dell'equilibrio economico e finanziario delle società sportive professionistiche",
+   "breve": "Proposta di nomina del prof. Giuseppe Marini a componente della Commissione indipendente per la verifica dell'equilibrio economico e finanziario delle società sportive professionistiche",
+   "data": "2025-05-22",
+   "stato": "assegnato",
+   "presentatore": "Ministro per lo sport e giovani (Gov. Meloni-I)"
+  }
+ ]
+}

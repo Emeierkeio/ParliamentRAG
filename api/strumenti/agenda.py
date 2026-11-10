@@ -1,6 +1,8 @@
 """L'agenda del Parlamento, giorno per giorno: sedute d'Aula (previste e tenute, e i giorni del calendario dei lavori
-che non hanno ancora una seduta: status «calendar»), sedute di commissione, termini per gli
-emendamenti, progetti di legge presentati, votazioni finali e leggi pubblicate. La usano la chat (strumento `agenda`),
+che non hanno ancora una seduta: status «calendar»), sedute di commissione (e, da oggi in poi, le convocazioni delle
+commissioni permanenti: status «convened», con orari, sedi, argomenti e auditi), termini per gli
+emendamenti, termini dei pareri sugli atti del Governo e sulle nomine, progetti di legge presentati, votazioni finali e
+leggi pubblicate. La usano la chat (strumento `agenda`),
 il server MCP pubblico (get_parliament_agenda) e la pagina Agenda del sito.
 
 Un termine compare una volta sola anche se il sommario lo ricorda in più sedute (fissato, ricordato, scaduto); un termine
@@ -15,7 +17,9 @@ from collections import defaultdict
 
 import psycopg
 
-TIPI = ("aula", "commissioni", "termini", "atti", "voti", "leggi")
+from .atti import ha_pareri
+
+TIPI = ("aula", "commissioni", "termini", "pareri", "atti", "voti", "leggi")
 MASSIMO_GIORNI = 62
 
 
@@ -52,6 +56,23 @@ def termini(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | 
                   "body_name": prima["body_name"] if prima["due_time"] or not r["due_time"] else r["body_name"],
                   "bodies": list(dict.fromkeys(prima["bodies"] + [r["body_name"]]))}
     return sorted(uno.values(), key=lambda t: (t["due_date"], t["due_time"] or "99"))
+
+
+def pareri(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | None = None) -> list[dict]:
+    """I termini dei pareri delle commissioni su atti del Governo e nomine, uno per atto e data: le commissioni che
+    devono esprimersi entro quel giorno e quelle che l'hanno già fatto. La fonte dà i termini solo per la Camera."""
+    if not ha_pareri(c):
+        return []
+    return c.execute("""
+        SELECT a.uri AS act, a.chamber, a.kind, a.kind_raw, a.number AS act_number, a.title AS act_title, a.status, a.card_url AS act_url,
+               a.description AS proposer, x.deadline AS due_date, min(x.date) AS assigned,
+               array_agg(DISTINCT x.title) AS bodies,
+               array_remove(array_agg(DISTINCT x.title) FILTER (WHERE x.opinion IS NOT NULL), NULL) AS done,
+               array_remove(array_agg(DISTINCT x.opinion || ' (' || x.title || ')') FILTER (WHERE x.opinion IS NOT NULL), NULL) AS opinions
+        FROM act_assignment x JOIN act a ON a.uri = x.act
+        WHERE a.kind IN ('government_act', 'appointment') AND x.deadline BETWEEN %(s)s AND %(e)s
+          AND (%(r)s::text IS NULL OR a.chamber = %(r)s)
+        GROUP BY a.uri, x.deadline ORDER BY x.deadline, a.kind DESC, a.number""", {"s": start, "e": end, "r": _ramo(chamber)}).fetchall()
 
 
 def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | None = None, types: list[str] | None = None) -> dict:
@@ -98,9 +119,28 @@ def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | N
             WHERE s.body NOT LIKE '%%:aula' AND s.date BETWEEN %(s)s AND %(e)s AND (%(r)s::text IS NULL OR s.chamber = %(r)s)
             GROUP BY s.date, s.chamber, s.body, 4 ORDER BY s.date, s.chamber, 4""", p):
             giorni[r["date"].isoformat()]["commissioni"].append({**r, "items": sorted(r["items"] or [])[:6], "items_total": len(r["items"] or [])})
+        # da oggi in poi: le convocazioni delle commissioni permanenti, per i giorni e gli organi che non hanno già una seduta
+        if c.execute("SELECT to_regclass('convocation') IS NOT NULL AS c").fetchone()["c"]:
+            tenute = {(g, x["chamber"], x["body"]) for g, ev in giorni.items() for x in ev.get("commissioni", [])}
+            for r in c.execute("""
+                SELECT date, chamber, body, body_name, max(url) AS url, max(published) AS published,
+                       count(*) FILTER (WHERE NOT cancelled) AS sittings, min(start_time) FILTER (WHERE NOT cancelled) AS start_time,
+                       json_agg(json_build_object('time', start_time, 'when', when_text, 'seat', seat, 'place', place, 'number', number,
+                                                  'text', left(text, 1500), 'acts', acts, 'cancelled', cancelled) ORDER BY ord) AS blocks
+                FROM convocation WHERE date BETWEEN %(s)s AND %(e)s AND date >= current_date AND (%(r)s::text IS NULL OR chamber = %(r)s)
+                GROUP BY date, chamber, body, body_name ORDER BY date, chamber, min(start_time) NULLS LAST, body_name""", p):
+                if (r["date"].isoformat(), r["chamber"], r["body"]) in tenute:
+                    continue
+                voci = [b["text"].split("\n")[0] for b in r["blocks"] if b["text"] and not b["cancelled"]]
+                giorni[r["date"].isoformat()]["commissioni"].append({
+                    **r, "status": "convened", "seats": list(dict.fromkeys(b["seat"] for b in r["blocks"] if b["seat"] and not b["cancelled"])),
+                    "items": voci[:6], "items_total": len(voci)})
     if "termini" in tipi:
         for t in termini(c, start, end, chamber):
             giorni[t["due_date"].isoformat()]["termini"].append(t)
+    if "pareri" in tipi:
+        for t in pareri(c, start, end, chamber):
+            giorni[t["due_date"].isoformat()]["pareri"].append(t)
     if "atti" in tipi:
         for r in c.execute("""
             SELECT a.uri, a.chamber, a.number, a.title, a.date, a.initiative, a.card_url

@@ -2,6 +2,7 @@
    Solo i token di app.css: vale per tema chiaro e scuro. Un colore per tipo di evento: termini nel blu del logo (blu anche
    nel tema scuro, dove l'accento è bianco), leggi in verde, il resto in scala di grigi. */
 .ag-t--termini{--ag-col:var(--logo-p)}
+.ag-t--pareri{--ag-col:var(--acc)}
 .ag-t--aula{--ag-col:var(--t)}
 .ag-t--voti{--ag-col:var(--t2)}
 .ag-t--leggi{--ag-col:var(--ok)}
@@ -104,5 +105,8 @@
 .ag-pill{display:inline-flex;align-items:center;font-size:11.5px;font-weight:500;line-height:1;padding:3px 8px;border-radius:999px;background:var(--sup2);color:var(--t2);white-space:nowrap}
 .ag-pill--ok{background:var(--ok-f);color:var(--ok)}
 .ag-pill--no{background:var(--no-f);color:var(--no)}
+.ag-d__organo{font-size:14px;font-weight:600;margin:14px 0 4px}
+.ag-d__lista--ore time{font-variant-numeric:tabular-nums;color:var(--t2);margin-right:4px}
+.ag-d__lista--ore .ag-off{color:var(--t3)}
 .ag-pill--off{background:var(--sup3);color:var(--t3)}
 @media (prefers-reduced-motion:no-preference){.ag-dlg[open]{animation:ag-entra .14s ease-out}@keyframes ag-entra{from{opacity:0;transform:translateY(6px)}}}

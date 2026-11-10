@@ -310,7 +310,8 @@ class ParliamentAgenda(Parametri):
     end_date: str | None = Field(None, description="Last day, YYYY-MM-DD (at most 62 days after start_date); default: start_date.")
     chamber: str = Field("both", description='"both" (default), "camera" or "senato".')
     types: list[str] | None = Field(None, description='Which events (default all): "aula" (plenary sittings, planned and held; a day with status "calendar" comes from the calendar of works of the Chamber and has no sitting number yet), '
-                                    '"commissioni" (committee sittings), "termini" (amendment deadlines), "atti" (bills filed), '
+                                    '"commissioni" (committee sittings held and, from today on, committee convocations with status "convened": times, venue, items and hearings), "termini" (amendment deadlines), "pareri" (deadlines for committee opinions on '
+                                    'government acts such as draft legislative decrees, and on appointments; Chamber only), "atti" (bills filed), '
                                     '"voti" (final votes), "leggi" (laws published).')
 
 

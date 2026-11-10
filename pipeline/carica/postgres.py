@@ -274,7 +274,7 @@ ATTI = {
     "act_version": ["uri", "act", "title", "date", "url"],
     "act_sponsor": ["act", "person", "first", "as_office"],
     "act_assignment": ["act", "body", "seat", "date", "title"],
-    "act_rapporteur": ["act", "name_raw", "role", "raw"],
+    "act_rapporteur": ["act", "name_raw", "role", "raw", "person"],
     "act_joint": ["act", "main_act", "text_type"],
     "act_transmission": ["act", "other_ref", "date", "title", "provenance"],
 }
@@ -306,12 +306,13 @@ def script_atti(righe: list[dict]) -> str:
         elif a["type"] == "ASSIGNED":
             t["act_assignment"].append([a["from"], a["to"], a.get("seat"), a.get("date"), a.get("title")])
         elif a["type"] == "RAPPORTEUR":
-            t["act_rapporteur"].append([a["to"], a["from_ref"], a.get("role"), a.get("raw")])
+            t["act_rapporteur"].append([a["to"], a["from_ref"], a.get("role"), a.get("raw"), a.get("person")])
         elif a["type"] == "JOINED":
             t["act_joint"].append([a["from"], a["to"], a.get("text_type")])
         elif a["type"] == "TRANSMITTED":
             t["act_transmission"].append([a["from"], a.get("to_ref"), a.get("date"), a.get("title"), a.get("provenance")])
-    persone = sorted({r[1] for r in t["act_sponsor"]})
+    # i relatori del Senato arrivano già con il senatore: la persona deve esserci prima della riga
+    persone = sorted({r[1] for r in t["act_sponsor"]} | {r[4] for r in t["act_rapporteur"] if r[4]})
     parti = ["BEGIN;", f"DELETE FROM act WHERE chamber = {ramo} AND legislature = {leg} AND kind = 'bill';",
              f"CREATE TEMP TABLE p (uri text) ON COMMIT DROP;\nCOPY p FROM STDIN WITH (FORMAT csv);\n{_csv([[x] for x in persone])}\\.",
              "INSERT INTO person (uri) SELECT uri FROM p ON CONFLICT DO NOTHING;"]
@@ -349,6 +350,35 @@ def script_atti(righe: list[dict]) -> str:
         f"UPDATE vote_act v SET act = a.uri FROM act a, vote x WHERE x.uri = v.vote AND x.chamber = a.chamber "
         f"AND a.chamber = {ramo} AND a.legislature = {leg} AND v.act_ref = a.source_uri;",
         "COMMIT;"]
+    return "\n".join(parti) + "\n"
+
+
+ATTI_GOVERNO = {
+    "act": ATTI["act"] + ["source_key"],
+    "act_assignment": ["act", "body", "seat", "date", "title", "deadline", "basis", "opinion", "opinion_date"],
+}
+
+
+def script_atti_governo(righe: list[dict]) -> str:
+    """Atti del Governo e nomine sottoposti a parere, di un ramo e di una legislatura: si sostituiscono interi, con le
+    assegnazioni alle commissioni. Poi si legano agli argomenti dei sommari («Atto n. 439» = ag:439)."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    ramo, leg = _lit(amb["chamber"]), int(amb["legislature"])
+    nodi = [r for r in righe if r["tipo"] == "nodo" and r["label"] == "Act"]
+    if not nodi:
+        return ""
+    atti = [[_array(n.get("text_urls")) if c == "text_urls" else amb.get("source_key") if c == "source_key" else n.get(c)
+             for c in ATTI_GOVERNO["act"]] for n in nodi]
+    assegnazioni = [[a["from"], a["to"], a.get("seat"), a.get("date"), a.get("title"), a.get("deadline"), a.get("basis"),
+                     a.get("opinion"), a.get("opinion_date")] for a in righe if a["tipo"] == "arco" and a["type"] == "ASSIGNED"]
+    parti = ["BEGIN;", f"DELETE FROM act WHERE chamber = {ramo} AND legislature = {leg} AND kind IN ('government_act', 'appointment');",
+             f"COPY act ({', '.join(ATTI_GOVERNO['act'])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(atti)}\\."]
+    if assegnazioni:
+        parti.append(f"COPY act_assignment ({', '.join(ATTI_GOVERNO['act_assignment'])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(assegnazioni)}\\.")
+    parti += [f"UPDATE agenda_item_act x SET act = a.uri FROM act a, agenda_item i, sitting s WHERE x.act IS NULL AND x.act_ref ~ '^ag:' "
+              f"AND i.uri = x.item AND s.uri = i.sitting AND s.chamber = {ramo} AND a.chamber = {ramo} AND a.legislature = {leg} "
+              f"AND a.kind = 'government_act' AND a.number = split_part(x.act_ref, ':', 2);",
+              "COMMIT;"]
     return "\n".join(parti) + "\n"
 
 
@@ -565,6 +595,25 @@ def script_calendario(righe: list[dict]) -> str:
                       f"COPY calendar_item ({', '.join(col)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(dati)}\\.", "COMMIT;"]) + "\n"
 
 
+CONVOCAZIONI = ["uri", "chamber", "body", "body_name", "date", "ord", "start_time", "when_text", "seat", "place", "number", "text", "acts",
+                "cancelled", "published", "url", "source", "source_key"]
+
+
+def script_convocazioni(righe: list[dict]) -> str:
+    """Le convocazioni di una commissione (un giorno alla Camera, una settimana al Senato): sostituiscono quelle della
+    stessa pagina; quelle delle pagine passate restano. Una pagina senza convocazioni toglie quelle di prima."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    voci = [r for r in righe if r["tipo"] == "nodo" and r["label"] == "Convocation"]
+    dati = [[v["uri"], v["chamber"], v.get("body"), v["body_name"], v["date"], v["order"], v.get("start_time"), v.get("when"), v.get("seat"),
+             v.get("place"), v.get("number"), v.get("text"), _array(v.get("acts") or []), bool(v.get("cancelled")), v.get("published"),
+             v.get("url"), amb["source"], amb["source_key"]] for v in voci]
+    parti = ["BEGIN;", f"DELETE FROM convocation WHERE source_key = {_lit(amb['source_key'])};"]
+    if dati:
+        parti += [f"DELETE FROM convocation WHERE uri = ANY (ARRAY[{', '.join(_lit(d[0]) for d in dati)}]);",
+                  f"COPY convocation ({', '.join(CONVOCAZIONI)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(dati)}\\."]
+    return "\n".join(parti + ["COMMIT;"]) + "\n"
+
+
 DOC_META = ["uri", "kind", "date", "body_code", "body", "title", "author_raw", "hearing", "sitting_date", "acts", "url", "format",
             "third_party", "hash", "source", "source_key"]
 
@@ -709,7 +758,8 @@ SCRIPT = {"anagrafica": (script_anagrafica, "anagrafiche_e_atti"), "voti": (scri
           "documenti_elenco": (script_documenti, "sedute"), "documento_testo": (script_documenti, "sedute"),
           "odg": (script_odg, "sedute"), "calendario": (script_calendario, "sedute"), "video": (script_video, "sedute"), "aic": (script_aic, "anagrafiche_e_atti"),
           "corrispondenze": (script_corrispondenze, "anagrafiche_e_atti"), "governo": (script_governo, "anagrafiche_e_atti"),
-          "concetti": (script_concetti, "anagrafiche_e_atti"), "atti": (script_atti, "anagrafiche_e_atti")}
+          "concetti": (script_concetti, "anagrafiche_e_atti"), "atti": (script_atti, "anagrafiche_e_atti"),
+          "atti_governo": (script_atti_governo, "anagrafiche_e_atti"), "convocazioni": (script_convocazioni, "sedute")}
 
 
 def leggi_uscita(f: Path) -> list[dict]:
@@ -735,7 +785,7 @@ def ordine(f: Path) -> tuple:
     """Prima l'anagrafica (gli interventi e i voti citano le persone), poi governo e corrispondenze, poi gli atti
     (i voti si legano agli atti), poi il resto."""
     return (0 if f.name.endswith("-anagrafica.jsonl") else 1 if f.name.endswith(("-governo.jsonl", "-corrispondenze.jsonl"))
-            else 2 if f.name.endswith("-atti.jsonl") or "-aic-" in f.name else 3, str(f))
+            else 2 if f.name.endswith(("-atti.jsonl", "-atti-governo.jsonl")) or "-aic-" in f.name else 3, str(f))
 
 
 def applica_schema(registro: Registro) -> str:

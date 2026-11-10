@@ -1,10 +1,12 @@
-/* Agenda del Parlamento: sedute d'Aula, commissioni, termini per gli emendamenti, progetti di legge, voti finali e leggi,
+/* Agenda del Parlamento: sedute d'Aula, commissioni, termini per gli emendamenti, termini dei pareri sugli atti del
+   Governo e sulle nomine, progetti di legge, voti finali e leggi,
    in un calendario per mese o per settimana. In ogni giorno solo titoli brevi; il clic apre il dettaglio in una finestra.
    Interroga lo strumento pubblico get_parliament_agenda (api/strumenti/agenda.py). */
 (function () {
   const e = B.esc, $ = B.$;
   const TIPI = [
     ["termini", TT("Termini emendamenti", "Amendment deadlines")],
+    ["pareri", TT("Pareri su atti del Governo", "Opinions on government acts")],
     ["aula", TT("Aula", "Floor")],
     ["voti", TT("Voti finali", "Final votes")],
     ["leggi", TT("Leggi", "Laws")],
@@ -66,13 +68,15 @@
     const xs = [];
     if (on("termini")) g.termini.forEach((t) => xs.push({ tipo: "termini", ora: t.due_time, x: t, off: t.superseded,
       titolo: `${TT("Termine", "Deadline")} ${atto(t) || TIPO_T[t.kind] || ""}` }));
+    if (on("pareri")) g.pareri.forEach((p) => xs.push({ tipo: "pareri", x: p, off: (p.done || []).length >= (p.bodies || []).length,
+      titolo: `${TT("Parere", "Opinion")} ${p.kind === "appointment" ? TT("nomina", "appointment") : TT("atto", "act")} n. ${p.act_number}` }));
     if (on("aula")) g.aula.forEach((s) => xs.push({ tipo: "aula", ora: s.start_time, x: s,
       titolo: `${TT("Aula", "Floor")} ${ramo(s.chamber)}${s.status === "planned" ? ` · ${TT("prevista", "planned")}` : s.status === "calendar" ? ` · ${TT("in calendario", "on the calendar")}` : ""}` }));
     if (on("voti")) g.voti.forEach((v) => xs.push({ tipo: "voti", x: v, esito: v.approved ? "ok" : "no", titolo: `${TT("Voto finale", "Final vote")}: ${pulito(v.act_title || v.title)}` }));
     if (on("leggi")) g.leggi.forEach((l) => xs.push({ tipo: "leggi", x: l, titolo: `${TT("Legge", "Law")} ${l.law_number ? `n. ${l.law_number}` : ""} · ${pulito(l.title)}` }));
     if (on("atti")) xs.push({ tipo: "atti", x: g.atti, titolo: `${g.atti.length} ${g.atti.length === 1 ? TT("progetto di legge", "bill") : TT("progetti di legge", "bills")}` });
-    if (on("commissioni")) xs.push({ tipo: "commissioni", x: g.commissioni, titolo: `${g.commissioni.length} ${g.commissioni.length === 1 ? TT("commissione", "committee") : TT("commissioni", "committees")}` });
-    const peso = { termini: 0, aula: 1, voti: 2, leggi: 3, atti: 4, commissioni: 5 };
+    if (on("commissioni")) xs.push({ tipo: "commissioni", x: g.commissioni, titolo: `${g.commissioni.length} ${g.commissioni.length === 1 ? TT("commissione", "committee") : TT("commissioni", "committees")}${g.commissioni.some((c) => c.status === "convened") ? ` ${g.commissioni.length === 1 ? TT("convocata", "convened") : TT("convocate", "convened")}` : ""}` });
+    const peso = { termini: 0, pareri: 0.5, aula: 1, voti: 2, leggi: 3, atti: 4, commissioni: 5 };
     return xs.sort((a, b) => peso[a.tipo] - peso[b.tipo] || String(a.ora || "99").localeCompare(String(b.ora || "99")));
   }
 
@@ -89,6 +93,19 @@
         <blockquote class="ag-d__fonte">«${e(x.sentence)}»</blockquote>
         <p class="ag-nota">${TT("Sommario della seduta del", "Summary record of the sitting of")} ${B.data(x.sitting_date)}${x.mentions > 1 ? `, ${TT("ricordato in", "mentioned in")} ${x.mentions} ${TT("sedute", "sittings")}` : ""}.</p>
         ${scheda(x) || x.act_url ? `<div class="ag-d__azioni">${scheda(x) ? `<a class="bt bt--primario ag-d__vai" href="${e(scheda(x))}">${TT("Apri il provvedimento", "Open the bill")}</a>` : ""}${x.act_url ? `<a class="bt bt--linea ag-d__vai" href="${e(x.act_url)}" target="_blank" rel="noopener">${B.ico("esterno")}${x.chamber === "senato" ? TT("Scheda sul sito del Senato", "Page on the Senate website") : TT("Scheda sul sito della Camera", "Page on the Chamber website")}</a>` : ""}</div>` : ""}`;
+    }
+    if (ev.tipo === "pareri") {
+      const nomina = x.kind === "appointment", tutti = (x.done || []).length >= (x.bodies || []).length;
+      const passato = x.due_date < oggi();
+      return `<p class="ag-d__tipo ag-t--pareri">${TT("Termine per il parere", "Deadline for the opinion")} · ${ramo(x.chamber)}</p>
+        <h3>${nomina ? TT("Nomina del Governo", "Government appointment") : TT("Atto del Governo", "Government act")} n. ${e(x.act_number)} · ${e(pulito(x.act_title))}</h3>
+        <dl class="ag-d__dati"><dt>${TT("Scade", "Due")}</dt><dd>${e(giornoLungo(x.due_date))}${tutti ? ` <span class="ag-pill ag-pill--ok">${TT("parere espresso", "opinion given")}</span>` : passato ? ` <span class="ag-pill ag-pill--off">${TT("scaduto", "expired")}</span>` : ""}</dd>
+        <dt>${TT("Commissioni", "Committees")}</dt><dd>${e((x.bodies || []).join(", "))}</dd>
+        ${(x.opinions || []).length ? `<dt>${TT("Pareri", "Opinions")}</dt><dd>${e(x.opinions.join("; "))}</dd>` : ""}
+        ${x.proposer ? `<dt>${TT("Proponente", "Proposed by")}</dt><dd>${e(x.proposer)}</dd>` : ""}
+        ${x.assigned ? `<dt>${TT("Assegnato", "Referred")}</dt><dd>${B.data(x.assigned)}</dd>` : ""}</dl>
+        <p class="ag-nota">${TT("Dall'elenco degli atti del Governo sottoposti a parere sul sito della Camera.", "From the list of government acts submitted for opinion on the Chamber's website.")}</p>
+        ${x.act_url ? `<a class="bt bt--linea ag-d__vai" href="${e(x.act_url)}" target="_blank" rel="noopener">${B.ico("esterno")}${TT("Scheda sul sito della Camera", "Page on the Chamber website")}</a>` : ""}`;
     }
     if (ev.tipo === "aula") {
       const temi = merito(x.items);
@@ -113,8 +130,12 @@
     if (ev.tipo === "leggi") return `<p class="ag-d__tipo ag-t--leggi">${TT("Legge", "Law")}${x.law_number ? ` n. ${e(x.law_number)}` : ""}</p><h3>${e(pulito(x.title))}</h3>`;
     if (ev.tipo === "atti") return `<p class="ag-d__tipo ag-t--atti">${x.length} ${TT("progetti di legge presentati", "bills filed")}</p>
         <ul class="ag-d__lista">${x.map((a) => `<li><b>${ramo(a.chamber).charAt(0)}. ${e(a.number)}</b> ${a.card_url ? `<a href="${e(a.card_url)}" target="_blank" rel="noopener">${e(B.taglia(a.title || "", 160))}</a>` : e(B.taglia(a.title || "", 160))}${a.initiative ? ` <small>${e(a.initiative)}</small>` : ""}</li>`).join("")}</ul>`;
-    return `<p class="ag-d__tipo ag-t--commissioni">${x.length} ${TT("organi riuniti", "committees met")}</p>
-        <ul class="ag-d__lista">${x.map((c) => `<li><b>${ramo(c.chamber)}</b> · ${e(c.body_name || "")}${c.sittings > 1 ? ` <small>× ${c.sittings}</small>` : ""}${(c.items || []).length ? `<br><small>${e(c.items.slice(0, 3).map((t) => B.taglia(t, 90)).join(" · "))}</small>` : ""}</li>`).join("")}</ul>`;
+    // da oggi in poi le commissioni arrivano dalle convocazioni (status «convened»): orari, sedi, argomenti e auditi
+    const convocate = x.filter((c) => c.status === "convened"), tenute = x.filter((c) => c.status !== "convened");
+    const blocco = (b) => `<li${b.cancelled ? ' class="ag-off"' : ""}>${b.time || b.when ? `<time>${e(b.time || b.when)}</time> ` : ""}${b.seat ? `<b>${e(b.seat)}</b>` : ""}${b.cancelled ? ` <span class="ag-pill ag-pill--off">${TT("sconvocata", "cancelled")}</span>` : ""}${b.text && !b.cancelled ? `<br><small>${e(B.taglia(b.text.replace(/\n/g, " · "), 420))}</small>` : ""}</li>`;
+    return `<p class="ag-d__tipo ag-t--commissioni">${convocate.length ? `${convocate.length} ${convocate.length === 1 ? TT("commissione convocata", "committee convened") : TT("commissioni convocate", "committees convened")}` : `${x.length} ${TT("organi riuniti", "committees met")}`}</p>
+        ${convocate.map((c) => `<h4 class="ag-d__organo">${ramo(c.chamber)} · ${e(B.taglia(c.body_name || "", 90))}</h4><ul class="ag-d__lista ag-d__lista--ore">${(c.blocks || []).map(blocco).join("")}</ul>${c.url ? `<p class="ag-nota"><a href="${e(c.url)}" target="_blank" rel="noopener">${c.chamber === "senato" ? TT("Convocazione sul sito del Senato", "Convocation on the Senate website") : TT("Convocazione sul sito della Camera", "Convocation on the Chamber website")}</a></p>` : ""}`).join("")}
+        ${tenute.length ? `${convocate.length ? `<p class="ag-nota">${tenute.length} ${TT("organi riuniti", "committees met")}</p>` : ""}<ul class="ag-d__lista">${tenute.map((c) => `<li><b>${ramo(c.chamber)}</b> · ${e(c.body_name || "")}${c.sittings > 1 ? ` <small>× ${c.sittings}</small>` : ""}${(c.items || []).length ? `<br><small>${e(c.items.slice(0, 3).map((t) => B.taglia(t, 90)).join(" · "))}</small>` : ""}</li>`).join("")}</ul>` : ""}`;
   }
 
   /* ---------- la griglia ---------- */
@@ -184,7 +205,7 @@
     const base = /^\d{4}-\d{2}-\d{2}$/.test(arg || "") ? daIso(arg) : new Date();
     st.inizio = st.vista === "settimana" ? lunedi(base) : new Date(base.getFullYear(), base.getMonth(), 1);
     box.innerHTML = ST.testa("agenda", null, null, TT("Cosa scade questa settimana in Parlamento?", "What is due in Parliament this week?"))
-      + ST.avvio(TT("Il calendario del Parlamento: sedute d'Aula, commissioni, termini per presentare gli emendamenti, progetti di legge, voti finali e leggi. Clicca un evento per il dettaglio.", "Parliament's calendar: floor sittings, committees, deadlines for amendments, bills, final votes and laws. Click an event for the details."), [], "")
+      + ST.avvio(TT("Il calendario del Parlamento: sedute d'Aula, commissioni, termini per presentare gli emendamenti, termini dei pareri sugli atti del Governo, progetti di legge, voti finali e leggi. Clicca un evento per il dettaglio.", "Parliament's calendar: floor sittings, committees, deadlines for amendments, bills, final votes and laws. Click an event for the details."), [], "")
       + `<div class="ag-barra">
           <div class="ag-nav"><button type="button" class="bt bt--linea ag-oggi" data-ag="0">${TT("Oggi", "Today")}</button><button type="button" class="ic-a" data-ag="-1" aria-label="${TT("Periodo precedente", "Previous period")}" data-tip="${TT("Precedente", "Previous")}">${B.ico("sx")}</button><button type="button" class="ic-a" data-ag="1" aria-label="${TT("Periodo successivo", "Next period")}" data-tip="${TT("Successivo", "Next")}">${B.ico("dx")}</button><h2 id="ag-periodo" aria-live="polite"></h2></div>
           <div class="ag-scelte"><label class="vh" for="ag-ramo">${TT("Ramo", "Chamber")}</label><select id="ag-ramo"><option value="both">${TT("Camera e Senato", "Chamber and Senate")}</option><option value="camera">Camera</option><option value="senato">Senato</option></select>

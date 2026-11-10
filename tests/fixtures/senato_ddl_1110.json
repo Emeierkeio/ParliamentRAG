@@ -1,0 +1,215 @@
+{
+ "ddl": [
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "idDdl": "53562",
+   "numero": "1110",
+   "titolo": "Conversione in legge, con modificazioni, del decreto-legge 2 marzo 2024, n. 19, recante ulteriori disposizioni urgenti per l'attuazione del Piano nazionale di ripresa e resilienza (PNRR)",
+   "data": "2024-04-18",
+   "natura": "di conversione di decreto-legge",
+   "stato": "appr. definit. Legge",
+   "ramo": "S",
+   "iniziativa": "Pres. Consiglio Meloni Giorgia (Meloni-I), Ministro aff.eu,Sud.coe.pnrr Fitto Raffaele (Meloni-I) ed altri.",
+   "legge": "56",
+   "dataLegge": "2024-04-29"
+  }
+ ],
+ "firmatari": [],
+ "presentatori": [
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro del lavoro e politiche sociali Marina Elvira Calderone (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro del turismo Daniela Garnero Santanche' (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro dell'agricoltura, sovranità alimentare e foreste Francesco Lollobrigida (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro dell'ambiente e sicurezza energetica Gilberto Pichetto Fratin (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro dell'economia e finanze Giancarlo Giorgetti (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro dell'interno Matteo Piantedosi (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro dell'istruzione e merito Giuseppe Valditara (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro dell'università e ricerca Anna Maria Bernini (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro della giustizia Carlo Nordio (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro della salute Orazio Schillaci (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro delle imprese e made in Italy Adolfo Urso (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro delle infrastrutture e trasporti Matteo Salvini (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro senza portafoglio per gli affari europei, il Sud, le politiche di coesione e il PNRR Raffaele Fitto (Gov. Meloni-I)",
+   "tipo": "Governativa",
+   "primo": "1"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro senza portafoglio per gli affari regionali e le autonomie Roberto Calderoli (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro senza portafoglio per la protezione civile e politiche mare Nello Musumeci (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro senza portafoglio per la pubblica amministrazione Paolo Zangrillo (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro senza portafoglio per le riforme istituzionali e la semplificazione normativa Maria Elisabetta Alberti Casellati (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Ministro senza portafoglio per lo sport e giovani Andrea Abodi (Gov. Meloni-I)",
+   "tipo": "Governativa"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "presentatore": "Pres. Consiglio  Giorgia Meloni (Gov. Meloni-I)",
+   "tipo": "Governativa",
+   "primo": "1"
+  }
+ ],
+ "assegnazioni": [
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": " Comitato legislazione",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-149"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": " Questioni regionali",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/4-40"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "1&ordf; (Aff. costituzionali)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-1"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "10&ordf; (Sanità e lavoro)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-148"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "2&ordf; (Giustizia)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-2"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "3&ordf; (Aff. esteri e difesa)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-145"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "4&ordf; (Unione europea)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-14"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "5&ordf; (Bilancio)",
+   "tipo": "primaria",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-5",
+   "sede": "referente"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "6&ordf; (Finanze)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-6"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "7&ordf; (Cultura, istruzione)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-7"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "8&ordf; (Ambiente, lavori pubblici)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-146"
+  },
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "9&ordf; (Industria e agricoltura)",
+   "tipo": "consultiva",
+   "data": "2024-04-18",
+   "organo": "http://dati.senato.it/commissione/0-147"
+  }
+ ],
+ "relatori": [
+  {
+   "ddl": "http://dati.senato.it/ddl/58173",
+   "etichetta": "Sen. Dario Damiani",
+   "tipo": "relatore",
+   "minoranza": "0",
+   "data": "2024-04-19",
+   "organo": "commissione",
+   "senatore": "http://dati.senato.it/senatore/32747"
+  }
+ ]
+}

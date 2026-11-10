@@ -78,6 +78,11 @@ Regole:
 1. `fonti/<nome>.py` con `scarica(ctx)`, che salva nel `Lago`.
 2. `trasforma/<nome>.py` con `trasforma(grezzo, info) -> {"nodi", "archi", "testi"}`, con un test su un file d'esempio in `tests/fixtures/`.
 3. Due `Passo` in `passi.py` e una sezione in `pipeline.toml`.
+4. La voce in `copertura.toml`: che cosa copre la fonte, per quale ramo, e se è fatta o parziale. Un test fallisce se una fonte di `pipeline.toml` non compare in nessuna voce.
+
+### Copertura del dominio
+
+`copertura.toml` elenca che cosa pubblicano Camera e Senato per la legislatura in corso e che cosa di questo scarichiamo: ogni voce ha un peso (1-3), lo stato per ramo (`fatto`, `parziale`, `manca`, `non_c_e`), il motivo se manca e una query che conta le righe. Il pannello `/sistema` ne ricava la percentuale, per ramo e per area, l'elenco di ciò che manca con il perché, e avvisa se una voce data per fatta non ha righe nel database (`api/copertura.py`). Si aggiorna insieme al codice: una fonte nuova, una voce che cambia stato.
 
 ### Fonti caricate
 
@@ -96,7 +101,13 @@ Fatto, tutto per la Camera XIX:
 - documenti acquisiti dalle commissioni permanenti (circa 4 mila memorie e contributi scritti): chi li ha mandati, per quale audizione o atto, quando, e il testo (PDF, DOCX, PPTX). Sono scritti di terzi (`third_party`): nel sito solo estratti con il link. 300 file per notte;
 - dossier dei Servizi di documentazione (circa 3.600, da temi.camera.it, CC BY-SA 4.0): data, servizio, codice, atto a cui si riferiscono e testo integrale dalla versione HTML. 300 per notte;
 - votazioni elettroniche e voto di ogni deputato, con il gruppo attribuito dalla Camera in quel voto; un controllo blocca il giro se i voti dei singoli non tornano con i totali;
-- emendamenti (dagli XML di documenti.camera.it, riscaricati solo se cambiati) e testi degli atti, articolo per articolo.
+- emendamenti (dagli XML di documenti.camera.it, riscaricati solo se cambiati) e testi degli atti, articolo per articolo;
+- atti del Governo e proposte di nomina sottoposti a parere (`government_act`, `appointment`; circa 600): fase, e per ogni commissione l'assegnazione con data, termine, norma che chiede il parere e parere espresso (`act_assignment`: `deadline`, `basis`, `opinion`, `opinion_date`). Una pagina sola, una richiesta per notte. Si legano agli argomenti del Bollettino («Atto n. 439» = `ag:439`); l'agenda ne mostra i termini (tipo `pareri`).
+
+Camera e Senato, convocazioni delle commissioni permanenti (`convocation`, una voce per commissione, giorno e blocco orario: ora, sede, aula, argomenti, auditi, atti, sconvocazioni):
+- Camera: la pagina di ogni commissione e i giorni da oggi in poi (circa 60 richieste per notte); gli atti dai link (`ac:3119`, `ag:446`);
+- Senato: la pagina della settimana di ogni commissione, con il browser (10 richieste, nel tetto di senato.it); il numero della seduta e i ddl dai link.
+Non sono sedute: l'agenda le mostra da oggi in poi (`status: convened`) per gli organi che non hanno ancora una seduta nei dati. Mancano bicamerali, giunte e commissioni d'inchiesta.
 
 Camera e Senato, dai sommari delle commissioni:
 - termini per gli emendamenti (`amendment_deadline`, relazione HAS_DEADLINE dall'atto): data, ora, tipo (emendamenti, subemendamenti, ordini del giorno, riesame delle inammissibilità), evento (fissato, prorogato, scaduto) e la frase del sommario. Le regole di `pipeline/trasforma/termini_emendamenti.py` propongono, una seconda lettura con `gpt-5.6-luna` sulla Batch API conferma (`pipeline/termini.py`, risposte in `deadline_check`, chieste una volta per frase): entra solo il termine su cui le due letture danno la stessa data. Passo `termini_emendamenti` dopo il caricamento; `python -m pipeline.termini giro|raccogli|stato`. Li leggono lo strumento `agenda` della chat, `get_parliament_agenda` dell'MCP e la pagina Agenda del sito.
@@ -104,7 +115,8 @@ Camera e Senato, dai sommari delle commissioni:
 
 Senato XIX, con gli stessi record della Camera:
 - anagrafica da dati.senato.it: senatori eletti, a vita e di diritto, gruppi col nome in vigore e i precedenti come alias, commissioni col nome alla data; ogni senatore che è stato deputato o membro del governo si lega alla sua scheda della Camera (`person_same_as`);
-- disegni di legge con firmatari (senatori e deputati) e votazioni elettroniche con il voto di ogni senatore; il gruppo nel voto si ricava dall'anagrafica alla data. Al massimo 60 sedute di voti per notte, con 5 secondi fra le richieste: senato.it blocca l'IP dopo circa 400 richieste ravvicinate;
+- atti del Governo e nomine sottoposti a parere, dagli open data (numero, titolo, data, stato, presentatore, PDF del testo); commissione, termine e parere stanno solo nelle schede di senato.it e non ci sono;
+- disegni di legge con firmatari (senatori e deputati), assegnazioni alle commissioni con la sede (referente, redigente, deliberante, consultiva) e relatori legati al senatore, e votazioni elettroniche con il voto di ogni senatore; il gruppo nel voto si ricava dall'anagrafica alla data. Al massimo 60 sedute di voti per notte, con 5 secondi fra le richieste: senato.it blocca l'IP dopo circa 400 richieste ravvicinate;
 - sindacato ispettivo del Senato (da dati.camera.it);
 - resoconti stenografici dell'Assemblea in Akoma Ntoso: interventi singoli anche dentro gli scambi, con la persona, la carica e il presidente di turno; i membri del governo che non sono senatori si legano alla scheda del governo (`lega_governo`); didascalie come `reaction`; sezioni legate ai ddl;
 - dai bulk data ufficiali del Senato su GitHub (SenatoDellaRepubblica/AkomaNtosoBulkData, CC BY 4.0, aggiornati ogni giorno): resoconti d'Aula, resoconti sommari delle commissioni (marcati `summary`, come il Bollettino della Camera), testi dei ddl (presentato, testo della commissione, messaggio alla Camera) con gli articoli, ed emendamenti d'Aula e di commissione con testo, firmatari e data di presentazione (i bulk data non danno l'esito). Clone git parziale in `dati/cache/senato_akn`: ogni notte git scarica solo i file nuovi. Su GitHub non c'è il WAF di senato.it; le sedute più recenti del bulk restano qualche giorno indietro.

@@ -12,7 +12,7 @@ from . import documenti, fatti, termini, vettori
 from .carica import postgres
 from .controlli import uscite as controlli_uscite
 from .fonti import eurovoc
-from .fonti import camera_aic, camera_atti, camera_bollettino, camera_calendario, camera_documenti, camera_dossier, camera_emendamenti, camera_governo, camera_ocd, camera_odg, camera_resoconti, camera_stenografici_commissioni, camera_testi, camera_voti, camera_webtv, senato_akn, senato_ddl, senato_esiti, senato_foto, senato_misto, senato_osr, senato_resoconti, senato_voti
+from .fonti import camera_aic, camera_atti, camera_atti_governo, camera_convocazioni, senato_atti_governo, senato_convocazioni, camera_bollettino, camera_calendario, camera_documenti, camera_dossier, camera_emendamenti, camera_governo, camera_ocd, camera_odg, camera_resoconti, camera_stenografici_commissioni, camera_testi, camera_voti, camera_webtv, senato_akn, senato_ddl, senato_esiti, senato_foto, senato_misto, senato_osr, senato_resoconti, senato_voti
 from .lago import Lago
 from .orchestra import Passo
 from .trasforma import camera_anagrafica, camera_resoconto
@@ -31,6 +31,8 @@ from .trasforma import senato_calendario as senato_calendario_t
 from .trasforma import camera_stenografico_commissione
 from .trasforma import camera_testi as camera_testi_t
 from .trasforma import corrispondenze, senato_anagrafica
+from .trasforma import atti_governo as atti_governo_t
+from .trasforma import convocazioni as convocazioni_t
 from .trasforma import senato_ddl as senato_ddl_t
 from .trasforma import senato_emendamenti, senato_resoconto, senato_sommario, senato_testi
 from .trasforma import senato_voti as senato_voti_t
@@ -312,8 +314,23 @@ PASSI = [
           dopo=["scarica_senato_osr", "scarica_senato_misto"], timeout_minuti=10),
     Passo("trasforma_corrispondenze", trasforma_corrispondenze, dopo=["scarica_camera_ocd", "scarica_senato_osr"], timeout_minuti=10),
     Passo("scarica_senato_ddl", senato_ddl.scarica, timeout_minuti=20, tentativi=1),
-    Passo("trasforma_senato_ddl", TrasformaInsieme("senato_ddl", {"ddl": "", "firmatari": "", "presentatori": ""}, senato_ddl_t.trasforma, "atti", "atti"),
+    Passo("trasforma_senato_ddl", TrasformaInsieme("senato_ddl", {"ddl": "", "firmatari": "", "presentatori": "", "assegnazioni": "", "relatori": ""}, senato_ddl_t.trasforma, "atti", "atti"),
           dopo=["scarica_senato_ddl"], timeout_minuti=10),
+    # atti del Governo e nomine sottoposti a parere: una pagina alla Camera, due query agli open data del Senato
+    Passo("scarica_camera_atti_governo", camera_atti_governo.scarica, timeout_minuti=5, tentativi=2),
+    Passo("trasforma_camera_atti_governo", Trasforma("camera_atti_governo", atti_governo_t.trasforma_camera, chiavi=r"-atti-governo$"),
+          dopo=["scarica_camera_atti_governo"], timeout_minuti=5),
+    Passo("scarica_senato_atti_governo", senato_atti_governo.scarica, timeout_minuti=10, tentativi=1),
+    Passo("trasforma_senato_atti_governo", TrasformaInsieme("senato_atti_governo", {"atti": "", "nomine": ""}, atti_governo_t.trasforma_senato,
+                                                            "atti-governo", "atti_governo"),
+          dopo=["scarica_senato_atti_governo"], timeout_minuti=5),
+    # convocazioni delle commissioni permanenti: da oggi in poi alla Camera, la settimana in corso al Senato
+    Passo("scarica_camera_convocazioni", camera_convocazioni.scarica, timeout_minuti=20, tentativi=1),
+    Passo("trasforma_camera_convocazioni", Trasforma("camera_convocazioni", convocazioni_t.trasforma_camera, chiavi=r"-conv-\d+-\d{8}$"),
+          dopo=["scarica_camera_convocazioni"], timeout_minuti=5),
+    Passo("scarica_senato_convocazioni", senato_convocazioni.scarica, timeout_minuti=10, tentativi=1),
+    Passo("trasforma_senato_convocazioni", Trasforma("senato_convocazioni", convocazioni_t.trasforma_senato, chiavi=r"-senato-conv-\d+$"),
+          dopo=["scarica_senato_convocazioni"], timeout_minuti=5),
     Passo("scarica_senato_aic", camera_aic.scarica_senato, timeout_minuti=60, tentativi=2),
     Passo("trasforma_senato_aic", Trasforma("senato_aic", camera_aic_t.trasforma_senato, chiavi=r"-aic-\d{6}$"), dopo=["scarica_senato_aic"], timeout_minuti=20),
     Passo("scarica_senato_resoconti", senato_resoconti.scarica, timeout_minuti=10, tentativi=1),
@@ -343,6 +360,8 @@ PASSI = [
                                                           "trasforma_camera_emendamenti", "trasforma_camera_testi",
                                                           "trasforma_senato_osr", "trasforma_senato_voti",
                                                           "trasforma_senato_ddl", "trasforma_senato_aic",
+                                                          "trasforma_camera_atti_governo", "trasforma_senato_atti_governo",
+                                                          "trasforma_camera_convocazioni", "trasforma_senato_convocazioni",
                                                           "trasforma_corrispondenze", "trasforma_senato_resoconti",
                                                           "trasforma_senato_emendamenti", "trasforma_senato_sommari",
                                                           "trasforma_senato_testi"], timeout_minuti=30, critico=True),

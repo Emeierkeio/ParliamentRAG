@@ -150,7 +150,9 @@ def _votazione(c, p: Votazione):
 class CercaAtti(Parametri):
     q: str | None = Field(None, description="parole del titolo; sintassi di ricerca web: «\"frase\"», «-parola», «or»")
     chamber: Ramo | None = None
-    kind: str | None = Field(None, description="bill, written_question, oral_question, interpellation, motion, resolution, agenda_order…")
+    kind: str | None = Field(None, description="bill, written_question, oral_question, interpellation, motion, resolution, agenda_order, "
+                             "government_act (atti del Governo sottoposti a parere: schemi di decreto legislativo, regolamenti, "
+                             "decreti ministeriali), appointment (proposte di nomina sottoposte a parere)…")
     number: str | None = Field(None, description="numero dell'atto: 1695, 5-04321")
     signer: str | None = Field(None, description="uri di un firmatario")
     initiative: str | None = Iniziativa
@@ -372,8 +374,10 @@ class Agenda(Parametri):
     start: dt.date = Field(description="primo giorno")
     end: dt.date | None = Field(None, description="ultimo giorno (al più 62 giorni dopo start); vuoto: solo start")
     chamber: Ramo | None = None
-    types: list[Literal["aula", "commissioni", "termini", "atti", "voti", "leggi"]] | None = Field(
-        None, description="quali eventi; vuoto: tutti. termini = scadenze per emendamenti, subemendamenti e ordini del giorno")
+    types: list[Literal["aula", "commissioni", "termini", "pareri", "atti", "voti", "leggi"]] | None = Field(
+        None, description="quali eventi; vuoto: tutti. termini = scadenze per emendamenti, subemendamenti e ordini del giorno; "
+                          "pareri = termini entro cui le commissioni della Camera danno il parere su atti del Governo e nomine; "
+                          "commissioni = sedute tenute e, da oggi in poi, convocazioni (status convened) con orari, sedi, argomenti e auditi")
 
 
 class FattiCommissioni(Parametri):
@@ -465,10 +469,12 @@ STRUMENTI: list[Strumento] = [
               "una scelta (result) o il voto di ogni parlamentare. "
               "Un gruppo con split vero si è diviso: dillo con i numeri di ogni scelta, mai una posizione unica.",
               Votazione, _votazione),
-    Strumento("cerca_atti", "Progetti di legge, interrogazioni, mozioni e altri atti per parole del titolo, numero, tipo, firmatario o "
+    Strumento("cerca_atti", "Progetti di legge, interrogazioni, mozioni, atti del Governo sottoposti a parere (schemi di decreto "
+              "legislativo: kind government_act), nomine (appointment) e altri atti per parole del titolo, numero, tipo, firmatario o "
               "iniziativa (governo, parlamentare, regione, CNEL, popolare, o il presentatore: «Regione Toscana»).",
               CercaAtti, lambda c, p: atti.cerca_atti(c, p.q, p.chamber, p.kind, p.number, p.signer, p.limit, p.offset, p.initiative)),
-    Strumento("atto", "Un atto: firmatari, iter, testi con il numero di articoli, votazioni, emendamenti per esito.",
+    Strumento("atto", "Un atto: firmatari, commissioni a cui è assegnato (assignments: sede, data e, per gli atti del Governo e le "
+              "nomine, termine del parere e parere espresso), relatori, iter, testi con il numero di articoli, votazioni, emendamenti per esito.",
               Uri, lambda c, p: atti.atto(c, p.uri)),
     Strumento("articolo", "Il testo di un articolo di una versione dell'atto (presentato, della commissione, approvato), o l'elenco degli articoli.",
               Articolo, lambda c, p: atti.articolo(c, p.code, p.number)),

@@ -139,6 +139,23 @@ ricontrolla = 5               # i voti delle ultime sedute arrivano in ritardo
 legislatura = 19
 pausa_secondi = 5
 
+[fonti.camera_atti_governo]
+legislatura = 19               # atti del Governo e nomine sottoposti a parere: una pagina, una richiesta per notte
+
+[fonti.senato_atti_governo]
+legislatura = 19               # gli stessi atti dagli open data del Senato (non tocca senato.it): due query
+pausa_secondi = 5
+
+[fonti.camera_convocazioni]
+legislatura = 19               # convocazioni delle 14 commissioni permanenti, da oggi in poi: circa 60 richieste per notte
+pausa_secondi = 1.0
+massimo_per_giro = 150
+
+[fonti.senato_convocazioni]
+legislatura = 19               # una pagina per commissione (10), con il browser: contano nel tetto di senato.it
+pausa_secondi = 4.0
+massimo_richieste = 12
+
 [fonti.senato_aic]
 legislatura = 19               # sindacato ispettivo del Senato, da dati.camera.it (non tocca senato.it)
 pausa_secondi = 0.5

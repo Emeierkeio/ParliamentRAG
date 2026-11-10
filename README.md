@@ -76,9 +76,9 @@ Sources, all official:
 | Source | What it gives | Licence |
 |---|---|---|
 | [dati.camera.it](https://dati.camera.it) (SPARQL) | members, groups, bodies, offices, governments, bills, oversight acts, votes | CC BY-SA 3.0 IT |
-| www.camera.it, documenti.camera.it | stenographic records of the floor and of committees, the committee bulletin, agenda, amendments, bill texts, written evidence, WebTV timings | terms of the site |
+| www.camera.it, documenti.camera.it | stenographic records of the floor and of committees, the committee bulletin, agenda, committee convocations, government acts and appointments submitted for opinion, amendments, bill texts, written evidence, WebTV timings | terms of the site |
 | [temi.camera.it](https://temi.camera.it) | research dossiers of the Chamber's documentation services | CC BY-SA 4.0 |
-| [dati.senato.it](https://dati.senato.it) | senators, groups, committees, bills and signatories, votes | terms of the site |
+| [dati.senato.it](https://dati.senato.it) | senators, groups, committees, bills with signatories, committee referrals and rapporteurs, government acts and appointments submitted for opinion, votes | terms of the site |
 | [Akoma Ntoso bulk data of the Senate](https://github.com/SenatoDellaRepubblica/AkomaNtosoBulkData) | floor records, committee summaries, bill texts, amendments | CC BY 4.0 |
 | EuroVoc, TESEO | subject thesauri for acts and topics | EU and Senate terms |
 
@@ -109,7 +109,7 @@ Core tables:
 
 | Area | Tables |
 |---|---|
-| Sittings and records | `sitting`, `agenda_item`, `agenda_item_act`, `speech`, `segment`, `reaction`, `reaction_from`, `speech_mention` |
+| Sittings and records | `sitting`, `agenda_item`, `agenda_item_act`, `calendar_item`, `convocation`, `speech`, `segment`, `reaction`, `reaction_from`, `speech_mention` |
 | People and institutions | `person`, `person_same_as`, `grp`, `grp_alias`, `body`, `mandate`, `membership`, `seat`, `office`, `government`, `ministry` |
 | Legislation and oversight | `act`, `act_step`, `act_version`, `act_sponsor`, `act_assignment`, `act_rapporteur`, `act_joint`, `act_transmission`, `act_text`, `act_article`, `act_citation`, `act_subject`, `act_addressee`, `amendment`, `amendment_signer`, `amendment_deadline`, `deadline_check`, `committee_fact`, `summary_check` |
 | Votes | `vote`, `vote_act`, `ballot` |

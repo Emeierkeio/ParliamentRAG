@@ -1,6 +1,7 @@
 """Disegni di legge del Senato da dati.senato.it (osr:Ddl): una riga per fase (S. 1468, S. 1468-B, con lo stesso
 idDdl), titolo, natura, stato, presentazione, legge che ne è nata; firmatari senatori; presentatori che non sono
-senatori (governo, deputati, regioni, CNEL, iniziativa popolare).
+senatori (governo, deputati, regioni, CNEL, iniziativa popolare); assegnazioni alle commissioni (sede e data) e
+relatori, con il senatore.
 
 Circa 2 mila ddl: si rifà tutto ogni notte con poche richieste (i firmatari a intervalli di numero, per restare
 sotto le 10 mila righe che l'endpoint restituisce al massimo). Si tengono solo le fasi del Senato (ramo S): il
@@ -32,7 +33,32 @@ PRESENTATORI = P + """SELECT ?ddl ?presentatore ?tipo ?deputato ?primo WHERE {
  ?ddl a osr:Ddl ; osr:legislatura {LEG} ; osr:ramo ?r ; osr:iniziativa ?i . FILTER(str(?r) = "S")
  ?i osr:tipoIniziativa ?tipo ; osr:presentatore ?presentatore . OPTIONAL { ?i osr:senatore ?sen } FILTER(!bound(?sen))
  OPTIONAL { ?i <http://dati.camera.it/ocd/rif_deputato> ?deputato } OPTIONAL { ?i osr:primoFirmatario ?primo } } LIMIT 10000"""
+ASSEGNAZIONI = P + """SELECT ?ddl ?etichetta ?tipo ?data ?organo ?sede WHERE {
+ ?ddl a osr:Ddl ; osr:legislatura {LEG} ; osr:numeroFase ?numero ; osr:ramo ?ramo ; osr:assegnazione ?a . FILTER(str(?ramo) = "S")
+ ?a osr:tipoCommissione ?tipo ; osr:dataAssegnazione ?data ; <http://www.w3.org/2000/01/rdf-schema#label> ?etichetta .
+ OPTIONAL { ?a osr:organo ?organo } OPTIONAL { ?a osr:sede ?sede }
+ FILTER(xsd:integer(?numero) >= {DA} && xsd:integer(?numero) < {A}) } LIMIT 10000"""
+RELATORI = P + """SELECT ?ddl ?etichetta ?tipo ?minoranza ?data ?organo ?senatore WHERE {
+ ?ddl a osr:Ddl ; osr:legislatura {LEG} ; osr:numeroFase ?numero ; osr:ramo ?ramo ; osr:relatore ?rel . FILTER(str(?ramo) = "S")
+ ?rel <http://www.w3.org/2000/01/rdf-schema#label> ?etichetta . OPTIONAL { ?rel osr:tipoRelatore ?tipo }
+ OPTIONAL { ?rel osr:diMinoranza ?minoranza } OPTIONAL { ?rel osr:dataNomina ?data } OPTIONAL { ?rel osr:organo ?organo }
+ OPTIONAL { ?rel osr:senatore ?senatore }
+ FILTER(xsd:integer(?numero) >= {DA} && xsd:integer(?numero) < {A}) } LIMIT 10000"""
 PASSO = 400
+
+
+def _a_intervalli(query: str, leg: int, massimo: int, pausa: float) -> list[dict]:
+    """Una query per intervallo di numeri dei ddl: l'endpoint dà al massimo 10 mila righe, un intervallo pieno si dimezza."""
+    righe, intervalli = [], [(da, da + PASSO) for da in range(0, massimo + 1, PASSO)]
+    while intervalli:
+        da, a = intervalli.pop(0)
+        parte = _richiesta(ENDPOINT, query.replace("{LEG}", str(leg)).replace("{DA}", str(da)).replace("{A}", str(a)), 2)
+        time.sleep(pausa)
+        if len(parte) >= 10000 and a - da > 1:
+            intervalli[:0] = [(da, (da + a) // 2), ((da + a) // 2, a)]
+            continue
+        righe += parte
+    return righe
 
 
 def scarica(ctx) -> dict:
@@ -47,22 +73,19 @@ def scarica(ctx) -> dict:
     massimo = max(int(re.match(r"\d+", r["numero"]).group()) for r in ddl if re.match(r"\d+", r["numero"]))
     if massimo > 20000:
         raise RuntimeError(f"numero di ddl inatteso ({massimo}): mi fermo prima di fare troppe richieste")
-    firmatari, intervalli = [], [(da, da + PASSO) for da in range(0, massimo + 1, PASSO)]
-    while intervalli:
-        da, a = intervalli.pop(0)
-        righe = _richiesta(ENDPOINT, FIRMATARI.replace("{LEG}", str(leg)).replace("{DA}", str(da)).replace("{A}", str(a)), 2)
-        time.sleep(pausa)
-        if len(righe) >= 10000 and a - da > 1:
-            intervalli[:0] = [(da, (da + a) // 2), ((da + a) // 2, a)]
-            continue
-        firmatari += righe
+    firmatari = _a_intervalli(FIRMATARI, leg, massimo, pausa)
+    assegnazioni = _a_intervalli(ASSEGNAZIONI, leg, massimo, pausa)
+    relatori = _a_intervalli(RELATORI, leg, massimo, pausa)
     presentatori = _richiesta(ENDPOINT, PRESENTATORI.replace("{LEG}", str(leg)), 2)
     esito = {}
-    tabelle = (("ddl", ddl), ("firmatari", firmatari), ("presentatori", presentatori))
+    tabelle = (("ddl", ddl), ("firmatari", firmatari), ("presentatori", presentatori), ("assegnazioni", assegnazioni),
+               ("relatori", relatori))
     for nome, righe in tabelle:                          # sostituiscono intere tabelle: un calo forte è un errore dell'endpoint
         controlla_calo(lago, NOME, f"leg{leg}-{nome}", len(righe), massimo=float(cfg.get("calo_massimo", 0.05)))
     for nome, righe in tabelle:
         righe.sort(key=lambda r: json.dumps(r, sort_keys=True, ensure_ascii=False))
         esito[nome] = lago.salva(NOME, f"leg{leg}-{nome}", json.dumps(righe, ensure_ascii=False, indent=0).encode(), ENDPOINT, "json")["nuovo"]
-    ctx.log(f"{NOME}: {len({r['ddl'] for r in ddl})} ddl, {len(firmatari)} firme, {len(presentatori)} presentatori")
-    return {"ddl": len({r["ddl"] for r in ddl}), "firme": len(firmatari), "presentatori": len(presentatori)}
+    ctx.log(f"{NOME}: {len({r['ddl'] for r in ddl})} ddl, {len(firmatari)} firme, {len(presentatori)} presentatori, "
+            f"{len(assegnazioni)} assegnazioni, {len(relatori)} relatori")
+    return {"ddl": len({r["ddl"] for r in ddl}), "firme": len(firmatari), "presentatori": len(presentatori),
+            "assegnazioni": len(assegnazioni), "relatori": len(relatori)}

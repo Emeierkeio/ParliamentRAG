@@ -67,6 +67,32 @@ CREATE TABLE IF NOT EXISTS calendar_item (
 );
 CREATE INDEX IF NOT EXISTS calendar_item_date ON calendar_item (chamber, date);
 
+-- convocazioni delle commissioni: una voce per commissione, giorno e blocco orario. Non sono sedute: la seduta arriva
+-- dopo, con il Bollettino (Camera) o con il resoconto sommario (Senato)
+CREATE TABLE IF NOT EXISTS convocation (
+  uri text PRIMARY KEY,
+  chamber text NOT NULL,
+  body text,                          -- l'organo dell'anagrafica
+  body_name text NOT NULL,
+  date date NOT NULL,
+  ord int NOT NULL,
+  start_time text,                    -- «08:30»; vuoto per «Al termine»
+  when_text text,                     -- l'orario come lo scrive la fonte
+  seat text,                          -- sede: consultiva, referente, atti del Governo, plenaria, ufficio di presidenza…
+  place text,
+  number text,                        -- Senato: numero della seduta
+  text text,                          -- argomenti e auditi, uno per riga
+  acts text[],                        -- riferimenti agli atti (ac:3119, ag:446, ddl:550)
+  cancelled boolean NOT NULL DEFAULT false,
+  published text,
+  url text,
+  source text NOT NULL,
+  source_key text,
+  loaded_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS convocation_date ON convocation (date, chamber);
+CREATE INDEX IF NOT EXISTS convocation_key ON convocation (source_key);
+
 CREATE TABLE IF NOT EXISTS person (                -- una persona per tutte le legislature; segnaposto (stub) finché l'anagrafica non la completa
   uri text PRIMARY KEY,
   stub boolean NOT NULL DEFAULT true,
@@ -209,7 +235,9 @@ CREATE OR REPLACE FUNCTION lega_argomenti(prefisso text, leg int) RETURNS void L
          AND a.uri = 'it:camera:' || leg || ':aic:' || split_part(x.act_ref, ':', 2))
         -- Senato: «ddl:1353-B» (resoconto AKN), il numero esatto o quello della prima lettura
      OR (x.act_ref ~ '^ddl:' AND a.kind = 'bill'
-         AND a.number IN (split_part(x.act_ref, ':', 2), regexp_replace(split_part(x.act_ref, ':', 2), '-[A-Z]+(-bis|-ter)?$', ''))));
+         AND a.number IN (split_part(x.act_ref, ':', 2), regexp_replace(split_part(x.act_ref, ':', 2), '-[A-Z]+(-bis|-ter)?$', '')))
+        -- atti del Governo sottoposti a parere: «ag:439» (Bollettino, sommari)
+     OR (x.act_ref ~ '^ag:' AND a.kind = 'government_act' AND a.number = split_part(x.act_ref, ':', 2)));
 $$;
 
 CREATE TABLE IF NOT EXISTS speech (
@@ -404,6 +432,13 @@ CREATE TABLE IF NOT EXISTS act_assignment (         -- ASSIGNED
   act text NOT NULL REFERENCES act (uri) ON DELETE CASCADE,
   body text NOT NULL, seat text, date date, title text
 );
+-- atti del Governo e nomine sottoposti a parere: il termine, la norma che chiede il parere, il parere e la sua data
+ALTER TABLE act_assignment ADD COLUMN IF NOT EXISTS deadline date;
+ALTER TABLE act_assignment ADD COLUMN IF NOT EXISTS basis text;
+ALTER TABLE act_assignment ADD COLUMN IF NOT EXISTS opinion text;
+ALTER TABLE act_assignment ADD COLUMN IF NOT EXISTS opinion_date date;
+CREATE INDEX IF NOT EXISTS act_assignment_act ON act_assignment (act);
+CREATE INDEX IF NOT EXISTS act_assignment_deadline ON act_assignment (deadline) WHERE deadline IS NOT NULL;
 CREATE TABLE IF NOT EXISTS act_rapporteur (         -- RAPPORTEUR: la fonte dà solo il nome; la persona si trova al caricamento
   act text NOT NULL REFERENCES act (uri) ON DELETE CASCADE,
   name_raw text NOT NULL, role text, raw text,
