@@ -50,7 +50,28 @@ def sezioni(c: psycopg.Connection, tema: str) -> dict:
     audizioni = [{"atto": f["act"], "data": f["sitting_date"], "organo": f["body_name"], "chi": f["subject"]}
                  for f in c.execute("""SELECT act, sitting_date, body_name, subject FROM committee_fact
                                        WHERE kind = 'hearing' AND act = ANY(%s) ORDER BY sitting_date DESC LIMIT 20""", (uris,))]
-    return {"tema": tema,
+    # il quadro in breve: per ogni atto toccato, a che punto è, quanti emendamenti sul tema, la prossima scadenza
+    em_atto: dict[str, Counter] = defaultdict(Counter)
+    for x in items:
+        em_atto[x["atto"]]["presentati"] += 1
+        em_atto[x["atto"]]["approvati"] += x["esito"] in ("approvato", "approvato_riformulato")
+    scad = {}
+    for t in termini:
+        if t["scadenza"] >= oggi and t["atto"] not in scad:
+            scad[t["atto"]] = t
+    ultima_aud = {}
+    for a in audizioni:
+        ultima_aud.setdefault(a["atto"], a)
+    righe = c.execute("""SELECT uri, chamber, number, title, status, status_date, law_number, law_date, card_url, date
+                         FROM act WHERE uri = ANY(%s)""", (uris,)).fetchall()
+    # titoli come «C. 2750 S. 1689. - "Bilancio di previsione…"»: via le sigle e le virgolette in testa
+    pulito = lambda t: re.sub(r'^(?:\s*[CS]\.\s*\d+(?:-\w+)?\.?)*\s*[-–.]?\s*["“]?|["”]\s*$', "", t or "").strip()
+    quadro = [{"atto": r["uri"], "sigla": ("C. " if r["chamber"] == "camera" else "S. ") + r["number"], "titolo": pulito(r["title"]),
+               "stato": r["status"], "data_stato": r["status_date"], "legge": r["law_number"], "data_legge": r["law_date"],
+               "url": r["card_url"], "emendamenti": em_atto[r["uri"]]["presentati"], "approvati": em_atto[r["uri"]]["approvati"],
+               "scadenza": scad.get(r["uri"]), "audizione": ultima_aud.get(r["uri"]), "data": r["date"]} for r in righe]
+    quadro.sort(key=lambda q: (q["scadenza"] is None, q["legge"] is not None, -q["emendamenti"], -(q["data"] or dt.date.min).toordinal()))
+    return {"tema": tema, "quadro": quadro[:12],
             "emendamenti": {"totale_simili": em["total"], "mostrati": len(items), "per_esito": dict(esiti.most_common()), "elenco": items[:20]},
             "atti": atti,
             "chi_ci_lavora": {"gruppi": [{"gruppo": g, **v} for g, v in sorted(gruppi.items(), key=lambda kv: -kv[1]["presentati"])],

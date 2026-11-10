@@ -16,6 +16,17 @@
     try { d = await fetch("/api/dossier", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tema: tema.slice(0, 300) }) }).then((r) => (r.ok ? r.json() : null)); }
     catch { d = null; }
     if (!d) return;
+    // il quadro in breve: gli atti toccati dal tema, a che punto sono, emendamenti e prossima scadenza
+    const q = d.quadro || [];
+    if (q.length) {
+      const stato = (x) => x.legge ? TT(`Legge n. ${x.legge}`, `Law no. ${x.legge}`) + (x.data_legge ? ` · ${data(x.data_legge)}` : "") : `${B.frase(x.stato || TT("in corso", "ongoing"))}${x.data_stato ? ` · ${data(x.data_stato)}` : ""}`;
+      blocco(t, "quadro", TT("In breve", "At a glance"), B.info(TT("Gli atti che toccano il tema: a che punto sono, quanti emendamenti sul tema e la prossima scadenza. Il dettaglio è nelle sezioni sotto.", "The bills touching the topic: where they stand, how many amendments on the topic and the next deadline. Details in the sections below.")),
+        `<table class="dos-quadro"><thead><tr><th>${TT("Atto", "Bill")}</th><th>${TT("Di cosa parla", "Subject")}</th><th>${TT("A che punto è", "Status")}</th><th>${TT("Emendamenti sul tema", "Amendments on topic")}</th><th>${TT("Prossima scadenza", "Next deadline")}</th></tr></thead><tbody>${q.map((x) => `<tr>
+          <td>${x.url ? `<a href="${e(x.url)}" target="_blank" rel="noopener"><b>${e(x.sigla)}</b></a>` : `<b>${e(x.sigla)}</b>`}</td>
+          <td>${e(B.taglia(x.titolo || "", 110))}</td><td>${e(stato(x))}</td>
+          <td>${x.emendamenti ? `${x.emendamenti}${x.approvati ? ` · <span class="dos-es--ok">${x.approvati} ${TT(x.approvati === 1 ? "approvato" : "approvati", "adopted")}</span>` : ""}` : "–"}</td>
+          <td>${x.scadenza ? `<b>${data(x.scadenza.scadenza)}${x.scadenza.ora ? `, ${String(x.scadenza.ora).slice(0, 5)}` : ""}</b><br><span class="meta">${e(x.scadenza.organo || "")}</span>` : x.audizione ? `<span class="meta">${TT("ultima audizione", "last hearing")} ${data(x.audizione.data)}</span>` : "–"}</td></tr>`).join("")}</tbody></table>`);
+    }
     const em = d.emendamenti;
     if (em.elenco.length) blocco(t, "emendamenti", TT("Emendamenti sul tema", "Amendments on the topic"), B.info(TT("I più vicini al tema per significato, in tutta la legislatura. L'esito viene dalla fonte indicata; «non pubblicato» non vuol dire respinto.", "The closest to the topic by meaning, across the legislature. The outcome comes from the stated source; «not published» does not mean rejected.")),
       `<p class="dos-sotto">${Object.entries(em.per_esito).map(([k, n]) => `<span class="dos-chip">${e(TR(k))} <b>${n}</b></span>`).join("")}</p>
@@ -66,7 +77,8 @@
     .sez .prosa li{margin:0 0 1.5mm}
     .meta,.dos-firme,.dos-sotto{font-size:9pt;color:#666b79}
     .dos-chip{display:inline-block;border:1px solid #cdd1da;border-radius:99px;padding:.5mm 2.5mm;margin:0 1.5mm 1.5mm 0;font-size:9pt}
-    .dos-es--ok{color:#1d6b4a;font-weight:600}.dos-es--no{color:#a52a14;font-weight:600}
+    .dos-es--ok{color:#1d6b4a;font-weight:600}
+    .dos-quadro{font-size:9pt}.dos-quadro td{vertical-align:top}.dos-quadro th{font-size:8.5pt;text-transform:none}.dos-es--no{color:#a52a14;font-weight:600}
     table{border-collapse:collapse;width:100%;font-size:9.5pt;margin-bottom:4mm}th,td{border-bottom:1px solid #e4e6eb;padding:1.5mm 2mm;text-align:left}th{font-weight:600;color:#3b3f4b}
     blockquote,q{color:#14161d}
     .metodo{page-break-before:always;font-size:9.5pt;color:#3b3f4b}.metodo h2{font-size:13pt;color:#14161d}
@@ -84,6 +96,7 @@
     const titolo = m ? m[1] : q, temi = m ? [m[2], m[3]].filter(Boolean).join(", ").split(/, /).join(" · ") : "";
     const oggi = new Date().toLocaleDateString(window.LANG === "en" ? "en-GB" : "it-IT", { day: "numeric", month: "long", year: "numeric" });
     const sezioni = [...el.querySelectorAll("[data-blocco]")].filter((b) => !b.hidden && b.textContent.trim())
+      .sort((a, b) => (b.dataset.blocco === "quadro") - (a.dataset.blocco === "quadro"))
       .map((b) => ({ titolo: b.dataset.blocco === "risposta" ? TT("Posizioni e risposta", "Positions and answer") : ((b.querySelector("h3") || {}).firstChild || {}).textContent || "", html: b.innerHTML }));
     const html = `<!doctype html><html lang="${window.LANG || "it"}"><head><meta charset="utf-8"><title>${e(titolo)} · ParliamentRAG</title>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@600&family=Schibsted+Grotesk:wght@400;500;600&display=swap"><style>${STAMPA_CSS}</style></head><body>

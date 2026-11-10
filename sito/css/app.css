@@ -1970,3 +1970,9 @@ form.chat.trascina{outline:2px dashed var(--acc);outline-offset:4px}
 .dos-tab{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:12px}
 .dos-tab th,.dos-tab td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bordo)}
 .dos-tab th{font-weight:600;color:var(--t2);font-size:13px}
+/* dossier: il quadro in breve, una riga per atto */
+[data-blocco=quadro] .corpo,[data-blocco=quadro]>div:last-child{overflow-x:auto}
+.dos-quadro{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+.dos-quadro th{text-align:left;font-size:12px;font-weight:600;color:var(--t3);padding:6px 10px 6px 0;border-bottom:1px solid var(--bordo2)}
+.dos-quadro td{vertical-align:top;padding:9px 10px 9px 0;border-bottom:1px solid var(--bordo);color:var(--t2)}
+.dos-quadro td:first-child{white-space:nowrap}.dos-quadro td b{color:var(--t)}

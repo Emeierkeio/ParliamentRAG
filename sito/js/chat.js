@@ -64,7 +64,7 @@
     b.innerHTML = `<h3>${e(titolo)}${dx ? `<span class="dx">${dx}</span>` : ""}</h3>${html}`;
     return b;
   }
-  const ORDINE_B = ["risposta", "classifica", "garanzie", "posizioni", "voti", "emendamenti", "chi", "arrivo", "persona", "interventi", "schede", "atti", "sedute", "fonti"];
+  const ORDINE_B = ["risposta", "quadro", "classifica", "garanzie", "posizioni", "voti", "emendamenti", "chi", "arrivo", "persona", "interventi", "schede", "atti", "sedute", "fonti"];
   const NOMI_BLOCCHI = { risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", emendamenti: "Emendamenti", chi: "Chi ci lavora", arrivo: "In arrivo", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica" };
   // l'indice serve solo quando la risposta ha almeno due parti oltre al testo
   function aggiornaIndice(t) {
@@ -405,7 +405,10 @@
         || /\b\d{1,2} (?:gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\b/.test(B.norm(q));
       // il nome di un'azienda o di un ente («Coca Cola», «Coca-Cola», «Rossi S.p.A.»): il fascicolo, e sotto i temi da scegliere per il dossier
       it.soggetto = !seguito && CH.soggetto(q) && !CH.trovaPersona(q);
-      if (!seguito && !numerica && (it.tipo === "tema" || it.tipo === "argomento") && !CH.trovaPersona(q)) d = await contaDibattiti(t, q);
+      // il dossier chiesto dalla scelta dei temi («Dossier su X, temi: …») va sempre al fascicolo, con le sezioni sui temi scelti
+      const scelti = q.match(/^(?:Dossier su|Dossier on) .+?, (?:temi|topics): (.+?)(?:;|\. )/);
+      if (scelti) { it.tipo = "tema"; it.contati = true; t.temaDossier = scelti[1]; d = 99; }
+      if (!scelti && !seguito && !numerica && (it.tipo === "tema" || it.tipo === "argomento") && !CH.trovaPersona(q)) d = await contaDibattiti(t, q);
       if (!(d >= 3)) {
         // una domanda su una persona mostra subito la sua scheda, mentre l'agente scrive
         const pers = CH.trovaPersona(q); if (pers) { CH.ultimaPersona = pers; t.persona = pers; }   // la scheda arriva dopo la risposta
@@ -704,7 +707,7 @@
     if (!md.trim() || t.limite) { sp.togli(); t.sp = null; const come = t.el.querySelector("details.come"); if (come) come.hidden = false; return null; }
     prosaEl.innerHTML = mdFascicolo(md, t.n, num); prosaEl.classList.remove("cursore");
     // il dossier del tema: accanto alle posizioni, le sezioni tecniche (emendamenti, chi ci lavora, in arrivo, atti)
-    if (window.DOSSIER) t.dossier = DOSSIER.sezioni(t, q, blocco);
+    if (window.DOSSIER) t.dossier = DOSSIER.sezioni(t, t.temaDossier || q, blocco);
     if (stat) { t.el._stat = stat; numeriCliccabili(prosaEl, t.n); }
     citazioniInglese(prosaEl);
     // indice laterale: un salto per ogni gruppo e per le sezioni del fascicolo
