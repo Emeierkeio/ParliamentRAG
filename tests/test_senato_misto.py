@@ -44,6 +44,16 @@ class TestSenatoMisto(unittest.TestCase):
     def test_senatori_a_vita_senza_componente(self):
         self.assertNotIn("28543", {k[0] for k in self.adesioni})              # Monti
 
+    def test_componente_lasciata_e_annotazione(self):
+        """Dall'11/11/2026 chi cambia componente ha due voci: «AVS fino all'8 ottobre 2026» e, in un
+        <span class="annotazione">, «A-PSI dal 9 ottobre 2026»."""
+        riga = ('<tr><td><a href="/x/scheda-attivita?did=36410">NAVE Luigi</a>'
+                "<span>AVS fino    all'8 ottobre 2026</span>"
+                '<span class="annotazione"><br/>A-PSI dal 9 ottobre 2026</span></td>'
+                "<td><span>Entra nel gruppo l'8 ottobre 2026<br></span></td></tr>")
+        voci = [(r["sigla"], r["dal"], r["al"]) for r in senato_misto.righe(riga)]
+        self.assertEqual(voci, [("AVS", None, "2026-10-08"), ("A-PSI", "2026-10-09", None)])
+
     def test_sigla_sconosciuta(self):
         rotta = PAGINA.replace("<span>\n                  AVS", "<span>\n                  XYZ", 1)
         with self.assertRaises(ValueError):

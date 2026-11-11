@@ -22,6 +22,7 @@ from .camera_anagrafica import leggibile
 MESI = {m: i for i, m in enumerate(["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto",
                                      "settembre", "ottobre", "novembre", "dicembre"], start=1)}
 DATA = r"(\d{1,2})[º°]?\s+([a-zà]+)\s+(\d{4})"
+ART = r"(?:l['’]\s*|\s+)"                                  # «dal 9», «dall'8», «fino all'8»
 
 
 def data_it(testo: str) -> str | None:
@@ -74,13 +75,14 @@ def righe(pagina: str) -> list[dict]:
         gruppo = _testo(celle[1])
         entra = re.search(r"Entra nel gruppo (?:il |l')\s*" + DATA, gruppo, re.I)
         esce = re.search(r"Esce dal gruppo (?:il |l')\s*" + DATA, gruppo, re.I)
-        for span in re.findall(r"<span>(.*?)</span>", celle[0], re.S):
+        # anche <span class="annotazione">: la componente successiva di chi ne ha cambiata una
+        for span in re.findall(r"<span[^>]*>(.*?)</span>", celle[0], re.S):
             t = _testo(span)
             if not t:
                 continue
-            dal = re.search(r"\bdal\s+" + DATA, t, re.I)
-            al = re.search(r"\b(?:fino al|al)\s+" + DATA, t, re.I)
-            out.append({"did": link.group(1), "nome": _testo(link.group(2)), "sigla": re.split(r"\s+(?:dal|fino al|al)\s", t, flags=re.I)[0].strip(),
+            dal = re.search(r"\bdal" + ART + DATA, t, re.I)
+            al = re.search(r"\b(?:fino\s+)?al" + ART + DATA, t, re.I)
+            out.append({"did": link.group(1), "nome": _testo(link.group(2)), "sigla": re.split(r"\s+(?:dal|fino\s+al|al)" + ART, t, flags=re.I)[0].strip(),
                         "dal": data_it(dal.group(0)) if dal else None, "al": data_it(al.group(0)) if al else None,
                         "entra": data_it(entra.group(0)) if entra else None, "esce": data_it(esce.group(0)) if esce else None})
     return out
