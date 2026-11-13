@@ -196,7 +196,28 @@
     const an = ev.target.closest('a[href^="#"]:not([href^="#/"])'); if (an && an.getAttribute("href").length > 1 && document.body.dataset.vista && !sa) { ev.preventDefault(); history.pushState(null, "", "#/"); delete document.body.dataset.vista; setTimeout(() => { const t = document.querySelector(an.getAttribute("href")); if (t) t.scrollIntoView(); }, 30); }
   });
   $("#pannello-chiudi").addEventListener("click", B.chiudiPannello);
+  // da telefono il pannello è un foglio dal basso: un tocco fuori lo chiude e non arriva alla pagina sotto
+  document.addEventListener("click", (ev) => { const p = $("#pannello"); if (!p.hasAttribute("data-aperto") || !matchMedia("(max-width: 760px)").matches || ev.target.closest("#pannello, .tip")) return; ev.preventDefault(); ev.stopPropagation(); B.chiudiPannello(); }, true);
   document.addEventListener("keydown", (ev) => { if (ev.key !== "Escape") return; const pan = $("#pannello").hasAttribute("data-aperto"), menu = !$("#menu-str").hidden; if (!pan && !menu) return; ev.preventDefault(); if (pan) B.chiudiPannello(); $("#menu-str").hidden = true; });
+  // da telefono: la «i» e i seggi dell'emiciclo si aprono al tocco in un riquadro largo quanto lo schermo. Il tooltip della «i»
+  // usciva dal bordo destro; i seggi sono punti di 4 px, quindi vale il più vicino al dito, e la scheda si apre dal riquadro
+  { const M = matchMedia("(max-width: 760px)"); let box = null;
+    const chiudi = () => { if (box) { box.remove(); box = null; } };
+    const mostra = (di, testo, href, y0, y1) => { box = document.createElement("div"); box.className = "tip-m"; box.setAttribute("role", "tooltip"); box._di = di;
+      box.innerHTML = `<span>${B.esc(testo)}</span>${href ? `<a href="${href}">${B.esc(TT("Apri la scheda", "Open profile"))}</a>` : ""}`; document.body.appendChild(box);
+      const h = box.offsetHeight; box.style.top = (y1 + 10 + h < innerHeight - 110 ? y1 + 10 : Math.max(8, y0 - 10 - h)) + "px"; };
+    document.addEventListener("click", (ev) => { if (!M.matches) return; if (ev.target.closest(".tip-m")) { setTimeout(chiudi, 0); return; }
+      const era = box && box._di; chiudi();
+      const i = ev.target.closest(".info[data-tip]");
+      if (i) { ev.preventDefault(); ev.stopPropagation(); if (era !== i) { const r = i.getBoundingClientRect(); mostra(i, i.dataset.tip, "", r.top, r.bottom); } return; }
+      const svg = ev.target.closest("svg"); if (!svg || !svg.querySelector("circle[data-seggio],circle[data-senatore]")) return;
+      let s = null, d = 22; for (const c of svg.querySelectorAll("circle[data-seggio],circle[data-senatore]")) { const r = c.getBoundingClientRect(), q = Math.hypot(r.left + r.width / 2 - ev.clientX, r.top + r.height / 2 - ev.clientY); if (q < d) { d = q; s = c; } }
+      ev.preventDefault(); ev.stopPropagation(); if (!s || era === s) return;
+      const voto = s.dataset.esito ? " · " + (B.VOTO[s.dataset.esito] || s.dataset.esito) : "", r = s.getBoundingClientRect();
+      if (s.dataset.senatore) mostra(s, `${s.dataset.senatore} · ${s.dataset.gruppo}${voto}`, "", r.top, r.bottom);
+      else { const p = B.persona(s.dataset.seggio); if (p) mostra(s, `${p.n} · ${p.sigla}${voto}`, `#/strumenti/deputato/${s.dataset.seggio}`, r.top, r.bottom); }
+    }, true);
+    addEventListener("scroll", chiudi, { passive: true }); addEventListener("hashchange", chiudi); }
   const tip = $("#tip");
   document.addEventListener("mouseover", (ev) => {
     const sn = ev.target.closest && ev.target.closest("circle[data-senatore]");

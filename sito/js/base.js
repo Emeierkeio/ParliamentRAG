@@ -94,7 +94,7 @@
     }).join("");
     return `<svg class="emi" viewBox="0 0 2552 1760" role="img" aria-label="${e(o.etichetta || "Aula della Camera, seggi reali")}">${c}</svg>`;
   };
-  B.legendaVoto = () => `<div class="legenda">${["favor", "against", "abstain", "absent"].map((k) => `<span><b style="color:${B.colVoto(k)}">●</b> ${B.VOTO[k].toLowerCase()}</span>`).join("")}<span>clic su un seggio: chi è e come ha votato</span></div>`;
+  B.legendaVoto = () => `<div class="legenda">${["favor", "against", "abstain", "absent"].map((k) => `<span><b style="color:${B.colVoto(k)}">●</b> ${B.VOTO[k].toLowerCase()}</span>`).join("")}<span>${matchMedia("(max-width: 760px)").matches ? "tocca un seggio: chi è e come ha votato" : "clic su un seggio: chi è e come ha votato"}</span></div>`;
 
   /* ---------- icone (tratto 1,7, 24×24) ---------- */
   const I = { scarica: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', legge: '<path d="M12 4v16M6 20h12M5 8h14"/><path d="m5 8-2.5 6a2.5 2.5 0 0 0 5 0zM19 8l-2.5 6a2.5 2.5 0 0 0 5 0z"/>', sx: '<path d="M15 6l-6 6 6 6"/>', dx: '<path d="m9 6 6 6-6 6"/>', cerca: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>', voto: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8.5 12.5 2.5 2.5 5-6"/>',

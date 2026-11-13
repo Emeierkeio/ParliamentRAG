@@ -216,7 +216,7 @@
 
   /* ---------- voti ---------- */
   async function voti(box, sid) {
-    box.innerHTML = testa("voti", null, null, "Quali sono state le ultime votazioni?") + avvio(TT("Ogni votazione elettronica di Camera e Senato, con l'esito e il voto di ogni parlamentare. Scegli una seduta a sinistra: a destra compaiono le sue votazioni.", "Every electronic vote in both houses, with the outcome and how each member voted. Pick a sitting on the left: its votes appear on the right."), [], "") + `<div class="due-col"><section class="blocco"><h3>Sedute con votazioni</h3><div id="sed-v">${carica("Cerco le ultime sedute")}</div><button class="bt bt--linea piu" id="altre-v" hidden>Sedute precedenti</button></section><section class="blocco"><h3 id="tit-v">Votazioni</h3><div id="voti-v"><p style="color:var(--t3)">Scegli una seduta.</p></div></section></div>`;
+    box.innerHTML = testa("voti", null, null, "Quali sono state le ultime votazioni?") + avvio(TT("Ogni votazione elettronica di Camera e Senato, con l'esito e il voto di ogni parlamentare. Scegli una seduta per vedere le sue votazioni.", "Every electronic vote in both houses, with the outcome and how each member voted. Pick a sitting to see its votes."), [], "") + `<div class="due-col"><section class="blocco"><h3>Sedute con votazioni</h3><div id="sed-v">${carica("Cerco le ultime sedute")}</div><button class="bt bt--linea piu" id="altre-v" hidden>Sedute precedenti</button></section><section class="blocco"><h3 id="tit-v">Votazioni</h3><div id="voti-v"><p style="color:var(--t3)">Scegli una seduta.</p></div></section></div>`;
     let prima = null;
     const elenco = async () => {
       try {
