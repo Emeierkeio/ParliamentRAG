@@ -337,13 +337,14 @@
         const a = b.dataset.em ? perId.get(b.dataset.em) : null;
         if (a) { const f = P.find((x) => x.stage === a.stage); st = { ...st, em: a.id, fase: (f && f.id) || st.fase, art: a.article || st.art, comma: a.comma, lettera: a.letter }; }
         else st = { ...st, em: null, pan: st.comma ? st.pan : "art" };
-        disegna(); $("#em-pan").scrollTop = 0; if (innerWidth < 900) $("#em-pan").scrollIntoView({ behavior: "smooth", block: "start" }); return;
+        disegna(); $("#em-pan").scrollTop = 0; return;
       }
       else if (b.dataset.comma !== undefined) st = { ...st, comma: b.dataset.comma || null, lettera: b.dataset.lettera || null, em: null };
       else if (b.dataset.esito !== undefined) st = { ...st, esito: b.dataset.esito || null };
       else if (b.dataset.gruppo !== undefined) st = { ...st, gruppo: b.dataset.gruppo || null, em: null, pan: b.dataset.apriLista !== undefined ? "art" : st.pan };
       else return;
       disegna();
+      $("#em-pan").scrollTop = 0;
     });
     corpo.addEventListener("change", (ev) => { if (ev.target.id === "em-art-sel") { st = { ...st, art: ev.target.value, comma: null, lettera: null, em: null, pan: null }; disegna(); } });
     disegna();

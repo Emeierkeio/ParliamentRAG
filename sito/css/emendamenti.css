@@ -198,6 +198,11 @@ del{color:var(--t3);text-decoration:line-through;text-decoration-color:var(--no,
 .em-chiudi:hover{background:var(--sup2);color:var(--t)}
 @media (max-width:1100px){.em-griglia.con-pan{grid-template-columns:minmax(0,1fr) 360px}}
 @media (max-width:900px){.em-griglia.con-pan{grid-template-columns:1fr}.em-art .em-sotto{display:none}}
+/* Su telefono il pannello si apre come foglio dal basso: resta sopra il testo, senza far scorrere la pagina */
+@media (max-width:900px){
+  .em-griglia.con-pan .em-pan{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:50;max-height:78vh;max-height:78dvh;overflow:auto;overscroll-behavior:contain;margin:0;border-radius:16px 16px 0 0;border-bottom:0;box-shadow:0 -14px 44px rgb(0 0 0 / .28);padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+  .em-griglia.con-pan .em-pan .em-chiudi{position:sticky;top:-4px;z-index:1;background:var(--sup);width:40px;height:40px;font-size:26px}
+}
 
 /* fasi come linea del tempo sottile (2/11): un punto per fase, la fase scelta piena */
 .em-fasi{display:flex;gap:0;margin:18px 0 6px;border:0;border-radius:0;overflow-x:auto;background:none;padding:0 0 4px}
