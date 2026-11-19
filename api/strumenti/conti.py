@@ -392,14 +392,76 @@ ORDINI_PRESENZE = {"voted": "voted DESC", "absent": "absent DESC", "mission": "m
                    "against": "against DESC", "abstain": "abstain DESC"}
 
 
+def _presenze_per_gruppo(c: psycopg.Connection, cat: dict, p: dict, chamber: str, start, end, order_by: str, limit: int, offset: int) -> dict:
+    """Le schede di voto sommate per gruppo alla data del voto (il Misto per componente), con le quote sul totale delle
+    schede attese: «quale gruppo vota meno» non si ricava dai totali, che misurano quanti sono (18/11/2026, riga 568)."""
+    campi = ("ballots", "favor", "against", "abstain", "secret_voted", "absent", "mission", "chair", "other")
+    # su tutta la legislatura sono 19 secondi al Senato e 23 alla Camera (19/11/2026): il doppio del tempo degli altri conti
+    with tempo_massimo(c, 2 * TEMPO + 10):
+        righe = c.execute(f"""
+            WITH v AS (SELECT v.uri, v.date FROM vote v WHERE {FILTRO_VOTI})
+            SELECT ({SQL_GRUPPO_VOTO}) AS gruppo, count(*) AS ballots, count(DISTINCT b.person) AS persons,
+                   count(*) FILTER (WHERE b.result = 'favor') AS favor,
+                   count(*) FILTER (WHERE b.result = 'against') AS against, count(*) FILTER (WHERE b.result = 'abstain') AS abstain,
+                   count(*) FILTER (WHERE b.result = 'voted') AS secret_voted, count(*) FILTER (WHERE b.result = 'absent') AS absent,
+                   count(*) FILTER (WHERE b.result = 'mission') AS mission, count(*) FILTER (WHERE b.result = 'chair') AS chair,
+                   count(*) FILTER (WHERE b.result NOT IN ('favor', 'against', 'abstain', 'voted', 'absent', 'mission', 'chair')) AS other
+            {FROM_SCHEDE} GROUP BY 1""", p).fetchall()
+        n = c.execute(f"SELECT count(*) AS n, min(v.date) AS dal, max(v.date) AS al FROM vote v WHERE {FILTRO_VOTI}", p).fetchone()
+        ricavate = []
+        if chamber == "senato":                      # assenti e presidenti di seduta ricavati, come per persona
+            ricavate = c.execute(f"""
+                WITH v AS (SELECT v.uri, v.date, v.sitting FROM vote v WHERE {FILTRO_VOTI} AND EXISTS (SELECT 1 FROM ballot b WHERE b.vote = v.uri)),
+                pres AS (SELECT DISTINCT i.sitting, s.person FROM speech s JOIN agenda_item i ON i.uri = s.item
+                         WHERE s.as_office = 'PRESIDENTE' AND s.person IS NOT NULL AND i.sitting IN (SELECT sitting FROM v))
+                SELECT group_at(md.person, v.date) AS gruppo, count(*) FILTER (WHERE x.person IS NULL) AS absent,
+                       count(*) FILTER (WHERE x.person IS NOT NULL) AS chair
+                FROM v JOIN mandate md ON md.chamber = 'senato' AND md.legislature = %(leg)s AND md.start_date <= v.date
+                                      AND coalesce(md.end_date, DATE '9999-12-31') >= v.date
+                LEFT JOIN pres x ON x.sitting = v.sitting AND x.person = md.person
+                WHERE NOT EXISTS (SELECT 1 FROM ballot b WHERE b.vote = v.uri AND b.person = md.person)
+                GROUP BY 1""", p).fetchall()
+    per_gruppo: dict[str | None, dict] = {}
+    for r in righe:
+        per_gruppo[r["gruppo"]] = {"gruppo": r["gruppo"], "persons": r["persons"]} | {k: r[k] for k in campi}
+    for r in ricavate:
+        x = per_gruppo.setdefault(r["gruppo"], {"gruppo": r["gruppo"], "persons": 0} | {k: 0 for k in campi})
+        x["absent"] += r["absent"]
+        x["chair"] += r["chair"]
+    for x in per_gruppo.values():
+        x["voted"] = x["favor"] + x["against"] + x["abstain"] + x["secret_voted"]
+        # attese: tutte le volte che un membro del gruppo poteva votare; chi presiede non vota e resta fuori
+        x["expected"] = x["voted"] + x["absent"] + x["mission"] + x["other"]
+        for quota, voce in (("voted_share", "voted"), ("absent_share", "absent"), ("mission_share", "mission")):
+            x[quota] = round(100 * x[voce] / x["expected"], 1) if x["expected"] else None
+    chiave = {"voted": "voted_share", "absent": "absent_share", "mission": "mission_share"}.get(order_by.split()[0])
+    elenco = sorted(per_gruppo.values(), key=lambda x: (-(x[chiave] or 0), str(x["gruppo"])) if chiave
+                    else (-x[order_by.split()[0]], str(x["gruppo"])))
+    pagina = _pagina(elenco, limit, offset)
+    _sostituisci_gruppi(pagina["rows"], cat, ("gruppo",))
+    return {"counted": f"Schede di voto per gruppo, {_ramo(chamber)}, {_periodo(start, end)}{_descrivi_voti(p)}: {n['n']} votazioni"
+                       f"{_estremi(n)}. Il gruppo è quello di chi vota alla data del voto, il Misto per componente; persons = quanti "
+                       "hanno avuto almeno una scheda nel gruppo. expected = schede attese (voted + absent + mission + other); "
+                       "voted_share, absent_share e mission_share sono percentuali di expected: i gruppi si confrontano con le quote, "
+                       "mai con i totali, che dipendono da quanti sono. mission = in missione (per incarico, non è assenza); chair = "
+                       "presiede, non vota e non è fra le attese. Ordinati per la quota della voce chiesta."
+                       + (" Al Senato gli assenti non sono pubblicati e sono ricavati: senatori in carica alla data senza scheda in "
+                          "quella votazione; other = presenti che non hanno votato. Un gruppo con il Presidente del Senato, un "
+                          "vicepresidente o senatori a vita ha assenze più alte per questo: dillo." if chamber == "senato" else ""),
+            "votes_in_set": n["n"], "groups_total": len(elenco)} | pagina
+
+
 def presenze(c: psycopg.Connection, chamber: str, persons: list[str] | None = None, group: str | None = None,
              government: bool = False, kind: str | None = None, final: bool | None = None, start: dt.date | None = None,
-             end: dt.date | None = None, order_by: str = "voted", limit: int = 50, offset: int = 0) -> dict:
-    """Partecipazione al voto per persona: favorevoli, contrari, astenuti, voti segreti dati, assenze, missioni."""
+             end: dt.date | None = None, order_by: str = "voted", limit: int = 50, offset: int = 0, by_group: bool = False) -> dict:
+    """Partecipazione al voto per persona: favorevoli, contrari, astenuti, voti segreti dati, assenze, missioni.
+    Con `by_group` le stesse voci per gruppo alla data del voto, con le quote: per confrontare gruppi di dimensioni diverse."""
     if order_by not in ORDINI_PRESENZE:
         raise ValueError(f"order_by ammessi: {', '.join(ORDINI_PRESENZE)}")
     cat = catalogo_gruppi(c)
     p = _parametri_voti(chamber, kind, final, None, None, None, None, None, start, end)
+    if by_group:
+        return _presenze_per_gruppo(c, cat, p, chamber, start, end, order_by, limit, offset)
     chi, ids_di = "", {}
     if persons:
         for u in persons:
@@ -765,6 +827,26 @@ DIM_EMENDAMENTI = {"ramo": "p.ramo", "atto": "p.act", "sede": "p.venue", "esito"
                    "gruppo_firmatario": "g1", "coppia_gruppi": "g1, g2"}
 
 
+def _copertura_emendamenti(c: psycopg.Connection, atto: str) -> dict | None:
+    """Per un atto, in quali sedi la fonte ha già pubblicato emendamenti. Se manca la commissione di merito (alla Camera la
+    sede referente, redigente o legislativa; al Senato la commissione) il numero non è il totale: il 18/11/2026 la manovra
+    aveva nei dati solo i 16 della sede consultiva, con il termine in Commissione Bilancio scaduto il giorno prima."""
+    sedi = {r["venue"]: r["n"] for r in c.execute("SELECT venue, count(*) AS n FROM amendment WHERE act = %s GROUP BY 1", (atto,))}
+    merito = {"referente", "redigente", "legislativa", "committee"}
+    if not sedi or merito & set(sedi) or "assembly" in sedi:
+        return None
+    termini = []
+    if c.execute("SELECT to_regclass('amendment_deadline') IS NOT NULL AS c").fetchone()["c"]:
+        termini = [{"body": r["body_name"], "due_date": r["due_date"], "due_time": r["due_time"]} for r in c.execute(
+            """SELECT DISTINCT ON (body_name) body_name, due_date, due_time FROM amendment_deadline
+               WHERE act = %s AND due_date IS NOT NULL ORDER BY body_name, due_date DESC""", (atto,))]
+        termini.sort(key=lambda t: t["due_date"], reverse=True)
+    return {"venues_with_amendments": sedi, "deadlines": termini[:6],
+            "note": "Per questo atto la fonte ha pubblicato solo gli emendamenti di queste sedi: quelli presentati alla commissione "
+                    "di merito e in Aula non sono ancora pubblicati. Il numero non è il totale degli emendamenti all'atto: dillo, "
+                    "e riporta da deadlines il termine fissato nella commissione di merito, se c'è."}
+
+
 def conta_emendamenti(c: psycopg.Connection, chamber: str | None = None, act: str | None = None, outcome: str | None = None,
                       venue: str | None = None, group: str | None = None, start: dt.date | None = None, end: dt.date | None = None,
                       cross_group: bool = False, group_by: list[str] | None = None, sum_chambers: bool = False,
@@ -817,7 +899,8 @@ def conta_emendamenti(c: psycopg.Connection, chamber: str | None = None, act: st
             r["coppia_gruppi"] = [r.pop("g1"), r.pop("g2")]
         elif "g1" in r:
             r["gruppo_firmatario"] = r.pop("g1")
-    return {"counted": f"Proposte emendative, {_ramo(chamber)}, {_periodo(start, end)}"
+    copertura = _copertura_emendamenti(c, act) if act else None
+    return ({"coverage": copertura} if copertura else {}) | {"counted": f"Proposte emendative, {_ramo(chamber)}, {_periodo(start, end)}"
                        f"{_filtri(atto=act, esito=outcome, sede=venue, gruppo=group, solo_cofirmate_da_più_gruppi='sì' if cross_group else None)}. "
                        "Una proposta = atto, sede e numero (le riformulazioni con lo stesso numero contano una volta); data = seduta "
                        "o presentazione. Gruppo di ogni firmatario alla data, il Misto per componente; firme senza persona (governo, "

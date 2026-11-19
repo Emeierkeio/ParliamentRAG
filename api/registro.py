@@ -268,6 +268,8 @@ class Presenze(Parametri):
     start: dt.date | None = None
     end: dt.date | None = None
     order_by: Literal["voted", "absent", "mission", "favor", "against", "abstain"] = "voted"
+    by_group: bool = Field(False, description="vero: una riga per gruppo (il Misto per componente) con le quote di voti, assenze e missioni; "
+                                              "per «quale gruppo o partito vota meno, è più assente, partecipa di più»")
     limit: int = Field(50, ge=1, le=200)
     offset: int = Field(0, ge=0)
 
@@ -520,9 +522,10 @@ STRUMENTI: list[Strumento] = [
               VotoGruppi, lambda c, p: conti.voto_gruppi(c, p.chamber, p.kind, p.final, p.approved, p.confidence, p.act, p.q, p.start,
                                                           p.end, p.groups, p.person, p.limit, p.offset)),
     Strumento("presenze", "CONTEGGIO. Per ogni parlamentare: votazioni a cui ha partecipato, favorevoli, contrari, astenuti, assenze (al Senato "
-              "ricavate: in carica senza scheda) e missioni, per persone, gruppo o membri del governo che hanno anche il seggio, in un periodo.",
+              "ricavate: in carica senza scheda) e missioni, per persone, gruppo o membri del governo che hanno anche il seggio, in un periodo. "
+              "Con by_group una riga per gruppo con le quote, per confrontare i gruppi fra loro.",
               Presenze, lambda c, p: conti.presenze(c, p.chamber, p.persons, p.group, p.government, p.kind, p.final, p.start, p.end,
-                                                     p.order_by, p.limit, p.offset)),
+                                                     p.order_by, p.limit, p.offset, p.by_group)),
     Strumento("conta_interventi", "CONTEGGIO. Quanti interventi (e parole, e occorrenze di una parola o frase) per ramo, sede, organo, "
               "anno, mese, persona, gruppo alla data o ruolo (parlamentare, governo, presidenza, relatore): classifiche di chi parla di "
               "più (per classifiche di parlamentari: role=parlamentare, se no entrano chi presiede e il governo), quante volte si è detta "

@@ -3,8 +3,10 @@ presentate in commissione e in Aula (numero, articolo, testo, firmatari con l'id
 
 Non c'è un indice dei file: i candidati sono i progetti di legge dell'anagrafica degli atti (camera_atti). Ogni notte:
 - i file già nel lago si richiedono con If-Modified-Since: se non sono cambiati il server risponde 304, senza contenuto;
-- i progetti senza file si riprovano solo se il loro iter è andato avanti dall'ultimo tentativo (un progetto appena
-  assegnato non ha emendamenti; uno in esame in commissione sì).
+- i progetti senza file si riprovano se il loro iter è andato avanti dall'ultimo tentativo (un progetto appena
+  assegnato non ha emendamenti; uno in esame in commissione sì) e, ogni notte, finché sono in esame: il file compare
+  mentre lo stato resta lo stesso (C. 3133, in esame in Commissione dal 14/10/2026: provato quel giorno, 404, e mai più;
+  il 18/11 l'Aula ne ha votato gli emendamenti e nei dati non c'erano).
 Chiavi nel lago: `leg19-eme-ac3131`, e `leg19-eme-assenti` (JSON: progetto -> stato dell'iter all'ultimo 404).
 """
 
@@ -12,6 +14,7 @@ from __future__ import annotations
 
 import email.utils
 import json
+import re
 import time
 import urllib.error
 import urllib.request
@@ -21,6 +24,8 @@ from .camera_bollettino import UA
 from .camera_ocd import chiave as chiave_query
 
 NOME = "camera_emendamenti"
+# gli stati in cui gli emendamenti si presentano: in commissione, in stato di relazione, in discussione in Aula
+IN_ESAME = re.compile(r"esame|discussione|relazione", re.I)
 URL = "https://documenti.camera.it/leg{leg}/emendamenti/xml/leg.{leg}.eme.ac.{numero}.xml"
 
 
@@ -70,7 +75,7 @@ def scarica(ctx) -> dict:
     assenti = json.loads(lago.leggi(a["file"])) if a else {}
     presenti = {k: lago.ultimo(NOME, k) for k in lago.chiavi(NOME) if k.startswith(f"leg{leg}-eme-ac")}
     candidati = [n for n in sorted(stati, key=lambda x: int("".join(c for c in x if c.isdigit()) or 0), reverse=True)
-                 if f"leg{leg}-eme-ac{n}" in presenti or assenti.get(n) != stati[n]]
+                 if f"leg{leg}-eme-ac{n}" in presenti or assenti.get(n) != stati[n] or IN_ESAME.search(stati[n])]
     nuovi = cambiati = invariati = senza = 0
     fallite = []
     for n in candidati[:massimo]:
