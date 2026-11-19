@@ -40,6 +40,11 @@ legislatura = 19
 pausa_secondi = 0.5
 ricontrolla = 3               # le ultime sedute: la Camera completa i dati nei giorni dopo
 massimo_per_giro = 1000       # primo giro: circa 700 sedute, un'ora scarsa
+# gli open data arrivano il pomeriggio dopo la seduta: le sedute che mancano si leggono dal sito (documenti.camera.it),
+# provvisorie finché non arrivano. Quante sedute provare dopo e prima dell'ultima degli open data; 0 spegne la lettura.
+sito_sedute_avanti = 6
+sito_sedute_indietro = 6
+sito_pausa_secondi = 1.0
 
 [fonti.camera_atti]
 legislatura = 19

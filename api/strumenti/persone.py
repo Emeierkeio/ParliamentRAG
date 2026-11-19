@@ -64,7 +64,7 @@ def scheda_persona(c: psycopg.Connection, uri: str) -> Person | None:
     n = c.execute("""
         SELECT (SELECT count(*) FROM speech WHERE person = ANY(%(ids)s)) AS speeches,
                (SELECT count(*) FROM ballot WHERE person = ANY(%(ids)s)) AS ballots,
-               (SELECT count(*) FROM ballot WHERE person = ANY(%(ids)s) AND result IN ('favor', 'against', 'abstain')) AS ballots_cast,
+               (SELECT count(*) FROM ballot WHERE person = ANY(%(ids)s) AND result IN ('favor', 'against', 'abstain', 'voted')) AS ballots_cast,
                (SELECT count(*) FROM ballot WHERE person = ANY(%(ids)s) AND result = 'mission') AS ballots_mission,
                (SELECT count(*) FROM act_sponsor s JOIN act a ON a.uri = s.act WHERE s.person = ANY(%(ids)s) AND s.first AND a.kind = 'bill') AS bills_first_signer,
                (SELECT count(*) FROM amendment_signer WHERE person = ANY(%(ids)s)) AS amendments_signed""", {"ids": ids}).fetchone()

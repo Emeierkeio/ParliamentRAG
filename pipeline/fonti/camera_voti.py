@@ -3,6 +3,10 @@
 Un file nel lago per seduta (`leg19-voti-sed0722`, JSON compresso): circa 13 mila voti per una seduta piena.
 Per sapere quali sedute riscaricare, ogni giro legge un indice piccolo (votazioni per seduta e ultima modifica)
 e lo confronta con quello del giro prima; in più ricontrolla le ultime sedute, che la Camera completa nei giorni dopo.
+
+Gli open data arrivano il pomeriggio del giorno dopo la seduta. Le sedute che non ci sono ancora si leggono dal sito
+(`camera_voti_sito`) e si salvano con la stessa chiave e `fonte: sito`: provvisorie, sostituite al primo giro in cui la
+seduta compare negli open data.
 """
 
 from __future__ import annotations
@@ -12,6 +16,7 @@ import json
 import re
 
 from ..lago import Lago
+from . import camera_voti_sito
 from .camera_ocd import ENDPOINT, PREFISSI, leg_uri
 from .sparql import interroga
 
@@ -97,6 +102,39 @@ def _seduta(s: str, pausa: float) -> tuple[list, list]:
     return votazioni, voti
 
 
+def _dal_sito(ctx, lago: Lago, leg: int, indice: list[dict], cfg: dict) -> dict:
+    """Le sedute vicine all'ultima degli open data che lì non ci sono: si provano sul sito e, se hanno votazioni, si
+    salvano come provvisorie. Un errore qui non ferma il passo: gli open data arrivano comunque il giorno dopo."""
+    avanti, indietro = int(cfg.get("sito_sedute_avanti", 6)), int(cfg.get("sito_sedute_indietro", 6))
+    if avanti <= 0:
+        return {}
+    negli_open_data = {numero_seduta(r["seduta"]) for r in indice}
+    ultima = max(negli_open_data)
+    anagrafica, riferimento = lago.ultimo("camera_ocd", f"leg{leg}-persone"), lago.ultimo(NOME, chiave(ultima, leg))
+    if not anagrafica or not riferimento:
+        return {"dal_sito": 0, "dal_sito_errori": ["manca l'anagrafica o l'ultima seduta degli open data"]}
+    persone = json.loads(lago.leggi(anagrafica["file"]))
+    gruppi = camera_voti_sito.gruppi_dai_voti(leggi(lago.leggi(riferimento["file"]))["voti"])
+    presenti, salvate, errori = set(lago.chiavi(NOME)), [], []
+    for n in range(max(1, ultima - indietro), ultima + avanti + 1):
+        k = chiave(n, leg)
+        if n in negli_open_data:
+            continue
+        if k in presenti and leggi(lago.leggi(lago.ultimo(NOME, k)["file"])).get("fonte") != "sito":
+            continue                                  # una seduta degli open data uscita dall'indice: si tiene com'è
+        try:
+            schede = camera_voti_sito.schede_seduta(leg, n, pausa=float(cfg.get("sito_pausa_secondi", 1.0)))
+            if schede:
+                dati = camera_voti_sito.in_formato_ocd(schede, leg, persone, gruppi)
+                lago.salva(NOME, k, _comprimi(dati), camera_voti_sito.SCHEDA.format(leg=camera_voti_sito.romano(leg), seduta=n, numero=1), "json.gz")
+                salvate.append(n)
+        except Exception as e:  # noqa: BLE001
+            errori.append(f"{n}: {str(e)[:160]}")
+    if salvate or errori:
+        ctx.log(f"{NOME}: dal sito, in attesa degli open data: sedute {salvate}" + (f"; non lette: {errori}" if errori else ""))
+    return {"dal_sito": len(salvate), **({"dal_sito_errori": errori} if errori else {})}
+
+
 def scarica(ctx) -> dict:
     cfg = ctx.config["fonti"][NOME]
     leg, pausa = int(cfg["legislatura"]), float(cfg.get("pausa_secondi", 0.5))
@@ -131,10 +169,11 @@ def scarica(ctx) -> dict:
             cambiate += 1
         else:
             nuove += 1
+    sito = _dal_sito(ctx, lago, leg, indice, cfg)
     if fallite:
         raise RuntimeError(f"{len(fallite)} sedute non scaricate ({nuove} nuove salvate, si riprendono al giro dopo): {fallite[:5]}")
     # l'indice si salva solo alla fine: se il giro si ferma a metà, le sedute mancanti si rifanno al giro dopo
     if len(da_fare) <= massimo:
         lago.salva(NOME, k_indice, _comprimi(indice), ENDPOINT, "json.gz")
     ctx.log(f"{NOME}: {len(indice)} sedute con voti; {nuove} nuove, {cambiate} cambiate, {invariate} invariate, {max(0, len(da_fare) - massimo)} rimandate")
-    return {"sedute": len(indice), "nuove": nuove, "cambiate": cambiate, "invariate": invariate, "rimandate": max(0, len(da_fare) - massimo)}
+    return {"sedute": len(indice), "nuove": nuove, "cambiate": cambiate, "invariate": invariate, "rimandate": max(0, len(da_fare) - massimo), **sito}

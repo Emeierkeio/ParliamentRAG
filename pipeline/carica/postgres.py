@@ -247,7 +247,9 @@ def script_voti(righe: list[dict]) -> str:
          "vote_act": sorted({(a["from"], a["to_ref"]) for a in archi if a["type"] == "ON"}),
          "ballot": [[a["to"], a["from"], a["result"], a.get("result_raw"), a.get("note"), a.get("group")] for a in archi if a["type"] == "VOTED"]}
     persone = sorted({a["from"] for a in archi if a["type"] == "VOTED"})
-    parti = ["BEGIN;", f"DELETE FROM vote WHERE sitting = {_lit(amb['sitting'])} AND source = {_lit(amb.get('source', 'ocd'))};",
+    # alla Camera la seduta letta dal sito (provvisoria) e quella degli open data si sostituiscono a vicenda
+    fonti = sorted({amb.get("source", "ocd")} | ({"ocd", "camera_sito"} if amb.get("chamber", "camera") == "camera" else set()))
+    parti = ["BEGIN;", f"DELETE FROM vote WHERE sitting = {_lit(amb['sitting'])} AND {'source = ' + _lit(fonti[0]) if len(fonti) == 1 else 'source IN (' + ', '.join(_lit(f) for f in fonti) + ')'};",
              f"CREATE TEMP TABLE p (uri text) ON COMMIT DROP;\nCOPY p FROM STDIN WITH (FORMAT csv);\n{_csv([[x] for x in persone])}\\.",
              "INSERT INTO person (uri) SELECT uri FROM p ON CONFLICT DO NOTHING;"]
     for tabella in ("vote", "vote_act", "ballot"):

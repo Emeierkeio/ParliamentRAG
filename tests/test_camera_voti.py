@@ -51,7 +51,7 @@ class TestVoti(unittest.TestCase):
     def test_caricamento(self):
         righe = [{"tipo": "ambito", **self.r["ambito"]}] + [{"tipo": "nodo", **n} for n in self.r["nodi"]] + [{"tipo": "arco", **a} for a in self.r["archi"]]
         s = script_voti(righe)
-        self.assertIn("DELETE FROM vote WHERE sitting = 'it:camera:19:sed0008' AND source = 'ocd';", s)
+        self.assertIn("DELETE FROM vote WHERE sitting = 'it:camera:19:sed0008' AND source IN ('camera_sito', 'ocd');", s)
         self.assertTrue(s.rstrip().endswith("COMMIT;"))
 
 

@@ -74,17 +74,18 @@ TABELLE: dict[str, tuple[str, dict[str, str]]] = {
                sp.as_group, sp.as_office, sp.kind, sp.text
         FROM speech sp JOIN agenda_item a ON a.uri = sp.item JOIN sitting s ON s.uri = a.sitting
         WHERE s.chamber IN {RAMI} ORDER BY s.date, sp.item, sp.ord""", {"date": "d", "ord": "i"}),
+    # senza le votazioni provvisorie lette dal sito della Camera: nei dati aperti entrano quando arrivano gli open data
     "votes": (f"""
         SELECT v.uri AS id, v.chamber, v.sitting AS session, v.number, v.date, v.title, v.description, v.kind, v.favor,
                v.against, v.abstain, v.present, v.voting, v.majority, v.approved, v.secret, v.final, v.confidence,
                (SELECT string_agg(DISTINCT va.act, ' ') FROM vote_act va WHERE va.vote = v.uri AND va.act IS NOT NULL) AS acts,
                v.source_uri, v.source_url
-        FROM vote v WHERE v.legislature = {LEG} ORDER BY v.date, v.uri""",
+        FROM vote v WHERE v.legislature = {LEG} AND v.source <> 'camera_sito' ORDER BY v.date, v.uri""",
               {"number": "i", "date": "d", "favor": "i", "against": "i", "abstain": "i", "present": "i", "voting": "i",
                "majority": "i", "approved": "b", "secret": "b", "final": "b", "confidence": "b"}),
     "individual_votes": (f"""
         SELECT b.vote, b.person, b.result, b.grp AS "group"
-        FROM ballot b JOIN vote v ON v.uri = b.vote WHERE v.legislature = {LEG} ORDER BY b.vote, b.person""", {}),
+        FROM ballot b JOIN vote v ON v.uri = b.vote WHERE v.legislature = {LEG} AND v.source <> 'camera_sito' ORDER BY b.vote, b.person""", {}),
     "acts": (f"""
         SELECT uri AS id, chamber, number, kind, kind_raw, constitutional, initiative, title, date, description, status,
                status_date, concluded, law_number, law_date, card_url, array_to_json(text_urls)::text AS text_urls, source_uri

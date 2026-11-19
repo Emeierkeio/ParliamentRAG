@@ -77,6 +77,8 @@ def esito(tipo: str, nota: str | None) -> str:
 
 def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
     d = leggi(corpo)
+    # letta dal sito della Camera in attesa degli open data (fonti/camera_voti_sito): stessi campi, da dire provvisoria
+    provvisoria = d.get("fonte") == "sito"
     seduta = int(re.search(r"_(\d+)$", d["seduta"]).group(1))
     s_uri = f"it:camera:{leg}:sed{seduta:04d}"
     voti: dict[str, dict] = {}
@@ -92,7 +94,8 @@ def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
                            "approved": _vero(r.get("approvato")), "secret": _vero(r.get("segreta")), "final": _vero(r.get("finale")),
                            "confidence": _vero(r.get("fiducia")) and not SFIDUCIA.search(r.get("descrizione") or ""), "presided_by": id_persona(r.get("presidente") or ""),
                            "source_url": r.get("scheda"), "source_uri": r["votazione"], "acts": [], "aics": [],
-                           "source": "ocd", "source_key": fonte.get("chiave"), "source_hash": fonte.get("impronta")}
+                           "source": "camera_sito" if provvisoria else "ocd",
+                           "source_key": fonte.get("chiave"), "source_hash": fonte.get("impronta")}
         for campo, chiave in (("atto", "acts"), ("aic", "aics")):
             x = r.get(campo)
             if x:

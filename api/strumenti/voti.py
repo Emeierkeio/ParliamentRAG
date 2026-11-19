@@ -10,7 +10,9 @@ from ..modelli import ActRef, Ballot, Group, GroupVote, Vote, VoteBrief
 from .comune import SQL_VOTO_PER_PAROLE, brevi
 
 SQL_VOTO_BREVE = """SELECT v.uri, v.sitting, v.chamber, v.number, v.date, v.title, v.kind, v.favor, v.against, v.abstain,
-                           v.approved, v.secret, v.confidence, v.source_url FROM vote v"""
+                           v.approved, v.secret, v.confidence, v.source_url,
+                           -- letta dal sito della Camera la notte stessa, in attesa degli open data del giorno dopo
+                           nullif(v.source = 'camera_sito', false) AS provisional FROM vote v"""
 SCELTE = ("favor", "against", "abstain")
 
 
@@ -43,7 +45,7 @@ def elenco_votazioni(c: psycopg.Connection, chamber: str | None = None, act: str
 
 
 def votazione(c: psycopg.Connection, uri: str, with_ballots: bool = True) -> Vote | None:
-    v = c.execute("SELECT * FROM vote WHERE uri = %s", (uri,)).fetchone()
+    v = c.execute("SELECT *, nullif(source = 'camera_sito', false) AS provisional FROM vote WHERE uri = %s", (uri,)).fetchone()
     if not v:
         return None
     atti = [ActRef(ref=a["act_ref"], uri=a["act"], title=a["title"]) for a in c.execute(

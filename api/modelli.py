@@ -58,7 +58,7 @@ class Post(BaseModel):                         # carica in un organo, gruppo, mi
 class PersonCounts(BaseModel):
     speeches: int
     ballots: int
-    ballots_cast: int                          # favorevole, contrario, astenuto
+    ballots_cast: int                          # favorevole, contrario, astenuto, voto segreto espresso
     ballots_mission: int
     bills_first_signer: int
     amendments_signed: int
@@ -155,6 +155,7 @@ class VoteBrief(BaseModel):
     confidence: bool | None = None
     act_title: str | None = None
     source_url: str | None = None
+    provisional: bool | None = None       # vero: letta dal sito della Camera in attesa degli open data, titolo provvisorio
 
 
 class Sitting(SittingBrief):

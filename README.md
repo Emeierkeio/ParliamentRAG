@@ -76,7 +76,7 @@ Sources, all official:
 | Source | What it gives | Licence |
 |---|---|---|
 | [dati.camera.it](https://dati.camera.it) (SPARQL) | members, groups, bodies, offices, governments, bills, oversight acts, votes | CC BY-SA 3.0 IT |
-| www.camera.it, documenti.camera.it | stenographic records of the floor and of committees, the committee bulletin, agenda, committee convocations, government acts and appointments submitted for opinion, amendments, bill texts, written evidence, WebTV timings | terms of the site |
+| www.camera.it, documenti.camera.it | votes of the latest floor sitting (provisional, until the open data arrive the day after), stenographic records of the floor and of committees, the committee bulletin, agenda, committee convocations, government acts and appointments submitted for opinion, amendments, bill texts, written evidence, WebTV timings | terms of the site |
 | [temi.camera.it](https://temi.camera.it) | research dossiers of the Chamber's documentation services | CC BY-SA 4.0 |
 | [dati.senato.it](https://dati.senato.it) | senators, groups, committees, bills with signatories, committee referrals and rapporteurs, government acts and appointments submitted for opinion, votes | terms of the site |
 | [Akoma Ntoso bulk data of the Senate](https://github.com/SenatoDellaRepubblica/AkomaNtosoBulkData) | floor records, committee summaries, bill texts, amendments | CC BY 4.0 |

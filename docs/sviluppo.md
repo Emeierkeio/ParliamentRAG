@@ -130,4 +130,5 @@ Senato XIX, con gli stessi record della Camera:
 
 - Al massimo 10 mila righe per risposta; con OFFSET su query ordinate e pesanti risponde 500. Le query grandi si paginano per chiave (`sparql.per_chiave`) o si spezzano (i voti, a blocchi di 20 votazioni) e si controlla il totale con un COUNT.
 - Le triple sono ripetute su più grafi: conteggi sempre con `COUNT(DISTINCT …)`.
+- Le votazioni arrivano negli open data il pomeriggio del giorno dopo la seduta (verso le 15), a volte più tardi. Il sito (`documenti.camera.it/apps/votazioni`) le ha subito: il passo `scarica_camera_voti` legge da lì le sedute che mancano (`fonti/camera_voti_sito.py`) e le salva con la stessa chiave, `source = 'camera_sito'`. Sono provvisorie (titolo provvisorio) e si sostituiscono al primo giro in cui la seduta compare negli open data. Non entrano nell'export dei dati aperti.
 - I nodi anonimi (firmatari del governo) si leggono solo nella stessa query che li raggiunge.
