@@ -179,6 +179,14 @@
   }
 
   CH.trovaPersona = (q) => { const tutti = [...B.persone(), ...B.senatori()]; return tutti.find((p) => B.norm(q).includes(B.norm(p.n))) || (() => { const c = tutti.filter((p) => { const s = B.norm(p.n.split(" ").pop()); return s.length > 4 && new RegExp(`\\b${s}\\b`).test(B.norm(q)); }); return c.length === 1 ? c[0] : null; })(); };
+  // domande che non sono un tema da confrontare fra i gruppi, anche se di poche parole: una persona (anche dalla pagina da
+  // cui si chiede, o un cognome che hanno in più d'uno: «meloni»), le ultime notizie. Vanno alla chat, non al fascicolo.
+  CH.nonTema = (q, ctx) => {
+    const n = B.norm(q), w = n.split(/\s+/).filter(Boolean);
+    if (CH.trovaPersona(q) || (ctx && CH.trovaPersona(ctx.etichetta))) return true;
+    if (/\b(notizi[ae]|novita|news|latest|oggi|ieri|today|yesterday)\b/.test(n)) return true;
+    return w.length <= 2 && [...B.persone(), ...B.senatori()].some((p) => { const c = B.norm(p.n).split(" "); return c.slice(-w.length).join(" ") === w.join(" "); });
+  };
   async function anagrafica(t, persona, prosaEl) {
     const s = passo(t, "anagrafica", `Leggo l'anagrafica di ${persona.n}`, "dati.camera.it · SPARQL");
     const a = await B.anagrafica(persona.id); s.fatto("");
@@ -441,7 +449,7 @@
         }
         it.soggetto = false;
       }
-      if (!scelti && !seguito && !numerica && (it.tipo === "tema" || it.tipo === "argomento") && !CH.trovaPersona(q)) d = await contaDibattiti(t, q);
+      if (!scelti && !seguito && !numerica && (it.tipo === "tema" || it.tipo === "argomento") && !CH.nonTema(q, ctx)) d = await contaDibattiti(t, q);
       if (!(d >= 3)) {
         // una domanda su una persona mostra subito la sua scheda, mentre l'agente scrive
         const pers = CH.trovaPersona(q); if (pers) { CH.ultimaPersona = pers; t.persona = pers; }   // la scheda arriva dopo la risposta
@@ -451,7 +459,8 @@
     }
     if (it.tipo === "anagrafica") { it.persona = CH.trovaPersona(q) || (ctx && CH.trovaPersona(ctx.etichetta)) || CH.ultimaPersona; if (!it.persona) it.tipo = "puntuale"; }
     // regola: tema con più dibattiti → fascicolo; una sola discussione o un solo atto → risposta rapida che cita l'atto
-    if ((it.tipo === "tema" || it.tipo === "argomento") && !it.contati && !CH.trovaPersona(q)) {
+    if (it.tipo === "argomento" && !it.contati && CH.nonTema(q, ctx)) it.tipo = "puntuale";
+    if ((it.tipo === "tema" || it.tipo === "argomento") && !it.contati && !CH.nonTema(q, ctx)) {
       const d = await contaDibattiti(t, q);
       if (d != null) { it.dibattiti = d; if (d >= 3) it.tipo = "tema"; else { it.tipo = "puntuale"; it.atto = true; } }
     }

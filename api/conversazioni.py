@@ -41,10 +41,11 @@ def salva(riga: dict) -> None:
 def registra(eventi: Iterator[dict], domanda: str, lingua: str, conversazione: str | None, turno: int | None,
              misure: dict) -> Iterator[dict]:
     """Passa gli eventi dell'agente così come sono e, alla fine, scrive la riga. Anche se il client chiude prima."""
-    inizio, risposta, strumenti, errori = time.monotonic(), [], [], []
+    inizio, risposta, strumenti, errori, finita = time.monotonic(), [], [], [], False
     try:
         for e in eventi:
             t = e.get("type")
+            finita = finita or t in ("done", "error")
             if t == "delta":
                 risposta.append(e.get("text") or "")
             elif t == "tool" and e.get("state") == "start":
@@ -56,6 +57,10 @@ def registra(eventi: Iterator[dict], domanda: str, lingua: str, conversazione: s
             yield e
     finally:
         getattr(eventi, "close", lambda: None)()   # chiude prima l'agente, che così lascia la spesa in `misure`
+        if not finita and not risposta:
+            # chi legge ha chiuso, o la connessione è caduta, prima che arrivasse una riga di risposta: senza questa
+            # nota la riga resta vuota e senza errore, e nei controlli sembra una risposta mancata dal modello
+            errori.append("interrotta prima della risposta")
         salva({"conversazione": conversazione, "turno": turno, "lingua": lingua, "domanda": domanda,
                "risposta": "".join(risposta) or None, "strumenti": strumenti, "errore": "; ".join(errori) or None,
                "ms": int((time.monotonic() - inizio) * 1000), "dollari": round(misure.get("dollari", 0.0), 5),

@@ -419,6 +419,8 @@ def fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, misure: dic
         agente._conta(ip, 1, 0)
 
 
+MINIMO_EVIDENZE = 4          # sotto, la domanda va alla chat
+
 def _fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, en: bool, misure: dict,
                pool: ThreadPoolExecutor, tempi: dict) -> Iterator[str]:
     from . import recupero
@@ -444,9 +446,11 @@ def _fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, en: bool, 
                 return
             ev, per_id = evidenze(ris.get("evidenze") or [])
             yield passo(2, f"Trovate {len(ev)} evidenze", f"Found {len(ev)} evidence pieces")
-            if not ev:
-                yield evento({"type": "complete", "metadata": {"evidence": 0}})
-                misure.update(risposta=None, esito="nessuna evidenza")
+            if len(ev) < MINIMO_EVIDENZE:
+                # con due o tre interventi il confronto fra gruppi non regge e il tema lo inventa il titolo (18/11/2026:
+                # «epbd» ha dato un fascicolo sull'audizione della Cassa del notariato): niente fascicolo, il sito passa alla chat
+                yield evento({"type": "complete", "metadata": {"evidence": 0, "thin": len(ev)}})
+                misure.update(risposta=None, esito="nessuna evidenza" if not ev else "poco materiale")
                 return
 
             yield passo(3)

@@ -30,6 +30,7 @@ class TestRegistro(unittest.TestCase):
         self.assertEqual(riga["strumenti"], [{"nome": "cerca_atti", "argomenti": {"q": "salario minimo"}, "risultati": 12}])
         self.assertEqual((riga["conversazione"], riga["turno"], riga["modello"], riga["dollari"]), ("abcdefgh12", 2, "m", 0.01235))
         self.assertNotIn("ip", riga)
+        self.assertIsNone(riga["errore"])
 
     def test_client_che_chiude(self):
         misure = {}
@@ -40,6 +41,8 @@ class TestRegistro(unittest.TestCase):
         riga = salva.call_args.args[0]
         self.assertIsNone(riga["risposta"])
         self.assertEqual(riga["dollari"], 0.01235)    # l'agente è stato chiuso prima di scrivere la riga
+        # una riga senza risposta e senza errore sembrava una risposta mancata dal modello (righe 457 e 490)
+        self.assertEqual(riga["errore"], "interrotta prima della risposta")
 
     def test_senza_password_non_scrive(self):
         with mock.patch.object(conversazioni, "_password", return_value=None), mock.patch("psycopg.connect") as connetti:

@@ -20,6 +20,9 @@ class _Db:
     def fetchone(self):
         return {"d": dt.date(2026, 11, 9)}
 
+    def fetchall(self):
+        return [{"chamber": "camera", "d": dt.date(2026, 11, 9)}]
+
 
 @contextmanager
 def _connessione():
@@ -48,6 +51,18 @@ class TestRispostaVuota(unittest.TestCase):
     def test_risposta_normale_una_chiamata(self):
         testo, modello = self._rispondi([_messaggio("Il ddl è in Commissione.\nSEGUITI: a | b")])
         self.assertEqual((testo, modello.call_count), ("Il ddl è in Commissione.", 1))
+
+
+class TestTempi(unittest.TestCase):
+    def test_oltre_la_scadenza_non_si_chiama_il_modello(self):
+        import time
+        with mock.patch("urllib.request.urlopen") as apri, self.assertRaises(TimeoutError):
+            agente.chiama_openai("m", "istruzioni", [], "chiave", scadenza=time.monotonic() - 1)
+        apri.assert_not_called()
+
+    def test_il_modello_sa_fin_dove_arrivano_le_votazioni(self):
+        self.assertEqual(agente.ultimi_voti(_Db()), "Camera 09/11/2026")
+        self.assertIn("{voti}", agente.PROMPT)
 
 
 if __name__ == "__main__":

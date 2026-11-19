@@ -91,7 +91,10 @@ def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | N
                    (SELECT count(*) FROM vote v WHERE v.sitting = s.uri) AS votes
             FROM sitting s WHERE s.body LIKE '%%:aula' AND s.date BETWEEN %(s)s AND %(e)s AND (%(r)s::text IS NULL OR s.chamber = %(r)s)
             ORDER BY s.date, s.chamber, s.number""", p):
-            giorni[r["date"].isoformat()]["aula"].append({**r, "items": (r["items"] or [])[:8], "items_total": len(r["items"] or [])})
+            # di una seduta ancora da tenere serve l'ordine del giorno intero: tagliato a 8, il 18/11/2026 le interrogazioni
+            # a risposta immediata (nona voce) non c'erano e la chat ha risposto che non erano previste
+            quante = 8 if r["status"] == "held" else 30
+            giorni[r["date"].isoformat()]["aula"].append({**r, "items": (r["items"] or [])[:quante], "items_total": len(r["items"] or [])})
         # il calendario dei lavori dell'Assemblea: per i giorni da oggi in poi che non hanno ancora una seduta (né
         # l'ordine del giorno né il resoconto), quello che il calendario prevede
         if _c_e_il_calendario(c):
@@ -102,9 +105,14 @@ def agenda(c: psycopg.Connection, start: dt.date, end: dt.date, chamber: str | N
                                   ORDER BY date, chamber, ord""", p):
                 per_giorno[(r["date"].isoformat(), r["chamber"])].append(r)
             for (g, ramo), voci in per_giorno.items():
-                if (g, ramo) in con_seduta:
-                    continue
                 quando = list(dict.fromkeys(v["when_text"] for v in voci if v["when_text"]))
+                if (g, ramo) in con_seduta:
+                    # la seduta c'è già ma non è tenuta: l'ordine del giorno non dà gli orari, il calendario sì
+                    for x in giorni[g]["aula"]:
+                        if x["chamber"] == ramo and x["status"] != "held":
+                            x["schedule"] = quando[:6]
+                            x["calendar_items"] = [f"{v['when_text']}: {v['title']}" if v["when_text"] else v["title"] for v in voci][:12]
+                    continue
                 giorni[g]["aula"].append({
                     "uri": None, "chamber": ramo, "number": None, "date": g, "status": "calendar", "start_time": _inizio(quando, int(g[-2:])),
                     "record_url": None, "items": [v["title"] for v in voci][:8], "items_total": len(voci), "votes": 0, "schedule": quando[:4],

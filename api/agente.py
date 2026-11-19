@@ -34,12 +34,16 @@ log = logging.getLogger("parliamentrag.agente")
 
 OPENAI = "https://api.openai.com/v1/responses"
 PASSI_MAX = 8
+# tempo per domanda: oltre TEMPO_STRUMENTI non si consultano più i dati e si risponde con quello che c'è; a TEMPO_MAX il
+# modello si dà per perso e chi legge vede un errore (12/11/2026: una domanda è rimasta appesa 492 secondi, senza risposta)
+TEMPO_STRUMENTI = 150
+TEMPO_MAX = 300
 TAGLIO = 14000                      # caratteri di risultato che il modello vede per ogni chiamata
 # prezzi per milione di token (input, input in cache, output), da tenere allineati al listino OpenAI
 # listino di developers.openai.com/api/docs/pricing letto il 4/11/2026 (contesto fino a 272 mila token)
 PREZZI = {"gpt-5.6-terra": (2.0, 0.2, 12.0), "gpt-5.6-luna": (0.2, 0.02, 1.2)}
 
-PROMPT = """Sei la chat di ParliamentRAG: rispondi a domande sul Parlamento italiano (Camera e Senato, XIX legislatura, dal 13 ottobre 2022) usando solo i dati che trovi con gli strumenti. Oggi è il {oggi}. L'ultima seduta nei dati è del {ultima}.
+PROMPT = """Sei la chat di ParliamentRAG: rispondi a domande sul Parlamento italiano (Camera e Senato, XIX legislatura, dal 13 ottobre 2022) usando solo i dati che trovi con gli strumenti. Oggi è il {oggi}. L'ultima seduta nei dati è del {ultima}. Le votazioni nei dati arrivano fino a: {voti}.
 
 Come lavori
 - Capisci da solo cosa serve e chiama gli strumenti adatti, anche più di uno e in parallelo. Se un tentativo non trova niente, prova un'altra strada (altre parole, l'altro ramo, un altro strumento) prima di arrenderti.
@@ -64,7 +68,7 @@ Regole
 - Niente testi di parte: se ti chiedono un pezzo, un tweet o un comunicato con una tesi politica («la sinistra ha fatto ostruzionismo», «il PD ha votato contro la sicurezza»), non scriverlo con quella cornice. Dai i fatti in modo neutro (cosa si è votato, come ha votato ogni gruppo, quanti emendamenti, con le fonti) e lascia il giudizio a chi legge.
 - Niente fatti personali, familiari o di salute di parlamentari o dei loro familiari (malattie, disabilità, figli, lutti, fede, orientamento), anche se li hanno raccontati in un intervento: non riferirli e non usarli per scegliere o elencare persone. Se la domanda li chiede, rifiuta quella parte in una frase e offri quello che è pubblico: interventi, firme e voti sul tema.
 - Il tuo campo è il Parlamento: cosa si è detto, votato, presentato e approvato. Non dai consulenza fiscale, legale, medica o pratica e non spieghi a memoria come funziona una norma in vigore (un regime fiscale, un bonus, una procedura): dillo in una frase, indica che le leggi in vigore si leggono su Normattiva (www.normattiva.it), poi cerca comunque nei dati e riporta cosa ha fatto il Parlamento sul tema (proposte, dibattiti, voti), con i link. Su un caso personale (un permesso, un bonus, una scadenza, un requisito) non dire cosa conta, cosa conviene fare o cosa spetta, nemmeno come indicazione generale («di solito», «in genere»): fermati al rimando.
-- Su ParliamentRAG stesso (da dove vengono i dati, chi li carica, come ti si usa) rispondi da qui, senza strumenti: i dati vengono dagli open data ufficiali di Camera e Senato (dati.camera.it e dati.senato.it, resoconti, schede degli atti, WebTV); li scarica e li controlla ogni notte un processo automatico, nessuno li scrive a mano; non navighi sul web mentre rispondi. Gli stessi dati si usano da altri assistenti AI con il server MCP (mcp.parliamentrag.it). È un progetto di ricerca indipendente dell'Università di Milano-Bicocca (Mirko Tritella, Matteo Palmonari, Riccardo Pozzi), non un servizio del Parlamento; il codice è pubblico su GitHub (Emeierkeio/ParliamentRAG).
+- Su ParliamentRAG stesso (da dove vengono i dati, chi li carica, come ti si usa) rispondi da qui, senza strumenti: i dati vengono dagli open data ufficiali di Camera e Senato (dati.camera.it e dati.senato.it, resoconti, schede degli atti, WebTV; le votazioni della Camera dell'ultimo giorno dal sito della Camera, finché non arrivano gli open data); li scarica e li controlla ogni notte un processo automatico, nessuno li scrive a mano; non navighi sul web mentre rispondi. Gli stessi dati si usano da altri assistenti AI con il server MCP (mcp.parliamentrag.it). È un progetto di ricerca indipendente dell'Università di Milano-Bicocca (Mirko Tritella, Matteo Palmonari, Riccardo Pozzi), non un servizio del Parlamento; il codice è pubblico su GitHub (Emeierkeio/ParliamentRAG).
 - Pagine del sito: se chiedono una pagina, una mappa o «mandami a…», dai il link Markdown alla pagina, oltre a una riga di risposta. Mappa dei seggi dell'Aula: https://www.parliamentrag.it/#/strumenti/aula. Gruppi e parlamentari: https://www.parliamentrag.it/#/strumenti/gruppi. Votazioni: https://www.parliamentrag.it/#/strumenti/voti. Agenda e scadenze: https://www.parliamentrag.it/#/strumenti/agenda. Emendamenti: https://www.parliamentrag.it/#/strumenti/emendamenti. Scheda di un parlamentare: https://www.parliamentrag.it/#/strumenti/deputato/<numero> per un deputato e …/#/strumenti/senatore/<numero> per un senatore, dove il numero è l'ultima parte del suo uri (it:person:camera:307394 → 307394). Solo questi indirizzi, scritti così.
 - Agenda dei prossimi giorni: per «domani c'è Aula?», «quando si discute…», «cosa c'è in calendario» leggi l'agenda. Un giorno con status calendar viene dal calendario dei lavori dell'Assemblea (Camera o Senato; al Senato una settimana può essere riservata ai lavori delle Commissioni, e allora l'Aula non si riunisce salvo decreti): dillo («secondo il calendario dei lavori»), riporta orari e argomenti che riguardano la domanda e avvisa che può cambiare. Se un atto non è fra gli argomenti di quel giorno, cerca in quali giorni del calendario compare (acts). Se l'agenda ha coverage.note per il giorno chiesto, non rispondere «no» né «non è in calendario»: di' che il calendario di quel giorno o di quel ramo non è ancora nei dati e rimanda ai siti di Camera e Senato.
 - Commissioni dei prossimi giorni: per «cosa c'è domani in commissione», «quando è audito…», «quando la commissione esamina…» leggi l'agenda con types commissioni. Una voce con status convened è una convocazione (blocks: ora, sede, sala, argomenti, auditi, atti): riportala come tale («è convocata per…»), di' che può cambiare e, se cancelled è vero, che la seduta è sconvocata. Ci sono solo le commissioni permanenti: per bicamerali, giunte e commissioni d'inchiesta di' che le convocazioni non sono nei dati. Per i giorni passati valgono le sedute tenute e i lavori delle commissioni.
@@ -74,6 +78,11 @@ Regole
 - «Chi ha votato contro», «chi si è astenuto», «chi era assente» chiede i nomi, non solo i gruppi: leggi la votazione con result e dai i numeri per gruppo e poi i nomi, gruppo per gruppo. Se le votazioni sono più d'una (tre fiducie sullo stesso testo), dai i nomi dell'ultima e i numeri delle altre, e dillo.
 - «In quali votazioni X ha votato diversamente da (o contro) un gruppo»: il confronto dei voti dei gruppi con la persona e quel solo gruppo dà l'elenco (different_votes), che si restringe con final per i voti finali.
 - Decreti-legge: quanti ne sono stati emanati in un anno e quali sono convertiti lo dà il conteggio dei decreti, mai un elenco di atti contato a mano.
+- Votazioni degli ultimi giorni: il resoconto di una seduta entra nei dati prima dei numeri delle sue votazioni. Se la seduta è più recente dell'ultima votazione nei dati di quel ramo, o il suo resoconto riporta una votazione («la Camera approva», «votazione finale») che non trovi fra le votazioni, la votazione c'è stata: non scrivere mai che non si è votato, che non risultano votazioni o che l'atto è ancora in discussione. Di' che cosa è stato votato e l'esito con le parole del resoconto, che i numeri e i nomi non sono ancora nei dati e arrivano entro il giorno dopo, e dai il link al resoconto. Una votazione con provisional vero è stata letta dal sito della Camera la sera stessa, prima degli open data: i numeri e i nomi sono quelli della scheda ufficiale, il titolo è provvisorio; dillo in mezza frase.
+- Lo stato di un atto (status, status_date) viene dalla scheda ufficiale, che si aggiorna qualche giorno dopo il voto. Se fra le votazioni dell'atto ce n'è una finale più recente di status_date, vale la votazione: scrivi che l'atto è stato votato quel giorno e con quale esito, e che la scheda non è ancora aggiornata. Non scrivere «è ancora in discussione».
+- «In via definitiva», «definitivamente», «è legge» solo se l'atto ha law_number o lo stato dice approvato definitivamente. Il voto finale di un ramo su un testo che passa all'altro ramo (o ci torna) è un'approvazione in prima o in seconda lettura: scrivi «approvato dal Senato il…, ora alla Camera» e niente di più. Se il secondo ramo approva senza modifiche il testo del primo, quello è il voto definitivo.
+- Un elenco di voci dell'agenda con items_total maggiore delle voci ricevute è tagliato: non dire che una cosa «non è prevista» o «non risulta» senza averle lette tutte. Di una seduta non ancora tenuta leggi items, calendar_items e schedule: il question time («interrogazioni a risposta immediata») e le informative stanno lì.
+- Un numero ricavato da una ricerca nei testi o nei documenti (quanti atti «contengono» una relazione, una sigla, una parola) è il numero di quelli trovati nei dati caricati, non il totale: scrivilo così («nei documenti caricati ne risultano almeno…») e di' che cosa non è coperto.
 - Se il dato non c'è, dillo in una frase e indica la fonte ufficiale. I dati si aggiornano ogni notte: per oggi o gli ultimi giorni dì fino a quando arrivano.
 - Ogni fatto con la sua fonte: per ogni votazione, atto, seduta, intervento o scheda che usi metti il link ufficiale che trovi nei dati (source_url, card_url, url), come link Markdown [testo](url) vicino al fatto. Link solo a indirizzi presenti nei dati letti.
 - Esito di un emendamento: usa il campo esito con la sua fonte (file della Camera o del Senato, voto dell'Aula, regola della fiducia). «Esito non pubblicato» vuol dire che nessuna fonte lo dice: non scrivere mai che è stato respinto. Decaduto per la fiducia non è respinto.
@@ -214,7 +223,7 @@ def schemi() -> list[dict]:
     return [{"type": "function", "name": s.nome, "description": s.descrizione, "parameters": s.schema()} for s in registro.STRUMENTI]
 
 
-def chiama_openai(modello: str, istruzioni: str, voci: list, chiave: str, strumenti: bool = True) -> dict:
+def chiama_openai(modello: str, istruzioni: str, voci: list, chiave: str, strumenti: bool = True, scadenza: float | None = None) -> dict:
     # store falso: niente resta sui server di OpenAI; il ragionamento torna cifrato e si ripassa al passo dopo.
     # strumenti falso: l'ultimo passo, il modello deve rispondere con quello che ha letto
     corpo = json.dumps({"model": modello, "instructions": istruzioni, "input": voci, "tools": schemi(),
@@ -223,8 +232,12 @@ def chiama_openai(modello: str, istruzioni: str, voci: list, chiave: str, strume
                         "include": ["reasoning.encrypted_content"]}).encode()
     req = urllib.request.Request(OPENAI, corpo, {"Content-Type": "application/json", "Authorization": f"Bearer {chiave}"})
     for tentativo in (1, 2):
+        # `scadenza` (time.monotonic) è il limite della domanda: i due tentativi insieme non lo superano
+        attesa = 150 if scadenza is None else min(150, scadenza - time.monotonic())
+        if attesa < 5:
+            raise TimeoutError("tempo della domanda finito")
         try:
-            with urllib.request.urlopen(req, timeout=150) as r:
+            with urllib.request.urlopen(req, timeout=attesa) as r:
                 return json.loads(r.read())
         except (urllib.error.URLError, TimeoutError, ConnectionResetError) as e:
             if tentativo == 2 or isinstance(e, urllib.error.HTTPError) and e.code < 500:
@@ -298,6 +311,13 @@ def senza_note_di_lavoro(testo: str) -> tuple[str, int]:
     return "\n\n".join(tenuti), tolti
 
 
+def ultimi_voti(c) -> str:
+    """Fin dove arrivano le votazioni, per ramo: alla Camera i numeri entrano dopo il resoconto, e il modello deve saperlo."""
+    righe = c.execute("SELECT chamber, max(date) AS d FROM vote GROUP BY chamber ORDER BY chamber").fetchall()
+    nomi = {"camera": "Camera", "senato": "Senato"}
+    return ", ".join(f"{nomi.get(r['chamber'], r['chamber'])} {r['d'].strftime('%d/%m/%Y')}" for r in righe if r["d"]) or "?"
+
+
 def _conteggio(ris) -> int | None:
     if isinstance(ris, list):
         return len(ris)
@@ -323,11 +343,11 @@ def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dic
     voci = [{"role": m["role"], "content": str(m["content"])[:4000]} for m in storia[-8:]
             if m.get("role") in ("user", "assistant") and m.get("content")]
     voci.append({"role": "user", "content": domanda[:2000]})
-    spesa, n, visti = 0.0, 0, set()
+    spesa, n, visti, inizio = 0.0, 0, set(), time.monotonic()
     with connessione() as c:
         ultima = c.execute("SELECT max(date) AS d FROM sitting WHERE status = 'held'").fetchone()["d"]
         istruzioni = PROMPT.format(oggi=dt.date.today().strftime("%d/%m/%Y"), ultima=ultima.strftime("%d/%m/%Y") if ultima else "?",
-                                   lingua="inglese" if lingua == "en" else "italiano")
+                                   voti=ultimi_voti(c), lingua="inglese" if lingua == "en" else "italiano")
         yield {"type": "status", "text": "Leggo la domanda" if lingua != "en" else "Reading the question"}
         if allegato:
             # la bozza non va al modello intera: per ogni emendamento si cercano i simili, e il modello legge solo quelli
@@ -348,12 +368,12 @@ def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dic
         vuota = False
         try:
             for passo in range(PASSI_MAX):
-                ultimo = passo == PASSI_MAX - 1
+                ultimo = passo == PASSI_MAX - 1 or time.monotonic() - inizio > TEMPO_STRUMENTI
                 if ultimo:
                     # niente più strumenti: una risposta con quello che si è trovato è meglio di nessuna risposta
                     voci.append({"role": "user", "content": ULTIMO_PASSO})
                 try:
-                    r = chiama_openai(modello, istruzioni, voci, chiave, strumenti=not ultimo)
+                    r = chiama_openai(modello, istruzioni, voci, chiave, strumenti=not ultimo, scadenza=inizio + TEMPO_MAX)
                 except urllib.error.HTTPError as e:
                     yield {"type": "error", "text": f"il modello non risponde ({e.code})"}
                     return

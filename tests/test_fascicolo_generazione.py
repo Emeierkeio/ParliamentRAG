@@ -162,6 +162,13 @@ class TestFlusso(ConModelloFinto):
         self.assertIn("Trovate 4 evidenze", [e["message"] for e in ev if e["type"] == "progress"])
         self.assertLess(tipi.index("citation_details"), tipi.index("chunk"))
 
+    def test_poco_materiale_passa_alla_chat(self):
+        # con meno di quattro evidenze niente fascicolo: il sito, senza testo, manda la domanda alla chat
+        with mock.patch.object(servizio, "MINIMO_EVIDENZE", 5):
+            ev = self.eventi()
+        self.assertEqual([e["type"] for e in ev], ["progress", "progress", "complete"])
+        self.assertEqual(ev[-1]["metadata"], {"evidence": 0, "thin": 4})
+
     def test_citazioni_verificate_con_link_e_testo(self):
         ev = self.eventi()
         testo = "".join(e["data"] for e in ev if e["type"] == "chunk")
