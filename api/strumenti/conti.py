@@ -343,6 +343,26 @@ def voto_gruppi(c: psycopg.Connection, chamber: str, kind: str | None = None, fi
             diverse.sort(key=lambda d: (d["date"] or dt.date.min), reverse=True)
             out["different_positions"] = {"total": len(diverse), "note": "votazioni in cui i due gruppi hanno preso posizioni diverse (tie esclusi)"} \
                 | _pagina(diverse, limit, offset)
+    if scelti is not None and len(groups or []) == 1 and not person:
+        # un gruppo solo: le votazioni in cui i suoi membri hanno votato in modi diversi (21/11/2026, «in quali voti la Lega
+        # si è divisa»: c'era solo la coesione)
+        uno = gruppi_chiesti(cat, groups[0], chamber)
+        if len(uno) == 1:
+            g, divise = uno[0], []
+            for voto, gv in per_voto.items():
+                conti = gv.get(g)
+                if conti and sum(1 for n in conti if n) >= 2:
+                    divise.append({"vote": voto, "favor": conti[0], "against": conti[1], "abstain": conti[2]})
+            dettagli = {r["uri"]: r for r in c.execute("SELECT uri, date, number, title, final, source_url FROM vote WHERE uri = ANY(%s)",
+                                                       ([d["vote"] for d in divise],))}
+            for d in divise:
+                x = dettagli.get(d["vote"], {})
+                d.update(date=x.get("date"), title=x.get("title"), final=x.get("final") or None, source_url=x.get("source_url"))
+            divise.sort(key=lambda d: (d["date"] or dt.date.min), reverse=True)
+            out["split_votes"] = {"total": len(divise), "group": etichetta(cat, g),
+                                  "note": "votazioni palesi in cui i membri del gruppo che hanno votato hanno fatto scelte diverse "
+                                          "(favorevoli, contrari, astenuti del gruppo), dalla più recente; per restringere usa final, "
+                                          "kind, act, q o le date"} | _pagina(divise, min(limit, 25), offset)
     if person:
         allineato: dict[tuple[str, str], list[int]] = defaultdict(lambda: [0, 0])
         for s in schede_persona:

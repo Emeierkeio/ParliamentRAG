@@ -89,7 +89,8 @@ class GroupCount(BaseModel):
 class Composition(BaseModel):
     chamber: str
     date: dt.date
-    members: int
+    members: int                       # tutti i parlamentari in carica, anche chi non è ancora in un gruppo
+    in_groups: int = 0                 # quelli iscritti a un gruppo (members − not_in_group)
     groups: list[GroupCount]
     not_in_group: int
 

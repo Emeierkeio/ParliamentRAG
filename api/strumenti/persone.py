@@ -99,7 +99,64 @@ def composizione(c: psycopg.Connection, chamber: str, d: dt.date | None = None) 
             conti.setdefault(g.uri, GroupCount(group=g, members=0)).members += 1
     for u, cs in componenti.items():
         conti[u].components = sorted(cs.values(), key=lambda x: -x.members)
-    return Composition(chamber=chamber, date=d, members=len(righe), groups=sorted(conti.values(), key=lambda x: -x.members), not_in_group=senza)
+    return Composition(chamber=chamber, date=d, members=len(righe), in_groups=len(righe) - senza,
+                       groups=sorted(conti.values(), key=lambda x: -x.members), not_in_group=senza)
+
+
+def _livello_studio(t: str | None) -> str:
+    if not t or not t.strip():
+        return "non indicato"
+    x = t.strip().lower()
+    if x.startswith(("laurea", "dottorato", "master", "phd", "ingegnere", "ricercat", "professor")):
+        return "laurea o titolo superiore"
+    if x.startswith(("diploma", "perito", "licenza", "maturit")):
+        return "diploma o licenza"
+    return "altro"
+
+
+def profilo_parlamentari(c: psycopg.Connection, chamber: str, group: str | None = None, d: dt.date | None = None,
+                         limit: int = 30, q: str | None = None) -> dict:
+    """Titolo di studio e professione dei parlamentari in carica alla data, dalle schede ufficiali; con `group` solo
+    quel gruppo (sigla, nome o uri, il Misto comprende le sue componenti)."""
+    d = d or dt.date.today()
+    righe = c.execute("""
+        SELECT p.education, p.profession, g.uri AS g_uri, g.short_name AS g_short, g.name AS g_name, g.part_of AS g_part_of
+        FROM mandate m JOIN person p ON p.uri = m.person LEFT JOIN grp g ON g.uri = group_at(m.person, %(d)s)
+        WHERE m.legislature = %(leg)s AND m.chamber = %(ramo)s AND m.start_date <= %(d)s AND (m.end_date IS NULL OR m.end_date >= %(d)s)""",
+        {"d": d, "leg": LEGISLATURA, "ramo": chamber}).fetchall()
+    if group:
+        q = group.strip().lower()
+        righe = [r for r in righe if q in {(r["g_uri"] or "").lower(), (r["g_short"] or "").lower(), (r["g_name"] or "").lower(),
+                                            (r["g_part_of"] or "").lower()}]
+    livelli: dict[str, int] = {}
+    titoli: dict[str, int] = {}
+    professioni: dict[str, int] = {}
+    for r in righe:
+        livelli[_livello_studio(r["education"])] = livelli.get(_livello_studio(r["education"]), 0) + 1
+        if r["education"] and r["education"].strip():
+            t = r["education"].strip()
+            t = t[:1].upper() + t[1:].lower()
+            titoli[t] = titoli.get(t, 0) + 1
+        if r["profession"] and r["profession"].strip():
+            t = r["profession"].strip().lower()
+            professioni[t] = professioni.get(t, 0) + 1
+    ordina = lambda x: [{"value": k, "members": n} for k, n in sorted(x.items(), key=lambda kv: (-kv[1], kv[0]))][:limit]  # noqa: E731
+    nota = ("Titolo di studio e professione come li scrive la scheda ufficiale di ogni parlamentare in carica alla data; "
+            "«non indicato» = la scheda non lo dice, quindi i conti sono un minimo. Il livello è ricavato dalle prime parole del "
+            "titolo (Laurea, Dottorato, Master → laurea o titolo superiore; Diploma, Licenza → diploma o licenza).")
+    if chamber == "senato":
+        nota += " Le schede del Senato non riportano il titolo di studio: per il Senato c'è solo la professione."
+    cerca = None
+    if q and q.strip():
+        t = _norm(q)
+        trovati = [r for r in righe if t in _norm(r["profession"] or "") or t in _norm(r["education"] or "")]
+        cerca = {"q": q, "members": len(trovati), "note": "parlamentari la cui professione o il cui titolo di studio contiene la parola "
+                 "(«avvocat» trova avvocato, avvocata, avvocato e docente…): è un minimo, alcune schede non lo dicono"}
+    return {"chamber": chamber, "date": d, "group": group, "members": len(righe), "counted": nota, "match": cerca,
+            "education_level": livelli if chamber != "senato" else None,
+            "education": ordina(titoli) if chamber != "senato" else None,
+            "profession": ordina(professioni),
+            "profession_not_given": sum(1 for r in righe if not (r["profession"] or "").strip())}
 
 
 def _gruppo_per_uri(c: psycopg.Connection, uri: str) -> Group:

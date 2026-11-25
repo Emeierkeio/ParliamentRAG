@@ -304,6 +304,9 @@ def giro(passi: list[Passo], config: dict, cartella: Path, id_giro: str | None =
                     esito, riepilogo, errore = esegui_passo(p, ctx)
                     stato.segna(id_giro, p.nome, esito, t, riepilogo, errore)
                     ctx.log(f"fine {p.nome}: {esito} {json.dumps(riepilogo, ensure_ascii=False, default=str)[:300]}")
+                    if esito != "ok" and errore:
+                        # il motivo nel log, non solo in stato.sqlite (20/11/2026: «errore {}» senza dire perché)
+                        ctx.log(f"motivo {p.nome}: {(errore.strip().splitlines() or [''])[-1][:500]}")
                     if esito == "ok":
                         ctx.riepiloghi[p.nome] = riepilogo
                         avvisi += [f"{p.nome}: {a}" for a in _avvisi(riepilogo)]

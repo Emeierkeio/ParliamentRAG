@@ -43,6 +43,9 @@ log = logging.getLogger("parliamentrag.fascicolo")
 
 AUTORITA_PRIME = 5                 # una voce è autorevole fra le prime cinque del suo gruppo sul tema
 BATTITO = 15                       # secondi fra due righe di commento mentre si lavora
+# tempo massimo di un fascicolo, come la chat: il 21/11/2026 uno è rimasto fermo nella generazione per otto minuti,
+# finché chi aspettava non ha chiuso la pagina; oltre questo tempo chi legge vede l'errore e il registro lo dice
+TEMPO_MAX = 300
 PEZZO = 100                        # caratteri per evento chunk, come prima
 _posti = threading.BoundedSemaphore(int(env("FASCICOLI_INSIEME", "3")))   # quasi tutto il tempo è attesa del modello (4/11)
 _LINK = re.compile(r"\[«([^»]*)»\]\((" + ID_BRANO + r")\)")
@@ -361,9 +364,20 @@ def statistiche(stat: dict, schede: dict[str, dict]) -> dict:
 
 # ---------- il flusso ----------
 
+class TempoScaduto(Exception):
+    """Il fascicolo ha passato TEMPO_MAX."""
+
+
+_SCADENZA: contextvars.ContextVar[float | None] = contextvars.ContextVar("scadenza_fascicolo", default=None)
+
+
 def _in_attesa(f: Future) -> Iterator[str]:
-    """Righe di commento finché il lavoro non finisce."""
+    """Righe di commento finché il lavoro non finisce, o fino alla scadenza del fascicolo."""
     while True:
+        scadenza = _SCADENZA.get()
+        if scadenza is not None and time.monotonic() >= scadenza:
+            f.cancel()
+            raise TempoScaduto(f"fascicolo oltre {TEMPO_MAX} secondi")
         try:
             f.result(timeout=BATTITO)
             return
@@ -394,6 +408,7 @@ def fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, misure: dic
     t0 = time.monotonic()
     tempi: dict[str, float] = {}
     token_spesa, token_ip = modello.SPESA.set(spesa), IP.set(ip)
+    token_scadenza = _SCADENZA.set(t0 + TEMPO_MAX)
     pool = ThreadPoolExecutor(max_workers=1)
     try:
         yield from _fascicolo(domanda, pesi, lingua, ip, en, misure, pool, tempi)
@@ -412,6 +427,7 @@ def fascicolo(domanda: str, pesi: dict | None, lingua: str, ip: str, misure: dic
         pool.shutdown(wait=False)
         modello.SPESA.reset(token_spesa)
         IP.reset(token_ip)
+        _SCADENZA.reset(token_scadenza)
         _posti.release()
         misure["dollari"] = spesa[0]
         misure["ms"] = int((time.monotonic() - t0) * 1000)

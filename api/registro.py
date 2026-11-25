@@ -73,6 +73,14 @@ class Composizione(Parametri):
     date: dt.date | None = Field(None, description="la data; vuota per oggi")
 
 
+class ProfiloParlamentari(Parametri):
+    chamber: Ramo
+    group: str | None = Field(None, description="sigla, nome o uri del gruppo; vuoto per tutto il ramo")
+    date: dt.date | None = Field(None, description="la data; vuota per oggi")
+    limit: int = Field(30, ge=1, le=100, description="voci per titolo di studio e per professione")
+    q: str | None = Field(None, max_length=60, description="parola da cercare in professione e titolo di studio (radice: «avvocat», «medic», «giurisprudenza»)")
+
+
 class ElencoSedute(Parametri):
     chamber: Ramo | None = None
     body: str | None = Field(None, description="«aula», «commissioni» o l'uri di un organo")
@@ -112,7 +120,7 @@ class ElencoVotazioni(Parametri):
     chamber: Ramo | None = None
     act: str | None = Field(None, description="uri dell'atto votato")
     kind: str | None = Field(None, description="final, article, amendment, agenda_order, motion, resolution, confidence…")
-    final: bool | None = Field(None, description="solo le votazioni finali")
+    final: bool | None = Field(None, description="vero: solo le votazioni finali; falso: solo quelle NON finali; lascialo vuoto per contarle tutte")
     confidence: bool | None = Field(None, description="vero: solo le questioni di fiducia (alla Camera si votano sugli articoli)")
     start: dt.date | None = None
     end: dt.date | None = None
@@ -230,7 +238,7 @@ class Organo(Parametri):
 
 class FiltriVoti(Parametri):
     kind: str | None = Field(None, description="final, article, amendment, agenda_order, motion, resolution, confidence, other…")
-    final: bool | None = Field(None, description="vero: solo le votazioni finali (vote.final)")
+    final: bool | None = Field(None, description="vero: solo le votazioni finali; falso: solo quelle NON finali; lascialo vuoto per contarle tutte (vote.final)")
     approved: bool | None = Field(None, description="vero: approvate; falso: respinte")
     confidence: bool | None = Field(None, description="vero: solo le questioni di fiducia")
     act: str | None = Field(None, description="uri dell'atto votato")
@@ -264,7 +272,7 @@ class Presenze(Parametri):
     group: str | None = Field(None, description="sigla, nome o uri del gruppo: le schede date da membri del gruppo")
     government: bool = Field(False, description="vero: chi ha avuto un incarico in un governo della legislatura durante il mandato")
     kind: str | None = None
-    final: bool | None = None
+    final: bool | None = Field(None, description="vero: solo le votazioni finali; falso: solo quelle NON finali; lascialo vuoto per contarle tutte: per presenze e assenze di una persona lascialo vuoto")
     start: dt.date | None = None
     end: dt.date | None = None
     order_by: Literal["voted", "absent", "mission", "favor", "against", "abstain"] = "voted"
@@ -463,6 +471,9 @@ STRUMENTI: list[Strumento] = [
               Uri, lambda c, p: persone.scheda_persona(c, p.uri)),
     Strumento("composizione", "Gruppi di un ramo alla data con il numero di membri; il Misto diviso per componente.",
               Composizione, lambda c, p: persone.composizione(c, p.chamber, p.date)),
+    Strumento("profilo_parlamentari", "CONTEGGIO. Titolo di studio (solo Camera) e professione dei parlamentari in carica di un ramo, "
+              "anche per gruppo: «quanti deputati sono laureati», «quanti avvocati», «che lavoro facevano i senatori di FdI».",
+              ProfiloParlamentari, lambda c, p: persone.profilo_parlamentari(c, p.chamber, p.group, p.date, p.limit, p.q)),
     Strumento("elenco_sedute", "Sedute d'Aula e di commissione, dalla più recente.", ElencoSedute,
               lambda c, p: sedute.elenco_sedute(c, p.chamber, p.body, p.start, p.end, p.limit, p.offset)),
     Strumento("argomenti_sedute", "I punti all'ordine del giorno di Aula e commissioni (Bollettino) per organo, sede, fase e parole del "
@@ -517,7 +528,7 @@ STRUMENTI: list[Strumento] = [
                                                                   p.q, p.start, p.end, p.group_by, p.sum_chambers, p.limit, p.offset)),
     Strumento("voto_gruppi", "CONTEGGIO. Come hanno votato i gruppi (il Misto per componente) su un insieme di votazioni palesi di un ramo: "
               "posizioni, coesione (indice di Hix-Noury-Roland), quota di voti compatti, matrice di accordo fra gruppi; con due gruppi le "
-              "votazioni in cui si sono divisi; con una persona quanto ha votato come ciascun gruppo, prima e dopo un cambio di gruppo, e con una persona e un solo gruppo "
+              "votazioni in cui hanno preso posizioni diverse; con un solo gruppo (senza persona) l'elenco delle votazioni in cui quel gruppo si è diviso (split_votes); con una persona quanto ha votato come ciascun gruppo, prima e dopo un cambio di gruppo, e con una persona e un solo gruppo "
               "l'elenco delle votazioni in cui ha votato diversamente dal gruppo (anche dal suo: «quando ha votato contro il gruppo»).",
               VotoGruppi, lambda c, p: conti.voto_gruppi(c, p.chamber, p.kind, p.final, p.approved, p.confidence, p.act, p.q, p.start,
                                                           p.end, p.groups, p.person, p.limit, p.offset)),
