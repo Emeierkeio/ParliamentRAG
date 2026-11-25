@@ -495,7 +495,10 @@ STRUMENTI: list[Strumento] = [
               Votazione, _votazione),
     Strumento("cerca_atti", "Progetti di legge, interrogazioni, mozioni, atti del Governo sottoposti a parere (schemi di decreto "
               "legislativo: kind government_act), nomine (appointment) e altri atti per parole del titolo o del testo, numero, tipo, firmatario o "
-              "iniziativa (governo, parlamentare, regione, CNEL, popolare, o il presentatore: «Regione Toscana»).",
+              "iniziativa (governo, parlamentare, regione, CNEL, popolare, o il presentatore: «Regione Toscana»). Il titolo di "
+              "interrogazioni, interpellanze, mozioni, risoluzioni e ordini del giorno è solo l'intestazione: l'argomento sta in "
+              "subject (destinatari e prime righe) e, cercando per parole, in excerpt (il passaggio dove compaiono). Leggili per "
+              "scegliere l'atto giusto; fra più atti sullo stesso tema, il più recente è il primo dell'elenco.",
               CercaAtti, lambda c, p: atti.cerca_atti(c, p.q, p.chamber, p.kind, p.number, p.signer, p.limit, p.offset, p.initiative)),
     Strumento("atto", "Un atto: firmatari, commissioni a cui è assegnato (assignments: sede, data e, per gli atti del Governo e le "
               "nomine, termine del parere e parere espresso), relatori, iter, testi con il numero di articoli, votazioni, emendamenti per esito.",

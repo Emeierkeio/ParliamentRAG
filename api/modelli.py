@@ -6,9 +6,12 @@ from __future__ import annotations
 import datetime as dt
 from typing import Generic, TypeVar
 
-from pydantic import BaseModel
+import re
+
+from pydantic import BaseModel, field_validator
 
 T = TypeVar("T")
+TAG_HTML = re.compile(r"</?[a-zA-Z][^>]*>")
 
 
 class Group(BaseModel):
@@ -210,6 +213,15 @@ class ActBrief(BaseModel):
     law_number: str | None = None
     card_url: str | None = None
     initiative: str | None = None              # Governo, Parlamentare, Regioni…; al Senato il presentatore («Regione Toscana»)
+    # interrogazioni, mozioni, ordini del giorno: il titolo è solo l'intestazione, l'argomento sta nel testo
+    subject: str | None = None                 # a chi è rivolto e le prime righe del testo
+    excerpt: str | None = None                 # con una ricerca per parole: il passaggio del testo dove compaiono
+
+    @field_validator("title")
+    @classmethod
+    def _senza_html(cls, v: str | None) -> str | None:
+        """Alcuni titoli della Camera arrivano con <em>…</em> («(approvato dal Senato)»)."""
+        return re.sub(r"\s{2,}", " ", TAG_HTML.sub("", v)).strip() if v else v
 
 
 class Sponsor(BaseModel):

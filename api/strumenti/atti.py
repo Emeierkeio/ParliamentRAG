@@ -15,6 +15,39 @@ from .voti import SQL_VOTO_BREVE, voto_breve
 CAMPI_BREVI = "a.uri, a.chamber, a.legislature, a.number, a.kind, a.title, a.date, a.status, a.law_number, a.card_url, a.initiative"
 # le espressioni sono quelle degli indici act_fts e act_text_fts: se cambiano, Postgres legge tutta la tabella
 SQL_Q_TITOLO = "to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s)"
+SQL_Q_TESTO = "to_tsvector('italian', coalesce(a.text, '')) @@ websearch_to_tsquery('italian', %(q)s)"
+
+# «AC 1695», «A.C. 1695», «C. 1917-B», «S. 1353», «A.S. 1689/I», «ddl S. 1353», «pdl n. 1695»: il numero e, se c'è, il ramo
+NUMERO = re.compile(r"""^\s*(?:(?:ddl|pdl|d\.d\.l\.|p\.d\.l\.)\s*)?
+                        (?:(?P<ramo>A\.?\s*[CS]\.?|[CS]\.|[CS](?=\s*\d))\s*)?
+                        (?:n\.\s*)?(?P<num>\d.*?)\s*$""", re.I | re.X)
+OGGETTO = 320                                           # caratteri dell'oggetto negli elenchi
+# dove comincia la parte che dice l'argomento: i destinatari di un'interrogazione, l'aula di una mozione o di un odg
+INIZIO_OGGETTO = re.compile(r"\b[Aa](?:l|i|lla|gli) (?:Ministr|Presidente|Vice)|\b(?:I|Il|La|Le) sottoscritt|"
+                            r"\b(?:La Camera|Il Senato)\b|(?:\bLa |\bLe |\bL')(?:[IVXL]+|\d+[ªa])? ?Commission[ei]\b")
+
+
+def numero_e_ramo(numero: str) -> tuple[str, str | None]:
+    """Il numero dell'atto senza i prefissi che si usano in aula e sui giornali, e il ramo che indicano (None se nessuno)."""
+    m = NUMERO.match(numero or "")
+    if not m:
+        return (numero or "").strip(), None
+    ramo = m["ramo"]
+    return m["num"], ({"C": "camera", "S": "senato"}[re.sub(r"[^CS]", "", ramo.upper())[-1]] if ramo else None)
+
+
+def oggetto(testo: str | None) -> str | None:
+    """Di un atto di sindacato ispettivo o di indirizzo: a chi è rivolto e le prime righe, senza l'intestazione e i firmatari."""
+    if not testo:
+        return None
+    t = re.sub(r"\s+", " ", testo).strip()
+    m = INIZIO_OGGETTO.search(t)
+    if m:
+        t = t[m.start():]
+    else:
+        t = re.split(r"seduta n\.\s*\d+\s*", t, maxsplit=1)[-1]
+    t = re.sub(r"\s+\.\s+(—|-)", r" \1", t)            # «sociali . — Per sapere» -> «sociali — Per sapere»
+    return t if len(t) <= OGGETTO else t[:OGGETTO].rsplit(" ", 1)[0] + "…"
 
 
 def ha_pareri(c: psycopg.Connection) -> bool:
@@ -33,11 +66,14 @@ def cerca_atti(c: psycopg.Connection, q: str | None = None, chamber: str | None 
     `initiative`: una categoria (governo, parlamentare, regione, cnel, popolare, mista) o parole del presentatore
     come le scrive la fonte («Regione Toscana», «Consiglio regionale»)."""
     firmatari = stessa_persona(c, signer) if signer else None
+    if number:
+        number, ramo = numero_e_ramo(number)
+        chamber = chamber or ramo
     ini = initiative.strip().lower() if initiative else None
     categoria, testo = (ini, None) if ini in INIZIATIVE else (None, initiative)
     filtro = f"""a.legislature = %(leg)s AND (%(ramo)s::text IS NULL OR a.chamber = %(ramo)s) AND (%(tipo)s::text IS NULL OR a.kind = %(tipo)s)
         AND (%(num)s::text IS NULL OR a.number = %(num)s OR replace(a.number, '/', '-') = %(num)s)
-        AND (%(q)s::text IS NULL OR {SQL_Q_TITOLO} OR to_tsvector('italian', coalesce(a.text, '')) @@ websearch_to_tsquery('italian', %(q)s))
+        AND (%(q)s::text IS NULL OR {SQL_Q_TITOLO} OR {SQL_Q_TESTO})
         AND (%(firm)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_sponsor s WHERE s.act = a.uri AND s.person = ANY(%(firm)s)))
         AND (%(ini)s::text IS NULL OR ({SQL_INIZIATIVA}) = %(ini)s)
         AND (%(ini_testo)s::text IS NULL OR a.initiative ILIKE '%%' || %(ini_testo)s || '%%')"""
@@ -45,9 +81,12 @@ def cerca_atti(c: psycopg.Connection, q: str | None = None, chamber: str | None 
          "ini": categoria, "ini_testo": testo}
     totale = c.execute(f"SELECT count(*) AS n FROM act a WHERE {filtro}", p).fetchone()["n"]
     titolo_prima = f"({SQL_Q_TITOLO}) DESC, " if q else ""
-    righe = c.execute(f"SELECT {CAMPI_BREVI} FROM act a WHERE {filtro} ORDER BY {titolo_prima}a.date DESC NULLS LAST, a.uri "
-                      "LIMIT %(lim)s OFFSET %(off)s", p)
-    return totale, [ActBrief(**r) for r in righe]
+    # con q, il passaggio del testo dove compaiono le parole: fra tanti atti con lo stesso titolo è quello che li distingue
+    passaggio = (f"CASE WHEN {SQL_Q_TESTO} THEN ts_headline('italian', a.text, websearch_to_tsquery('italian', %(q)s), "
+                 "'StartSel=\"\", StopSel=\"\", MaxWords=35, MinWords=15, MaxFragments=1') END" if q else "NULL::text")
+    righe = c.execute(f"""SELECT {CAMPI_BREVI}, a.text AS testo, {passaggio} AS excerpt FROM act a WHERE {filtro}
+                          ORDER BY {titolo_prima}a.date DESC NULLS LAST, a.uri LIMIT %(lim)s OFFSET %(off)s""", p)
+    return totale, [ActBrief(**{k: v for k, v in r.items() if k != "testo"}, subject=oggetto(r["testo"])) for r in righe]
 
 
 def atto(c: psycopg.Connection, uri: str) -> Act | None:
