@@ -23,7 +23,8 @@ def tema(c: psycopg.Connection, parole: str) -> dict:
             "emendamenti": _conta(c, """SELECT 1 FROM amendment
                                        WHERE to_tsvector('italian', coalesce(text, '')) @@ websearch_to_tsquery('italian', %(q)s)""", p),
             "atti": _conta(c, """SELECT 1 FROM act
-                                WHERE to_tsvector('italian', coalesce(title, '')) @@ websearch_to_tsquery('italian', %(q)s)""", p)}
+                                WHERE to_tsvector('italian', coalesce(title, '')) @@ websearch_to_tsquery('italian', %(q)s)
+                                   OR to_tsvector('italian', coalesce(text, '')) @@ websearch_to_tsquery('italian', %(q)s)""", p)}
 
 
 def soggetto(c: psycopg.Connection, nome: str) -> dict:

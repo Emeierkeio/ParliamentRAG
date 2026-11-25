@@ -107,6 +107,8 @@ class TestConti(unittest.TestCase):
         # prima gli atti con le parole nel titolo, poi quelli con le parole solo nel testo
         n, xs = atti.cerca_atti(C, q="salario minimo", chamber="camera", limit=5)
         self.assertTrue(all("salario minimo" in (x.title or "").lower() for x in xs))
+        # anche il conteggio: «quante interrogazioni ha presentato Sottanelli sull'INPS»
+        self.assertGreater(conti.conta_atti(C, q="INPS", signer="it:person:camera:306064")["total"], 0)
 
 
 if __name__ == "__main__":

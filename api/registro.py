@@ -325,7 +325,8 @@ class ContaAtti(Parametri):
     chamber: Ramo | None = None
     kind: str | None = Field(None, description="bill, written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order…")
     initiative: str | None = Iniziativa
-    q: str | None = Field(None, description="parole del titolo")
+    q: str | None = Field(None, description="parole del titolo o del testo (interrogazioni, mozioni e ordini del giorno hanno il tema "
+                          "solo nel testo)")
     subject: str | None = Field(None, description="tema dei thesauri (EuroVoc), anche parte del nome: «sanit», «immigrazione»; "
                                                   "comprende i concetti più specifici")
     signer: str | None = Field(None, description="uri di un firmatario")

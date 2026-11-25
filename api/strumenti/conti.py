@@ -784,7 +784,8 @@ def conta_atti(c: psycopg.Connection, chamber: str | None = None, kind: str | No
         AND (%(legge)s::boolean IS NULL OR (a.law_number IS NOT NULL) = %(legge)s)
         AND (%(ini)s::text IS NULL OR ({SQL_INIZIATIVA}) = %(ini)s)
         AND (%(ini_testo)s::text IS NULL OR a.initiative ILIKE '%%' || %(ini_testo)s || '%%')
-        AND (%(q)s::text IS NULL OR to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s))
+        AND (%(q)s::text IS NULL OR to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s)
+             OR to_tsvector('italian', coalesce(a.text, '')) @@ websearch_to_tsquery('italian', %(q)s))
         AND (%(firm)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_sponsor s WHERE s.act = a.uri AND s.person = ANY(%(firm)s)
                                                   AND (s.first OR NOT %(primo)s)))
         AND (%(temi)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_subject x WHERE x.act = a.uri AND x.concept = ANY(%(temi)s)))
@@ -792,7 +793,7 @@ def conta_atti(c: psycopg.Connection, chamber: str | None = None, kind: str | No
                                                WHERE d.act = a.uri AND m.name ILIKE '%%' || %(min)s || '%%'))"""
     if gruppi:
         filtro += f" AND {SQL_GRUPPO_PRIMO} = ANY(%(gruppi)s)"
-    descr = _filtri(tipo=kind, iniziativa=initiative, parole_del_titolo=q, firmatario=signer, rivolti_al_ministero=addressee,
+    descr = _filtri(tipo=kind, iniziativa=initiative, parole_del_titolo_o_del_testo=q, firmatario=signer, rivolti_al_ministero=addressee,
                     gruppo_del_primo_firmatario=group, diventati_legge={True: "sì", False: "no"}.get(became_law))
     if temi:
         nomi = sorted({t["label"] for t in temi})
