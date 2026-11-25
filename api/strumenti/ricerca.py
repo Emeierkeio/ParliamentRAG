@@ -3,19 +3,40 @@
 from __future__ import annotations
 
 import datetime as dt
+import re
 
 import psycopg
 
 from ..modelli import SittingBrief, SpeechHit
 from .comune import brevi, stessa_persona, url_interventi
 
+SINTASSI = re.compile(r'["()]|(?:^|\s)-\S|\s(?:or|OR)\s')
+
+
+def parole_esatte(q: str) -> tuple[str, str | None]:
+    """Le parole come le intende chi le cerca: più parole senza operatori sono una frase («separazione delle carriere», non
+    «separazione» e «carriere» sparse, che con le radici trovano anche «carro»); una parola sola di almeno 5 lettere deve
+    comparire intera, salvo l'ultima lettera («premierato» e «premierati», non «Premier»). Restituisce il testo per
+    websearch_to_tsquery e, per la parola sola, l'espressione regolare che il testo deve contenere."""
+    s = q.strip()
+    if SINTASSI.search(s):
+        return s, None
+    parole = s.split()
+    if len(parole) > 1:
+        return f'"{s}"', None
+    if re.fullmatch(r"\w{5,}", s):
+        return s, r"\m" + s[:-1].lower()
+    return s, None
+
 
 def cerca_interventi(c: psycopg.Connection, q: str, chamber: str | None = None, person: str | None = None,
                      start: dt.date | None = None, end: dt.date | None = None, include_summaries: bool = True,
-                     limit: int = 20, offset: int = 0) -> list[SpeechHit]:
+                     limit: int = 20, offset: int = 0, frase: bool = False) -> list[SpeechHit]:
     """Interventi che contengono le parole cercate (sintassi di websearch: «"frase esatta"», «-parola», «or»), dal più recente.
-    I riassunti delle commissioni (`kind = summary`) non sono parole testuali: si escludono con `include_summaries=False`."""
+    I riassunti delle commissioni (`kind = summary`) non sono parole testuali: si escludono con `include_summaries=False`.
+    Con `frase` le parole si leggono con parole_esatte (la chat); senza, come le scrive chi chiama (API e MCP)."""
     from ..fascicolo.recupero_canali import CARICA_GOVERNO
+    q, rx = parole_esatte(q) if frase else (q, None)
     persone_ids = stessa_persona(c, person) if person else None
     righe = c.execute("""
         WITH q AS (SELECT websearch_to_tsquery('italian', %(q)s) AS q)
@@ -30,13 +51,14 @@ def cerca_interventi(c: psycopg.Connection, q: str, chamber: str | None = None, 
                st.uri AS st_uri, st.chamber, st.body, st.body_name, st.number, st.date, st.kind AS st_kind, st.status,
                ts_headline('italian', s.text, q.q, 'StartSel=[[, StopSel=]], MaxWords=40, MinWords=15, MaxFragments=2') AS snippet
         FROM speech s CROSS JOIN q JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting
-        WHERE to_tsvector('italian', s.text) @@ q.q
+        WHERE to_tsvector('italian', s.text) @@ q.q AND (%(rx)s::text IS NULL OR s.text ~* %(rx)s)
           AND (%(ramo)s::text IS NULL OR st.chamber = %(ramo)s)
           AND (%(pers)s::text[] IS NULL OR s.person = ANY(%(pers)s))
           AND (%(dal)s::date IS NULL OR st.date >= %(dal)s) AND (%(al)s::date IS NULL OR st.date <= %(al)s)
           AND (%(somm)s OR s.kind IS DISTINCT FROM 'summary')
         ORDER BY st.date DESC, s.uri LIMIT %(lim)s OFFSET %(off)s""",
-        {"q": q, "ramo": chamber, "pers": persone_ids, "dal": start, "al": end, "somm": include_summaries, "lim": limit, "off": offset, "carica": CARICA_GOVERNO}).fetchall()
+        {"q": q, "rx": rx, "ramo": chamber, "pers": persone_ids, "dal": start, "al": end, "somm": include_summaries, "lim": limit,
+         "off": offset, "carica": CARICA_GOVERNO}).fetchall()
     # il gruppo è quello alla data della seduta: una persona può aver cambiato gruppo da allora
     persone = {(u, d): b for d in {r["date"] for r in righe}
                for u, b in brevi(c, [r["person"] for r in righe if r["date"] == d], d).items()}
@@ -59,16 +81,18 @@ def _senza_gruppo(persona, governo: bool):
 
 
 def totale_interventi(c: psycopg.Connection, q: str, chamber: str | None = None, person: str | None = None,
-                      start: dt.date | None = None, end: dt.date | None = None, include_summaries: bool = True) -> int:
+                      start: dt.date | None = None, end: dt.date | None = None, include_summaries: bool = True,
+                      frase: bool = False) -> int:
     """Quanti interventi contengono le parole, con gli stessi filtri di cerca_interventi."""
+    q, rx = parole_esatte(q) if frase else (q, None)
     persone_ids = stessa_persona(c, person) if person else None
     return c.execute("""
         SELECT count(*) AS n FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting
-        WHERE to_tsvector('italian', s.text) @@ websearch_to_tsquery('italian', %(q)s)
+        WHERE to_tsvector('italian', s.text) @@ websearch_to_tsquery('italian', %(q)s) AND (%(rx)s::text IS NULL OR s.text ~* %(rx)s)
           AND (%(ramo)s::text IS NULL OR st.chamber = %(ramo)s) AND (%(pers)s::text[] IS NULL OR s.person = ANY(%(pers)s))
           AND (%(dal)s::date IS NULL OR st.date >= %(dal)s) AND (%(al)s::date IS NULL OR st.date <= %(al)s)
           AND (%(somm)s OR s.kind IS DISTINCT FROM 'summary')""",
-        {"q": q, "ramo": chamber, "pers": persone_ids, "dal": start, "al": end, "somm": include_summaries}).fetchone()["n"]
+        {"q": q, "rx": rx, "ramo": chamber, "pers": persone_ids, "dal": start, "al": end, "somm": include_summaries}).fetchone()["n"]
 
 
 PRIMA_DELLA_DIDASCALIA = 300          # caratteri del parlato prima della didascalia, nell'estratto

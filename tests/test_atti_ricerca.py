@@ -2,6 +2,7 @@
 titoli senza codice HTML, l'oggetto delle interrogazioni negli elenchi. Le prove sul database si saltano se Postgres non
 risponde."""
 
+import re
 import unittest
 
 try:
@@ -12,7 +13,7 @@ except Exception as e:                                   # database spento o .en
 else:
     MOTIVO = ""
 
-from api.strumenti import atti
+from api.strumenti import atti, ricerca
 
 
 class TestNumeri(unittest.TestCase):
@@ -57,8 +58,36 @@ class TestTitoli(unittest.TestCase):
         self.assertIsNone(atti.oggetto(None))
 
 
+class TestFrasi(unittest.TestCase):
+    def test_piu_parole_sono_una_frase(self):
+        self.assertEqual(ricerca.parole_esatte("separazione delle carriere"), ('"separazione delle carriere"', None))
+
+    def test_una_parola_intera(self):
+        # «premierato» e «premier» hanno la stessa radice: la parola deve esserci (premierato, premierati)
+        self.assertEqual(ricerca.parole_esatte("premierato"), ("premierato", r"\mpremierat"))
+        self.assertEqual(ricerca.parole_esatte("INPS"), ("INPS", None))           # parola corta: basta la radice
+
+    def test_la_sintassi_esplicita_resta(self):
+        for q in ('"frase esatta"', "salario -minimo", "pensioni or previdenza", "(caro affitti)"):
+            self.assertEqual(ricerca.parole_esatte(q), (q, None))
+
+
 @unittest.skipIf(C is None, f"Postgres locale non raggiungibile: {MOTIVO}")
 class TestSulDatabase(unittest.TestCase):
+    def _testi(self, colpi):
+        return [C.execute("SELECT text FROM speech WHERE uri = %s", (h.uri,)).fetchone()["text"].lower() for h in colpi]
+
+    def test_interventi_con_la_frase(self):
+        colpi = ricerca.cerca_interventi(C, "separazione delle carriere", chamber="senato", limit=20, frase=True)
+        self.assertTrue(colpi)
+        # la frase con le forme flesse («separare le carriere» va bene), mai le parole sparse né «carro»
+        self.assertTrue(all(re.search(r"separ\w*\s+(?:\w+\s+)?carrier", t) for t in self._testi(colpi)))
+        colpi = ricerca.cerca_interventi(C, "premierato", limit=20, frase=True)
+        self.assertTrue(colpi)
+        self.assertTrue(all("premierat" in t for t in self._testi(colpi)))
+        # il totale con le stesse regole
+        self.assertLess(ricerca.totale_interventi(C, "premierato", frase=True), ricerca.totale_interventi(C, "premierato"))
+
     def test_numero_scritto_come_in_aula(self):
         n, xs = atti.cerca_atti(C, number="AC 1695")
         self.assertEqual([(x.chamber, x.number) for x in xs], [("camera", "1695")])

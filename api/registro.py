@@ -162,7 +162,7 @@ class CercaAtti(Parametri):
     kind: str | None = Field(None, description="bill, written_question, oral_question, interpellation, motion, resolution, agenda_order, "
                              "government_act (atti del Governo sottoposti a parere: schemi di decreto legislativo, regolamenti, "
                              "decreti ministeriali), appointment (proposte di nomina sottoposte a parere)…")
-    number: str | None = Field(None, description="numero dell'atto: 1695, 5-04321")
+    number: str | None = Field(None, max_length=40, description="numero dell'atto: 1695, 5-04321, «AC 1695», «S. 1353»")
     signer: str | None = Field(None, description="uri di un firmatario")
     initiative: str | None = Iniziativa
     limit: int = Field(20, ge=1, le=100)
@@ -207,7 +207,9 @@ class Emendamento(Parametri):
 
 
 class CercaInterventi(Parametri):
-    q: str = Field(min_length=2, max_length=200, description="parole da cercare nel testo; «\"frase esatta\"», «-parola», «or»")
+    q: str = Field(min_length=2, max_length=200, description="parole da cercare nel testo. Più parole senza operatori si cercano "
+                   "come frase esatta («separazione delle carriere»); una parola sola deve comparire intera (premierato, non "
+                   "premier). Per parole sparse usa «or» o cerca una parola alla volta; «-parola» per escluderne una")
     chamber: Ramo | None = None
     person: str | None = Field(None, description="uri di chi parla")
     start: dt.date | None = None
@@ -460,9 +462,9 @@ def _cerca_persone(c, p: CercaPersone):
 def _cerca_interventi(c, p: CercaInterventi):
     if p.captions:
         return ricerca.cerca_didascalie(c, p.q, p.chamber, p.person, p.start, p.end, p.limit, p.offset)
-    trovati = ricerca.cerca_interventi(c, p.q, p.chamber, p.person, p.start, p.end, p.include_summaries, p.limit, p.offset)
+    trovati = ricerca.cerca_interventi(c, p.q, p.chamber, p.person, p.start, p.end, p.include_summaries, p.limit, p.offset, frase=True)
     totale = len(trovati) + p.offset if len(trovati) < p.limit else ricerca.totale_interventi(
-        c, p.q, p.chamber, p.person, p.start, p.end, p.include_summaries)
+        c, p.q, p.chamber, p.person, p.start, p.end, p.include_summaries, frase=True)
     return totale, trovati
 
 

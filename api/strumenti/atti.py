@@ -20,7 +20,7 @@ SQL_Q_TESTO = "to_tsvector('italian', coalesce(a.text, '')) @@ websearch_to_tsqu
 # «AC 1695», «A.C. 1695», «C. 1917-B», «S. 1353», «A.S. 1689/I», «ddl S. 1353», «pdl n. 1695»: il numero e, se c'è, il ramo
 NUMERO = re.compile(r"""^\s*(?:(?:ddl|pdl|d\.d\.l\.|p\.d\.l\.)\s*)?
                         (?:(?P<ramo>A\.?\s*[CS]\.?|[CS]\.|[CS](?=\s*\d))\s*)?
-                        (?:n\.\s*)?(?P<num>\d.*?)\s*$""", re.I | re.X)
+                        (?:n\.\s*)?(?P<num>\d.*)$""", re.I | re.X)  # su un testo già senza spazi ai bordi
 OGGETTO = 320                                           # caratteri dell'oggetto negli elenchi
 # dove comincia la parte che dice l'argomento: i destinatari di un'interrogazione, l'aula di una mozione o di un odg
 INIZIO_OGGETTO = re.compile(r"\b[Aa](?:l|i|lla|gli) (?:Ministr|Presidente|Vice)|\b(?:I|Il|La|Le) sottoscritt|"
@@ -29,9 +29,10 @@ INIZIO_OGGETTO = re.compile(r"\b[Aa](?:l|i|lla|gli) (?:Ministr|Presidente|Vice)|
 
 def numero_e_ramo(numero: str) -> tuple[str, str | None]:
     """Il numero dell'atto senza i prefissi che si usano in aula e sui giornali, e il ramo che indicano (None se nessuno)."""
-    m = NUMERO.match(numero or "")
+    numero = (numero or "").strip()[:60]
+    m = NUMERO.match(numero)
     if not m:
-        return (numero or "").strip(), None
+        return numero, None
     ramo = m["ramo"]
     return m["num"], ({"C": "camera", "S": "senato"}[re.sub(r"[^CS]", "", ramo.upper())[-1]] if ramo else None)
 
