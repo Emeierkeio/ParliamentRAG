@@ -8,7 +8,7 @@ import re
 import psycopg
 
 from ..modelli import Act, ActBrief, ActRef, Amendment, AmendmentCounts, Assignment, Rapporteur, Signer, Sponsor, Step, TextVersion
-from .comune import LEGISLATURA, brevi, stessa_persona
+from .comune import LEGISLATURA, brevi, parametri_soprannomi, stessa_persona
 from .conti import INIZIATIVE, SQL_INIZIATIVA
 from .voti import SQL_VOTO_BREVE, voto_breve
 
@@ -16,6 +16,7 @@ CAMPI_BREVI = "a.uri, a.chamber, a.legislature, a.number, a.kind, a.title, a.dat
 # le espressioni sono quelle degli indici act_fts e act_text_fts: se cambiano, Postgres legge tutta la tabella
 SQL_Q_TITOLO = "to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s)"
 SQL_Q_TESTO = "to_tsvector('italian', coalesce(a.text, '')) @@ websearch_to_tsquery('italian', %(q)s)"
+SQL_SOPRANNOME = "(a.uri = ANY(%(sopr)s::text[]) OR a.title ~ %(sopr_tit)s::text)"      # soprannomi.py
 
 # «AC 1695», «A.C. 1695», «C. 1917-B», «S. 1353», «A.S. 1689/I», «ddl S. 1353», «pdl n. 1695»: il numero e, se c'è, il ramo
 NUMERO = re.compile(r"""^\s*(?:(?:ddl|pdl|d\.d\.l\.|p\.d\.l\.)\s*)?
@@ -74,14 +75,15 @@ def cerca_atti(c: psycopg.Connection, q: str | None = None, chamber: str | None 
     categoria, testo = (ini, None) if ini in INIZIATIVE else (None, initiative)
     filtro = f"""a.legislature = %(leg)s AND (%(ramo)s::text IS NULL OR a.chamber = %(ramo)s) AND (%(tipo)s::text IS NULL OR a.kind = %(tipo)s)
         AND (%(num)s::text IS NULL OR a.number = %(num)s OR replace(a.number, '/', '-') = %(num)s)
-        AND (%(q)s::text IS NULL OR {SQL_Q_TITOLO} OR {SQL_Q_TESTO})
+        AND (%(q)s::text IS NULL OR {SQL_Q_TITOLO} OR {SQL_Q_TESTO} OR {SQL_SOPRANNOME})
         AND (%(firm)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_sponsor s WHERE s.act = a.uri AND s.person = ANY(%(firm)s)))
         AND (%(ini)s::text IS NULL OR ({SQL_INIZIATIVA}) = %(ini)s)
         AND (%(ini_testo)s::text IS NULL OR a.initiative ILIKE '%%' || %(ini_testo)s || '%%')"""
     p = {"leg": LEGISLATURA, "ramo": chamber, "tipo": kind, "num": number, "q": q, "firm": firmatari, "lim": limit, "off": offset,
-         "ini": categoria, "ini_testo": testo}
+         "ini": categoria, "ini_testo": testo, **parametri_soprannomi(q)}
     totale = c.execute(f"SELECT count(*) AS n FROM act a WHERE {filtro}", p).fetchone()["n"]
-    titolo_prima = f"({SQL_Q_TITOLO}) DESC, " if q else ""
+    # prima gli atti del soprannome («premierato»), poi quelli con le parole nel titolo, poi il resto dal più recente
+    titolo_prima = f"coalesce({SQL_SOPRANNOME}, false) DESC, ({SQL_Q_TITOLO}) DESC, " if q else ""
     # con q, il passaggio del testo dove compaiono le parole: fra tanti atti con lo stesso titolo è quello che li distingue
     passaggio = (f"CASE WHEN {SQL_Q_TESTO} THEN ts_headline('italian', a.text, websearch_to_tsquery('italian', %(q)s), "
                  "'StartSel=\"\", StopSel=\"\", MaxWords=35, MinWords=15, MaxFragments=1') END" if q else "NULL::text")

@@ -15,7 +15,7 @@ from itertools import combinations
 
 import psycopg
 
-from .comune import LEGISLATURA, SQL_VOTO_PER_PAROLE, brevi, stessa_persona
+from .comune import LEGISLATURA, SQL_VOTO_PER_PAROLE, brevi, parametri_soprannomi, stessa_persona
 
 TEMPO = 25                        # secondi per query: i conti su tutta la legislatura leggono milioni di schede
 RIGHE_MAX = 200
@@ -192,7 +192,7 @@ DIM_VOTI = {"ramo": "v.chamber", "tipo": "v.kind",
 
 def _parametri_voti(chamber, kind, final, secret, approved, confidence, act, q, start, end) -> dict:
     return {"leg": LEGISLATURA, "ramo": chamber, "tipo": kind, "finale": final, "segreta": secret, "approvata": approved,
-            "fiducia": confidence, "atto": act, "q": q, "dal": start, "al": end}
+            "fiducia": confidence, "atto": act, "q": q, "dal": start, "al": end, **parametri_soprannomi(q)}
 
 
 def _descrivi_voti(p: dict) -> str:

@@ -56,7 +56,16 @@ def brevi(c: psycopg.Connection, uris: list[str], d: dt.date | None = None) -> d
 SQL_VOTO_PER_PAROLE = """(to_tsvector('italian', coalesce(v.title, '') || ' ' || coalesce(v.description, '')) @@ websearch_to_tsquery('italian', %(q)s)
   OR v.uri IN (SELECT x.vote FROM vote_act x JOIN act a ON a.uri = x.act
                WHERE to_tsvector('italian', coalesce(a.text, '')) @@ websearch_to_tsquery('italian', %(q)s)
-                  OR to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s)))"""
+                  OR to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s))
+  OR v.uri IN (SELECT y.vote FROM vote_act y JOIN act b ON b.uri = y.act
+               WHERE b.uri = ANY(%(sopr)s::text[]) OR b.title ~ %(sopr_tit)s::text))"""
+# i parametri sopr e sopr_tit: gli atti di un soprannome («premierato») e il titolo della legge di bilancio di un anno
+
+
+def parametri_soprannomi(q: str | None) -> dict:
+    from .soprannomi import cerca
+    uris, titolo = cerca(q)
+    return {"sopr": uris, "sopr_tit": titolo}
 
 
 def stessa_persona(c: psycopg.Connection, uri: str) -> list[str]:

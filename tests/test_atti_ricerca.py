@@ -13,7 +13,7 @@ except Exception as e:                                   # database spento o .en
 else:
     MOTIVO = ""
 
-from api.strumenti import atti, ricerca
+from api.strumenti import atti, ricerca, soprannomi
 
 
 class TestNumeri(unittest.TestCase):
@@ -58,6 +58,24 @@ class TestTitoli(unittest.TestCase):
         self.assertIsNone(atti.oggetto(None))
 
 
+class TestSoprannomi(unittest.TestCase):
+    def test_soprannomi_noti(self):
+        self.assertEqual(soprannomi.cerca("premierato")[0], ["it:senato:19:ddl:935", "it:camera:19:ac:1921"])
+        self.assertIn("it:camera:19:ac:1917", soprannomi.cerca("ddl sulla separazione delle carriere")[0])
+        self.assertIn("it:senato:19:ddl:615", soprannomi.cerca("Autonomia differenziata")[0])
+        self.assertIsNone(soprannomi.cerca("salario minimo")[0])
+        self.assertEqual(soprannomi.cerca(None), (None, None))
+
+    def test_legge_di_bilancio_per_anno(self):
+        uris, titolo = soprannomi.cerca("legge di bilancio 2026")
+        self.assertIsNone(uris)
+        self.assertTrue(re.search(titolo, "Bilancio di previsione dello Stato per l'anno finanziario 2026 e bilancio pluriennale"))
+        self.assertTrue(re.search(titolo, 'S. 1689. - "Bilancio di previsione dello Stato per l’anno finanziario 2026 e bilancio'))
+        self.assertFalse(re.search(titolo, "Nota di variazioni al Bilancio di previsione dello Stato per l'anno finanziario 2026"))
+        self.assertFalse(re.search(titolo, "Bilancio di previsione dello Stato per l'anno finanziario 2027"))
+        self.assertIsNotNone(soprannomi.cerca("manovra 2025")[1])
+
+
 class TestFrasi(unittest.TestCase):
     def test_piu_parole_sono_una_frase(self):
         self.assertEqual(ricerca.parole_esatte("separazione delle carriere"), ('"separazione delle carriere"', None))
@@ -99,6 +117,22 @@ class TestSulDatabase(unittest.TestCase):
         x = next(x for x in xs if x.uri == "it:camera:19:aic:4-02224")
         self.assertIn("Al Ministro del lavoro", x.subject)
         self.assertIn("inps", x.excerpt.lower())         # con q, il passaggio dove compare la parola («Inps» nel testo)
+
+    def test_gli_atti_dei_soprannomi_esistono(self):
+        tutti = [u for _, us in soprannomi.SOPRANNOMI for u in us]
+        trovati = {r["uri"] for r in C.execute("SELECT uri FROM act WHERE uri = ANY(%s) AND kind = 'bill'", (tutti,))}
+        self.assertEqual(set(tutti) - trovati, set())
+
+    def test_soprannome_prima_di_tutto(self):
+        n, xs = atti.cerca_atti(C, q="premierato", kind="bill")
+        self.assertEqual({x.uri for x in xs[:2]}, {"it:senato:19:ddl:935", "it:camera:19:ac:1921"})
+        n, xs = atti.cerca_atti(C, q="legge di bilancio 2026", kind="bill")
+        self.assertEqual({x.uri for x in xs[:2]}, {"it:senato:19:ddl:1689", "it:camera:19:ac:2750"})
+
+    def test_voto_finale_per_soprannome(self):
+        from api.strumenti import voti
+        n, vs = voti.elenco_votazioni(C, final=True, q="separazione delle carriere")
+        self.assertGreater(n, 0)
 
     def test_progetti_di_legge_senza_oggetto(self):
         n, xs = atti.cerca_atti(C, number="1695", chamber="camera")

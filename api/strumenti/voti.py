@@ -7,7 +7,7 @@ import datetime as dt
 import psycopg
 
 from ..modelli import ActRef, Ballot, Group, GroupVote, Vote, VoteBrief
-from .comune import SQL_VOTO_PER_PAROLE, brevi
+from .comune import SQL_VOTO_PER_PAROLE, brevi, parametri_soprannomi
 
 SQL_VOTO_BREVE = """SELECT v.uri, v.sitting, v.chamber, v.number, v.date, v.title, v.kind, v.favor, v.against, v.abstain,
                            v.approved, v.secret, v.confidence, v.source_url,
@@ -34,7 +34,7 @@ def elenco_votazioni(c: psycopg.Connection, chamber: str | None = None, act: str
         AND (%(atto)s::text IS NULL OR EXISTS (SELECT 1 FROM vote_act x WHERE x.vote = v.uri AND x.act = %(atto)s))
         AND (%(q)s::text IS NULL OR """ + SQL_VOTO_PER_PAROLE + ")"
     p = {"ramo": chamber, "tipo": kind, "dal": start, "al": end, "finale": final, "atto": act, "fiducia": confidence, "q": q,
-         "lim": limit, "off": offset}
+         "lim": limit, "off": offset, **parametri_soprannomi(q)}
     totale = c.execute(f"SELECT count(*) AS n FROM vote v WHERE {filtro}", p).fetchone()["n"]
     righe = c.execute(f"{SQL_VOTO_BREVE} WHERE {filtro} ORDER BY v.date DESC, v.number DESC LIMIT %(lim)s OFFSET %(off)s", p).fetchall()
     # il titolo dell'atto votato: quello del voto dice spesso solo il numero («Articolo 1 PDL n. 2822-B»)
