@@ -156,7 +156,8 @@ def _votazione(c, p: Votazione):
 
 
 class CercaAtti(Parametri):
-    q: str | None = Field(None, description="parole del titolo; sintassi di ricerca web: «\"frase\"», «-parola», «or»")
+    q: str | None = Field(None, description="parole del titolo o del testo (prima gli atti con le parole nel titolo, poi dal più "
+                          "recente); sintassi di ricerca web: «\"frase\"», «-parola», «or»")
     chamber: Ramo | None = None
     kind: str | None = Field(None, description="bill, written_question, oral_question, interpellation, motion, resolution, agenda_order, "
                              "government_act (atti del Governo sottoposti a parere: schemi di decreto legislativo, regolamenti, "
@@ -492,7 +493,7 @@ STRUMENTI: list[Strumento] = [
               "Un gruppo con split vero si è diviso: dillo con i numeri di ogni scelta, mai una posizione unica.",
               Votazione, _votazione),
     Strumento("cerca_atti", "Progetti di legge, interrogazioni, mozioni, atti del Governo sottoposti a parere (schemi di decreto "
-              "legislativo: kind government_act), nomine (appointment) e altri atti per parole del titolo, numero, tipo, firmatario o "
+              "legislativo: kind government_act), nomine (appointment) e altri atti per parole del titolo o del testo, numero, tipo, firmatario o "
               "iniziativa (governo, parlamentare, regione, CNEL, popolare, o il presentatore: «Regione Toscana»).",
               CercaAtti, lambda c, p: atti.cerca_atti(c, p.q, p.chamber, p.kind, p.number, p.signer, p.limit, p.offset, p.initiative)),
     Strumento("atto", "Un atto: firmatari, commissioni a cui è assegnato (assignments: sede, data e, per gli atti del Governo e le "

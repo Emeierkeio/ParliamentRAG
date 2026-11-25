@@ -13,7 +13,7 @@ else:
     MOTIVO = ""
 
 from api import agente, registro
-from api.strumenti import conti
+from api.strumenti import atti, conti
 
 CAT = {"g:fdi": {"uri": "g:fdi", "chamber": "camera", "kind": "group", "name": "Fratelli d'Italia", "short_name": "FDI", "part_of": None},
        "g:misto": {"uri": "g:misto", "chamber": "camera", "kind": "group", "name": "Misto", "short_name": "MISTO", "part_of": None},
@@ -98,6 +98,15 @@ class TestConti(unittest.TestCase):
         self.assertIn("offset=3", r["more"])
         d = registro.esegui(C, "cerca_interventi", {"q": "levano in piedi", "captions": True, "start": "2026-02-03", "end": "2026-02-03"})
         self.assertTrue(any("si levano in piedi" in h["snippet"] for h in d["items"]))
+
+    def test_atti_per_parole_del_testo(self):
+        # il titolo di un'interrogazione è solo l'intestazione («INTERROGAZIONE A RISPOSTA SCRITTA 4/02224 presentata da…»):
+        # l'argomento (qui l'INPS) sta nel testo, e la ricerca per parole deve trovarlo
+        n, xs = atti.cerca_atti(C, q="INPS", chamber="camera", signer="it:person:camera:306064", limit=100)
+        self.assertIn("it:camera:19:aic:4-02224", [x.uri for x in xs])
+        # prima gli atti con le parole nel titolo, poi quelli con le parole solo nel testo
+        n, xs = atti.cerca_atti(C, q="salario minimo", chamber="camera", limit=5)
+        self.assertTrue(all("salario minimo" in (x.title or "").lower() for x in xs))
 
 
 if __name__ == "__main__":
