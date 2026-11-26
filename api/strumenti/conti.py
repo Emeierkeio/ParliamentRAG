@@ -1027,3 +1027,267 @@ def conta_decreti(c: psycopg.Connection, year: int | None = None, converted: boo
                        + (f" {senza} ddl di conversione hanno un titolo senza data e numero del decreto e non sono contati." if senza else ""),
             "total": len(out), "by_year": dict(sorted(per_anno.items())),
             "converted": sum(x["converted"] for x in out)} | _pagina(out, limit, offset)
+
+
+# ---------- confronti di voto ----------
+# Quattro domande che voto_gruppi non copre (giro del 26/11/2026, righe 707, 753, 755): due persone fra loro, una persona
+# o un gruppo contro la maggioranza di governo, chi vota contro il proprio gruppo nei voti palesi, e i voti segreti in cui
+# alla maggioranza mancano voti (i «franchi tiratori»). Maggioranza e opposizione vengono dai voti di fiducia
+# (api/fascicolo/maggioranza.py), gruppo per gruppo e alla data del voto, il Misto per componente.
+
+MODI_CONFRONTO = ("persone", "maggioranza", "dissensi", "segreti")
+DISSENZIENTI_MAX = 3              # nei casi di dissenso, i voti in cui dal gruppo si staccano al più tanti membri
+CASI_MAX = 25
+
+# le schede palesi con il gruppo del voto (il Misto per componente)
+CTE_SCHEDE = f"""v AS (SELECT v.uri, v.date FROM vote v WHERE {FILTRO_VOTI}),
+  s AS (SELECT b.vote, v.date, b.person, b.result, ({SQL_GRUPPO_VOTO}) AS g {FROM_SCHEDE}
+        WHERE b.result IN ('favor', 'against', 'abstain'))"""
+
+
+def _un_gruppo(cat: dict[str, dict], testo: str, chamber: str) -> list[str]:
+    """Il gruppo chiesto con le sue componenti; se il testo prende gruppi diversi («Azione» al Senato è anche nel nome
+    della Lega) un errore con i candidati, perché il modello scelga la sigla."""
+    trovati = gruppi_chiesti(cat, testo, chamber)
+    radici = {u for u in trovati if cat[u]["part_of"] not in trovati}
+    if len(radici) > 1:
+        raise ValueError(f"«{testo}» prende più gruppi: " + "; ".join(sorted(etichetta(cat, u) for u in radici))
+                         + ". Richiama con la sigla o l'uri di uno")
+    return trovati
+
+
+def _pos(conti: tuple[int, int, int]) -> str | None:
+    """La scelta più frequente fra favorevoli, contrari e astenuti; a pari merito «tie»; nessun votante: None."""
+    m = max(conti)
+    if m == 0:
+        return None
+    return SCELTE[conti.index(m)] if conti.count(m) == 1 else "tie"
+
+
+def _con_dettagli(c: psycopg.Connection, righe: list[dict]) -> list[dict]:
+    """Data, numero, titolo, finale e link di ogni votazione delle righe, dalla più recente."""
+    dettagli = {r["uri"]: r for r in c.execute("SELECT uri, date, number, title, final, secret, approved, source_url FROM vote "
+                                                "WHERE uri = ANY(%s)", ([r["vote"] for r in righe],))}
+    for r in righe:
+        x = dettagli.get(r["vote"], {})
+        r.update(date=x.get("date"), title=x.get("title"), final=x.get("final") or None, approved=x.get("approved"),
+                 source_url=x.get("source_url"))
+    righe.sort(key=lambda r: (r["date"] or dt.date.min), reverse=True)
+    return righe
+
+
+def _per_anno(righe: list[tuple[dt.date, bool]]) -> list[dict]:
+    anni: dict[int, list[int]] = defaultdict(lambda: [0, 0])
+    for quando, uguale in righe:
+        anni[quando.year][0] += 1
+        anni[quando.year][1] += uguale
+    return [{"anno": a, "votes": n, "same": k, "share": round(k / n, 3)} for a, (n, k) in sorted(anni.items())]
+
+
+def _confronta_persone(c: psycopg.Connection, p: dict, persons: list[str], limit: int, offset: int) -> dict:
+    if len(persons or []) != 2:
+        raise ValueError("persone: servono due uri in persons")
+    a, b = persons
+    ids_a, ids_b = stessa_persona(c, a), stessa_persona(c, b)
+    with tempo_massimo(c):
+        righe = c.execute(f"""
+            WITH v AS (SELECT v.uri, v.date FROM vote v WHERE {FILTRO_VOTI})
+            SELECT x.vote, v.date, x.result AS ra, y.result AS rb FROM ballot x JOIN v ON v.uri = x.vote
+            JOIN ballot y ON y.vote = x.vote AND y.person = ANY(%(ib)s) AND y.result IN ('favor', 'against', 'abstain')
+            WHERE x.person = ANY(%(ia)s) AND x.result IN ('favor', 'against', 'abstain')""",
+            p | {"ia": ids_a, "ib": ids_b}).fetchall()
+    persone = brevi(c, [a, b])
+    na, nb = (persone[u].name if u in persone else u for u in (a, b))
+    coppie: dict[str, int] = defaultdict(int)
+    for r in righe:
+        coppie[f"{r['ra']}/{r['rb']}"] += 1
+    uguali = sum(r["ra"] == r["rb"] for r in righe)
+    diverse = _con_dettagli(c, [{"vote": r["vote"], na: r["ra"], nb: r["rb"]} for r in righe if r["ra"] != r["rb"]])
+    return {"counted": f"Votazioni palesi, {_ramo(p['ramo'])}, {_periodo(p['dal'], p['al'])}{_descrivi_voti(p)}, in cui {na} e {nb} "
+                       "hanno votato tutti e due (favorevole, contrario o astenuto; assenze, missioni e voti segreti esclusi). "
+                       "same = stessa scelta. Il conto è sulle schede delle due persone, non sui gruppi.",
+            "persons": [na, nb], "votes_both": len(righe), "same": uguali,
+            "share": round(uguali / len(righe), 3) if righe else None,
+            "pairs": dict(sorted(coppie.items(), key=lambda kv: -kv[1])),
+            "by_year": _per_anno([(r["date"], r["ra"] == r["rb"]) for r in righe]),
+            "different_votes": {"total": len(diverse), "note": "votazioni in cui hanno votato in modo diverso, dalla più recente"}
+            | _pagina(diverse, min(limit, CASI_MAX), offset)}
+
+
+def _confronta_maggioranza(c: psycopg.Connection, p: dict, chamber: str, person: str | None, group: str | None,
+                           limit: int, offset: int) -> dict:
+    from ..fascicolo import maggioranza
+    if bool(person) == bool(group):
+        raise ValueError("maggioranza: dai una persona (persons) oppure un gruppo (group)")
+    cat = catalogo_gruppi(c)
+    suoi = set(_un_gruppo(cat, group, chamber)) if group else set()
+    ids = stessa_persona(c, person) if person else []
+    with tempo_massimo(c, 2 * TEMPO):
+        conti = c.execute(f"""WITH {CTE_SCHEDE}
+            SELECT vote, date, g, count(*) FILTER (WHERE result = 'favor') AS f, count(*) FILTER (WHERE result = 'against') AS a,
+                   count(*) FILTER (WHERE result = 'abstain') AS x
+            FROM s WHERE NOT (person = ANY(%(ids)s)) GROUP BY 1, 2, 3""", p | {"ids": ids}).fetchall()
+        mie = {r["vote"]: r["result"] for r in c.execute(f"""
+            WITH v AS (SELECT v.uri, v.date FROM vote v WHERE {FILTRO_VOTI})
+            SELECT b.vote, b.result FROM ballot b JOIN v ON v.uri = b.vote
+            WHERE b.person = ANY(%(ids)s) AND b.result IN ('favor', 'against', 'abstain')""", p | {"ids": ids})} if ids else {}
+    sch = maggioranza.schieramenti(c)
+    magg: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+    sogg: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+    date: dict[str, dt.date] = {}
+    for r in conti:
+        date[r["vote"]] = r["date"]
+        n = (r["f"], r["a"], r["x"])
+        if r["g"] in suoi:                         # il gruppo confrontato non entra nella maggioranza con cui si confronta
+            sogg[r["vote"]] = [i + j for i, j in zip(sogg[r["vote"]], n)]
+        elif r["g"] and sch.lato(r["g"], r["date"]) == maggioranza.MAGGIORANZA:
+            magg[r["vote"]] = [i + j for i, j in zip(magg[r["vote"]], n)]
+    confronti = []
+    for voto, n in magg.items():
+        pm = _pos(tuple(n))
+        ps = mie.get(voto) if person else _pos(tuple(sogg.get(voto, (0, 0, 0))))
+        if pm in (None, "tie") or ps in (None, "tie"):
+            continue
+        confronti.append({"vote": voto, "date": date[voto], "subject": ps, "majority": pm})
+    uguali = sum(r["subject"] == r["majority"] for r in confronti)
+    if person:
+        b = brevi(c, [person]).get(person)
+        nome = b.name if b else person
+    else:
+        nome = ", ".join(sorted({etichetta(cat, u) for u in suoi}))
+    diverse = _con_dettagli(c, [{"vote": r["vote"], "subject": r["subject"], "majority": r["majority"]}
+                                for r in confronti if r["subject"] != r["majority"]])
+    return {"counted": f"Votazioni palesi, {_ramo(chamber)}, {_periodo(p['dal'], p['al'])}{_descrivi_voti(p)}: la scelta di {nome} "
+                       "confrontata con la posizione della maggioranza di governo in quel voto. Posizione della maggioranza = la "
+                       "scelta più frequente fra i membri dei gruppi di maggioranza che hanno votato (senza la persona o il gruppo "
+                       "confrontato); un gruppo, o una componente del Misto, è di maggioranza a una data se nelle fiducie dei dodici "
+                       "mesi prima più della metà dei suoi presenti ha votato sì. Posizione di un gruppo = la scelta più frequente dei "
+                       "suoi membri. Esclusi pari merito, voti segreti, assenti e missioni. Non è «votare con l'Aula» né «votare sì "
+                       "alle approvate».",
+            "subject": nome, "votes": len(confronti), "same": uguali, "share": round(uguali / len(confronti), 3) if confronti else None,
+            "by_year": _per_anno([(r["date"], r["subject"] == r["majority"]) for r in confronti]),
+            "different_votes": {"total": len(diverse), "note": "votazioni in cui la scelta è diversa da quella della maggioranza, dalla più recente"}
+            | _pagina(diverse, min(limit, CASI_MAX), offset)}
+
+
+def _dissensi(c: psycopg.Connection, p: dict, chamber: str, persons: list[str] | None, group: str | None,
+              limit: int, offset: int) -> dict:
+    cat = catalogo_gruppi(c)
+    gruppi = _un_gruppo(cat, group, chamber) if group else None
+    # il Misto senza componente non è un soggetto politico: chi ci sta non ha una linea di gruppo da cui staccarsi
+    misti = sorted(u for u, g in cat.items() if g["kind"] == "group" and g["name"].strip().lower() == "misto")
+    ids = [i for u in persons or [] for i in stessa_persona(c, u)] or None
+    filtro = " AND (%(gruppi)s::text[] IS NULL OR g = ANY(%(gruppi)s)) AND (%(ids)s::text[] IS NULL OR person = ANY(%(ids)s))"
+    base = f"""WITH {CTE_SCHEDE},
+      gc AS (SELECT vote, g, count(*) FILTER (WHERE result = 'favor') AS f, count(*) FILTER (WHERE result = 'against') AS a,
+                    count(*) FILTER (WHERE result = 'abstain') AS x FROM s
+             WHERE g IS NOT NULL AND NOT g = ANY(%(misti)s) GROUP BY 1, 2),
+      d AS (SELECT s.vote, s.date, s.person, s.g, s.result, gc.f - (s.result = 'favor')::int AS f,
+                   gc.a - (s.result = 'against')::int AS a, gc.x - (s.result = 'abstain')::int AS x
+            FROM s JOIN gc USING (vote, g)),
+      e AS (SELECT *, CASE WHEN f > a AND f > x THEN 'favor' WHEN a > f AND a > x THEN 'against'
+                           WHEN x > f AND x > a THEN 'abstain' END AS pos FROM d)"""
+    q = p | {"gruppi": gruppi, "ids": ids, "misti": misti}
+    with tempo_massimo(c, 2 * TEMPO):
+        persone = c.execute(f"""{base}
+            SELECT person AS persona, g AS gruppo, count(*) FILTER (WHERE pos IS NOT NULL) AS votes,
+                   count(*) FILTER (WHERE pos IS NOT NULL AND pos <> result) AS against_group
+            FROM e WHERE true {filtro} GROUP BY 1, 2 HAVING count(*) FILTER (WHERE pos IS NOT NULL AND pos <> result) > 0
+            ORDER BY 4 DESC, 3 DESC""", q).fetchall()
+        casi = c.execute(f"""{base}
+            SELECT vote, g AS gruppo, pos AS group_position, count(*) AS dissenters,
+                   json_agg(json_build_object('persona', person, 'voto', result)) AS chi
+            FROM e WHERE pos IS NOT NULL AND pos <> result {filtro}
+            GROUP BY 1, 2, 3 HAVING count(*) <= {DISSENZIENTI_MAX}""", q).fetchall()
+    for r in persone:
+        r["share"] = round(r["against_group"] / r["votes"], 3) if r["votes"] else None
+    _sostituisci_persone(c, persone)
+    _sostituisci_gruppi(persone, cat, ("gruppo",))
+    nomi = brevi(c, [x["persona"] for r in casi for x in r["chi"]])
+    for r in casi:
+        r["chi"] = [{"persona": nomi[x["persona"]].name if x["persona"] in nomi else x["persona"], "voto": x["voto"]} for x in r["chi"]]
+    _sostituisci_gruppi(casi, cat, ("gruppo",))
+    casi = _con_dettagli(c, casi)
+    # prima i voti che contano (fiducie e finali), poi gli altri, ognuno dal più recente: «trovami un caso» non è un ordine del giorno
+    fiducie = {r["uri"] for r in c.execute("SELECT uri FROM vote WHERE confidence AND uri = ANY(%s)", ([r["vote"] for r in casi],))}
+    casi.sort(key=lambda r: (r["vote"] not in fiducie, not r["final"]))
+    for r in casi:
+        r["confidence"] = r["vote"] in fiducie or None
+    return {"counted": f"Votazioni palesi, {_ramo(chamber)}, {_periodo(p['dal'], p['al'])}{_descrivi_voti(p)}: le schede in cui un "
+                       "parlamentare ha votato diversamente dalla posizione del proprio gruppo in quel voto (la scelta più frequente "
+                       "degli altri membri del gruppo che hanno votato; pari merito esclusi). Gruppo = quello della scheda alla data, il "
+                       "Misto per componente; chi è nel Misto senza componente non entra (non ha una linea di gruppo). È un dissenso dichiarato a voto palese, non un «franco tiratore» in senso stretto, che si "
+                       "nasconde nel voto segreto (per quello: mode segreti). votes = voti in cui il gruppo aveva una posizione; "
+                       f"cases = votazioni in cui dal gruppo si sono staccati al più {DISSENZIENTI_MAX} membri, con i nomi. Un voto isolato "
+                       "può essere un errore materiale: prima di presentarlo come dissenso cerca nella seduta se il deputato ha "
+                       "segnalato di aver sbagliato («avrei voluto votare…») o ha spiegato il voto in dichiarazione.",
+            "people": {"total": len(persone), "note": "parlamentari con almeno un voto diverso dal proprio gruppo, dal più frequente"}
+            | _pagina(persone, limit, offset),
+            "cases": {"total": len(casi), "note": "voti con pochi dissenzienti: prima fiducie e voti finali, poi gli altri, dal più recente; restringi con final, confidence, act, q o le date"}
+            | _pagina(casi, min(limit, CASI_MAX), offset)}
+
+
+def _segreti(c: psycopg.Connection, p: dict, chamber: str, limit: int, offset: int) -> dict:
+    from ..fascicolo import maggioranza
+    p = p | {"segreta": True}
+    with tempo_massimo(c):
+        voti = {r["uri"]: r for r in c.execute(f"""SELECT v.uri, v.date, v.number, v.title, v.favor, v.against, v.abstain, v.approved,
+                                                         v.final, v.majority, v.source_url FROM vote v WHERE {FILTRO_VOTI}""", p)}
+        schede = c.execute(f"""WITH v AS (SELECT v.uri, v.date FROM vote v WHERE {FILTRO_VOTI})
+            SELECT b.vote, v.date, ({SQL_GRUPPO_VOTO}) AS g, count(*) AS n {FROM_SCHEDE} WHERE b.result = 'voted' GROUP BY 1, 2, 3""",
+                           p).fetchall()
+    sch = maggioranza.schieramenti(c)
+    lati: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for r in schede:
+        lati[r["vote"]][sch.lato(r["g"], r["date"]) if r["g"] else maggioranza.OPPOSIZIONE] += r["n"]
+    righe = []
+    for uri, v in voti.items():
+        if uri not in lati or v["favor"] is None:
+            continue
+        m = lati[uri].get(maggioranza.MAGGIORANZA, 0)
+        altri = sum(n for k, n in lati[uri].items() if k != maggioranza.MAGGIORANZA)
+        righe.append({"vote": uri, "date": v["date"], "number": v["number"], "title": v["title"], "final": v["final"] or None,
+                      "favor": v["favor"], "against": v["against"], "abstain": v["abstain"], "approved": v["approved"],
+                      "majority_voters": m, "other_voters": altri,
+                      "majority_short_if_for": max(0, m - v["favor"]), "majority_short_if_against": max(0, m - v["against"]),
+                      "margin": abs(v["favor"] - v["against"]), "source_url": v["source_url"],
+                      # i sì e i no sotto i votanti di maggioranza: la maggioranza si è divisa, qualunque fosse la sua linea, di
+                      # almeno tanti voti; decisive se tanti voti spostati potevano cambiare l'esito
+                      "majority_split_min": max(0, min(m - v["favor"], m - v["against"]))})
+    for r in righe:
+        r["decisive"] = (r["majority_split_min"] > 0 and r["margin"] <= 2 * r["majority_split_min"]) or None
+    righe.sort(key=lambda r: r["date"], reverse=True)
+    righe.sort(key=lambda r: (not r["decisive"], not r["majority_split_min"]))
+    senza = len(voti) - len(righe)
+    return {"counted": f"Votazioni a scrutinio segreto, {_ramo(chamber)}, {_periodo(p['dal'], p['al'])}{_descrivi_voti(p)}: per ognuna "
+                       "i totali ufficiali e quanti hanno partecipato, divisi fra maggioranza di governo (dai voti di fiducia, alla data) "
+                       "e gli altri. Nel voto segreto non si sa chi ha votato come: majority_short_if_for = almeno tanti membri della "
+                       "maggioranza che hanno votato non hanno detto sì (se la maggioranza era per il sì); majority_short_if_against = lo "
+                       "stesso per il no. majority_split_min = se sia i sì sia i no sono meno dei votanti di maggioranza, la maggioranza si è divisa di sicuro, qualunque fosse la sua linea, di almeno tanti voti; decisive = quei voti potevano cambiare l'esito. Prima le decisive, poi quelle con majority_split_min, poi le altre, ognuna dalla più recente. Sono minimi certi solo se la posizione della maggioranza in quel voto è nota (dichiarazioni di "
+                       "voto, parere del Governo o dei relatori): leggila nella seduta prima di parlare di franchi tiratori, e non "
+                       "attribuire il voto a nessuno." + (f" {senza} votazioni senza le schede dei partecipanti non entrano." if senza else ""),
+            "votes": len(righe), "votes_without_participants": senza} \
+        | ({"note": "per queste votazioni la fonte non pubblica chi ha partecipato (al Senato i voti segreti non hanno "
+                    "schede): si conoscono solo i totali, che si leggono con elenco_votazioni"} if senza and not righe else {}) \
+        | _pagina(righe, min(limit, CASI_MAX), offset)
+
+
+def confronta_voti(c: psycopg.Connection, chamber: str, mode: str, persons: list[str] | None = None, group: str | None = None,
+                   kind: str | None = None, final: bool | None = None, approved: bool | None = None,
+                   confidence: bool | None = None, act: str | None = None, q: str | None = None,
+                   start: dt.date | None = None, end: dt.date | None = None, limit: int = 50, offset: int = 0) -> dict:
+    """Confronti di voto: due persone fra loro (persone), una persona o un gruppo con la maggioranza di governo
+    (maggioranza), chi vota diversamente dal proprio gruppo nei voti palesi (dissensi), i voti segreti in cui alla
+    maggioranza mancano voti (segreti)."""
+    if mode not in MODI_CONFRONTO:
+        raise ValueError(f"mode non ammesso: {mode} (ammessi: {', '.join(MODI_CONFRONTO)})")
+    p = _parametri_voti(chamber, kind, final, False, approved, confidence, act, q, start, end)
+    if mode == "persone":
+        return _confronta_persone(c, p, persons or [], limit, offset)
+    if mode == "maggioranza":
+        if persons and len(persons) > 1:
+            raise ValueError("maggioranza: una persona sola")
+        return _confronta_maggioranza(c, p, chamber, (persons or [None])[0], group, limit, offset)
+    if mode == "dissensi":
+        return _dissensi(c, p, chamber, persons, group, limit, offset)
+    return _segreti(c, p, chamber, limit, offset)

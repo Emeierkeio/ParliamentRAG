@@ -269,6 +269,19 @@ class VotoGruppi(FiltriVoti):
     offset: int = Field(0, ge=0)
 
 
+class ConfrontaVoti(FiltriVoti):
+    chamber: Ramo
+    mode: Literal["persone", "maggioranza", "dissensi", "segreti"] = Field(
+        description="persone: due parlamentari fra loro (persons con due uri); maggioranza: una persona (persons) o un gruppo "
+                    "(group) con la maggioranza di governo; dissensi: chi ha votato diversamente dal proprio gruppo nei voti palesi "
+                    "(restringi con group, persons, final, confidence, act); segreti: voti segreti con i partecipanti di maggioranza "
+                    "e quanti voti le mancano (franchi tiratori)")
+    persons: list[str] | None = Field(None, max_length=10, description="uri dei parlamentari")
+    group: str | None = Field(None, description="sigla, nome o uri del gruppo")
+    limit: int = Field(50, ge=1, le=200)
+    offset: int = Field(0, ge=0)
+
+
 class Presenze(Parametri):
     chamber: Ramo
     persons: list[str] | None = Field(None, max_length=50, description="uri dei parlamentari")
@@ -539,6 +552,12 @@ STRUMENTI: list[Strumento] = [
               "l'elenco delle votazioni in cui ha votato diversamente dal gruppo (anche dal suo: «quando ha votato contro il gruppo»).",
               VotoGruppi, lambda c, p: conti.voto_gruppi(c, p.chamber, p.kind, p.final, p.approved, p.confidence, p.act, p.q, p.start,
                                                           p.end, p.groups, p.person, p.limit, p.offset)),
+    Strumento("confronta_voti", "CONTEGGIO. Confronti di voto che voto_gruppi non fa: due parlamentari fra loro (quante volte "
+              "hanno votato uguale), una persona o un gruppo con la maggioranza di governo («quanto vota con la maggioranza»), chi "
+              "vota diversamente dal proprio gruppo nei voti palesi con classifica e casi con pochi dissenzienti, i voti segreti in "
+              "cui alla maggioranza mancano voti rispetto ai suoi presenti («franchi tiratori»).",
+              ConfrontaVoti, lambda c, p: conti.confronta_voti(c, p.chamber, p.mode, p.persons, p.group, p.kind, p.final, p.approved,
+                                                              p.confidence, p.act, p.q, p.start, p.end, p.limit, p.offset)),
     Strumento("presenze", "CONTEGGIO. Per ogni parlamentare: votazioni a cui ha partecipato, favorevoli, contrari, astenuti, assenze (al Senato "
               "ricavate: in carica senza scheda) e missioni, per persone, gruppo o membri del governo che hanno anche il seggio, in un periodo. "
               "Con by_group una riga per gruppo con le quote, per confrontare i gruppi fra loro.",

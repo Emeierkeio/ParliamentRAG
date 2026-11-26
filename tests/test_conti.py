@@ -31,6 +31,22 @@ class TestRegole(unittest.TestCase):
         with self.assertRaises(ValueError):
             conti.gruppi_chiesti(CAT, "inesistente")
 
+    def test_confronti_regole(self):
+        self.assertEqual(conti._pos((3, 1, 0)), "favor")
+        self.assertEqual(conti._pos((2, 2, 0)), "tie")
+        self.assertIsNone(conti._pos((0, 0, 0)))
+        cat = CAT | {"g:lega": {"uri": "g:lega", "chamber": "camera", "kind": "group", "name": "Lega - Partito Sardo d'Azione",
+                                "short_name": "LEGA", "part_of": None},
+                     "g:az": {"uri": "g:az", "chamber": "camera", "kind": "misto_component", "name": "Azione", "short_name": "AZ",
+                              "part_of": "g:misto"}}
+        self.assertEqual(conti._un_gruppo(cat, "AZ", "camera"), ["g:az"])
+        self.assertEqual(conti._un_gruppo(cat, "azione", "camera"), ["g:az"])                  # il nome esatto vince
+        self.assertEqual(conti._un_gruppo(cat, "Misto", "camera"), ["g:az", "g:eu", "g:misto"])   # il Misto con le componenti
+        with self.assertRaises(ValueError):                                                     # «Azione» è anche nella Lega
+            conti._un_gruppo(cat, "azion", "camera")
+        with self.assertRaises(ValueError):
+            conti.confronta_voti(None, "camera", "classifica")
+
     def test_rami_mai_sommati_se_non_chiesto(self):
         self.assertEqual(conti._dimensioni(["anno"], conti.DIM_VOTI, None, False), ["ramo", "anno"])
         self.assertEqual(conti._dimensioni(["anno"], conti.DIM_VOTI, None, True), ["anno"])
@@ -73,6 +89,25 @@ class TestConti(unittest.TestCase):
         self.assertTrue(all(0.5 <= g["cohesion"] <= 1 for g in r["groups"]))
         self.assertIn("different_positions", r)
         self.assertEqual(r["different_positions"]["total"], len(r["different_positions"]["rows"]))
+
+    def test_confronta_voti(self):
+        # numeri del database al 5/11/2026, controllati a mano il 26/11 (righe 706 e 755 del registro della chat)
+        r = conti.confronta_voti(C, "camera", "persone", persons=["it:person:camera:306064", "it:person:camera:300447"],
+                                 end=dt.date(2026, 11, 5))
+        self.assertEqual(r["same"], sum(n for k, n in r["pairs"].items() if k.split("/")[0] == k.split("/")[1]))
+        self.assertEqual(r["different_votes"]["total"], r["votes_both"] - r["same"])
+        r = conti.confronta_voti(C, "camera", "dissensi", final=True, start=dt.date(2022, 12, 30), end=dt.date(2022, 12, 30))
+        fassino = [x for x in r["cases"]["rows"] if any("Fassino" in y["persona"] for y in x["chi"])]
+        self.assertEqual(len(fassino), 1)                       # unico sì del PD sul DDL 705 (DL 162/2022)
+        self.assertEqual(fassino[0]["group_position"], "against")
+        self.assertFalse(any(x["gruppo"] == "Misto (MISTO)" for x in r["cases"]["rows"]))
+        r = conti.confronta_voti(C, "camera", "segreti", start=dt.date(2026, 7, 14), end=dt.date(2026, 7, 14))
+        em = [x for x in r["rows"] if x["number"] == 12][0]      # em. 1.1077 alla legge elettorale, 187-188
+        self.assertEqual((em["favor"], em["against"]), (187, 188))
+        self.assertEqual(em["majority_short_if_for"], em["majority_voters"] - 187)
+        r = conti.confronta_voti(C, "camera", "maggioranza", group="AZ-PER-RE", final=True)
+        self.assertGreater(r["votes"], 0)
+        self.assertEqual(r["different_votes"]["total"], r["votes"] - r["same"])
 
     def test_leggi_una_volta_sola(self):
         r = conti.conta_atti(C, laws=True, group_by=["iniziativa"])
