@@ -73,17 +73,74 @@
   document.addEventListener("click", (ev) => { const b = ev.target.closest("[data-giostra]"); if (!b) return; if (B.giostra && B.giostra(+b.dataset.giostra)) return; const g = $("#griglia-str"), card = g.querySelector("a"); g.scrollBy({ left: (+b.dataset.giostra) * ((card ? card.offsetWidth : 300) + 14), behavior: "smooth" }); });
 
   /* ---------- newsletter: doppia conferma di Brevo; l'indirizzo va solo a Brevo ---------- */
-  { const f = $("#news-f"); if (f) f.addEventListener("submit", async (ev) => { ev.preventDefault(); const m = $("#news-m"), em = $("#news-e").value.trim(), bt = f.querySelector("button");
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { m.textContent = TT("Scrivi un indirizzo email valido.", "Enter a valid email address."); return; }
-    if (!$("#news-c").checked) { m.textContent = TT("Per iscriverti serve il consenso.", "Consent is required to subscribe."); return; }
-    bt.disabled = true; m.textContent = TT("Invio…", "Sending…");
+  // stesso invio per il modulo della home e per il pannello; true se Brevo ha preso l'indirizzo
+  const iscrivi = async (f, em, consenso, m) => { const bt = f.querySelector("button[type=submit]");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { m.textContent = TT("Scrivi un indirizzo email valido.", "Enter a valid email address."); return false; }
+    if (!consenso) { m.textContent = TT("Per iscriverti serve il consenso.", "Consent is required to subscribe."); return false; }
+    bt.disabled = true; m.textContent = TT("Invio…", "Sending…"); let ok = false;
     try {
       const r = await fetch("/api/iscriviti", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: em, consenso: true, lingua: window.LANG }) });
       const d = await r.json().catch(() => ({}));
-      if (r.ok && d.ok) { f.reset(); m.textContent = TT("Ti abbiamo mandato una mail: clicca il link per confermare l'iscrizione.", "We sent you an email: click the link to confirm."); }
+      if (r.ok && d.ok) { ok = true; f.reset(); m.textContent = TT("Ti abbiamo mandato una mail: clicca il link per confermare l'iscrizione.", "We sent you an email: click the link to confirm."); }
       else m.textContent = d.errore || TT("Iscrizione non riuscita, riprova.", "Subscription failed, try again.");
     } catch { m.textContent = TT("Iscrizione non riuscita, riprova.", "Subscription failed, try again."); }
-    bt.disabled = false; }); }
+    bt.disabled = false; return ok; };
+  const NEWS = "parliamentrag-news", TRENTA = 30 * 864e5;
+  const ricordaNews = () => { try { localStorage.setItem(NEWS, String(Date.now())); } catch { /* navigazione privata */ } };
+  { const f = $("#news-f"); if (f) f.addEventListener("submit", async (ev) => { ev.preventDefault(); if (await iscrivi(f, $("#news-e").value.trim(), $("#news-c").checked, $("#news-m"))) ricordaNews(); }); }
+
+  /* ---------- pannello della newsletter: una volta, 5 secondi dopo l'apertura (27/11) ----------
+     Su telefono sale dal basso, su desktop sta al centro. Non torna per 30 giorni dopo che lo chiudi o ti iscrivi.
+     Non compare su /iscriviti, sulle pagine legali, al ritorno dal link di conferma, né mentre scrivi o aspetti una risposta. */
+  {
+    let visto = 0; try { visto = +localStorage.getItem(NEWS) || 0; } catch { /* */ }
+    const salta = () => /[?&]iscritto=1/.test(location.search) || document.body.hasAttribute("data-iscriviti") || /^#\/legale/.test(location.hash);
+    if (Date.now() - visto > TRENTA && !salta()) {
+      const occupato = () => { const a = document.activeElement; return (window.CH && CH.inCorso) || (a && /^(TEXTAREA|INPUT|SELECT)$/.test(a.tagName) && a.value) || document.body.dataset.menu; };
+      const prova = () => { if (salta()) return; if (occupato()) { setTimeout(prova, 4000); return; } apri(); };
+      setTimeout(prova, 5000);
+    }
+    let el, prima;
+    function costruisci() {
+      el = document.createElement("div"); el.className = "nwp"; el.hidden = true;
+      el.innerHTML = `<div class="nwp__velo" data-nwp-chiudi></div>
+<div class="nwp__pann" role="dialog" aria-modal="true" aria-labelledby="nwp-t" tabindex="-1">
+ <span class="nwp__maniglia" aria-hidden="true"></span>
+ <button class="nwp__x" type="button" data-nwp-chiudi aria-label="${TT("Chiudi", "Close")}"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+ <h2 id="nwp-t">${TT("Ricevi le novità di ParliamentRAG", "Get ParliamentRAG updates")}</h2>
+ <p class="nwp__sub">${TT("Ti scriviamo solo quando c'è qualcosa di nuovo:", "We only write when there's something new:")}</p>
+ <ul class="nwp__punti"><li>${TT("nuovi strumenti, come il dossier per la tua azienda", "new tools, like the dossier for your company")}</li><li>${TT("le scadenze per gli emendamenti", "amendment deadlines")}</li><li>${TT("nuovi dati, come le legislature precedenti", "new data, like past legislatures")}</li></ul>
+ <form class="nwp__f" novalidate>
+  <div class="nwp__riga"><label class="vh" for="nwp-e">Email</label><input id="nwp-e" type="email" placeholder="${TT("La tua email", "Your email")}" autocomplete="email" required><button class="bt bt--primario" type="submit">${TT("Iscriviti", "Subscribe")}</button></div>
+  <label class="nwp__cons"><input type="checkbox" id="nwp-c"> <span>${TT("Ho letto l'", "I have read the ")}<a href="#/legale/privacy" data-nwp-chiudi>${TT("informativa privacy", "privacy notice")}</a> ${TT("e accetto di ricevere aggiornamenti.", "and agree to receive updates.")}</span></label>
+  <p class="nwp__msg" id="nwp-m" role="status"></p>
+ </form>
+</div>`;
+      document.body.appendChild(el);
+      el.addEventListener("click", (ev) => { if (ev.target.closest("[data-nwp-chiudi]")) chiudi(); });
+      el.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape") { chiudi(); return; }
+        if (ev.key !== "Tab") return;
+        const fx = [...el.querySelectorAll(".nwp__pann button, .nwp__pann input, .nwp__pann a")].filter((x) => !x.disabled && x.offsetParent), a = fx[0], z = fx[fx.length - 1];
+        if (ev.shiftKey && document.activeElement === a) { ev.preventDefault(); z.focus(); } else if (!ev.shiftKey && document.activeElement === z) { ev.preventDefault(); a.focus(); }
+      });
+      const f = el.querySelector("form");
+      f.addEventListener("submit", async (ev) => { ev.preventDefault();
+        if (await iscrivi(f, $("#nwp-e").value.trim(), $("#nwp-c").checked, $("#nwp-m"))) { ricordaNews(); f.querySelector(".nwp__riga").hidden = true; f.querySelector(".nwp__cons").hidden = true; setTimeout(chiudi, 6000); } });
+    }
+    function apri() {
+      if (!el) costruisci();
+      prima = document.activeElement; el.hidden = false;
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("su")));
+      // da telefono il fuoco sul campo aprirebbe la tastiera: va sul pannello
+      const p = el.querySelector(".nwp__pann"); setTimeout(() => (matchMedia("(max-width:760px)").matches ? p : $("#nwp-e")).focus({ preventScroll: true }), 60);
+    }
+    function chiudi() {
+      if (!el || el.hidden) return; ricordaNews(); el.classList.remove("su");
+      const fine = () => { el.hidden = true; }; if (matchMedia("(prefers-reduced-motion: reduce)").matches) fine(); else setTimeout(fine, 380);
+      if (prima && prima.focus && document.contains(prima)) prima.focus({ preventScroll: true });
+    }
+  }
   // ritorno dal link di conferma della mail: il messaggio sta nel modulo, quindi si apre la vista /iscriviti (su mobile la home mostra solo la chat)
   if (/[?&]iscritto=1/.test(location.search)) { const m = $("#news-m"); if (m) m.textContent = TT("Iscrizione confermata. Grazie!", "Subscription confirmed. Thank you!");
     const q = new URLSearchParams(location.search); q.delete("iscritto"); const qs = q.toString(); history.replaceState(null, "", location.pathname + (qs ? `?${qs}` : "") + "#/iscriviti"); }
