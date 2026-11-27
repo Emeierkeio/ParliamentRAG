@@ -107,9 +107,8 @@
 <div class="nwp__pann" role="dialog" aria-modal="true" aria-labelledby="nwp-t" tabindex="-1">
  <span class="nwp__maniglia" aria-hidden="true"></span>
  <button class="nwp__x" type="button" data-nwp-chiudi aria-label="${TT("Chiudi", "Close")}"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
- <h2 id="nwp-t">${TT("Ricevi le novità di ParliamentRAG", "Get ParliamentRAG updates")}</h2>
- <p class="nwp__sub">${TT("Ti scriviamo solo quando c'è qualcosa di nuovo:", "We only write when there's something new:")}</p>
- <ul class="nwp__punti"><li>${TT("nuovi strumenti, come il dossier per la tua azienda", "new tools, like the dossier for your company")}</li><li>${TT("le scadenze per gli emendamenti", "amendment deadlines")}</li><li>${TT("nuovi dati, come le legislature precedenti", "new data, like past legislatures")}</li></ul>
+ <h2 id="nwp-t">${TT("Ricevi le novità di ParliamentRAG per email", "Get ParliamentRAG news by email")}</h2>
+ <p class="nwp__sub">${TT("Ti scriviamo quando esce uno strumento nuovo o quando arrivano dati nuovi.", "We write when a new tool comes out or new data arrives.")}</p>
  <form class="nwp__f" novalidate>
   <div class="nwp__riga"><label class="vh" for="nwp-e">Email</label><input id="nwp-e" type="email" placeholder="${TT("La tua email", "Your email")}" autocomplete="email" required><button class="bt bt--primario" type="submit">${TT("Iscriviti", "Subscribe")}</button></div>
   <label class="nwp__cons"><input type="checkbox" id="nwp-c"> <span>${TT("Ho letto l'", "I have read the ")}<a href="#/legale/privacy" data-nwp-chiudi>${TT("informativa privacy", "privacy notice")}</a> ${TT("e accetto di ricevere aggiornamenti.", "and agree to receive updates.")}</span></label>

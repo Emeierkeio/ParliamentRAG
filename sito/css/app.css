@@ -2079,10 +2079,7 @@ body[data-piede][data-vista]:has(#scelta) .compositore{transform:translate3d(0,0
 .nwp__x:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
 .nwp__x .ic{width:18px;height:18px}
 .nwp h2{margin:0;padding-right:36px;font-size:32px;line-height:1.15;font-weight:600;letter-spacing:-.03em;text-wrap:balance}
-.nwp__sub{margin:0;font-size:18px;color:var(--t2)}
-.nwp__punti{margin:0 0 8px;padding:0;list-style:none;display:grid;gap:8px;font-size:17px;color:var(--t2);line-height:1.45}
-.nwp__punti li{display:flex;gap:10px}
-.nwp__punti li::before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:var(--t3);margin-top:11px}
+.nwp__sub{margin:0 0 8px;font-size:18px;color:var(--t2);line-height:1.5;max-width:46ch}
 .nwp__f{display:grid;gap:14px}
 .nwp__riga{display:flex;gap:10px}
 .nwp__riga input{flex:1;min-width:0;background:var(--sup);border:1px solid var(--bordo2);border-radius:999px;padding:16px 20px;color:var(--t);font:400 17px var(--f-ui)}
@@ -2100,9 +2097,7 @@ body[data-piede][data-vista]:has(#scelta) .compositore{transform:translate3d(0,0
  .nwp__x{top:8px;right:8px}
  .nwp h2{font-size:22px}
  .nwp__sub{font-size:15.5px}
- .nwp__punti{font-size:15px;gap:6px;margin-bottom:4px}
- .nwp__punti li::before{margin-top:9px}
- .nwp__f{gap:10px}
+   .nwp__f{gap:10px}
  .nwp__riga input{padding:13px 16px;font-size:16px}
  .nwp__riga .bt--primario{padding:13px 18px;font-size:15px}
  .nwp__cons{font-size:12.5px}
