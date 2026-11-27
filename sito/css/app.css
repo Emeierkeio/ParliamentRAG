@@ -2194,3 +2194,6 @@ body[data-piede][data-vista]:has(#scelta) .compositore{transform:translate3d(0,0
  .gr-b__s,.gr-s__barra{grid-column:1/-1;grid-row:2}
  .gr-grande{margin-left:0;text-align:left}
 }
+
+.persone-schede{display:grid;gap:22px}
+.persone-schede>.persona+.persona{padding-top:22px;border-top:1px solid var(--bordo)}

@@ -198,7 +198,14 @@
     return prosaEl.innerText;
   }
   // la scheda del parlamentare dentro la risposta: foto, gruppo, cariche in corso e numeri, con il link alla scheda intera
+  // una o più persone (un confronto fra due parlamentari ne ha due), nello stesso blocco, una sotto l'altra
   async function schedaPersona(t, p) {
+    const ps = (Array.isArray(p) ? p : [p]).filter((x, i, a) => x && a.findIndex((y) => y && y.id === x.id) === i);
+    if (!ps.length) return;
+    const parti = await Promise.all(ps.map(unaScheda));
+    blocco(t, "persona", ps.length > 1 ? TT("Schede", "Profiles") : TT("Scheda", "Profile"), "", `<div class="persone-schede">${parti.join("")}</div>`, "voti");
+  }
+  async function unaScheda(p) {
     const sen = !!p.senato, url = sen ? `#/strumenti/senatore/${p.id}` : `#/strumenti/deputato/${p.id}`;
     const foto = sen ? `<span class="foto"><img src="/dati/foto/senatori/${e(p.id)}.jpg" alt="" onerror="this.remove()"></span>` : B.fotoHtml(p);
     const d = await fetch(sen ? `/dati/senatori/${encodeURIComponent(p.id)}.json` : `/dati/schede/${encodeURIComponent(p.id)}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
@@ -210,7 +217,7 @@
       dati = `${d.group && d.mistoComponent ? `<p style="margin:8px 0 0;color:var(--t2)">${e(`${d.group.name} · ${d.mistoComponent.name}`)}</p>` : ""}${ruoli.length ? `<div class="ruoli">${ruoli.map((x) => `<span>${e(x)}</span>`).join("")}</div>` : ""}
         <dl class="persona__n"><div><dt>${TT("Interventi in Aula", "Floor speeches")}</dt><dd>${num(c.speeches)}</dd></div><div><dt>${TT("Atti con la prima firma", "Acts as first signatory")}</dt><dd>${num(c.actsPrimary)}</dd></div>${v.participationPct != null ? `<div><dt>${TT("Presenza ai voti", "Votes attended")}</dt><dd>${String(v.participationPct).replace(".", window.LANG === "en" ? "." : ",")}%</dd></div>` : ""}</dl>`;
     }
-    blocco(t, "persona", TT("Scheda", "Profile"), "", `<div class="persona${sen ? " persona--sen" : ""}">${foto}<div><div class="persona__testa"><h4>${e(p.n)}</h4>${B.link(url, TT("Apri la scheda completa", "Open the full profile"))}</div><div style="margin-top:6px">${sen ? TT("Senato", "Senate") + " · " : ""}${B.sig(p.sigla)}</div>${dati}</div>${sen ? "" : `<div>${B.emiciclo({ evidenzia: p.id, r: 15, etichetta: `Il seggio di ${p.n}` })}</div>`}</div>`, "voti");
+    return `<div class="persona${sen ? " persona--sen" : ""}">${foto}<div><div class="persona__testa"><h4>${e(p.n)}</h4>${B.link(url, TT("Apri la scheda completa", "Open the full profile"))}</div><div style="margin-top:6px">${sen ? TT("Senato", "Senate") + " · " : ""}${B.sig(p.sigla)}</div>${dati}</div>${sen ? "" : `<div>${B.emiciclo({ evidenzia: p.id, r: 15, etichetta: `Il seggio di ${p.n}` })}</div>`}</div>`;
   }
   async function instrada(t, q, it) {
     const parole = CH.parole(q), chiave = parole.slice(0, 4).join(" ");
@@ -570,7 +577,7 @@
     prosaEl.classList.remove("cursore");
     storia.push({ role: "user", content: q }, { role: "assistant", content: testo.slice(0, 4000) });
     await citazioniInglese(prosaEl);
-    if (t.persona && !t.blocchi.querySelector('[data-blocco="persona"]')) await schedaPersona(t, t.persona);
+    if ((t.persona || (t.altre || []).length) && !t.blocchi.querySelector('[data-blocco="persona"]')) await schedaPersona(t, [t.persona, ...(t.altre || [])]);
     chiudi(t, el, n, q);
   }
   // quello che l'agente ha preso dai dati diventa una scheda sotto la risposta
@@ -578,6 +585,10 @@
     const r = ev.result || {}, d = r.dati || r, a = ev.args || {};
     if (ev.name === "proponi_temi" && window.SCELTA && r.opzioni) { SCELTA.mostra(r); return; }
     if (ev.name === "chiedi_settore" && window.SCELTA && r.soggetto) { SCELTA.settore(r); return; }
+    const daUri = (u) => { const m = /^it:person:(camera|senato):(\d+)$/.exec(u || ""); return m ? (m[1] === "camera" ? B.persona(m[2]) : B.senatori().find((y) => y.id === m[2])) : null; };
+    const aggiungi = (p) => { if (!p) return; if (!t.persona) t.persona = p; else if (t.persona.id !== p.id && !(t.altre || []).some((x) => x.id === p.id)) (t.altre = t.altre || []).push(p); };
+    if (ev.name === "confronta_voti" && a.mode === "persone") (a.persons || []).forEach((u) => aggiungi(daUri(u)));
+    if (t.persona && ev.name === "scheda_persona" && ev.result) aggiungi(daUri(ev.result.uri));
     if (!t.persona && (ev.name === "scheda_persona" || (ev.name === "cerca_persone" && Array.isArray(ev.result) && ev.result.length === 1))) {
       const x = ev.name === "scheda_persona" ? ev.result : ev.result[0], m = /^it:person:(camera|senato):(\d+)$/.exec((x && x.uri) || "");
       if (m) { const p = m[1] === "camera" ? B.persona(m[2]) : B.senatori().find((y) => y.id === m[2]); if (p) t.persona = t.persona || p; }
