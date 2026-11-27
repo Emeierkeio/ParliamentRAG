@@ -71,6 +71,11 @@ class TestApi(unittest.TestCase):
         self.assertTrue(any(u.startswith("it:person:camera:") for u in scheda.same_as))
         self.assertGreater(scheda.counts.speeches, 0)
 
+    def test_nome_d_uso(self):
+        # nei dati c'è il nome all'anagrafe (Elena Ethel), chi chiede scrive quello d'uso
+        self.assertEqual([p.name for p in persone.cerca_persone(C, q="Elly Schlein")], ["Elena Ethel Schlein"])
+        self.assertEqual(persone.cerca_persone(C, q="Mario Schlein"), [])
+
     def test_misto_per_componente(self):
         k = persone.composizione(C, "camera")
         misto = next(g for g in k.groups if g.group.short_name == "MISTO")

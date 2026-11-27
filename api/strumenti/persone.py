@@ -27,6 +27,8 @@ def cerca_persone(c: psycopg.Connection, q: str | None = None, chamber: str | No
                OR norm_nome(concat(p.family_name, p.given_name)) LIKE '%%' || norm_nome(%(q)s) || '%%')
           AND (%(attivo)s::boolean IS NOT TRUE OR m.end_date IS NULL)""",   # falso o vuoto: anche chi non è più in carica
         {"leg": LEGISLATURA, "ramo": chamber, "q": q, "attivo": in_office}).fetchall()
+    if q and not righe:
+        righe = _per_nome_d_uso(c, q, chamber, in_office)
     persone = list(brevi(c, [r["person"] for r in righe]).values())
     if group:
         g = group.lower()
@@ -37,6 +39,25 @@ def cerca_persone(c: psycopg.Connection, q: str | None = None, chamber: str | No
     else:
         persone.sort(key=lambda p: p.name.split()[-1:] + [p.name])
     return persone[:limit]
+
+
+def _per_nome_d_uso(c: psycopg.Connection, q: str, chamber: str | None, in_office: bool | None) -> list[dict]:
+    """Seconda prova quando nome e cognome non combaciano: i dati hanno il nome all'anagrafe, chi chiede usa quello
+    d'uso («Elly Schlein» è Elena Ethel Schlein). Vale chi ha il cognome dentro la domanda e un nome con la stessa
+    iniziale del resto della domanda (solo il cognome: tutti quelli con quel cognome)."""
+    righe = c.execute("""
+        SELECT DISTINCT m.person, norm_nome(p.family_name) AS cognome, norm_nome(p.given_name) AS nome FROM mandate m JOIN person p ON p.uri = m.person
+        WHERE m.legislature = %(leg)s
+          AND (%(ramo)s::text IS NULL OR m.chamber = %(ramo)s)
+          AND length(norm_nome(p.family_name)) >= 4 AND norm_nome(%(q)s) LIKE '%%' || norm_nome(p.family_name) || '%%'
+          AND (%(attivo)s::boolean IS NOT TRUE OR m.end_date IS NULL)""",
+        {"leg": LEGISLATURA, "ramo": chamber, "q": q, "attivo": in_office}).fetchall()
+    out = []
+    for r in righe:
+        resto = _norm(q).replace(r["cognome"], "", 1)
+        if not resto or (r["nome"] and resto[0] == r["nome"][0]):
+            out.append(r)
+    return out
 
 
 def scheda_persona(c: psycopg.Connection, uri: str) -> Person | None:
