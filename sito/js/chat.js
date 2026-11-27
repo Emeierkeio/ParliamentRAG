@@ -73,8 +73,8 @@
     return b;
   }
   // nei dossier l'ordine di chi fa relazioni istituzionali: quadro, scadenze, chi ci lavora, posizioni, dettaglio, verifiche
-  const ORDINE_B = ["quadro", "arrivo", "chi", "risposta", "classifica", "posizioni", "voti", "emendamenti", "persona", "interventi", "schede", "atti", "sedute", "garanzie", "fonti", "iscriviti"];
-  const NOMI_BLOCCHI = { quadro: "In breve", risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", emendamenti: "Emendamenti", chi: "Chi ci lavora", arrivo: "In arrivo", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica" };
+  const ORDINE_B = ["quadro", "arrivo", "chi", "risposta", "grafici", "classifica", "posizioni", "voti", "emendamenti", "persona", "interventi", "schede", "atti", "sedute", "garanzie", "fonti", "iscriviti"];
+  const NOMI_BLOCCHI = { quadro: "In breve", risposta: "Risposta", garanzie: "Garanzie", posizioni: "Per gruppo", voti: "Voti e Aula", emendamenti: "Emendamenti", chi: "Chi ci lavora", arrivo: "In arrivo", persona: "Persona", interventi: "Interventi", atti: "Atti", sedute: "Sedute", schede: "Schede", fonti: "Fonti", classifica: "Classifica", grafici: "Grafici" };
   // l'indice serve solo quando la risposta ha almeno due parti oltre al testo
   function aggiornaIndice(t) {
     const bs = B.$$("[data-blocco]", t.blocchi).filter((b) => !b.hidden && b.dataset.blocco !== "iscriviti");
@@ -583,6 +583,9 @@
       if (m) { const p = m[1] === "camera" ? B.persona(m[2]) : B.senatori().find((y) => y.id === m[2]); if (p) t.persona = t.persona || p; }
     }
     if (ev.name === "confronto_gruppi" && r.errore && /rate|quota|limit/i.test(`${r.codice} ${r.errore}`)) { t.limite = r.errore; return; }
+    // i numeri di uno strumento diventano un grafico, scelto sul tipo di dato (grafici.js); stessa chiamata, stesso posto
+    if (window.GR) { const g = GR.da(ev.name, a, r); if (g) grafico(t, `${ev.name}:${JSON.stringify(a)}`, g); }
+    if (ev.name === "votazione" && a.uri && r.favor != null) bloccoVoti(t, [{ id: a.uri, titolo: r.title || r.subject, subject: r.title || r.subject, ramo: /senato/.test(a.uri) ? "senato" : "camera", data: r.date, in_favor: r.favor, against: r.against, abstained: r.abstain, outcome: r.approved == null ? r.outcome : r.approved ? "approved" : "rejected" }]);
     if (ev.name === "get_vote_details" && d && (d.in_favor != null)) {
       const id = a.vote_id || d.id; bloccoVoti(t, [{ id, titolo: d.subject, subject: d.subject, ramo: /^senato/.test(id) ? "senato" : "camera", data: d.date, in_favor: d.in_favor, against: d.against, abstained: d.abstained, outcome: d.outcome }]);
     } else if (ev.name === "parlamentari" && (r.risultati || []).length > 1) {
@@ -594,6 +597,12 @@
     } else if (ev.name === "confronto_gruppi" && (r.voci_autorevoli || []).length) {
       blocco(t, "posizioni", TT("Una voce per gruppo", "One voice per group"), "", `<ul class="oratori">${r.voci_autorevoli.map((x) => { const g = B.sigla(x.gruppo); return `<li><i style="background:${B.col(g)}"></i><span>${e(x.nome)}</span><small>${e(B.NOMI[g] || x.gruppo)} · ${TT("autorevolezza", "authority")} ${x.autorevolezza}</small></li>`; }).join("")}</ul>`);
     }
+  }
+  // tutti i grafici di una risposta in un blocco solo, nell'ordine in cui arrivano i dati
+  function grafico(t, chiave, html) {
+    t.grafici = t.grafici || new Map();
+    t.grafici.set(chiave, html);
+    blocco(t, "grafici", TT("I dati in grafico", "The data, charted"), "", `<div class="grafici">${[...t.grafici.values()].join("")}</div>`);
   }
   // limite di domande raggiunto: solo l'avviso e gli strumenti, che non hanno limiti; nessuna risposta, garanzia o blocco
   function limite(t, prosaEl) {
